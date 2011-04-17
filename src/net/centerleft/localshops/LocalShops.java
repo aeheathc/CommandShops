@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -32,6 +34,9 @@ public class LocalShops extends JavaPlugin {
 	private final ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
 	private final ShopsPluginListener pluginListener = new ShopsPluginListener(this);
 	
+	private final Logger log = Logger.getLogger("Minecraft");
+	private PluginDescriptionFile pdfFile = null;
+	
 	static String pluginName = "LocalShops";
 	static String pluginVersion;
 	
@@ -51,6 +56,8 @@ public class LocalShops extends JavaPlugin {
 	public Map<String, BookmarkedResult> playerResult;  //synchronized result buffer hash
 	
 	public void onEnable() {
+		
+		pdfFile = getDescription();
 		
 		QuadTree cuboidTree = new QuadTree();
 		playerResult = Collections.synchronizedMap(new HashMap<String, BookmarkedResult>());
@@ -81,13 +88,13 @@ public class LocalShops extends JavaPlugin {
                 Permissions gm = (Permissions) p;
                 ShopsPluginListener.permissions = gm;
                 ShopsPluginListener.gmPermissionCheck = gm.getHandler();
-                System.out.println("LocalShops: Permissions found.");
+                log.info(String.format("[%s] %s", pdfFile.getName(), "Permissions found."));
                 ShopsPluginListener.usePermissions = true;
             } else {
             	ShopsPluginListener.usePermissions = false;
             }
         } else {
-        	System.out.println("LocalShops: Permissions not found.");
+        	log.severe(String.format("[%s] %s", pdfFile.getName(), "Permissions not found."));
         	ShopsPluginListener.usePermissions = false;
         }
 		
@@ -97,14 +104,14 @@ public class LocalShops extends JavaPlugin {
             if (ic.isEnabled()) {
                 iConomy icon = (iConomy) ic;
                 ShopsPluginListener.iConomy = icon;
-                System.out.println("LocalShops: iConomy found.");
+                log.info(String.format("[%s] %s", pdfFile.getName(), "iConomy found."));
                 ShopsPluginListener.useiConomy = true;
             } else {
             	ShopsPluginListener.useiConomy = false;
-            	System.out.println("LocalShops: waiting for iConomy to start.");
+            	log.info(String.format("[%s] %s", pdfFile.getName(), "Waiting for iConomy to start."));
             }
         } else {
-        	System.out.println("LocalShops: iConomy not found.");
+        	log.severe(String.format("[%s] %s", pdfFile.getName(), "iConomy not found."));
         	ShopsPluginListener.useiConomy = false;
         }
 		
@@ -130,22 +137,19 @@ public class LocalShops extends JavaPlugin {
 		ShopData.LoadShops( shopsDir );
 
 		//update the console that we've started
-		PluginDescriptionFile pdfFile = this.getDescription();
-		pluginName = pdfFile.getName();
-		pluginVersion = pdfFile.getVersion();
-		System.out.println( pluginName + ": Loaded " + ShopData.shops.size() + " shop(s).");
-		System.out.println( pluginName + ": version " + pluginVersion + " is enabled!");
+		log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with " + ShopData.shops.size() + " shop(s)"));
+		log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is enabled!"));
 		
 		// check which shops players are inside
 		for( Player player : this.getServer().getOnlinePlayers() ) {
 			ShopsPlayerListener.checkPlayerPosition(this, player);
 		}
+
 	}
 
 	public void onDisable() {
 		//update the console that we've stopped
-		System.out.println( pluginName + " version "
-				+ pluginVersion + ": is disabled!");
+		log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is disabled!"));
 	}
 	
 	@Override
