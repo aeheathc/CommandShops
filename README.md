@@ -1,5 +1,4 @@
-Changelog
-==
+Changelog=
 
 2.2.2
 --
