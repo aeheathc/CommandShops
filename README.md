@@ -1,7 +1,8 @@
-Changelog=
+Changelog
+-
 
 2.2.2
---
+-
 
 - Forked Jonbas' LocalShops 2.2.1
 - Minor fixes and CraftBukkit/Permissions/iConomy compatibility updates.
