@@ -1,5 +1,5 @@
 2.2.2
---
+_
 
 - Forked Jonbas' LocalShops 2.2.1
 - Minor fixes and CraftBukkit/Permissions/iConomy compatibility updates.
