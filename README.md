@@ -2,7 +2,9 @@ Local Shops
 ======
 
 A cuboid shop plugin for Bukkit
+
 http://www.github.com/Bukkit
+http://bukkit.org
 
 Changelog
 -----------
