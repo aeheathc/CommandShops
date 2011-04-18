@@ -28,10 +28,10 @@ import cuboidLocale.PrimitiveCuboid;
  * @author Jonbas
  */
 public class ShopsPlayerListener extends PlayerListener {
-	private final LocalShops plugin;
+	private LocalShops plugin;
 
-	public ShopsPlayerListener(LocalShops instance) {
-		plugin = instance;
+	public ShopsPlayerListener(LocalShops plugin) {
+		this.plugin = plugin;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class ShopsPlayerListener extends PlayerListener {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		if(!plugin.playerData.containsKey(playerName)) {
-			plugin.playerData.put(playerName, new PlayerData());
+			plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
 		}
 		
 		if(plugin.playerData.get(playerName).isSelecting) {
@@ -66,12 +66,8 @@ public class ShopsPlayerListener extends PlayerListener {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		
-		if( !plugin.playerResult.containsKey(playerName)) {
-			plugin.playerResult.put(playerName, new BookmarkedResult());
-		}
-		
-		if( !PlayerData.playerShopList.containsKey(playerName)) {
-			PlayerData.playerShopList.put(playerName, Collections.synchronizedList(new ArrayList<String>()));	
+		if( !plugin.playerData.containsKey(playerName)) {
+			plugin.playerData.put(playerName, new PlayerData(plugin, playerName));	
 		}
 		
 		long x, y, z;
@@ -80,78 +76,70 @@ public class ShopsPlayerListener extends PlayerListener {
 		y = (long)xyz.getY();
 		z = (long)xyz.getZ();
 		
-		checkPlayerPosition(plugin, player, x, y, z);
+		checkPlayerPosition(player, x, y, z);
 	}
 	
-	public static void checkPlayerPosition(LocalShops instance, Player player) {
+	public void checkPlayerPosition(Player player) {
 		long x, y, z;
 		Location xyz = player.getLocation();
 		x = (long)xyz.getX();
 		y = (long)xyz.getY();
 		z = (long)xyz.getZ();
 		
-		checkPlayerPosition(instance, player, x, y, z);
+		checkPlayerPosition(player, x, y, z);
 	}
 	
-	public static void checkPlayerPosition(LocalShops instance, Player player, long[] xyz) {
+	public void checkPlayerPosition(Player player, long[] xyz) {
 		if(xyz.length > 3) {
-			checkPlayerPosition(instance, player, xyz[0], xyz[1], xyz[2]);
+			checkPlayerPosition(player, xyz[0], xyz[1], xyz[2]);
 		} else {
 			System.out.println("LocalShops: Bad position");
 		}
 		
 	}
 
-	public static void checkPlayerPosition(LocalShops instance, Player player, long x, long y, long z) {
-		LocalShops plugin = instance;
-		String playerName = player.getName();
-		BookmarkedResult res = plugin.playerResult.get(playerName);
-		
-		synchronized(plugin.playerResult) {
-			res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
-			
-			synchronized(PlayerData.playerShopList.get(playerName)) {
-			
-				//check to see if we've entered any shops
-				for( PrimitiveCuboid shop : res.results) {
-					
-					//for each shop that you find, check to see if we're already in it
-					
-					if( shop.name == null ) continue;
-					if( !shop.world.equalsIgnoreCase(player.getWorld().getName())) continue;
-					
-							
-					if(!PlayerData.playerIsInShop(player, shop.name)) {
-						if(PlayerData.addPlayerToShop(player, shop.name) ) {
-							notifyPlayerEnterShop(player, shop.name);
-						}
-					} 
-				}
-	
-				synchronized(PlayerData.playerShopList.get(playerName)) {
-					//check to see if we've left any shops
-					Iterator itr = PlayerData.playerShopList.get(playerName).iterator();
-					while( itr.hasNext()) {
-						String checkShopName = itr.next().toString();	
-						//check the tree search results to see player is no longer in a shop.
-						boolean removeShop = true;
-						for( PrimitiveCuboid shop : res.results ) {
-							if (shop.name.equalsIgnoreCase(checkShopName)) {
-								removeShop = false;
-								break;
-							}
-						}
-						if(removeShop) {
-							itr.remove();
-							notifyPlayerLeftShop(player, checkShopName);
-						}
-						
-					}
+	public void checkPlayerPosition(Player player, long x, long y, long z) {
+		PlayerData pData = plugin.playerData.get(player.getName());
+		BookmarkedResult res = pData.bookmark;
+		res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
+
+		// check to see if we've entered any shops
+		for (PrimitiveCuboid shop : res.results) {
+
+			// for each shop that you find, check to see if we're already in it
+
+			if (shop.name == null)
+				continue;
+			if (!shop.world.equalsIgnoreCase(player.getWorld().getName()))
+				continue;
+
+			if (!pData.playerIsInShop(shop.name)) {
+				if (pData.addPlayerToShop(shop.name)) {
+					notifyPlayerEnterShop(player, shop.name);
 				}
 			}
-			
 		}
-		
+
+		// check to see if we've left any shops
+		Iterator<String> itr = pData.shopList.iterator();
+		while (itr.hasNext()) {
+			String checkShopName = itr.next();
+			// check the tree search results to see player is no longer in a
+			// shop.
+			boolean removeShop = true;
+			for (PrimitiveCuboid shop : res.results) {
+				if (shop.name.equalsIgnoreCase(checkShopName)) {
+					removeShop = false;
+					break;
+				}
+			}
+			if (removeShop) {
+				itr.remove();
+				notifyPlayerLeftShop(player, checkShopName);
+			}
+
+		}
+
 	}
 
 	private static void notifyPlayerLeftShop(Player player, String shopName) {

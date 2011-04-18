@@ -2,30 +2,32 @@ package net.centerleft.localshops;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.nijiko.coelho.iConomy.iConomy;
 import com.nijiko.coelho.iConomy.system.Account;
 
+import cuboidLocale.BookmarkedResult;
+
 public class PlayerData {
-	  //define a synchronized map for keeping track of players
-	static Map<String, List<String>> playerShopList = Collections.synchronizedMap(new HashMap<String, List<String>>());
-	static String chatPrefix = ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA + "] ";
+	// Objects
+	private LocalShops plugin = null;
 	
-	public boolean isSelecting;
-	public boolean sizeOkay;
+	// Attributes
+	protected List<String> shopList = Collections.synchronizedList(new ArrayList<String>());
+	protected BookmarkedResult bookmark = new BookmarkedResult();
+	protected String playerName = null;
+	protected boolean isSelecting = false;
+	protected boolean sizeOkay = false;
 	private long xyzA[] = null;
 	private long xyzB[] = null;
-	private String size = "";
+	protected String size = "";
 	
-	public PlayerData() {
-		isSelecting = false;
-		sizeOkay = false;
+	// Constructor
+	public PlayerData(LocalShops plugin, String playerName) {
+		this.plugin = plugin;
+		this.playerName = playerName;
 	}
 	
 	public long[] getPositionA() {
@@ -68,21 +70,21 @@ public class PlayerData {
 		
 	}
 	
-	
-	
-	static boolean addPlayerToShop( Player player, String shopName ) {
-		if( !playerIsInShop( player, shopName ) && 
-				ShopData.shops.get(shopName).getWorldName().equalsIgnoreCase(player.getWorld().getName())){
-			return playerShopList.get(player.getName()).add(shopName);
+	public boolean addPlayerToShop( String shopName ) {
+		String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
+		
+		if( !playerIsInShop( shopName ) && ShopData.shops.get(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
+			shopList.add(shopName);
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 	
-	static boolean playerIsInShop( Player player, String shopName ) {
-		String playerName = player.getName();
-		String playerWorld = player.getWorld().getName();
+	public boolean playerIsInShop( String shopName ) {
+		String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 				
-		if( playerShopList.get(playerName).contains(shopName) ){
+		if( shopList.contains(shopName) ){
 			if(	ShopData.shops.get(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
 				return true;
 			}
@@ -90,20 +92,17 @@ public class PlayerData {
 		return false;
 	}
 
-	public static void removePlayerFromShop(Player player, String shopName) {
-		playerShopList.get(player.getName()).remove(shopName);
+	public void removePlayerFromShop(Player player, String shopName) {
+		shopList.remove(shopName);
 	}
 
-	public static List<String> playerShopsList(String playerName) {
-		if( !playerShopList.containsKey(playerName)) {
-			playerShopList.put(playerName, Collections.synchronizedList(new ArrayList<String>()));	
-		}
-		return playerShopList.get(playerName);
+	public List<String> playerShopsList(String playerName) {
+		return shopList;
 	}
 
-	public static boolean payPlayer(String playerName, int cost) {
-		if( ShopsPluginListener.useiConomy ) {
-			iConomy ic = ShopsPluginListener.iConomy;
+	public boolean payPlayer(String playerName, int cost) {
+		if( plugin.pluginListener.useiConomy ) {
+			iConomy ic = plugin.pluginListener.iConomy;
 			Account account = ic.getBank().getAccount(playerName);
 			if(account == null) {
 				ic.getBank().addAccount(playerName);
@@ -111,15 +110,15 @@ public class PlayerData {
 			}
 			double balance = account.getBalance();
 			account.setBalance(balance + (double)cost);
-			ShopData.logPayment(playerName, "payment", cost, balance, balance + (double)cost);
+			plugin.shopData.logPayment(playerName, "payment", cost, balance, balance + (double)cost);
 			return true; 
 		}
 		return false;
 	}
 
-	public static boolean payPlayer(String playerFrom, String playerTo, int cost) {
-		if( ShopsPluginListener.useiConomy ) {
-			iConomy ic = ShopsPluginListener.iConomy;
+	public boolean payPlayer(String playerFrom, String playerTo, int cost) {
+		if( plugin.pluginListener.useiConomy ) {
+			iConomy ic = plugin.pluginListener.iConomy;
 			
 			Account accountFrom = ic.getBank().getAccount(playerFrom);
 			if(accountFrom == null) {
@@ -139,17 +138,17 @@ public class PlayerData {
 
 			
 			accountFrom.setBalance(balanceFrom - cost);
-			ShopData.logPayment(playerFrom, "payment", cost, balanceFrom, balanceFrom + cost);
+			plugin.shopData.logPayment(playerFrom, "payment", cost, balanceFrom, balanceFrom + cost);
 			accountTo.setBalance(balanceTo + cost);
-			ShopData.logPayment(playerTo, "payment", cost, balanceTo, balanceTo + cost);
+			plugin.shopData.logPayment(playerTo, "payment", cost, balanceTo, balanceTo + cost);
 			return true; 
 		}
 		return false;
 	}
 
-	public static long getBalance(String shopOwner) {
-		if( ShopsPluginListener.useiConomy ) {
-			iConomy ic = ShopsPluginListener.iConomy;
+	public long getBalance(String shopOwner) {
+		if( plugin.pluginListener.useiConomy ) {
+			iConomy ic = plugin.pluginListener.iConomy;
 			
 			Account account = ic.getBank().getAccount(shopOwner);
 			if(account == null) {
@@ -163,9 +162,9 @@ public class PlayerData {
 		return 0;
 	}
 
-	public static boolean chargePlayer(String shopOwner, long chargeAmount) {
-		if( ShopsPluginListener.useiConomy ) {
-			iConomy ic = ShopsPluginListener.iConomy;
+	public boolean chargePlayer(String shopOwner, long chargeAmount) {
+		if( plugin.pluginListener.useiConomy ) {
+			iConomy ic = plugin.pluginListener.iConomy;
 			if(ic == null) return false;
 			
 			Account account = ic.getBank().getAccount(shopOwner);
@@ -177,7 +176,7 @@ public class PlayerData {
 			double newBalance = balanceFrom - chargeAmount;
 			if(balanceFrom >= chargeAmount) {
 				account.setBalance(newBalance);
-				ShopData.logPayment(shopOwner, "payment", chargeAmount, balanceFrom, newBalance);
+				plugin.shopData.logPayment(shopOwner, "payment", chargeAmount, balanceFrom, newBalance);
 				return true;
 			} else {
 				return false;

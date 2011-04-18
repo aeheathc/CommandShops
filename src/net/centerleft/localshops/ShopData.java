@@ -21,6 +21,8 @@ import cuboidLocale.PrimitiveCuboid;
 import cuboidLocale.QuadTree;
 
 public class ShopData {
+	private LocalShops plugin = null;
+	
 	static HashMap<String, Shop> shops;
 
 	static long shopSize = 10;
@@ -38,9 +40,12 @@ public class ShopData {
 	static long maxWidth = 30;
 	static long maxHeight = 10;
 
+	public ShopData(LocalShops plugin) {
+		this.plugin = plugin;
+	}
 	
 
-	static void LoadShops(File shopsDir) {
+	public void LoadShops(File shopsDir) {
 		// initialize and setup the hash of shops
 		shops = new HashMap<String, Shop>();
 		shops.clear();
@@ -55,8 +60,8 @@ public class ShopData {
 			defaultWorld = true;
 		}
 
-		if (ShopsPluginListener.useiConomy) {
-			currencyName = ShopsPluginListener.iConomy.getBank().getCurrency();
+		if (plugin.pluginListener.useiConomy) {
+			currencyName = plugin.pluginListener.iConomy.getBank().getCurrency();
 		}
 
 		File[] shopsList = shopsDir.listFiles();
@@ -184,10 +189,7 @@ public class ShopData {
 								}
 
 							} catch (NumberFormatException ex3) {
-								System.out
-										.println(LocalShops.pluginName
-												+ ": Error - Problem with item data in "
-												+ shop.getName());
+								System.out.println(plugin.pdfFile.getName() + ": Error - Problem with item data in " + shop.getName());
 							}
 
 						} catch (NumberFormatException ex) {
@@ -242,10 +244,7 @@ public class ShopData {
 									lx = 0;
 									ly = 0;
 									lz = 0;
-									System.out
-											.println(LocalShops.pluginName
-													+ ": Error - Problem with position data in "
-													+ shop.getName());
+									System.out.println(plugin.pdfFile.getName()	+ ": Error - Problem with position data in " + shop.getName());
 								}
 								tempShop.setLocation(xyzA, xyzB);
 
@@ -265,10 +264,7 @@ public class ShopData {
 									xyzA[0] = 0;
 									xyzA[1] = 0;
 									xyzA[2] = 0;
-									System.out
-											.println(LocalShops.pluginName
-													+ ": Error - Problem with position1 data in "
-													+ shop.getName());
+									System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position1 data in " + shop.getName());
 								}
 								xyzB = tempShop.getLocation2();
 								tempShop.setLocation(xyzA, xyzB);
@@ -289,10 +285,7 @@ public class ShopData {
 									xyzB[0] = 0;
 									xyzB[1] = 0;
 									xyzB[2] = 0;
-									System.out
-											.println(LocalShops.pluginName
-													+ ": Error - Problem with position2 data in "
-													+ shop.getName());
+									System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position2 data in " + shop.getName());
 								}
 								xyzA = tempShop.getLocation1();
 								tempShop.setLocation(xyzA, xyzB);
@@ -342,14 +335,13 @@ public class ShopData {
 				}
 
 			} catch (FileNotFoundException e) {
-				System.out.println(LocalShops.pluginName
-						+ ": Error - Could not read file " + shop.getName());
+				System.out.println(plugin.pdfFile.getName() + ": Error - Could not read file " + shop.getName());
 			}
 		}
 
 	}
 
-	public static boolean saveShop(Shop shop) {
+	public boolean saveShop(Shop shop) {
 		String filePath = LocalShops.folderPath + LocalShops.shopsPath
 				+ shop.getShopName() + ".shop";
 
@@ -413,14 +405,13 @@ public class ShopData {
 			shopFileOut.close();
 
 		} catch (IOException e1) {
-			System.out.println(LocalShops.pluginName
-					+ ": Error - Could not create file " + shopFile.getName());
+			System.out.println(plugin.pdfFile.getName()	+ ": Error - Could not create file " + shopFile.getName());
 			return false;
 		}
 		return true;
 	}
 
-	public static boolean deleteShop(Shop shop) {
+	public boolean deleteShop(Shop shop) {
 		long[] xyzA = shop.getLocation();
 		BookmarkedResult res = new BookmarkedResult();
 		
@@ -497,7 +488,7 @@ public class ShopData {
 		return false;
 	}
 	
-	public static boolean logItems(String playerName, String shopName, String action, String itemName,
+	public boolean logItems(String playerName, String shopName, String action, String itemName,
 			int numberOfItems, int startNumberOfItems, int endNumberOfItems) {
 		
 		return logTransaciton(playerName, shopName, action, itemName, numberOfItems, 
@@ -505,14 +496,14 @@ public class ShopData {
 		
 	}
 	
-	public static boolean logPayment(String playerName, String action, double moneyTransfered,
+	public boolean logPayment(String playerName, String action, double moneyTransfered,
 			double startingbalance, double endingbalance) {
 		
 		return logTransaciton( playerName, null, action, null, 0, 0, 0, 
 				moneyTransfered, startingbalance, endingbalance);
 	}
 	
-	public static boolean logTransaciton(String playerName, String shopName, String action, String itemName,
+	public boolean logTransaciton(String playerName, String shopName, String action, String itemName,
 			int numberOfItems, int startNumberOfItems, int endNumberOfItems, double moneyTransfered,
 			double startingbalance, double endingbalance) {
 		if(!logTransactions) return false;
@@ -569,8 +560,7 @@ public class ShopData {
 			
 			
 		} catch (IOException e1) {
-			System.out.println(LocalShops.pluginName
-					+ ": Error - Could not write to file " + logFile.getName());
+			System.out.println(plugin.pdfFile.getName() + ": Error - Could not write to file " + logFile.getName());
 			return false;
 		}
 		

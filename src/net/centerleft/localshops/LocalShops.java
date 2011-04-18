@@ -31,15 +31,19 @@ import cuboidLocale.QuadTree;
  * @author Jonbas
  */
 public class LocalShops extends JavaPlugin {
-	protected final ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
-	protected final ShopsPluginListener pluginListener = new ShopsPluginListener(this);
+	// Listeners & Objects
+	protected ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
+	protected ShopsPluginListener pluginListener = new ShopsPluginListener(this);
+	protected ShopData shopData = new ShopData(this);
 	protected PluginDescriptionFile pdfFile = null;
 	
+	// Logging
 	private final Logger log = Logger.getLogger("Minecraft");
 	
-	static String pluginName = "LocalShops";
-	static String pluginVersion;
+	// Constants
+	public static final String CHAT_PREFIX = ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA + "] ";
 	
+	// TBD
 	static QuadTree cuboidTree = new QuadTree();
 	static String folderPath = "plugins/LocalShops/";
 	static File folderDir;
@@ -53,24 +57,16 @@ public class LocalShops extends JavaPlugin {
 	static ItemData itemList = new ItemData();
 	protected Map<String, PlayerData> playerData; //synchronized player hash
 	
-	public Map<String, BookmarkedResult> playerResult;  //synchronized result buffer hash
-	
 	public void onEnable() {
 		
 		pdfFile = getDescription();
 		
 		QuadTree cuboidTree = new QuadTree();
-		playerResult = Collections.synchronizedMap(new HashMap<String, BookmarkedResult>());
 		playerData = Collections.synchronizedMap(new HashMap<String, PlayerData>());
 		
 		// add all the online users to the data trees
 		for( Player player : this.getServer().getOnlinePlayers() ) {
-			if( !this.playerResult.containsKey(player.getName())) {
-				this.playerResult.put(player.getName(), new BookmarkedResult());
-			}
-			if( !PlayerData.playerShopList.containsKey(player.getName())) {
-				PlayerData.playerShopList.put(player.getName(), Collections.synchronizedList(new ArrayList<String>()));	
-			}
+			playerData.put(player.getName(), new PlayerData(this, player.getName()));
 		}
 
 		// Register our events
@@ -79,6 +75,7 @@ public class LocalShops extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, pluginListener, Priority.Monitor, this);
+		// TODO: add PLAYER_JOIN, PLAYER_QUIT, PLAYER_KICK events
 		
 		
 		//check hook for permissions
@@ -86,16 +83,16 @@ public class LocalShops extends JavaPlugin {
 		if (p != null) {
             if (p.isEnabled()) {
                 Permissions gm = (Permissions) p;
-                ShopsPluginListener.permissions = gm;
-                ShopsPluginListener.gmPermissionCheck = gm.getHandler();
+                pluginListener.permissions = gm;
+                pluginListener.gmPermissionCheck = gm.getHandler();
                 log.info(String.format("[%s] %s", pdfFile.getName(), "Permissions found."));
-                ShopsPluginListener.usePermissions = true;
+                pluginListener.usePermissions = true;
             } else {
-            	ShopsPluginListener.usePermissions = false;
+            	pluginListener.usePermissions = false;
             }
         } else {
         	log.severe(String.format("[%s] %s", pdfFile.getName(), "Permissions not found."));
-        	ShopsPluginListener.usePermissions = false;
+        	pluginListener.usePermissions = false;
         }
 		
 		//check hook for iConomy
@@ -103,16 +100,16 @@ public class LocalShops extends JavaPlugin {
 		if (ic != null) {
             if (ic.isEnabled()) {
                 iConomy icon = (iConomy) ic;
-                ShopsPluginListener.iConomy = icon;
+                pluginListener.iConomy = icon;
                 log.info(String.format("[%s] %s", pdfFile.getName(), "iConomy found."));
-                ShopsPluginListener.useiConomy = true;
+                pluginListener.useiConomy = true;
             } else {
-            	ShopsPluginListener.useiConomy = false;
+            	pluginListener.useiConomy = false;
             	log.info(String.format("[%s] %s", pdfFile.getName(), "Waiting for iConomy to start."));
             }
         } else {
         	log.severe(String.format("[%s] %s", pdfFile.getName(), "iConomy not found."));
-        	ShopsPluginListener.useiConomy = false;
+        	pluginListener.useiConomy = false;
         }
 		
 		
@@ -134,7 +131,7 @@ public class LocalShops extends JavaPlugin {
 		
 		foundWorlds = getServer().getWorlds();
 		// read the shops into memory
-		ShopData.LoadShops( shopsDir );
+		shopData.LoadShops( shopsDir );
 
 		//update the console that we've started
 		log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with " + ShopData.shops.size() + " shop(s)"));
@@ -142,7 +139,7 @@ public class LocalShops extends JavaPlugin {
 		
 		// check which shops players are inside
 		for( Player player : this.getServer().getOnlinePlayers() ) {
-			ShopsPlayerListener.checkPlayerPosition(this, player);
+			playerListener.checkPlayerPosition(player);
 		}
 
 	}
@@ -163,17 +160,17 @@ public class LocalShops extends JavaPlugin {
 				if(args[0].equalsIgnoreCase("create")) {
 					commands.shopCreate();
 					for(Player player: this.getServer().getOnlinePlayers()) {
-						ShopsPlayerListener.checkPlayerPosition(this, player);
+						playerListener.checkPlayerPosition(player);
 					}
 				} else if(args[0].equalsIgnoreCase("destroy")) {
 					commands.shopDestroy();
 					for(Player player: this.getServer().getOnlinePlayers()) {
-						ShopsPlayerListener.checkPlayerPosition(this, player);
+						playerListener.checkPlayerPosition(player);
 					}
 				} else if(args[0].equalsIgnoreCase("move")) {
 					commands.shopMove();
 					for(Player player: this.getServer().getOnlinePlayers()) {
-						ShopsPlayerListener.checkPlayerPosition(this, player);
+						playerListener.checkPlayerPosition(player);
 					}
 				} else if(args[0].equalsIgnoreCase("list")) {
 					commands.shopList();

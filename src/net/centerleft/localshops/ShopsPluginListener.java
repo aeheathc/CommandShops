@@ -10,12 +10,12 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class ShopsPluginListener extends ServerListener {
 	private final LocalShops plugin;
-	public static iConomy iConomy;
 	
-	public static Permissions permissions;
-	public static PermissionHandler gmPermissionCheck; 
-	public static boolean usePermissions = false;
-	public static boolean useiConomy = false;
+	protected iConomy iConomy;
+	protected Permissions permissions;
+	protected PermissionHandler gmPermissionCheck; 
+	protected boolean usePermissions = false;
+	protected boolean useiConomy = false;
 	
 	public ShopsPluginListener(LocalShops instance) { 
 		plugin = instance;
