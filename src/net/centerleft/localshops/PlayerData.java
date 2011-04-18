@@ -60,7 +60,7 @@ public class PlayerData {
 			
 			size = "" + width1 + "x" + height + "x" + width2;
 			
-			if( width1 > ShopData.maxWidth || width2 > ShopData.maxWidth || height > ShopData.maxHeight ) {
+			if( width1 > plugin.shopData.maxWidth || width2 > plugin.shopData.maxWidth || height > plugin.shopData.maxHeight ) {
 				return false;
 			} else {
 				return true;
@@ -73,7 +73,7 @@ public class PlayerData {
 	public boolean addPlayerToShop( String shopName ) {
 		String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 		
-		if( !playerIsInShop( shopName ) && ShopData.shops.get(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
+		if( !playerIsInShop( shopName ) && plugin.shopData.getShop(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
 			shopList.add(shopName);
 			return true;
 		} else {
@@ -85,7 +85,7 @@ public class PlayerData {
 		String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 				
 		if( shopList.contains(shopName) ){
-			if(	ShopData.shops.get(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
+			if(	plugin.shopData.getShop(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
 				return true;
 			}
 		}

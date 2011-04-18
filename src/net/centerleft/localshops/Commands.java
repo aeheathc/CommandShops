@@ -1,6 +1,7 @@
 package net.centerleft.localshops;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.bukkit.ChatColor;
@@ -68,12 +69,10 @@ public class Commands {
 	    Location location = player.getLocation();
 
 	    // check to see if that shop name is already used
-	    Iterator<String> itr = ShopData.shops.keySet().iterator();
-	    while (itr.hasNext()) {
-		String name = itr.next();
-		if (name.equalsIgnoreCase(args[1])) {
-		    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop.  "
-							+ ChatColor.WHITE + name + ChatColor.AQUA + " already exists.");
+	    Collection<Shop> shops = plugin.shopData.getAllShops();
+	    for(Shop shop : shops) {
+		if (shop.getShopName().equalsIgnoreCase(args[1])) {
+		    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop.  " + ChatColor.WHITE + shop.getShopName() + ChatColor.AQUA + " already exists.");
 		    return false;
 		}
 	    }
@@ -99,9 +98,8 @@ public class Commands {
 					&& plugin.playerData.get(player.getName()).isSelecting) {
 		if (!plugin.playerData.get(player.getName()).sizeOkay) {
 		    if (!canUseCommand(player, "admin".split(""))) {
-			String size = "" + ShopData.maxWidth + "x" + ShopData.maxHeight + "x" + ShopData.maxWidth;
-			player.sendMessage(ChatColor.AQUA + "Problem with selection. Max size is "
-								+ ChatColor.WHITE + size);
+			String size = plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
+			player.sendMessage(ChatColor.AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
 			return false;
 		    }
 		}
@@ -116,20 +114,20 @@ public class Commands {
 		}
 	    } else {
 		// otherwise calculate the shop from the player's location
-		if (ShopData.shopSize % 2 == 1) {
-		    xyzA[0] = x - (ShopData.shopSize / 2);
-		    xyzB[0] = x + (ShopData.shopSize / 2);
-		    xyzA[2] = z - (ShopData.shopSize / 2);
-		    xyzB[2] = z + (ShopData.shopSize / 2);
+		if (plugin.shopData.shopSize % 2 == 1) {
+		    xyzA[0] = x - (plugin.shopData.shopSize / 2);
+		    xyzB[0] = x + (plugin.shopData.shopSize / 2);
+		    xyzA[2] = z - (plugin.shopData.shopSize / 2);
+		    xyzB[2] = z + (plugin.shopData.shopSize / 2);
 		} else {
-		    xyzA[0] = x - (ShopData.shopSize / 2) + 1;
-		    xyzB[0] = x + (ShopData.shopSize / 2);
-		    xyzA[2] = z - (ShopData.shopSize / 2) + 1;
-		    xyzB[2] = z + (ShopData.shopSize / 2);
+		    xyzA[0] = x - (plugin.shopData.shopSize / 2) + 1;
+		    xyzB[0] = x + (plugin.shopData.shopSize / 2);
+		    xyzA[2] = z - (plugin.shopData.shopSize / 2) + 1;
+		    xyzB[2] = z + (plugin.shopData.shopSize / 2);
 		}
 
 		xyzA[1] = y - 1;
-		xyzB[1] = y + ShopData.shopHeight - 1;
+		xyzB[1] = y + plugin.shopData.shopHeight - 1;
 
 	    }
 
@@ -142,11 +140,11 @@ public class Commands {
 		tempShopCuboid.name = shopName;
 		tempShopCuboid.world = player.getWorld().getName();
 
-		if (ShopData.chargeForShop) {
+		if (plugin.shopData.chargeForShop) {
 		    String[] freeShop = { "freeshop" };
 		    if (!canUseCommand(sender, freeShop)) {
-			if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), ShopData.shopCost)) {
-			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You need " + ShopData.shopCost + " " + ShopData.currencyName + " to create a shop.");
+			if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
+			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You need " + plugin.shopData.shopCost + " " + plugin.shopData.currencyName + " to create a shop.");
 			    return false;
 			}
 		    }
@@ -154,7 +152,7 @@ public class Commands {
 
 		// insert the shop into the world
 		LocalShops.cuboidTree.insert(tempShopCuboid);
-		ShopData.shops.put(shopName, thisShop);
+		plugin.shopData.addShop(thisShop);
 
 		plugin.playerData.put(player.getName(), new PlayerData(plugin, player.getName()));
 
@@ -192,12 +190,12 @@ public class Commands {
 
 	    // check to see if that shop name exists and has access
 	    boolean foundShop = false;
-	    Iterator<String> itr = ShopData.shops.keySet().iterator();
-	    while (itr.hasNext()) {
-		String name = itr.next();
-		if (name.equalsIgnoreCase(args[1])) {
-		    thisShop = ShopData.shops.get(name);
+	    Collection<Shop> shops = plugin.shopData.getAllShops();
+	    for(Shop shop : shops) {
+		if (shop.getShopName().equalsIgnoreCase(args[1])) {
+		    thisShop = shop;
 		    foundShop = true;
+		    break;
 		}
 	    }
 
@@ -228,11 +226,8 @@ public class Commands {
 					&& plugin.playerData.get(player.getName()).isSelecting) {
 		if (!plugin.playerData.get(player.getName()).sizeOkay) {
 		    if (!canUseCommand(player, "admin".split(""))) {
-			String size = "" + ShopData.maxWidth + "x"
-								+ ShopData.maxHeight + "x" + ShopData.maxWidth;
-			player.sendMessage(ChatColor.AQUA
-								+ "Problem with selection. Max size is "
-								+ ChatColor.WHITE + size);
+			String size = "" + plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
+			player.sendMessage(ChatColor.AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
 			return false;
 		    }
 		}
@@ -247,20 +242,20 @@ public class Commands {
 		}
 	    } else {
 		// otherwise calculate the shop from the player's location
-		if (ShopData.shopSize % 2 == 1) {
-		    xyzA[0] = x - (ShopData.shopSize / 2);
-		    xyzB[0] = x + (ShopData.shopSize / 2);
-		    xyzA[2] = z - (ShopData.shopSize / 2);
-		    xyzB[2] = z + (ShopData.shopSize / 2);
+		if (plugin.shopData.shopSize % 2 == 1) {
+		    xyzA[0] = x - (plugin.shopData.shopSize / 2);
+		    xyzB[0] = x + (plugin.shopData.shopSize / 2);
+		    xyzA[2] = z - (plugin.shopData.shopSize / 2);
+		    xyzB[2] = z + (plugin.shopData.shopSize / 2);
 		} else {
-		    xyzA[0] = x - (ShopData.shopSize / 2) + 1;
-		    xyzB[0] = x + (ShopData.shopSize / 2);
-		    xyzA[2] = z - (ShopData.shopSize / 2) + 1;
-		    xyzB[2] = z + (ShopData.shopSize / 2);
+		    xyzA[0] = x - (plugin.shopData.shopSize / 2) + 1;
+		    xyzB[0] = x + (plugin.shopData.shopSize / 2);
+		    xyzA[2] = z - (plugin.shopData.shopSize / 2) + 1;
+		    xyzB[2] = z + (plugin.shopData.shopSize / 2);
 		}
 
 		xyzA[1] = y - 1;
-		xyzB[1] = y + ShopData.shopHeight - 1;
+		xyzB[1] = y + plugin.shopData.shopHeight - 1;
 
 	    }
 
@@ -292,17 +287,17 @@ public class Commands {
 		tempShopCuboid.name = shopName;
 		tempShopCuboid.world = player.getWorld().getName();
 
-		if (ShopData.chargeForMove) {
+		if (plugin.shopData.chargeForMove) {
 		    String[] freemove = { "freemove" };
 		    if (!canUseCommand(sender, freemove)) {
-			if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), ShopData.shopCost)) {
+			if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
 			    // insert the old cuboid back into the world
 			    tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
 			    tempShopCuboid.name = shopName;
 			    tempShopCuboid.world = thisShop.getWorldName();
 			    LocalShops.cuboidTree.insert(tempShopCuboid);
 
-			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You need " + ShopData.moveCost + " " + ShopData.currencyName + " to move a shop.");
+			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You need " + plugin.shopData.moveCost + " " + plugin.shopData.currencyName + " to move a shop.");
 			    return false;
 			}
 		    }
@@ -312,7 +307,7 @@ public class Commands {
 		LocalShops.cuboidTree.insert(tempShopCuboid);
 		thisShop.setWorldName(player.getWorld().getName());
 		thisShop.setLocation(xyzA, xyzB);
-		ShopData.shops.put(shopName, thisShop);
+		plugin.shopData.addShop(thisShop);
 
 		plugin.playerData.put(player.getName(), new PlayerData(plugin, player.getName()));
 
@@ -538,7 +533,7 @@ public class Commands {
 
 	    if (plugin.playerData.get(playerName).shopList.size() == 1) {
 		inShopName = plugin.playerData.get(playerName).shopList.get(0);
-		Shop shop = ShopData.shops.get(inShopName);
+		Shop shop = plugin.shopData.getShop(inShopName);
 
 		if (args.length > 1) {
 		    if (args[1].equalsIgnoreCase("buy") || args[1].equalsIgnoreCase("sell")) {
@@ -607,7 +602,7 @@ public class Commands {
      * @param player
      * @param buySellorList
      */
-    public static void printInventory(Shop shop, Player player, String buySellorList) {
+    public void printInventory(Shop shop, Player player, String buySellorList) {
 	printInventory(shop, player, buySellorList, 1);
     }
 
@@ -620,7 +615,7 @@ public class Commands {
      * @param buySellorList
      * @param pageNumber
      */
-    public static void printInventory(Shop shop, Player player, String buySellorList, int pageNumber) {
+    public void printInventory(Shop shop, Player player, String buySellorList, int pageNumber) {
 	String inShopName = shop.getShopName();
 	ArrayList<String> shopItems = shop.getItems();
 
@@ -642,10 +637,10 @@ public class Commands {
 		if (sell) {
 		    price = shop.getItemSellPrice(item);
 		}
-		if (price == 0)
+		if (price == 0) {
 		    continue;
-		subMessage += ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + ShopData.currencyName
-					+ ChatColor.AQUA + "]";
+		}
+		subMessage += ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]";
 		// get stack size
 		int stack = shop.itemBuyAmount(item);
 		if (buy) {
@@ -749,7 +744,7 @@ public class Commands {
 	// get the shop the player is currently in
 	if (plugin.playerData.get(playerName).shopList.size() == 1) {
 	    shopName = plugin.playerData.get(playerName).shopList.get(0);
-	    shop = ShopData.shops.get(shopName);
+	    shop = plugin.shopData.getShop(shopName);
 	} else {
 	    player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /lshop " + args[0]);
 	    return false;
@@ -897,12 +892,9 @@ public class Commands {
 	}
 
 	if (isShopController(player, shop)) {
-	    player.sendMessage(ChatColor.AQUA + "You added " + ChatColor.WHITE + amount + " "
-					+ itemName + ChatColor.AQUA + " to the shop");
+	    player.sendMessage(ChatColor.AQUA + "You added " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " to the shop");
 	} else {
-	    player.sendMessage(ChatColor.AQUA + "You sold " + ChatColor.WHITE + amount + " "
-					+ itemName + ChatColor.AQUA + " and gained " + ChatColor.WHITE + totalCost
-					+ " " + ShopData.currencyName);
+	    player.sendMessage(ChatColor.AQUA + "You sold " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " and gained " + ChatColor.WHITE + totalCost + " " + plugin.shopData.currencyName);
 	}
 
 	// log the transaction
@@ -952,7 +944,7 @@ public class Commands {
 	// get the shop the player is currently in
 	if (plugin.playerData.get(playerName).shopList.size() == 1) {
 	    shopName = plugin.playerData.get(playerName).shopList.get(0);
-	    shop = ShopData.shops.get(shopName);
+	    shop = plugin.shopData.getShop(shopName);
 
 	    if (!isShopController(player, shop) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to add items.");
@@ -1119,7 +1111,7 @@ public class Commands {
 	// get the shop the player is currently in
 	if (plugin.playerData.get(playerName).shopList.size() == 1) {
 	    String shopName = plugin.playerData.get(playerName).shopList.get(0);
-	    Shop shop = ShopData.shops.get(shopName);
+	    Shop shop = plugin.shopData.getShop(shopName);
 
 	    ItemStack item = null;
 	    String itemName = null;
@@ -1240,11 +1232,9 @@ public class Commands {
 		shop.removeStock(itemName, amount);
 	    }
 	    if (isShopController(player, shop)) {
-		player.sendMessage(ChatColor.AQUA + "You removed " + ChatColor.WHITE + amount + " "
-						+ itemName + ChatColor.AQUA + " from the shop");
+		player.sendMessage(ChatColor.AQUA + "You removed " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " from the shop");
 	    } else {
-		player.sendMessage(ChatColor.AQUA + "You purchased " + ChatColor.WHITE + amount + " "
-						+ itemName + ChatColor.AQUA + " for " + ChatColor.WHITE + totalCost + " " + ShopData.currencyName);
+		player.sendMessage(ChatColor.AQUA + "You purchased " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " for " + ChatColor.WHITE + totalCost + " " + plugin.shopData.currencyName);
 	    }
 
 	    // log the transaction
@@ -1290,7 +1280,7 @@ public class Commands {
 	// get the shop the player is currently in
 	if (plugin.playerData.get(playerName).shopList.size() == 1) {
 	    String shopName = plugin.playerData.get(playerName).shopList.get(0);
-	    Shop shop = ShopData.shops.get(shopName);
+	    Shop shop = plugin.shopData.getShop(shopName);
 
 	    if (!isShopController(player, shop) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
@@ -1348,9 +1338,7 @@ public class Commands {
 		    shop.setItemBuyAmount(itemName, bundle);
 
 		    player.sendMessage(ChatColor.AQUA + "The buy information for " + ChatColor.WHITE + itemName + ChatColor.AQUA + " has been updated.");
-		    player.sendMessage("   " + ChatColor.WHITE + itemName + ChatColor.AQUA + " [" + ChatColor.WHITE
-							+ price + " " + ShopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: "
-							+ bundle + ChatColor.AQUA + "]");
+		    player.sendMessage("   " + ChatColor.WHITE + itemName + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + bundle + ChatColor.AQUA + "]");
 
 		    plugin.shopData.saveShop(shop);
 
@@ -1405,9 +1393,7 @@ public class Commands {
 		    plugin.shopData.saveShop(shop);
 
 		    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + itemName + ChatColor.AQUA + " has been updated.");
-		    player.sendMessage("   " + ChatColor.WHITE + itemName + ChatColor.AQUA + " [" + ChatColor.WHITE
-							+ price + " " + ShopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: "
-							+ bundle + ChatColor.AQUA + "]");
+		    player.sendMessage("   " + ChatColor.WHITE + itemName + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + bundle + ChatColor.AQUA + "]");
 
 		} else {
 		    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/lshop set sell [item name] [price] <bundle size>");
@@ -1600,7 +1586,7 @@ public class Commands {
 	// get the shop the player is currently in
 	if (plugin.playerData.get(playerName).shopList.size() == 1) {
 	    String shopName = plugin.playerData.get(playerName).shopList.get(0);
-	    Shop shop = ShopData.shops.get(shopName);
+	    Shop shop = plugin.shopData.getShop(shopName);
 
 	    if (!isShopController(player, shop) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to remove an item.");
@@ -1673,7 +1659,7 @@ public class Commands {
 	// get the shop the player is currently in
 	if (plugin.playerData.get(playerName).shopList.size() == 1) {
 	    String shopName = plugin.playerData.get(playerName).shopList.get(0);
-	    Shop shop = ShopData.shops.get(shopName);
+	    Shop shop = plugin.shopData.getShop(shopName);
 
 	    if (!shop.getShopOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner to destroy it.");
@@ -1690,7 +1676,7 @@ public class Commands {
 	return true;
     }
 
-    public static int countItemsinInventory(PlayerInventory inventory, ItemStack item) {
+    public int countItemsinInventory(PlayerInventory inventory, ItemStack item) {
 	int totalAmount = 0;
 	boolean isDurable = LocalShops.itemList.isDurable(item);
 
@@ -1698,7 +1684,7 @@ public class Commands {
 	    ItemStack thisStack = inventory.getItem(i);
 	    if (isDurable) {
 		int damage = calcDurabilityPercentage(thisStack);
-		if (damage > ShopData.maxDamage && ShopData.maxDamage != 0)
+		if (damage > plugin.shopData.maxDamage && plugin.shopData.maxDamage != 0)
 		    continue;
 	    } else {
 		if (thisStack.getDurability() != item.getDurability())
@@ -1710,7 +1696,7 @@ public class Commands {
 	return totalAmount;
     }
 
-    private static int removeItemsFromInventory(PlayerInventory inventory,
+    private int removeItemsFromInventory(PlayerInventory inventory,
 			ItemStack item, int amount) {
 
 	boolean isDurable = LocalShops.itemList.isDurable(item);
@@ -1722,7 +1708,7 @@ public class Commands {
 	    ItemStack thisStack = inventory.getItem(i);
 	    if (isDurable) {
 		int damage = calcDurabilityPercentage(thisStack);
-		if (damage > ShopData.maxDamage && ShopData.maxDamage != 0)
+		if (damage > plugin.shopData.maxDamage && plugin.shopData.maxDamage != 0)
 		    continue;
 	    } else {
 		if (thisStack.getDurability() != item.getDurability())

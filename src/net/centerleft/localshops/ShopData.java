@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -23,27 +24,42 @@ import cuboidLocale.QuadTree;
 public class ShopData {
 	private LocalShops plugin = null;
 	
-	static HashMap<String, Shop> shops;
+	private HashMap<String, Shop> shops;
 
-	static long shopSize = 10;
-	static long shopHeight = 3;
-	static String currencyName = "Coin";
+	long shopSize = 10;
+	long shopHeight = 3;
+	String currencyName = "Coin";
 
-	static long shopCost = 4000;
-	static long moveCost = 1000;
-	static boolean chargeForShop = false;
-	static boolean chargeForMove = false;
-	public static boolean logTransactions = true;
+	long shopCost = 4000;
+	long moveCost = 1000;
+	boolean chargeForShop = false;
+	boolean chargeForMove = false;
+	boolean logTransactions = true;
 
-	public static int maxDamage = 0;
+	int maxDamage = 0;
 
-	static long maxWidth = 30;
-	static long maxHeight = 10;
+	long maxWidth = 30;
+	long maxHeight = 10;
 
 	public ShopData(LocalShops plugin) {
 		this.plugin = plugin;
 	}
 	
+	public Shop getShop(String name) {
+	    return shops.get(name);
+	}
+	
+	public void addShop(Shop shop) {
+	    shops.put(shop.getShopName(), shop);
+	}
+	
+	public Collection<Shop> getAllShops() {
+	    return shops.values();
+	}
+	
+	public int getNumShops() {
+	    return shops.size();
+	}
 
 	public void LoadShops(File shopsDir) {
 		// initialize and setup the hash of shops
