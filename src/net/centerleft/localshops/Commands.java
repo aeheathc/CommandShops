@@ -22,7 +22,40 @@ import cuboidLocale.PrimitiveCuboid;
 
 public class Commands {
 	
-	static boolean createShop( CommandSender sender, String[] args ) {
+	private LocalShops plugin = null;
+	private CommandSender sender = null;
+	private String[] args = null;
+	
+	public Commands(LocalShops plugin, CommandSender sender, String[] args) {
+		this.plugin = plugin;
+		this.sender = sender;
+		this.args = args;
+	}
+	
+	public boolean shopSelect() {
+		if (Commands.canUseCommand(sender, args)) {
+			if (!(sender instanceof Player))
+				return false;
+			String playerName = ((Player) sender).getName();
+			if (!plugin.playerData.containsKey(playerName)) {
+				plugin.playerData.put(playerName, new PlayerData());
+			}
+			plugin.playerData.get(playerName).isSelecting = !plugin.playerData.get(playerName).isSelecting;
+
+			if (plugin.playerData.get(playerName).isSelecting) {
+				sender.sendMessage(ChatColor.AQUA + "Left click to select the first corner for a shop.");
+				sender.sendMessage(ChatColor.AQUA + "Right click to select the second corner for the shop.");
+			} else {
+				sender.sendMessage(ChatColor.AQUA + "Selection disabled");
+				plugin.playerData.put(playerName, new PlayerData());
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean shopCreate() {
 		//TODO Change this so that non players can create shops as long as they send x, y, z coords
 		if(canUseCommand(sender, args) && args.length == 2 && (sender instanceof Player)) {
 			//command format /lshop create ShopName
@@ -58,9 +91,9 @@ public class Commands {
 			long[] xyzA = new long[3];
 			long[] xyzB = new long[3];
 			
-			if(LocalShops.playerData.containsKey(player.getName()) 
-					&& LocalShops.playerData.get(player.getName()).isSelecting ) {
-				if (!LocalShops.playerData.get(player.getName()).sizeOkay) {
+			if(plugin.playerData.containsKey(player.getName()) 
+					&& plugin.playerData.get(player.getName()).isSelecting ) {
+				if (!plugin.playerData.get(player.getName()).sizeOkay) {
 					if (!canUseCommand(player, "admin".split(""))) {
 						String size = "" + ShopData.maxWidth + "x" + ShopData.maxHeight + "x" + ShopData.maxWidth;
 						player.sendMessage(ChatColor.AQUA + "Problem with selection. Max size is "
@@ -69,7 +102,7 @@ public class Commands {
 					}
 				}
 				//if a custom size had been set, use that
-				PlayerData data = LocalShops.playerData.get(player.getName());
+				PlayerData data = plugin.playerData.get(player.getName());
 				xyzA = data.getPositionA();
 				xyzB = data.getPositionB();
 				
@@ -120,7 +153,7 @@ public class Commands {
 				LocalShops.cuboidTree.insert(tempShopCuboid);
 				ShopData.shops.put(shopName, thisShop );
 
-				LocalShops.playerData.put(player.getName(), new PlayerData());
+				plugin.playerData.put(player.getName(), new PlayerData());
 				
 				//write the file
 				if( ShopData.saveShop(thisShop) ) { 
@@ -142,7 +175,7 @@ public class Commands {
 		return false;
 	}
 	
-	static boolean moveShop( CommandSender sender, String[] args ) {
+	public boolean shopMove() {
 		//TODO Change this so that non players can create shops as long as they send x, y, z coords
 		if(canUseCommand(sender, args) && args.length == 2 && (sender instanceof Player)) {
 			//command format /lshop move ShopName
@@ -190,9 +223,9 @@ public class Commands {
 			long[] xyzA = new long[3];
 			long[] xyzB = new long[3];
 			
-			if(LocalShops.playerData.containsKey(player.getName()) 
-					&& LocalShops.playerData.get(player.getName()).isSelecting ) {
-				if (!LocalShops.playerData.get(player.getName()).sizeOkay) {
+			if(plugin.playerData.containsKey(player.getName()) 
+					&& plugin.playerData.get(player.getName()).isSelecting ) {
+				if (!plugin.playerData.get(player.getName()).sizeOkay) {
 					if (!canUseCommand(player, "admin".split(""))) {
 						String size = "" + ShopData.maxWidth + "x"
 								+ ShopData.maxHeight + "x" + ShopData.maxWidth;
@@ -203,7 +236,7 @@ public class Commands {
 					}
 				}
 				//if a custom size had been set, use that
-				PlayerData data = LocalShops.playerData.get(player.getName());
+				PlayerData data = plugin.playerData.get(player.getName());
 				xyzA = data.getPositionA().clone();
 				xyzB = data.getPositionB().clone();
 				
@@ -281,7 +314,7 @@ public class Commands {
 				thisShop.setLocation( xyzA, xyzB );
 				ShopData.shops.put(shopName, thisShop );
 
-				LocalShops.playerData.put(player.getName(), new PlayerData());
+				plugin.playerData.put(player.getName(), new PlayerData());
 				
 				//write the file
 				if( ShopData.saveShop(thisShop) ) { 
@@ -384,7 +417,7 @@ public class Commands {
 		return false;
 	}
 
-	public static void printHelp(CommandSender sender, String[] args) {
+	public boolean shopHelp() {
 		sender.sendMessage( PlayerData.chatPrefix + ChatColor.AQUA + "Here are the available commands [required] <optional>" );
 
 		String[] sell = { "sell" };
@@ -429,6 +462,8 @@ public class Commands {
 		if(canUseCommand(sender, reload)) {
 			sender.sendMessage( ChatColor.WHITE + "   /lshop reload" + ChatColor.AQUA + " - Reload the plugin and shop files.");
 		}
+		
+		return true;
 	}
 	
 	private static boolean shopPositionOk( Player player, long[] xyzA, long[] xyzB ) {
@@ -471,7 +506,7 @@ public class Commands {
 		return false;
 	}
 
-	public static void listShop(CommandSender sender, String[] args) {
+	public boolean shopList() {
 		if(canUseCommand(sender, args) && (sender instanceof Player)) {
 			Player player = (Player)sender;
 			String playerName = player.getName();
@@ -539,6 +574,25 @@ public class Commands {
 			}
 		} else {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
+		}
+		
+		return true;
+	}
+	
+	public boolean shopReload() {
+		if (Commands.canUseCommand(sender, args)) {
+
+			// TODO fix this null pointer exception from ourPlugin
+			PluginManager pm = sender.getServer().getPluginManager();
+			Plugin ourPlugin = pm.getPlugin(plugin.pdfFile.getName());
+			pm.disablePlugin(ourPlugin);
+			pm.enablePlugin(ourPlugin);
+
+			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "The plugin has been reloaded.");
+
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
@@ -662,7 +716,7 @@ public class Commands {
 	 *   true - if command succeeds
 	 *   false otherwise
 	 */
-	public static boolean sellItemShop(CommandSender sender, String[] args) {
+	public boolean shopSellItem() {
 		if(!(sender instanceof Player) || !canUseCommand(sender, args)) {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
 			return false;
@@ -870,12 +924,13 @@ public class Commands {
 	 * @param args
 	 * @return true if the commands succeeds, otherwise false
 	 */
-	public static boolean addItemShop(CommandSender sender, String[] args) {
+	public boolean shopAddItem() {
 		if(!(sender instanceof Player) || !canUseCommand(sender, args)) {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
 			return false;
 		}
-//TODO		
+		
+		//TODO		
 		/* Available formats:
 		 *  /lshop add
 		 *  /lshop add #
@@ -1047,7 +1102,7 @@ public class Commands {
 	 *   true - if command succeeds
 	 *   false otherwise
 	 */
-	public static boolean buyItemShop(CommandSender sender, String[] args) {
+	public boolean shopBuyItem() {
 		if(!(sender instanceof Player) || !canUseCommand(sender, args)) {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
 			return false;
@@ -1219,7 +1274,7 @@ public class Commands {
 	 *   true - if command succeeds
 	 *   false otherwise
 	 */
-	public static boolean setItemShop(CommandSender sender, String[] args) {
+	public boolean shopSetItem() {
 		if(!(sender instanceof Player) || !canUseCommand(sender, args)) {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
 			return false;
@@ -1538,7 +1593,7 @@ public class Commands {
 	 *   true - if command succeeds
 	 *   false otherwise
 	 */
-	public static boolean removeItemShop(CommandSender sender, String[] args) {
+	public boolean shopRemoveItem() {
 		if(!(sender instanceof Player) || !canUseCommand(sender, args)) {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
 			return false;
@@ -1614,7 +1669,7 @@ public class Commands {
 	 *   true - if command succeeds
 	 *   false otherwise
 	 */
-	public static boolean destroyShop(CommandSender sender, String[] args) {
+	public boolean shopDestroy() {
 		if(!(sender instanceof Player) || !canUseCommand(sender, args)) {
 			sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "You don't have permission to use this command");
 			return false;

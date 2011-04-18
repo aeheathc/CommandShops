@@ -74,7 +74,7 @@ public class ItemData {
 	
 	private void writeItemsFile(File dataFile) {
 
-		InputStream is = getClass().getResourceAsStream("items.txt");
+		InputStream is = getClass().getResourceAsStream("/net/centerleft/localshops/items.txt");
 		Scanner fis = new Scanner(is);
 		
 		FileOutputStream os;

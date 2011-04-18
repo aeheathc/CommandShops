@@ -31,11 +31,11 @@ import cuboidLocale.QuadTree;
  * @author Jonbas
  */
 public class LocalShops extends JavaPlugin {
-	private final ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
-	private final ShopsPluginListener pluginListener = new ShopsPluginListener(this);
+	protected final ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
+	protected final ShopsPluginListener pluginListener = new ShopsPluginListener(this);
+	protected PluginDescriptionFile pdfFile = null;
 	
 	private final Logger log = Logger.getLogger("Minecraft");
-	private PluginDescriptionFile pdfFile = null;
 	
 	static String pluginName = "LocalShops";
 	static String pluginVersion;
@@ -51,7 +51,7 @@ public class LocalShops extends JavaPlugin {
 	
 	
 	static ItemData itemList = new ItemData();
-	static Map<String, PlayerData> playerData; //synchronized player hash
+	protected Map<String, PlayerData> playerData; //synchronized player hash
 	
 	public Map<String, BookmarkedResult> playerResult;  //synchronized result buffer hash
 	
@@ -153,76 +153,50 @@ public class LocalShops extends JavaPlugin {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
-		String[] trimmedArgs = args;
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+		Commands commands = new Commands(this, sender, args);
+		
 		String commandName = command.getName().toLowerCase();
 
 		if (commandName.equalsIgnoreCase("lshop")) {
 			if(args.length >= 1) {
 				if(args[0].equalsIgnoreCase("create")) {
-					Commands.createShop(sender, trimmedArgs);
+					commands.shopCreate();
 					for(Player player: this.getServer().getOnlinePlayers()) {
 						ShopsPlayerListener.checkPlayerPosition(this, player);
 					}
 				} else if(args[0].equalsIgnoreCase("destroy")) {
-					Commands.destroyShop(sender, trimmedArgs);
+					commands.shopDestroy();
 					for(Player player: this.getServer().getOnlinePlayers()) {
 						ShopsPlayerListener.checkPlayerPosition(this, player);
 					}
 				} else if(args[0].equalsIgnoreCase("move")) {
-					Commands.moveShop(sender, trimmedArgs);
+					commands.shopMove();
 					for(Player player: this.getServer().getOnlinePlayers()) {
 						ShopsPlayerListener.checkPlayerPosition(this, player);
 					}
 				} else if(args[0].equalsIgnoreCase("list")) {
-					Commands.listShop(sender, trimmedArgs);
+					commands.shopList();
 				} else if(args[0].equalsIgnoreCase("reload")) {
-					if(Commands.canUseCommand(sender, trimmedArgs)) {
-						
-						//TODO fix this null pointer exception from ourPlugin
-						PluginManager pm = sender.getServer().getPluginManager();
-						Plugin ourPlugin = pm.getPlugin(pluginName);
-						pm.disablePlugin(ourPlugin);
-						pm.enablePlugin(ourPlugin);
-						
-						sender.sendMessage(PlayerData.chatPrefix + ChatColor.AQUA + "The plugin has been reloaded." );
-						
-						
-					}
+					commands.shopReload();
 				} else if(args[0].equalsIgnoreCase("sell")) {
-					Commands.sellItemShop(sender, trimmedArgs);
+					commands.shopSellItem();
 				} else if(args[0].equalsIgnoreCase("add")) {
-					Commands.addItemShop(sender, trimmedArgs);
+					commands.shopAddItem();
 				} else if(args[0].equalsIgnoreCase("remove")) {
-					Commands.removeItemShop(sender, trimmedArgs);
+					commands.shopRemoveItem();
 				}else if(args[0].equalsIgnoreCase("buy")) {
-					Commands.buyItemShop(sender, trimmedArgs);
+					commands.shopBuyItem();
 				} else if(args[0].equalsIgnoreCase("set")) {
-					Commands.setItemShop(sender, trimmedArgs);
+					commands.shopSetItem();
 				} else if(args[0].equalsIgnoreCase("select")) {
-					if(Commands.canUseCommand(sender, args)) {
-						if(!(sender instanceof Player)) return false;
-						String playerName = ((Player)sender).getName();
-						if(!playerData.containsKey(playerName)) {
-							playerData.put(playerName, new PlayerData());
-						}
-						playerData.get(playerName).isSelecting = !playerData.get(playerName).isSelecting;
-						
-						if(playerData.get(playerName).isSelecting) {
-							sender.sendMessage(ChatColor.AQUA + "Left click to select the first corner for a shop.");
-							sender.sendMessage(ChatColor.AQUA + "Right click to select the second corner for the shop.");
-						} else {
-							sender.sendMessage(ChatColor.AQUA + "Selection disabled");
-							playerData.put(playerName, new PlayerData());
-						}
-					}
+					return commands.shopSelect();
 				} else {
-					Commands.printHelp(sender, args);
+					return commands.shopHelp();
 				}
 				
 			} else {
-				Commands.printHelp(sender, args);
+				return commands.shopHelp();
 			}
 			
 			return true;
