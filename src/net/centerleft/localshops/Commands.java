@@ -38,9 +38,9 @@ public class Commands {
 	    if (!(sender instanceof Player)) {
 		return false;
 	    }
-	    
+
 	    Player player = (Player) sender;
-	    
+
 	    String playerName = player.getName();
 	    if (!plugin.playerData.containsKey(playerName)) {
 		plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
@@ -70,7 +70,7 @@ public class Commands {
 
 	    // check to see if that shop name is already used
 	    Collection<Shop> shops = plugin.shopData.getAllShops();
-	    for(Shop shop : shops) {
+	    for (Shop shop : shops) {
 		if (shop.getShopName().equalsIgnoreCase(args[1])) {
 		    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop.  " + ChatColor.WHITE + shop.getShopName() + ChatColor.AQUA + " already exists.");
 		    return false;
@@ -191,7 +191,7 @@ public class Commands {
 	    // check to see if that shop name exists and has access
 	    boolean foundShop = false;
 	    Collection<Shop> shops = plugin.shopData.getAllShops();
-	    for(Shop shop : shops) {
+	    for (Shop shop : shops) {
 		if (shop.getShopName().equalsIgnoreCase(args[1])) {
 		    thisShop = shop;
 		    foundShop = true;
