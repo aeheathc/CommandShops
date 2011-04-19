@@ -71,8 +71,8 @@ public class Commands {
 	    // check to see if that shop name is already used
 	    Collection<Shop> shops = plugin.shopData.getAllShops();
 	    for (Shop shop : shops) {
-		if (shop.getShopName().equalsIgnoreCase(args[1])) {
-		    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop.  " + ChatColor.WHITE + shop.getShopName() + ChatColor.AQUA + " already exists.");
+		if (shop.getName().equalsIgnoreCase(args[1])) {
+		    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop.  " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " already exists.");
 		    return false;
 		}
 	    }
@@ -85,10 +85,10 @@ public class Commands {
 
 	    Shop thisShop = new Shop();
 
-	    thisShop.setShopCreator(player.getName());
-	    thisShop.setShopOwner(player.getName());
-	    thisShop.setShopName(shopName);
-	    thisShop.setWorldName(player.getWorld().getName());
+	    thisShop.setCreator(player.getName());
+	    thisShop.setOwner(player.getName());
+	    thisShop.setName(shopName);
+	    thisShop.setWorld(player.getWorld().getName());
 
 	    // setup the cuboid for the tree
 	    long[] xyzA = new long[3];
@@ -192,7 +192,7 @@ public class Commands {
 	    boolean foundShop = false;
 	    Collection<Shop> shops = plugin.shopData.getAllShops();
 	    for (Shop shop : shops) {
-		if (shop.getShopName().equalsIgnoreCase(args[1])) {
+		if (shop.getName().equalsIgnoreCase(args[1])) {
 		    thisShop = shop;
 		    foundShop = true;
 		    break;
@@ -204,13 +204,13 @@ public class Commands {
 		return false;
 	    }
 
-	    if (!thisShop.getShopOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
+	    if (!thisShop.getOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to move this shop.");
 		return false;
 	    }
 
 	    // store shop info
-	    String shopName = thisShop.getShopName();
+	    String shopName = thisShop.getName();
 	    xyzAold = thisShop.getLocation1();
 	    xyzBold = thisShop.getLocation2();
 
@@ -274,7 +274,7 @@ public class Commands {
 		// this should only find one shop node
 		if (shopLocation.name == null)
 		    continue;
-		if (!shopLocation.world.equalsIgnoreCase(thisShop.getWorldName()))
+		if (!shopLocation.world.equalsIgnoreCase(thisShop.getWorld()))
 		    continue;
 
 		LocalShops.cuboidTree.delete(shopLocation);
@@ -294,7 +294,7 @@ public class Commands {
 			    // insert the old cuboid back into the world
 			    tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
 			    tempShopCuboid.name = shopName;
-			    tempShopCuboid.world = thisShop.getWorldName();
+			    tempShopCuboid.world = thisShop.getWorld();
 			    LocalShops.cuboidTree.insert(tempShopCuboid);
 
 			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You need " + plugin.shopData.moveCost + " " + plugin.shopData.currencyName + " to move a shop.");
@@ -305,7 +305,7 @@ public class Commands {
 
 		// insert the shop into the world
 		LocalShops.cuboidTree.insert(tempShopCuboid);
-		thisShop.setWorldName(player.getWorld().getName());
+		thisShop.setWorld(player.getWorld().getName());
 		thisShop.setLocation(xyzA, xyzB);
 		plugin.shopData.addShop(thisShop);
 
@@ -323,7 +323,7 @@ public class Commands {
 		// insert the old cuboid back into the world
 		PrimitiveCuboid tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
 		tempShopCuboid.name = shopName;
-		tempShopCuboid.world = thisShop.getWorldName();
+		tempShopCuboid.world = thisShop.getWorld();
 		LocalShops.cuboidTree.insert(tempShopCuboid);
 	    }
 	}
@@ -540,7 +540,7 @@ public class Commands {
 			printInventory(shop, player, args[1], pageNumber);
 
 		    } else if (args[1].equalsIgnoreCase("info")) {
-			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Info for shop " + ChatColor.WHITE + shop.getShopName());
+			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Info for shop " + ChatColor.WHITE + shop.getName());
 			String location = "" + shop.getLocation1()[0];
 			location += " " + shop.getLocation1()[1];
 			location += " " + shop.getLocation1()[2];
@@ -549,19 +549,19 @@ public class Commands {
 			location += " " + shop.getLocation2()[1];
 			location += " " + shop.getLocation2()[2];
 			player.sendMessage(ChatColor.AQUA + "  Shop Location 2 " + ChatColor.WHITE + location);
-			player.sendMessage(ChatColor.AQUA + "  Shop Owner " + ChatColor.WHITE + shop.getShopOwner());
+			player.sendMessage(ChatColor.AQUA + "  Shop Owner " + ChatColor.WHITE + shop.getOwner());
 			String message = "";
-			if (shop.getShopManagers() != null) {
-			    for (String manager : shop.getShopManagers()) {
+			if (shop.getManagers() != null) {
+			    for (String manager : shop.getManagers()) {
 				message += " " + manager;
 			    }
 			} else {
 			    message = "none";
 			}
 			player.sendMessage(ChatColor.AQUA + "  Shop managers " + ChatColor.WHITE + message);
-			player.sendMessage(ChatColor.AQUA + "  Shop Creator " + ChatColor.WHITE + shop.getShopCreator());
-			player.sendMessage(ChatColor.AQUA + "  Shop has unlimited Stock " + ChatColor.WHITE + shop.getValueofUnlimitedStock());
-			player.sendMessage(ChatColor.AQUA + "  Shop has unlimited Money " + ChatColor.WHITE + shop.getValueofUnlimitedMoney());
+			player.sendMessage(ChatColor.AQUA + "  Shop Creator " + ChatColor.WHITE + shop.getCreator());
+			player.sendMessage(ChatColor.AQUA + "  Shop has unlimited Stock " + ChatColor.WHITE + shop.isUnlimitedStock());
+			player.sendMessage(ChatColor.AQUA + "  Shop has unlimited Money " + ChatColor.WHITE + shop.isUnlimitedMoney());
 		    } else {
 			printInventory(shop, player, "list", pageNumber);
 		    }
@@ -616,15 +616,15 @@ public class Commands {
      * @param pageNumber
      */
     public void printInventory(Shop shop, Player player, String buySellorList, int pageNumber) {
-	String inShopName = shop.getShopName();
-	ArrayList<String> shopItems = shop.getItems();
+	String inShopName = shop.getName();
+	Collection<Item> items = shop.getItems();
 
 	boolean buy = buySellorList.equalsIgnoreCase("buy");
 	boolean sell = buySellorList.equalsIgnoreCase("sell");
 	boolean list = buySellorList.equalsIgnoreCase("list");
 
 	ArrayList<String> inventoryMessage = new ArrayList<String>();
-	for (String item : shopItems) {
+	for (Item item : items) {
 
 	    String subMessage = "   " + item;
 	    int maxStock = 0;
@@ -632,34 +632,35 @@ public class Commands {
 		int price = 0;
 		if (buy) {
 		    // get buy price
-		    price = shop.getItemBuyPrice(item);
+		    price = item.getBuyPrice();
 		}
 		if (sell) {
-		    price = shop.getItemSellPrice(item);
+		    price = item.getSellPrice();
 		}
 		if (price == 0) {
 		    continue;
 		}
 		subMessage += ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]";
 		// get stack size
-		int stack = shop.itemBuyAmount(item);
+		int stack = 0;
 		if (buy) {
-		    stack = shop.itemBuyAmount(item);
+		    stack = item.getBuySize();
 		}
 		if (sell) {
-		    stack = shop.itemSellAmount(item);
-		    int stock = shop.getItemStock(item);
-		    maxStock = shop.itemMaxStock(item);
+		    stack = item.getSellSize();
+		    int stock = item.getStock();
+		    maxStock = item.getMaxStock();
 
-		    if (stock >= maxStock && !(maxStock == 0))
+		    if (stock >= maxStock && !(maxStock == 0)) {
 			continue;
+		    }
 		}
 		if (stack > 1) {
 		    subMessage += ChatColor.AQUA + " [" + ChatColor.WHITE + "Bundle: " + stack + ChatColor.AQUA + "]";
 		}
 	    }
 	    // get stock
-	    int stock = shop.getItemStock(item);
+	    int stock = item.getStock();
 	    if (buy) {
 		if (stock == 0 && !shop.isUnlimitedStock())
 		    continue;
@@ -667,7 +668,7 @@ public class Commands {
 	    if (!shop.isUnlimitedStock()) {
 		subMessage += ChatColor.AQUA + " [" + ChatColor.WHITE + "Stock: " + stock + ChatColor.AQUA + "]";
 
-		maxStock = shop.itemMaxStock(item);
+		maxStock = item.getMaxStock();
 		if (maxStock > 0) {
 		    subMessage += ChatColor.AQUA + " [" + ChatColor.WHITE + "Max Stock: " + maxStock + ChatColor.AQUA + "]";
 		}
@@ -803,10 +804,8 @@ public class Commands {
 	}
 
 	// check if the shop is buying that item
-	if (!shop.getItems().contains(itemName) || shop.getItemSellPrice(itemName) == 0) {
-	    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName
-					+ ChatColor.AQUA + " is not buying " + ChatColor.WHITE + itemName
-					+ ChatColor.AQUA + " right now.");
+	if (!shop.getItems().contains(itemName) || shop.getItem(itemName).getSellPrice() == 0) {
+	    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not buying " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
 	    return false;
 	}
 
@@ -833,36 +832,31 @@ public class Commands {
 
 	// check if the shop has a max stock level set
 	if (shop.itemMaxStock(itemName) != 0 && !shop.isUnlimitedStock()) {
-	    if (shop.getItemStock(itemName) >= shop.itemMaxStock(itemName)) {
-		player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName
-						+ ChatColor.AQUA + " is not buying any more " + ChatColor.WHITE + itemName
-						+ ChatColor.AQUA + " right now.");
+	    if (shop.getItem(itemName).getStock() >= shop.itemMaxStock(itemName)) {
+		player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not buying any more " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
 		return false;
 	    }
 
-	    if (amount > (shop.itemMaxStock(itemName) - shop.getItemStock(itemName))) {
-		amount = shop.itemMaxStock(itemName) - shop.getItemStock(itemName);
+	    if (amount > (shop.itemMaxStock(itemName) - shop.getItem(itemName).getStock())) {
+		amount = shop.itemMaxStock(itemName) - shop.getItem(itemName).getStock();
 	    }
 	}
 
 	// calculate cost
-	int bundles = amount / shop.itemSellAmount(itemName);
+	int bundles = amount / shop.getItem(itemName).getSellSize();
 
 	if (bundles == 0 && amount > 0) {
-	    player.sendMessage(ChatColor.AQUA + "The minimum number to sell is  " + ChatColor.WHITE
-					+ shop.itemSellAmount(itemName));
+	    player.sendMessage(ChatColor.AQUA + "The minimum number to sell is  " + ChatColor.WHITE + shop.getItem(itemName).getSellSize());
 	    return false;
 	}
 
-	int itemPrice = shop.getItemSellPrice(itemName);
+	int itemPrice = shop.getItem(itemName).getSellPrice();
 	// recalculate # of items since may not fit cleanly into bundles
 	// notify player if there is a change
-	if (amount % shop.itemSellAmount(itemName) != 0) {
-	    player.sendMessage(ChatColor.AQUA + "The bundle size is  " + ChatColor.WHITE
-					+ shop.itemSellAmount(itemName) + ChatColor.AQUA + " order reduced to "
-					+ ChatColor.WHITE + bundles * shop.itemSellAmount(itemName));
+	if (amount % shop.getItem(itemName).getSellSize() != 0) {
+	    player.sendMessage(ChatColor.AQUA + "The bundle size is  " + ChatColor.WHITE + shop.getItem(itemName).getBuySize() + ChatColor.AQUA + " order reduced to " + ChatColor.WHITE + bundles * shop.getItem(itemName).getSellSize());
 	}
-	amount = bundles * shop.itemSellAmount(itemName);
+	amount = bundles * shop.getItem(itemName).getSellSize();
 	int totalCost = bundles * itemPrice;
 
 	// try to pay the player for order
@@ -870,16 +864,16 @@ public class Commands {
 	    plugin.playerData.get(playerName).payPlayer(playerName, totalCost);
 	} else {
 	    if (!isShopController(player, shop)) {
-		if (!plugin.playerData.get(playerName).payPlayer(shop.getShopOwner(), playerName, totalCost)) {
+		if (!plugin.playerData.get(playerName).payPlayer(shop.getOwner(), playerName, totalCost)) {
 		    // lshop owner doesn't have enough money
 		    // get shop owner's balance and calculate how many it can
 		    // buy
-		    long shopBalance = plugin.playerData.get(playerName).getBalance(shop.getShopOwner());
+		    long shopBalance = plugin.playerData.get(playerName).getBalance(shop.getOwner());
 		    int bundlesCanAford = (int) shopBalance / itemPrice;
 		    totalCost = bundlesCanAford * itemPrice;
-		    amount = bundlesCanAford * shop.itemSellAmount(itemName);
+		    amount = bundlesCanAford * shop.getItem(itemName).getSellSize();
 		    player.sendMessage(ChatColor.AQUA + "The shop could only afford " + ChatColor.WHITE + amount);
-		    if (!plugin.playerData.get(playerName).payPlayer(shop.getShopOwner(), playerName, totalCost)) {
+		    if (!plugin.playerData.get(playerName).payPlayer(shop.getOwner(), playerName, totalCost)) {
 			player.sendMessage(ChatColor.AQUA + "Unexpected money problem: could not complete sale.");
 			return false;
 		    }
@@ -898,7 +892,7 @@ public class Commands {
 	}
 
 	// log the transaction
-	int itemInv = shop.getItemStock(itemName);
+	int itemInv = shop.getItem(itemName).getStock();
 	int startInv = itemInv - amount;
 	if (startInv < 0)
 	    startInv = 0;
@@ -948,7 +942,7 @@ public class Commands {
 
 	    if (!isShopController(player, shop) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to add items.");
-		player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getShopOwner());
+		player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
 		return false;
 	    }
 
@@ -1042,15 +1036,13 @@ public class Commands {
 
 	if (!shop.isUnlimitedStock()) {
 	    shop.addStock(itemName, amount);
-	    player.sendMessage(ChatColor.AQUA + "Succesfully added " + ChatColor.WHITE + itemName
-					+ ChatColor.AQUA + " to the shop. Stock is now " + ChatColor.WHITE + shop.getItemStock(itemName));
+	    player.sendMessage(ChatColor.AQUA + "Succesfully added " + ChatColor.WHITE + itemName + ChatColor.AQUA + " to the shop. Stock is now " + ChatColor.WHITE + shop.getItem(itemName).getStock());
 	} else {
-	    player.sendMessage(ChatColor.AQUA + "Succesfully added " + ChatColor.WHITE + itemName
-					+ ChatColor.AQUA + " to the shop.");
+	    player.sendMessage(ChatColor.AQUA + "Succesfully added " + ChatColor.WHITE + itemName + ChatColor.AQUA + " to the shop.");
 	}
 
 	// log the transaction
-	int itemInv = shop.getItemStock(itemName);
+	int itemInv = shop.getItem(itemName).getStock();
 	int startInv = itemInv - amount;
 	if (startInv < 0)
 	    startInv = 0;
@@ -1072,10 +1064,10 @@ public class Commands {
      * @return
      */
     private boolean isShopController(Player player, Shop shop) {
-	if (shop.getShopOwner().equalsIgnoreCase(player.getName()))
+	if (shop.getOwner().equalsIgnoreCase(player.getName()))
 	    return true;
-	if (shop.getShopManagers() != null) {
-	    for (String manager : shop.getShopManagers()) {
+	if (shop.getManagers() != null) {
+	    for (String manager : shop.getManagers()) {
 		if (player.getName().equalsIgnoreCase(manager)) {
 		    return true;
 		}
@@ -1136,15 +1128,13 @@ public class Commands {
 		}
 
 		// check if the item has a price, or if this is a shop owner
-		if (shop.getItemBuyPrice(itemName) == 0 && !isShopController(player, shop)) {
-		    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName
-							+ ChatColor.AQUA + " is not selling " + ChatColor.WHITE + itemName
-							+ ChatColor.AQUA + " right now.");
+		if (shop.getItem(itemName).getBuyPrice() == 0 && !isShopController(player, shop)) {
+		    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
 		    return false;
 		}
 
 		int totalAmount;
-		totalAmount = shop.getItemStock(itemName);
+		totalAmount = shop.getItem(itemName).getStock();
 
 		if (totalAmount == 0 && !shop.isUnlimitedStock()) {
 		    player.sendMessage(ChatColor.AQUA + "The shop has " + ChatColor.WHITE + totalAmount + " " + itemName);
@@ -1159,18 +1149,16 @@ public class Commands {
 			totalAmount = numberToRemove;
 		    }
 		    if (numberToRemove > totalAmount) {
-			amount = totalAmount - (totalAmount % shop.itemBuyAmount(itemName));
+			amount = totalAmount - (totalAmount % shop.getItem(itemName).getBuySize());
 			if (!shop.isUnlimitedStock()) {
 			    player.sendMessage(ChatColor.AQUA + "The shop has " + ChatColor.WHITE + totalAmount + " " + itemName);
 			}
 		    } else {
-			amount = numberToRemove - (numberToRemove % shop.itemBuyAmount(itemName));
+			amount = numberToRemove - (numberToRemove % shop.getItem(itemName).getBuySize());
 		    }
 
-		    if (amount % shop.itemBuyAmount(itemName) != 0) {
-			player.sendMessage(ChatColor.AQUA + "The bundle size is  " + ChatColor.WHITE
-								+ shop.itemBuyAmount(itemName) + ChatColor.AQUA + " order reduced to "
-								+ ChatColor.WHITE + (int) (amount / shop.itemBuyAmount(itemName)));
+		    if (amount % shop.getItem(itemName).getBuySize() != 0) {
+			player.sendMessage(ChatColor.AQUA + "The bundle size is  " + ChatColor.WHITE + shop.getItem(itemName).getBuySize() + ChatColor.AQUA + " order reduced to " + ChatColor.WHITE + (int) (amount / shop.getItem(itemName).getBuySize()));
 		    }
 		} catch (NumberFormatException ex2) {
 		    if (args[2].equalsIgnoreCase("all")) {
@@ -1204,24 +1192,24 @@ public class Commands {
 	    }
 
 	    // calculate cost
-	    int bundles = amount / shop.itemBuyAmount(itemName);
-	    int itemPrice = shop.getItemBuyPrice(itemName);
+	    int bundles = amount / shop.getItem(itemName).getBuySize();
+	    int itemPrice = shop.getItem(itemName).getBuyPrice();
 	    // recalculate # of items since may not fit cleanly into bundles
-	    amount = bundles * shop.itemBuyAmount(itemName);
+	    amount = bundles * shop.getItem(itemName).getBuySize();
 	    int totalCost = bundles * itemPrice;
 
 	    // try to pay the shop owner
 	    if (!isShopController(player, shop)) {
-		if (!plugin.playerData.get(playerName).payPlayer(playerName, shop.getShopOwner(), totalCost)) {
+		if (!plugin.playerData.get(playerName).payPlayer(playerName, shop.getOwner(), totalCost)) {
 		    // player doesn't have enough money
 		    // get player's balance and calculate how many it can buy
 		    long playerBalance = plugin.playerData.get(playerName).getBalance(playerName);
 		    int bundlesCanAford = (int) Math.floor(playerBalance / itemPrice);
 		    totalCost = bundlesCanAford * itemPrice;
-		    amount = bundlesCanAford * shop.itemSellAmount(itemName);
+		    amount = bundlesCanAford * shop.getItem(itemName).getSellSize();
 		    player.sendMessage(ChatColor.AQUA + "You could only afford " + ChatColor.WHITE + amount);
 
-		    if (!plugin.playerData.get(playerName).payPlayer(playerName, shop.getShopOwner(), totalCost)) {
+		    if (!plugin.playerData.get(playerName).payPlayer(playerName, shop.getOwner(), totalCost)) {
 			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unexpected money problem: could not complete sale.");
 			return false;
 		    }
@@ -1238,7 +1226,7 @@ public class Commands {
 	    }
 
 	    // log the transaction
-	    int itemInv = shop.getItemStock(itemName);
+	    int itemInv = shop.getItem(itemName).getStock();
 	    int startInv = itemInv + amount;
 	    if (shop.isUnlimitedStock())
 		startInv = 0;
@@ -1284,7 +1272,7 @@ public class Commands {
 
 	    if (!isShopController(player, shop) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
-		player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getShopOwner());
+		player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
 		return false;
 	    }
 
@@ -1323,7 +1311,7 @@ public class Commands {
 		    try {
 			if (args.length == 4) {
 			    price = Integer.parseInt(args[3]);
-			    bundle = shop.itemBuyAmount(itemName);
+			    bundle = shop.getItem(itemName).getBuySize();
 			} else {
 			    price = Integer.parseInt(args[3]);
 			    bundle = Integer.parseInt(args[4]);
@@ -1376,7 +1364,7 @@ public class Commands {
 		    try {
 			if (args.length == 4) {
 			    price = Integer.parseInt(args[3]);
-			    bundle = shop.itemSellAmount(itemName);
+			    bundle = shop.getItem(itemName).getSellSize();
 			} else {
 			    price = Integer.parseInt(args[3]);
 			    bundle = Integer.parseInt(args[4]);
@@ -1387,8 +1375,8 @@ public class Commands {
 			return false;
 		    }
 
-		    shop.setItemSellPrice(itemName, price);
-		    shop.setItemSellAmount(itemName, bundle);
+		    shop.getItem(itemName).setSellPrice(price);
+		    shop.getItem(itemName).setSellSize(bundle);
 
 		    plugin.shopData.saveShop(shop);
 
@@ -1447,10 +1435,10 @@ public class Commands {
 		}
 
 	    } else if (args[1].equalsIgnoreCase("manager")) {
-		String[] managers = shop.getShopManagers();
-		if (!shop.getShopOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
+		String[] managers = shop.getManagers();
+		if (!shop.getOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
 		    player.sendMessage(ChatColor.AQUA + "You must be the shop owner to set this.");
-		    player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getShopOwner());
+		    player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
 		    return false;
 		}
 		for (String newName : args) {
@@ -1490,8 +1478,8 @@ public class Commands {
 		shop.setShopManagers(managers);
 
 		String msg = "";
-		if (shop.getShopManagers() != null) {
-		    for (String name : shop.getShopManagers()) {
+		if (shop.getManagers() != null) {
+		    for (String name : shop.getManagers()) {
 			msg += " " + name;
 		    }
 		}
@@ -1501,15 +1489,15 @@ public class Commands {
 
 	    } else if (args[1].equalsIgnoreCase("owner")) {
 		if (args.length == 3) {
-		    if (!shop.getShopOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
+		    if (!shop.getOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
 			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to set this.");
-			player.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getShopOwner());
+			player.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getOwner());
 			return false;
 		    } else if (!canUseCommand(player, args)) {
 			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You do not have permission to do this.");
 			return false;
 		    } else {
-			shop.setShopOwner(args[2]);
+			shop.setOwner(args[2]);
 			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop owner changed to " + ChatColor.WHITE + args[2]);
 			return true;
 		    }
@@ -1523,13 +1511,13 @@ public class Commands {
 			if (args[2].equalsIgnoreCase("money")) {
 			    boolean current = shop.isUnlimitedMoney();
 			    shop.setUnlimitedMoney(!current);
-			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited money was set to " + ChatColor.WHITE + shop.getValueofUnlimitedMoney());
+			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited money was set to " + ChatColor.WHITE + shop.isUnlimitedMoney());
 			    plugin.shopData.saveShop(shop);
 			    return true;
 			} else if (args[2].equalsIgnoreCase("stock")) {
 			    boolean current = shop.isUnlimitedStock();
 			    shop.setUnlimitedStock(!current);
-			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited stock was set to " + ChatColor.WHITE + shop.getValueofUnlimitedStock());
+			    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited stock was set to " + ChatColor.WHITE + shop.isUnlimitedStock());
 			    plugin.shopData.saveShop(shop);
 			    return true;
 			}
@@ -1590,7 +1578,7 @@ public class Commands {
 
 	    if (!isShopController(player, shop) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to remove an item.");
-		player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getShopOwner());
+		player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
 		return false;
 	    }
 
@@ -1617,7 +1605,7 @@ public class Commands {
 
 	    player.sendMessage(ChatColor.WHITE + itemName + ChatColor.AQUA + " removed from the shop. ");
 	    if (!shop.isUnlimitedStock()) {
-		int amount = shop.getItemStock(itemName);
+		int amount = shop.getItem(itemName).getStock();
 
 		// log the transaction
 		plugin.shopData.logItems(playerName, shopName, "remove-item", itemName, amount, amount, 0);
@@ -1661,12 +1649,12 @@ public class Commands {
 	    String shopName = plugin.playerData.get(playerName).shopList.get(0);
 	    Shop shop = plugin.shopData.getShop(shopName);
 
-	    if (!shop.getShopOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
+	    if (!shop.getOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(player, "admin".split(""))) {
 		player.sendMessage(ChatColor.AQUA + "You must be the shop owner to destroy it.");
 		return false;
 	    }
 
-	    sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.WHITE + shop.getShopName() + ChatColor.AQUA + " has been destroyed");
+	    sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " has been destroyed");
 	    plugin.shopData.deleteShop(shop);
 
 	} else {

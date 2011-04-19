@@ -50,7 +50,7 @@ public class ShopData {
     }
 
     public void addShop(Shop shop) {
-	shops.put(shop.getShopName(), shop);
+	shops.put(shop.getName(), shop);
     }
 
     public Collection<Shop> getAllShops() {
@@ -96,14 +96,14 @@ public class ShopData {
 
 	    String[] shopName = shop.getName().split("\\.");
 
-	    tempShop.setShopName(shopName[0]);
+	    tempShop.setName(shopName[0]);
 
 	    System.out.println("LocalShops: Loading shop " + shopName[0]);
 
 	    // set default world just in case we're converting old files
 	    // will be over-written in case the shop files are setup correctly
 	    if (defaultWorld) {
-		tempShop.setWorldName(worldName);
+		tempShop.setWorld(worldName);
 	    }
 
 	    try {
@@ -212,9 +212,9 @@ public class ShopData {
 			    // this isn't an item number, so check what property
 			    // it is
 			    if (split[0].equalsIgnoreCase("owner")) {
-				tempShop.setShopOwner(split[1]);
+				tempShop.setOwner(split[1]);
 			    } else if (split[0].equalsIgnoreCase("creator")) {
-				tempShop.setShopCreator(split[1]);
+				tempShop.setCreator(split[1]);
 
 			    } else if (split[0].equalsIgnoreCase("managers")) {
 				if (split.length > 1) {
@@ -222,7 +222,7 @@ public class ShopData {
 				    tempShop.setShopManagers(args);
 				}
 			    } else if (split[0].equalsIgnoreCase("world")) {
-				tempShop.setWorldName(split[1]);
+				tempShop.setWorld(split[1]);
 			    } else if (split[0].equalsIgnoreCase("position")) {
 				String[] args = split[1].split(",");
 
@@ -338,8 +338,8 @@ public class ShopData {
 		tempShopCuboid = new PrimitiveCuboid(tempShop.getLocation1(),
 						tempShop.getLocation2());
 
-		tempShopCuboid.name = tempShop.getShopName();
-		tempShopCuboid.world = tempShop.getWorldName();
+		tempShopCuboid.name = tempShop.getName();
+		tempShopCuboid.world = tempShop.getWorld();
 
 		if (shopPositionOk(tempShop, xyzA, xyzB)) {
 
@@ -359,7 +359,7 @@ public class ShopData {
 
     public boolean saveShop(Shop shop) {
 	String filePath = LocalShops.folderPath + LocalShops.shopsPath
-				+ shop.getShopName() + ".shop";
+				+ shop.getName() + ".shop";
 
 	File shopFile = new File(filePath);
 	try {
@@ -368,19 +368,19 @@ public class ShopData {
 
 	    ArrayList<String> fileOutput = new ArrayList<String>();
 
-	    fileOutput.add("#" + shop.getShopName() + " shop file\n");
+	    fileOutput.add("#" + shop.getName() + " shop file\n");
 
 	    DateFormat dateFormat = new SimpleDateFormat(
 					"EEE MMM dd HH:mm:ss z yyyy");
 	    Date date = new Date();
 	    fileOutput.add("#" + dateFormat.format(date) + "\n");
 
-	    fileOutput.add("world=" + shop.getWorldName() + "\n");
-	    fileOutput.add("owner=" + shop.getShopOwner() + "\n");
+	    fileOutput.add("world=" + shop.getWorld() + "\n");
+	    fileOutput.add("owner=" + shop.getOwner() + "\n");
 
 	    String outString = "";
-	    if (shop.getShopManagers() != null) {
-		for (String manager : shop.getShopManagers()) {
+	    if (shop.getManagers() != null) {
+		for (String manager : shop.getManagers()) {
 		    outString = outString + manager + ",";
 		}
 	    }
@@ -388,22 +388,23 @@ public class ShopData {
 		outString = "";
 
 	    fileOutput.add("managers=" + outString + "\n");
-	    fileOutput.add("creator=" + shop.getShopCreator() + "\n");
+	    fileOutput.add("creator=" + shop.getCreator() + "\n");
 	    fileOutput.add("position1=" + shop.getShopPosition1String() + "\n");
 	    fileOutput.add("position2=" + shop.getShopPosition2String() + "\n");
-	    fileOutput.add("unlimited-money=" + shop.getValueofUnlimitedMoney()
+	    fileOutput.add("unlimited-money=" + String.valueOf(shop.isUnlimitedMoney())
 					+ "\n");
-	    fileOutput.add("unlimited-stock=" + shop.getValueofUnlimitedStock()
+	    fileOutput.add("unlimited-stock=" + String.valueOf(shop.isUnlimitedStock())
 					+ "\n");
 
-	    for (String item : shop.getItems()) {
-		int buyPrice = shop.getItemBuyPrice(item);
-		int buySize = shop.itemBuyAmount(item);
-		int sellPrice = shop.getItemSellPrice(item);
-		int sellSize = shop.itemSellAmount(item);
-		int stock = shop.getItemStock(item);
-		int maxStock = shop.itemMaxStock(item);
-		int[] itemInfo = LocalShops.itemList.getItemInfo(null, item);
+	    for (Item item : shop.getItems()) {
+		
+		int buyPrice = item.getBuyPrice();
+		int buySize = item.getBuySize();
+		int sellPrice = item.getSellPrice();
+		int sellSize = item.getSellSize();
+		int stock = item.getStock();
+		int maxStock = item.getMaxStock();
+		int[] itemInfo = LocalShops.itemList.getItemInfo(null, item.itemName());
 		if (itemInfo == null)
 		    continue;
 		// itemId=dataValue,buyPrice:buyStackSize,sellPrice:sellStackSize,stock
@@ -441,7 +442,7 @@ public class ShopData {
 	    // this should only find one shop node
 	    if (shopLocation.name == null)
 		continue;
-	    if (!shopLocation.world.equalsIgnoreCase(shop.getWorldName()))
+	    if (!shopLocation.world.equalsIgnoreCase(shop.getWorld()))
 		continue;
 	    LocalShops.cuboidTree.delete(shopLocation);
 
@@ -449,12 +450,12 @@ public class ShopData {
 
 	// delete the file from the directory
 	String filePath = LocalShops.folderPath + LocalShops.shopsPath
-				+ shop.getShopName() + ".shop";
+				+ shop.getName() + ".shop";
 	File shopFile = new File(filePath);
 	shopFile.delete();
 
 	// remove shop from data structure
-	String name = shop.getShopName();
+	String name = shop.getName();
 	shops.remove(name);
 
 	return true;
@@ -491,7 +492,7 @@ public class ShopData {
 	if (res.results.size() != 0) {
 	    for (PrimitiveCuboid foundShop : res.results) {
 		if (foundShop.name != null) {
-		    if (foundShop.world.equalsIgnoreCase(shop.getWorldName())) {
+		    if (foundShop.world.equalsIgnoreCase(shop.getWorld())) {
 			System.out
 								.println("Could not create shop, it overlaps with "
 										+ foundShop.name);

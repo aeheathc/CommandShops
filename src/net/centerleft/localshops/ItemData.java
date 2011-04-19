@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -310,18 +311,14 @@ public class ItemData {
     private int[] getShopItemInfo(CommandSender sender, Shop shop, String name) {
 	int index = itemName.indexOf(name);
 	if (index == -1) {
-	    Pattern myPattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
-	    Matcher myMatcher = myPattern.matcher("tmp");
-
 	    ArrayList<String> foundMatches = new ArrayList<String>();
 	    foundMatches.clear();
 
-	    Iterator<String> itr = shop.getItems().iterator();
-	    while (itr.hasNext()) {
-		String thisItem = itr.next();
-		myMatcher.reset(thisItem);
-		if (myMatcher.find())
-		    foundMatches.add(thisItem);
+	    Collection<Item> items = shop.getItems();
+	    for(Item item : items) {
+		if(item.itemName().matches(name)) {
+		    foundMatches.add(item.itemName());
+		}
 	    }
 
 	    if (foundMatches.size() == 1) {

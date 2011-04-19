@@ -73,7 +73,7 @@ public class PlayerData {
     public boolean addPlayerToShop(String shopName) {
 	String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 
-	if (!playerIsInShop(shopName) && plugin.shopData.getShop(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
+	if (!playerIsInShop(shopName) && plugin.shopData.getShop(shopName).getWorld().equalsIgnoreCase(playerWorld)) {
 	    shopList.add(shopName);
 	    return true;
 	} else {
@@ -85,7 +85,7 @@ public class PlayerData {
 	String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 
 	if (shopList.contains(shopName)) {
-	    if (plugin.shopData.getShop(shopName).getWorldName().equalsIgnoreCase(playerWorld)) {
+	    if (plugin.shopData.getShop(shopName).getWorld().equalsIgnoreCase(playerWorld)) {
 		return true;
 	    }
 	}
