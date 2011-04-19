@@ -1,37 +1,20 @@
 package net.centerleft.localshops;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class Shop {
-
-    private String world;
-    private String name;
-    private Location location;
-    private String owner;
-    private String creator;
-    private String[] managers;
-    private boolean unlimitedMoney;
-    private boolean unlimitedStock;
-
-    private HashMap<String, Item> shopInventory;
-
-    public Shop() {
-	world = "";
-	name = null;
-	shopInventory = new HashMap<String, Item>();
-	shopInventory.clear();
-	long[] xyz = { 0, 0, 0 };
-	location = new Location(xyz, xyz);
-	owner = "";
-	creator = "";
-	managers = null;
-	unlimitedStock = false;
-    }
+    // Attributes
+    private String world = null;
+    private String name = null;
+    private ShopLocation locationA = null;
+    private ShopLocation locationB = null;
+    private String owner = null;
+    private String creator = null;
+    private String[] managers = null;
+    private boolean unlimitedMoney = false;
+    private boolean unlimitedStock = false;
+    private HashMap<String, Item> inventory = new HashMap<String, Item>();
 
     public void setWorld(String name) {
 	world = name;
@@ -48,6 +31,39 @@ public class Shop {
     public String getName() {
 	return name;
     }
+    
+    public void setLocations(ShopLocation locationA, ShopLocation locationB) {
+	this.locationA = locationA;
+	this.locationB = locationB;
+    }
+    
+    public void setLocationA(ShopLocation locationA) {
+	this.locationA = locationA;
+    }
+    
+    public void setLocationA(long x, long y, long z) {
+	locationA = new ShopLocation(x, y, z);
+    }
+    
+    public void setLocationB(ShopLocation locationB) {
+	this.locationB = locationB;
+    }
+    
+    public void setLocationB(long x, long y, long z) {
+	locationB = new ShopLocation(x, y, z);
+    }
+    
+    public ShopLocation[] getLocations() {
+	return new ShopLocation[] { locationA, locationB };
+    }
+    
+    public ShopLocation getLocationA() {
+	return locationA;
+    }
+    
+    public ShopLocation getLocationB() {
+	return locationB;
+    }
 
     public void setOwner(String owner) {
 	this.owner = owner;
@@ -63,10 +79,6 @@ public class Shop {
 	} else {
 	    managers = null;
 	}
-    }
-
-    public void setLocation(long[] position1, long[] position2) {
-	location.setLocation(position1, position2);
     }
 
     public String getOwner() {
@@ -86,7 +98,7 @@ public class Shop {
     }
     
     public Item getItem(String item) {
-	return shopInventory.get(item);
+	return inventory.get(item);
     }
 
     public void addItem(int itemNumber, int itemData, int buyPrice,
@@ -102,28 +114,12 @@ public class Shop {
 
 	thisItem.maxStock = maxStock;
 
-	if (shopInventory.containsKey(itemName)) {
-	    shopInventory.remove(itemName);
+	if (inventory.containsKey(itemName)) {
+	    inventory.remove(itemName);
 	}
 
-	shopInventory.put(itemName, thisItem);
+	inventory.put(itemName, thisItem);
 
-    }
-
-    public String getShopPosition1String() {
-	String returnString = "";
-	for (long coord : location.getLocation1()) {
-	    returnString += coord + ",";
-	}
-	return returnString;
-    }
-
-    public String getShopPosition2String() {
-	String returnString = "";
-	for (long coord : location.getLocation2()) {
-	    returnString += coord + ",";
-	}
-	return returnString;
     }
 
     public String[] getManagers() {
@@ -131,7 +127,7 @@ public class Shop {
     }
 
     public Collection<Item> getItems() {
-	return shopInventory.values();
+	return inventory.values();
     }
 
     public boolean isUnlimitedStock() {
@@ -143,54 +139,47 @@ public class Shop {
     }
 
     public boolean addStock(String itemName, int amount) {
-	if (!shopInventory.containsKey(itemName)) {
+	if (!inventory.containsKey(itemName)) {
 	    return false;
 	}
-	shopInventory.get(itemName).addStock(amount);
+	inventory.get(itemName).addStock(amount);
 	return true;
     }
 
     public boolean removeStock(String itemName, int amount) {
-	if (!shopInventory.containsKey(itemName))
+	if (!inventory.containsKey(itemName))
 	    return false;
-	shopInventory.get(itemName).removeStock(amount);
+	inventory.get(itemName).removeStock(amount);
 	return true;
     }
 
     public void setItemBuyPrice(String itemName, int price) {
-	int buySize = shopInventory.get(itemName).getBuySize();
-	shopInventory.get(itemName).setBuy(price, buySize);
+	int buySize = inventory.get(itemName).getBuySize();
+	inventory.get(itemName).setBuy(price, buySize);
 
     }
 
     public void setItemBuyAmount(String itemName, int buySize) {
-	int price = shopInventory.get(itemName).getBuyPrice();
-	shopInventory.get(itemName).setBuy(price, buySize);
+	int price = inventory.get(itemName).getBuyPrice();
+	inventory.get(itemName).setBuy(price, buySize);
     }
 
     public void setItemSellPrice(String itemName, int price) {
-	int sellSize = shopInventory.get(itemName).getSellPrice();
-	shopInventory.get(itemName).setSell(price, sellSize);
+	int sellSize = inventory.get(itemName).getSellPrice();
+	inventory.get(itemName).setSell(price, sellSize);
 
     }
 
     public void removeItem(String itemName) {
-	shopInventory.remove(itemName);
+	inventory.remove(itemName);
 
     }
 
-    public long[] getLocation1() {
-	return location.getLocation1();
-    }
-
-    public long[] getLocation2() {
-	return location.getLocation2();
-    }
-
+    // Why are we trying to find the center of the shop???
     public long[] getLocation() {
 	long[] xyz = new long[3];
-	long[] xyzA = location.getLocation1();
-	long[] xyzB = location.getLocation2();
+	long[] xyzA = locationA.toArray();
+	long[] xyzB = locationA.toArray();
 
 	for (int i = 0; i < 3; i++) {
 	    if (xyzA[i] < xyzB[i]) {
@@ -204,11 +193,14 @@ public class Shop {
     }
 
     public int itemMaxStock(String itemName) {
-	return shopInventory.get(itemName).maxStock;
+	return inventory.get(itemName).maxStock;
     }
 
     public void setItemMaxStock(String itemName, int maxStock) {
-	shopInventory.get(itemName).maxStock = maxStock;
+	inventory.get(itemName).maxStock = maxStock;
     }
 
+    public String toString() {
+	return String.format("Shop \"%s\" is at [%s], [%s] and has %d items", this.name, locationA.toString(), locationB.toString(), inventory.size());
+    }
 }

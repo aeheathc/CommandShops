@@ -49,15 +49,12 @@ public class ShopsPlayerListener extends PlayerListener {
 	    if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 		long[] xyz = { event.getClickedBlock().getX(), event.getClickedBlock().getY(), event.getClickedBlock().getZ() };
 		plugin.playerData.get(playerName).setPositionA(xyz);
-		player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + xyz[0] + " " + xyz[1] + " " + xyz[2] + ChatColor.AQUA + " size "
-						+ ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+		player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + xyz[0] + " " + xyz[1] + " " + xyz[2] + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
 	    } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 		long[] xyz = { event.getClickedBlock().getX(), event.getClickedBlock().getY(), event.getClickedBlock().getZ() };
 		plugin.playerData.get(playerName).setPositionB(xyz);
-		player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + xyz[0] + " " + xyz[1] + " " + xyz[2] + ChatColor.AQUA + " size "
-						+ ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+		player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + xyz[0] + " " + xyz[1] + " " + xyz[2] + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
 	    }
-
 	}
 
     }

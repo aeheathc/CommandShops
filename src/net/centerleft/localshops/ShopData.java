@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,8 +24,10 @@ import cuboidLocale.QuadTree;
 
 public class ShopData {
     private LocalShops plugin = null;
-
     private HashMap<String, Shop> shops;
+    
+    // Logging
+    private final Logger log = Logger.getLogger("Minecraft");    
 
     long shopSize = 10;
     long shopHeight = 3;
@@ -98,7 +101,7 @@ public class ShopData {
 
 	    tempShop.setName(shopName[0]);
 
-	    System.out.println("LocalShops: Loading shop " + shopName[0]);
+	    log.info(String.format("[%s] Loading shop %s", plugin.pdfFile.getName(), shopName[0]));
 
 	    // set default world just in case we're converting old files
 	    // will be over-written in case the shop files are setup correctly
@@ -262,7 +265,7 @@ public class ShopData {
 				    lz = 0;
 				    System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position data in " + shop.getName());
 				}
-				tempShop.setLocation(xyzA, xyzB);
+				tempShop.setLocations(new ShopLocation(xyzA), new ShopLocation(xyzB));
 
 			    } else if (split[0].equalsIgnoreCase("position1")) {
 				String[] args = split[1].split(",");
@@ -282,8 +285,7 @@ public class ShopData {
 				    xyzA[2] = 0;
 				    System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position1 data in " + shop.getName());
 				}
-				xyzB = tempShop.getLocation2();
-				tempShop.setLocation(xyzA, xyzB);
+				tempShop.setLocationA(new ShopLocation(xyzA));
 
 			    } else if (split[0].equalsIgnoreCase("position2")) {
 				String[] args = split[1].split(",");
@@ -303,8 +305,7 @@ public class ShopData {
 				    xyzB[2] = 0;
 				    System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position2 data in " + shop.getName());
 				}
-				xyzA = tempShop.getLocation1();
-				tempShop.setLocation(xyzA, xyzB);
+				tempShop.setLocationB(new ShopLocation(xyzB));
 
 			    } else if (split[0].equalsIgnoreCase("unlimited")) {
 				if (split[1].equalsIgnoreCase("true")) {
@@ -335,8 +336,7 @@ public class ShopData {
 		    }
 		}
 
-		tempShopCuboid = new PrimitiveCuboid(tempShop.getLocation1(),
-						tempShop.getLocation2());
+		tempShopCuboid = new PrimitiveCuboid(tempShop.getLocationA().toArray(), tempShop.getLocationB().toArray());
 
 		tempShopCuboid.name = tempShop.getName();
 		tempShopCuboid.world = tempShop.getWorld();
@@ -387,17 +387,14 @@ public class ShopData {
 	    if (outString.equalsIgnoreCase("null"))
 		outString = "";
 
-	    fileOutput.add("managers=" + outString + "\n");
-	    fileOutput.add("creator=" + shop.getCreator() + "\n");
-	    fileOutput.add("position1=" + shop.getShopPosition1String() + "\n");
-	    fileOutput.add("position2=" + shop.getShopPosition2String() + "\n");
-	    fileOutput.add("unlimited-money=" + String.valueOf(shop.isUnlimitedMoney())
-					+ "\n");
-	    fileOutput.add("unlimited-stock=" + String.valueOf(shop.isUnlimitedStock())
-					+ "\n");
+	    fileOutput.add(String.format("managers=%s\n", outString));
+	    fileOutput.add(String.format("creator=%s\n", shop.getCreator()));
+	    fileOutput.add(String.format("position1=%s\n", shop.getLocationA().toString()));
+	    fileOutput.add(String.format("position2=%s\n", shop.getLocationB().toString()));
+	    fileOutput.add(String.format("unlimited-money=%s\n", String.valueOf(shop.isUnlimitedMoney())));
+	    fileOutput.add("unlimited-stock=" + String.valueOf(shop.isUnlimitedStock()) + "\n");
 
 	    for (Item item : shop.getItems()) {
-		
 		int buyPrice = item.getBuyPrice();
 		int buySize = item.getBuySize();
 		int sellPrice = item.getSellPrice();

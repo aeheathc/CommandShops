@@ -3,6 +3,7 @@ package net.centerleft.localshops;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,10 +23,13 @@ import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 
 public class Commands {
-
+    // Attributes
     private LocalShops plugin = null;
     private CommandSender sender = null;
     private String[] args = null;
+    
+    // Logging
+    private final Logger log = Logger.getLogger("Minecraft");
 
     public Commands(LocalShops plugin, CommandSender sender, String[] args) {
 	this.plugin = plugin;
@@ -36,6 +40,7 @@ public class Commands {
     public boolean shopSelect() {
 	if (canUseCommand(sender, args)) {
 	    if (!(sender instanceof Player)) {
+		sender.sendMessage(ChatColor.AQUA + "Only players can interactively select coordinates.");
 		return false;
 	    }
 
@@ -67,11 +72,12 @@ public class Commands {
 	    // command format /lshop create ShopName
 	    Player player = (Player) sender;
 	    Location location = player.getLocation();
+	    String shopName = args[1];
 
 	    // check to see if that shop name is already used
 	    Collection<Shop> shops = plugin.shopData.getAllShops();
 	    for (Shop shop : shops) {
-		if (shop.getName().equalsIgnoreCase(args[1])) {
+		if (shop.getName().equalsIgnoreCase(shopName)) {
 		    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop.  " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " already exists.");
 		    return false;
 		}
@@ -80,8 +86,6 @@ public class Commands {
 	    long x = (long) location.getX();
 	    long y = (long) location.getY();
 	    long z = (long) location.getZ();
-
-	    String shopName = args[1];
 
 	    Shop thisShop = new Shop();
 
@@ -94,8 +98,8 @@ public class Commands {
 	    long[] xyzA = new long[3];
 	    long[] xyzB = new long[3];
 
-	    if (plugin.playerData.containsKey(player.getName())
-					&& plugin.playerData.get(player.getName()).isSelecting) {
+	    if (plugin.playerData.containsKey(player.getName()) && plugin.playerData.get(player.getName()).isSelecting) {
+		// Player has been selecting a shop -- use coords from PlayerData
 		if (!plugin.playerData.get(player.getName()).sizeOkay) {
 		    if (!canUseCommand(player, "admin".split(""))) {
 			String size = plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
@@ -131,7 +135,7 @@ public class Commands {
 
 	    }
 
-	    thisShop.setLocation(xyzA, xyzB);
+	    thisShop.setLocations(new ShopLocation(xyzA), new ShopLocation(xyzB));
 
 	    // need to check to see if the shop overlaps another shop
 	    if (shopPositionOk(player, xyzA, xyzB)) {
@@ -152,6 +156,7 @@ public class Commands {
 
 		// insert the shop into the world
 		LocalShops.cuboidTree.insert(tempShopCuboid);
+		log.info(String.format("[%s]", plugin.pdfFile.getName()));
 		plugin.shopData.addShop(thisShop);
 
 		plugin.playerData.put(player.getName(), new PlayerData(plugin, player.getName()));
@@ -211,8 +216,8 @@ public class Commands {
 
 	    // store shop info
 	    String shopName = thisShop.getName();
-	    xyzAold = thisShop.getLocation1();
-	    xyzBold = thisShop.getLocation2();
+	    xyzAold = thisShop.getLocationA().toArray();
+	    xyzBold = thisShop.getLocationB().toArray();
 
 	    long x = (long) location.getX();
 	    long y = (long) location.getY();
@@ -222,8 +227,8 @@ public class Commands {
 	    long[] xyzA = new long[3];
 	    long[] xyzB = new long[3];
 
-	    if (plugin.playerData.containsKey(player.getName())
-					&& plugin.playerData.get(player.getName()).isSelecting) {
+	    if (plugin.playerData.containsKey(player.getName()) && plugin.playerData.get(player.getName()).isSelecting) {
+		/**
 		if (!plugin.playerData.get(player.getName()).sizeOkay) {
 		    if (!canUseCommand(player, "admin".split(""))) {
 			String size = "" + plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
@@ -231,6 +236,8 @@ public class Commands {
 			return false;
 		    }
 		}
+		*/
+		
 		// if a custom size had been set, use that
 		PlayerData data = plugin.playerData.get(player.getName());
 		xyzA = data.getPositionA().clone();
@@ -262,15 +269,12 @@ public class Commands {
 	    // remove the old shop from the cuboid
 	    long[] xyz = thisShop.getLocation();
 	    BookmarkedResult res = new BookmarkedResult();
-
-	    res = LocalShops.cuboidTree.relatedSearch(res.bookmark, xyz[0],
-					xyz[1], xyz[2]);
+	    res = LocalShops.cuboidTree.relatedSearch(res.bookmark, xyz[0], xyz[1], xyz[2]);
 
 	    // get the shop's tree node and delete it
 	    for (PrimitiveCuboid shopLocation : res.results) {
 
-		// for each shop that you find, check to see if we're already in
-		// it
+		// for each shop that you find, check to see if we're already in it
 		// this should only find one shop node
 		if (shopLocation.name == null)
 		    continue;
@@ -306,7 +310,7 @@ public class Commands {
 		// insert the shop into the world
 		LocalShops.cuboidTree.insert(tempShopCuboid);
 		thisShop.setWorld(player.getWorld().getName());
-		thisShop.setLocation(xyzA, xyzB);
+		thisShop.setLocations(new ShopLocation(xyzA), new ShopLocation(xyzB));
 		plugin.shopData.addShop(thisShop);
 
 		plugin.playerData.put(player.getName(), new PlayerData(plugin, player.getName()));
@@ -541,14 +545,8 @@ public class Commands {
 
 		    } else if (args[1].equalsIgnoreCase("info")) {
 			player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Info for shop " + ChatColor.WHITE + shop.getName());
-			String location = "" + shop.getLocation1()[0];
-			location += " " + shop.getLocation1()[1];
-			location += " " + shop.getLocation1()[2];
-			player.sendMessage(ChatColor.AQUA + "  Shop Location 1 " + ChatColor.WHITE + location);
-			location = "" + shop.getLocation2()[0];
-			location += " " + shop.getLocation2()[1];
-			location += " " + shop.getLocation2()[2];
-			player.sendMessage(ChatColor.AQUA + "  Shop Location 2 " + ChatColor.WHITE + location);
+			player.sendMessage(ChatColor.AQUA + "  Shop Location 1 " + ChatColor.WHITE + shop.getLocationA().toString());
+			player.sendMessage(ChatColor.AQUA + "  Shop Location 2 " + ChatColor.WHITE + shop.getLocationB().toString());
 			player.sendMessage(ChatColor.AQUA + "  Shop Owner " + ChatColor.WHITE + shop.getOwner());
 			String message = "";
 			if (shop.getManagers() != null) {
