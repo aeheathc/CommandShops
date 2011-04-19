@@ -11,92 +11,92 @@ public class Item {
     public int maxStock;
 
     public Item() {
-	name = null;
-	buySize = 1;
-	buyPrice = 0;
-	sellSize = 1;
-	sellPrice = 0;
-	stock = 0;
-	maxStock = 0;
+        name = null;
+        buySize = 1;
+        buyPrice = 0;
+        sellSize = 1;
+        sellPrice = 0;
+        stock = 0;
+        maxStock = 0;
     }
 
     public Item(String name) {
-	this.name = name;
+        this.name = name;
 
-	buySize = 1;
-	buyPrice = 0;
-	sellSize = 1;
-	sellPrice = 0;
-	stock = 0;
+        buySize = 1;
+        buyPrice = 0;
+        sellSize = 1;
+        sellPrice = 0;
+        stock = 0;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setSell(int sellPrice, int sellSize) {
-	this.sellPrice = sellPrice;
-	this.sellSize = sellSize;
+        this.sellPrice = sellPrice;
+        this.sellSize = sellSize;
 
     }
 
     public void setBuy(int buyPrice, int buySize) {
-	this.buyPrice = buyPrice;
-	this.buySize = buySize;
+        this.buyPrice = buyPrice;
+        this.buySize = buySize;
     }
 
     public int getMaxStock() {
-	return maxStock;
+        return maxStock;
     }
-    
+
     public void setStock(int stock) {
-	this.stock = stock;
+        this.stock = stock;
     }
-    
+
     public void addStock(int stock) {
-	this.stock += stock;
+        this.stock += stock;
     }
-    
+
     public void removeStock(int stock) {
-	this.stock -= stock;
-	if(this.stock < 0) {
-	    this.stock = 0;
-	}
+        this.stock -= stock;
+        if (this.stock < 0) {
+            this.stock = 0;
+        }
     }
-    
+
     public int getStock() {
-	return stock;
+        return stock;
     }
-    
+
     public void setSellPrice(int price) {
-	sellPrice = price;
+        sellPrice = price;
     }
-    
+
     public int getSellPrice() {
-	return sellPrice;
+        return sellPrice;
     }
-    
+
     public void setSellSize(int size) {
-	sellSize = size;
+        sellSize = size;
     }
-    
+
     public int getSellSize() {
-	return sellSize;
+        return sellSize;
     }
-    
+
     public void setBuySize(int size) {
-	buySize = size;
+        buySize = size;
     }
-    
+
     public int getBuySize() {
-	return buySize;
+        return buySize;
     }
-    
+
     public void setBuyPrice(int price) {
-	buyPrice = price;
+        buyPrice = price;
     }
-    
+
     public int getBuyPrice() {
-	return buyPrice;
+        return buyPrice;
     }
 }
