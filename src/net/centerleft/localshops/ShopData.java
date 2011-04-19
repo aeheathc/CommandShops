@@ -262,7 +262,7 @@ public class ShopData {
 		int sellSize = item.getSellSize();
 		int stock = item.getStock();
 		int maxStock = item.getMaxStock();
-		int[] itemInfo = LocalShops.itemList.getItemInfo(null, item.itemName());
+		int[] itemInfo = LocalShops.itemList.getItemInfo(null, item.getName());
 		if (itemInfo == null)
 		    continue;
 		// itemId=dataValue,buyPrice:buyStackSize,sellPrice:sellStackSize,stock

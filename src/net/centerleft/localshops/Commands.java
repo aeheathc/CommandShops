@@ -625,7 +625,7 @@ public class Commands {
 	ArrayList<String> inventoryMessage = new ArrayList<String>();
 	for (Item item : items) {
 
-	    String subMessage = "   " + item;
+	    String subMessage = "   " + item.getName();
 	    int maxStock = 0;
 	    if (!list) {
 		int price = 0;

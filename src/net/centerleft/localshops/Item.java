@@ -2,7 +2,7 @@ package net.centerleft.localshops;
 
 public class Item {
 
-    private String itemName;
+    private String name;
     private int buySize;
     private int buyPrice;
     private int sellSize;
@@ -11,7 +11,7 @@ public class Item {
     public int maxStock;
 
     public Item() {
-	itemName = null;
+	name = null;
 	buySize = 1;
 	buyPrice = 0;
 	sellSize = 1;
@@ -21,7 +21,7 @@ public class Item {
     }
 
     public Item(String name) {
-	this.itemName = name;
+	this.name = name;
 
 	buySize = 1;
 	buyPrice = 0;
@@ -30,8 +30,8 @@ public class Item {
 	stock = 0;
     }
 
-    public String itemName() {
-	return this.itemName;
+    public String getName() {
+	return name;
     }
 
     public void setSell(int sellPrice, int sellSize) {
