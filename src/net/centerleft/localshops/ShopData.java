@@ -1,9 +1,11 @@
 package net.centerleft.localshops;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -84,277 +87,133 @@ public class ShopData {
 	}
 
 	File[] shopsList = shopsDir.listFiles();
-	for (File shop : shopsList) {
-
-	    if (!shop.isFile())
-		continue;
-	    if (!shop.getName().contains(".shop"))
-		continue;
-	    // read the file and put the data away nicely
-	    Shop tempShop = new Shop();
-	    String text = null;
-	    String[] split = null;
-	    Scanner scanner;
-	    PrimitiveCuboid tempShopCuboid = null;
-
-	    String[] shopName = shop.getName().split("\\.");
-
-	    tempShop.setName(shopName[0]);
-
-	    log.info(String.format("[%s] Loading shop %s", plugin.pdfFile.getName(), shopName[0]));
-
-	    // set default world just in case we're converting old files
-	    // will be over-written in case the shop files are setup correctly
-	    if (defaultWorld) {
-		tempShop.setWorld(worldName);
-	    }
-
-	    try {
-		scanner = new Scanner(new FileInputStream(shop));
-
-		int itemType, itemData;
-		int buyPrice, buyStackSize;
-		int sellPrice, sellStackSize;
-		int stock, maxStock;
-		long[] xyzA = new long[3];
-		long[] xyzB = new long[3];
-
-		while (scanner.hasNextLine()) {
-		    text = scanner.nextLine();
-		    // check if the next line is empty or a comment
-		    // ignore comments
-		    if (!text.startsWith("#") && !text.isEmpty()) {
-			split = text.split("=");
-			try {
-
-			    itemType = Integer.parseInt(split[0].split(":")[0]
-									.trim());
-			    String[] args = split[1].split(",");
-			    // args may be in one of two formats now:
-			    // buyPrice:buyStackSize sellPrice:sellStackSize
-			    // stock
-			    // or
-			    // dataValue buyPrice:buyStackSize
-			    // sellPrice:sellStackSize stock
-			    if (args.length == 3) {
-				String[] temp = args.clone();
-				args = new String[4];
-				args[0] = "0";
-				args[1] = temp[0];
-				args[2] = temp[1];
-				args[3] = temp[2];
-			    }
-
-			    try {
-
-				if (split[0].split(":").length == 1) {
-				    itemData = Integer.parseInt(args[0]);
-
-				    String[] buy = args[1].split(";");
-				    buyPrice = Integer.parseInt(buy[0]);
-				    if (buy.length == 1) {
-					buyStackSize = 1;
-				    } else {
-					buyStackSize = Integer.parseInt(buy[1]);
-				    }
-
-				    String[] sell = args[2].split(";");
-				    sellPrice = Integer.parseInt(sell[0]);
-				    if (sell.length == 1) {
-					sellStackSize = 1;
-				    } else {
-					sellStackSize = Integer
-												.parseInt(sell[1]);
-				    }
-
-				    stock = Integer.parseInt(args[3]);
-				    tempShop.addItem(itemType, itemData,
-											buyPrice, buyStackSize, sellPrice,
-											sellStackSize, stock, 0);
-				} else {
-				    itemData = Integer.parseInt(split[0]
-											.split(":")[1]);
-
-				    String[] buy = args[1].split(":");
-				    buyPrice = Integer.parseInt(buy[0]);
-				    if (buy.length == 1) {
-					buyStackSize = 1;
-				    } else {
-					buyStackSize = Integer.parseInt(buy[1]);
-				    }
-
-				    String[] sell = args[2].split(":");
-				    sellPrice = Integer.parseInt(sell[0]);
-				    if (sell.length == 1) {
-					sellStackSize = 1;
-				    } else {
-					sellStackSize = Integer
-												.parseInt(sell[1]);
-				    }
-
-				    String[] stockInfo = args[3].split(":");
-				    stock = Integer.parseInt(stockInfo[0]);
-
-				    if (stockInfo.length == 1) {
-					maxStock = 0;
-				    } else {
-					maxStock = Integer
-												.parseInt(stockInfo[1]);
-				    }
-
-				    tempShop.addItem(itemType, itemData,
-											buyPrice, buyStackSize, sellPrice,
-											sellStackSize, stock, maxStock);
-				}
-
-			    } catch (NumberFormatException ex3) {
-				System.out.println(plugin.pdfFile.getName() + ": Error - Problem with item data in " + shop.getName());
-			    }
-
-			} catch (NumberFormatException ex) {
-			    // this isn't an item number, so check what property
-			    // it is
-			    if (split[0].equalsIgnoreCase("owner")) {
-				tempShop.setOwner(split[1]);
-			    } else if (split[0].equalsIgnoreCase("creator")) {
-				tempShop.setCreator(split[1]);
-
-			    } else if (split[0].equalsIgnoreCase("managers")) {
-				if (split.length > 1) {
-				    String[] args = split[1].split(",");
-				    tempShop.setShopManagers(args);
-				}
-			    } else if (split[0].equalsIgnoreCase("world")) {
-				tempShop.setWorld(split[1]);
-			    } else if (split[0].equalsIgnoreCase("position")) {
-				String[] args = split[1].split(",");
-
-				xyzA = new long[3];
-				xyzB = new long[3];
-				long lx = 0;
-				long ly = 0;
-				long lz = 0;
-				try {
-
-				    lx = Long.parseLong(args[0].trim());
-				    ly = Long.parseLong(args[1].trim());
-				    lz = Long.parseLong(args[2].trim());
-
-				    if (shopSize % 2 == 1) {
-					xyzA[0] = lx - (shopSize / 2);
-					xyzB[0] = lx + (shopSize / 2);
-					xyzA[2] = lz - (shopSize / 2);
-					xyzB[2] = lz + (shopSize / 2);
-				    } else {
-					xyzA[0] = lx - (shopSize / 2) + 1;
-					xyzB[0] = lx + (shopSize / 2);
-					xyzA[2] = lz - (shopSize / 2) + 1;
-					xyzB[2] = lz + (shopSize / 2);
-				    }
-
-				    xyzA[1] = ly - 1;
-				    xyzB[1] = ly + shopHeight - 1;
-
-				    tempShopCuboid = new PrimitiveCuboid(xyzA,
-											xyzB);
-
-				} catch (NumberFormatException ex2) {
-
-				    lx = 0;
-				    ly = 0;
-				    lz = 0;
-				    System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position data in " + shop.getName());
-				}
-				tempShop.setLocations(new ShopLocation(xyzA), new ShopLocation(xyzB));
-
-			    } else if (split[0].equalsIgnoreCase("position1")) {
-				String[] args = split[1].split(",");
-
-				xyzA = new long[3];
-				xyzB = new long[3];
-				try {
-
-				    xyzA[0] = Long.parseLong(args[0].trim());
-				    xyzA[1] = Long.parseLong(args[1].trim());
-				    xyzA[2] = Long.parseLong(args[2].trim());
-
-				} catch (NumberFormatException ex2) {
-
-				    xyzA[0] = 0;
-				    xyzA[1] = 0;
-				    xyzA[2] = 0;
-				    System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position1 data in " + shop.getName());
-				}
-				tempShop.setLocationA(new ShopLocation(xyzA));
-
-			    } else if (split[0].equalsIgnoreCase("position2")) {
-				String[] args = split[1].split(",");
-
-				xyzA = new long[3];
-				xyzB = new long[3];
-				try {
-
-				    xyzB[0] = Long.parseLong(args[0].trim());
-				    xyzB[1] = Long.parseLong(args[1].trim());
-				    xyzB[2] = Long.parseLong(args[2].trim());
-
-				} catch (NumberFormatException ex2) {
-
-				    xyzB[0] = 0;
-				    xyzB[1] = 0;
-				    xyzB[2] = 0;
-				    System.out.println(plugin.pdfFile.getName() + ": Error - Problem with position2 data in " + shop.getName());
-				}
-				tempShop.setLocationB(new ShopLocation(xyzB));
-
-			    } else if (split[0].equalsIgnoreCase("unlimited")) {
-				if (split[1].equalsIgnoreCase("true")) {
-				    tempShop.setUnlimitedMoney(true);
-				} else {
-				    tempShop.setUnlimitedMoney(false);
-				}
-
-			    } else if (split[0]
-									.equalsIgnoreCase("unlimited-money")) {
-				if (split[1].equalsIgnoreCase("true")) {
-				    tempShop.setUnlimitedMoney(true);
-				} else {
-				    tempShop.setUnlimitedMoney(false);
-				}
-
-			    } else if (split[0]
-									.equalsIgnoreCase("unlimited-stock")) {
-				if (split[1].equalsIgnoreCase("true")) {
-				    tempShop.setUnlimitedStock(true);
-				} else {
-				    tempShop.setUnlimitedStock(false);
-				}
-
-			    }
-			}
-
-		    }
-		}
-
-		tempShopCuboid = new PrimitiveCuboid(tempShop.getLocationA().toArray(), tempShop.getLocationB().toArray());
-
-		tempShopCuboid.name = tempShop.getName();
-		tempShopCuboid.world = tempShop.getWorld();
-
-		if (shopPositionOk(tempShop, xyzA, xyzB)) {
-
-		    LocalShops.cuboidTree.insert(tempShopCuboid);
-		    shops.put(shopName[0], tempShop);
-
-		    // convert to new format
-		    saveShop(tempShop);
-		}
-
-	    } catch (FileNotFoundException e) {
-		System.out.println(plugin.pdfFile.getName() + ": Error - Could not read file " + shop.getName());
+	for (File file : shopsList) {
+	    // TODO: Regex on filename to determine new or old format
+	    
+	    Shop shop = loadShopOldFormat(file);
+	    // Check if not null, and add to world
+	    if(shop != null) {
+		plugin.shopData.addShop(shop);
 	    }
 	}
 
+    }
+    
+    public Shop loadShopOldFormat(File file) {
+	try {
+	    // Create new empty shop (this format has no UUID, so generate one)
+	    Shop shop = new Shop(UUID.randomUUID());
+	    
+	    // Retrieve Shop Name (from filename)
+	    shop.setName(file.getName().split("\\.")[0]);
+	    
+	    // Open file & iterate over lines
+	    BufferedReader br = new BufferedReader(new FileReader(file));
+	    String line = br.readLine();
+	    while(line != null) {
+		// Skip comment lines / metadata
+		if(line.startsWith("#")) {
+		    line = br.readLine();
+		    continue;
+		}
+		
+		// Data is seperated by =
+		String[] cols = line.split("=");
+		
+		if(cols[0].equalsIgnoreCase("world")) {				// World
+		    shop.setWorld(cols[1]);
+		} else if(cols[0].equalsIgnoreCase("owner")) {			// Owner
+		    shop.setOwner(cols[1]);
+		} else if(cols[0].equalsIgnoreCase("managers")) {		// Managers
+		    String[] managers = cols[1].split(",");
+		    shop.setManagers(managers);
+		} else if(cols[0].equalsIgnoreCase("creator")) {		// Creator
+		    shop.setCreator(cols[1]);
+		} else if(cols[0].equalsIgnoreCase("position1")) {		// Position A
+		    String[] xyzStr = cols[1].split(",");
+		    try {
+			long x = Long.parseLong(xyzStr[0]);
+			long y = Long.parseLong(xyzStr[1]);
+			long z = Long.parseLong(xyzStr[2]);
+
+			ShopLocation loc = new ShopLocation(x, y, z);
+			shop.setLocationA(loc);
+		    } catch (NumberFormatException e) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Location Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }
+		} else if(cols[0].equalsIgnoreCase("position2")) {		// Position B
+		    String[] xyzStr = cols[1].split(",");
+		    try {
+			long x = Long.parseLong(xyzStr[0]);
+			long y = Long.parseLong(xyzStr[1]);
+			long z = Long.parseLong(xyzStr[2]);
+
+			ShopLocation loc = new ShopLocation(x, y, z);
+			shop.setLocationB(loc);
+		    } catch (NumberFormatException e) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Location Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }		    
+		} else if(cols[0].equalsIgnoreCase("unlimited-money")) {	// Unlimited Money
+		    shop.setUnlimitedMoney(Boolean.parseBoolean(cols[1]));
+		} else if(cols[0].equalsIgnoreCase("unlimited-stock")) {	// Unlimited Stock
+		    shop.setUnlimitedStock(Boolean.parseBoolean(cols[1]));
+		} else if(cols[0].matches("\\d+:\\d+")) {				// Items
+		    String[] itemInfo = cols[0].split(":");
+		    if(itemInfo.length < 2) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }
+		    int itemId = Integer.parseInt(itemInfo[0]);
+		    int damageMod = Integer.parseInt(itemInfo[1]);
+		    
+		    String[] dataCols = cols[1].split(",");
+		    if(dataCols.length < 3) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }
+		    
+		    String[] buyInfo = dataCols[0].split(":");
+		    if(buyInfo.length < 2) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }
+		    int buyPrice = Integer.parseInt(buyInfo[0]);
+		    int buySize = Integer.parseInt(buyInfo[1]);
+		    
+		    String[] sellInfo = dataCols[1].split(":");
+		    if(sellInfo.length < 2) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }
+		    int sellPrice = Integer.parseInt(sellInfo[0]);
+		    int sellSize = Integer.parseInt(sellInfo[1]);
+		    
+		    String[] stockInfo = dataCols[2].split(":");
+		    if(stockInfo.length < 2) {
+			log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data, could not load.", plugin.pdfFile.getName(), file.toString()));
+			return null;
+		    }
+		    int stock = Integer.parseInt(stockInfo[0]);
+		    int maxStock = Integer.parseInt(stockInfo[1]);
+		    
+		    shop.addItem(itemId, damageMod, buyPrice, buySize, sellPrice, sellSize, stock, maxStock);
+		} else {							// Not defined
+		    log.info(String.format("[%s] Shop File \"%s\" has undefined data, ignoring.", plugin.pdfFile.getName(), file.toString()));
+		}
+		line = br.readLine();
+	    }
+	    
+	    br.close();
+	} catch(IOException e) {
+	    log.warning(String.format("[%s] Could not load Shop File \"%s\": %s", plugin.pdfFile.getName(), file.toString(), e.getMessage()));
+	}
+	return null;
+    }
+    
+    public Shop loadShop(File file) {
+	return null;
     }
 
     public boolean saveShop(Shop shop) {

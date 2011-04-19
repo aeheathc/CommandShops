@@ -1,20 +1,31 @@
 package net.centerleft.localshops;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class Shop {
     // Attributes
+    private UUID uuid = null;
     private String world = null;
     private String name = null;
     private ShopLocation locationA = null;
     private ShopLocation locationB = null;
     private String owner = null;
     private String creator = null;
-    private String[] managers = null;
+    private ArrayList<String> managers = null;
     private boolean unlimitedMoney = false;
     private boolean unlimitedStock = false;
     private HashMap<String, Item> inventory = new HashMap<String, Item>();
+    
+    public Shop(UUID uuid) {
+	this.uuid = uuid;
+    }
+    
+    public UUID getUuid() {
+	return uuid;
+    }
 
     public void setWorld(String name) {
 	world = name;
@@ -73,14 +84,6 @@ public class Shop {
 	this.creator = creator;
     }
 
-    public void setShopManagers(String[] names) {
-	if (names != null) {
-	    managers = names.clone();
-	} else {
-	    managers = null;
-	}
-    }
-
     public String getOwner() {
 	return owner;
     }
@@ -101,8 +104,7 @@ public class Shop {
 	return inventory.get(item);
     }
 
-    public void addItem(int itemNumber, int itemData, int buyPrice,
-			int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
+    public void addItem(int itemNumber, int itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
 	// TODO add maxStock to item object
 	String itemName = LocalShops.itemList.getItemName(itemNumber, itemData);
 	Item thisItem = new Item(itemName);
@@ -121,9 +123,25 @@ public class Shop {
 	inventory.put(itemName, thisItem);
 
     }
+    
+    public void setManagers(String[] managers) {
+	this.managers = new ArrayList<String>();
+	
+	for(String manager: managers) {
+	    if(!manager.equals("")) {
+		this.managers.add(manager);
+	    }
+	}
+    }
+    
+    public void addManager(String manager) {
+	this.managers.add(manager);
+    }
 
     public String[] getManagers() {
-	return managers;
+	String[] m = new String[this.managers.size()];
+	m = managers.toArray(m);
+	return m;
     }
 
     public Collection<Item> getItems() {

@@ -3,6 +3,7 @@ package net.centerleft.localshops;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -87,7 +88,7 @@ public class Commands {
 	    long y = (long) location.getY();
 	    long z = (long) location.getZ();
 
-	    Shop thisShop = new Shop();
+	    Shop thisShop = new Shop(UUID.randomUUID());
 
 	    thisShop.setCreator(player.getName());
 	    thisShop.setOwner(player.getName());
@@ -1473,7 +1474,7 @@ public class Commands {
 		    }
 
 		}
-		shop.setShopManagers(managers);
+		shop.setManagers(managers);
 
 		String msg = "";
 		if (shop.getManagers() != null) {
