@@ -141,10 +141,6 @@ public class Commands {
 	    // need to check to see if the shop overlaps another shop
 	    if (shopPositionOk(player, xyzA, xyzB)) {
 
-		PrimitiveCuboid tempShopCuboid = new PrimitiveCuboid(xyzA, xyzB);
-		tempShopCuboid.name = shopName;
-		tempShopCuboid.world = player.getWorld().getName();
-
 		if (plugin.shopData.chargeForShop) {
 		    String[] freeShop = { "freeshop" };
 		    if (!canUseCommand(sender, freeShop)) {
@@ -156,8 +152,8 @@ public class Commands {
 		}
 
 		// insert the shop into the world
-		LocalShops.cuboidTree.insert(tempShopCuboid);
-		log.info(String.format("[%s]", plugin.pdfFile.getName()));
+		LocalShops.cuboidTree.insert(thisShop.getCuboid());
+		log.info(String.format("[%s] Created: %s", plugin.pdfFile.getName(), thisShop.toString()));
 		plugin.shopData.addShop(thisShop);
 
 		plugin.playerData.put(player.getName(), new PlayerData(plugin, player.getName()));

@@ -83,6 +83,7 @@ public class ShopData {
 	    // Check if not null, and add to world
 	    if(shop != null) {
 		log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
+		LocalShops.cuboidTree.insert(shop.getCuboid());
 		plugin.shopData.addShop(shop);
 	    }
 	}

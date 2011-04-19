@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
+import cuboidLocale.PrimitiveCuboid;
+
 public class Shop {
     // Attributes
     private UUID uuid = null;
@@ -14,10 +16,11 @@ public class Shop {
     private ShopLocation locationB = null;
     private String owner = null;
     private String creator = null;
-    private ArrayList<String> managers = null;
+    private ArrayList<String> managers = new ArrayList<String>();
     private boolean unlimitedMoney = false;
     private boolean unlimitedStock = false;
     private HashMap<String, Item> inventory = new HashMap<String, Item>();
+    private PrimitiveCuboid cuboid = null;
     
     public Shop(UUID uuid) {
 	this.uuid = uuid;
@@ -216,6 +219,21 @@ public class Shop {
 
     public void setItemMaxStock(String itemName, int maxStock) {
 	inventory.get(itemName).maxStock = maxStock;
+    }
+    
+    public PrimitiveCuboid getCuboid() {
+	// If no cuboid, create it
+	if (cuboid == null) {
+	    // Check if either locaiton is null and return appropriately
+	    if(locationA == null || locationB == null) {
+		return null;
+	    }
+	    cuboid = new PrimitiveCuboid(getLocationA().toArray(), getLocationB().toArray());
+	    cuboid.name = name;
+	    cuboid.world = world;
+	}
+	
+	return cuboid;
     }
 
     public String toString() {
