@@ -67,32 +67,22 @@ public class ShopData {
 	return shops.size();
     }
 
-    public void LoadShops(File shopsDir) {
+    public void loadShops(File shopsDir) {
+	log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
 	// initialize and setup the hash of shops
 	shops = new HashMap<String, Shop>();
-	shops.clear();
 
 	LocalShops.cuboidTree = new QuadTree();
 
-	String worldName = null;
-	boolean defaultWorld = false;
-
-	if (LocalShops.foundWorlds.size() == 1) {
-	    worldName = LocalShops.foundWorlds.get(0).getName().toString();
-	    defaultWorld = true;
-	}
-
-	if (plugin.pluginListener.useiConomy) {
-	    currencyName = plugin.pluginListener.iConomy.getBank().getCurrency();
-	}
-
 	File[] shopsList = shopsDir.listFiles();
 	for (File file : shopsList) {
+	    log.info(String.format("[%s] Loading Shop file \"%s\".", plugin.pdfFile.getName(), file.toString()));
 	    // TODO: Regex on filename to determine new or old format
 	    
 	    Shop shop = loadShopOldFormat(file);
 	    // Check if not null, and add to world
 	    if(shop != null) {
+		log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
 		plugin.shopData.addShop(shop);
 	    }
 	}
@@ -100,6 +90,8 @@ public class ShopData {
     }
     
     public Shop loadShopOldFormat(File file) {
+	log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShopOldFormat(File file)"));
+	
 	try {
 	    // Create new empty shop (this format has no UUID, so generate one)
 	    Shop shop = new Shop(UUID.randomUUID());
@@ -111,14 +103,22 @@ public class ShopData {
 	    BufferedReader br = new BufferedReader(new FileReader(file));
 	    String line = br.readLine();
 	    while(line != null) {
+		log.info(String.format("[%s] %s", plugin.pdfFile.getName(), line));
+		
 		// Skip comment lines / metadata
 		if(line.startsWith("#")) {
 		    line = br.readLine();
 		    continue;
 		}
 		
-		// Data is seperated by =
+		// Data is separated by =
 		String[] cols = line.split("=");
+		
+		// Check if there are enough columns (needs key and value)
+		if(cols.length < 2) {
+		    line = br.readLine();
+		    continue;
+		}
 		
 		if(cols[0].equalsIgnoreCase("world")) {				// World
 		    shop.setWorld(cols[1]);
@@ -132,9 +132,9 @@ public class ShopData {
 		} else if(cols[0].equalsIgnoreCase("position1")) {		// Position A
 		    String[] xyzStr = cols[1].split(",");
 		    try {
-			long x = Long.parseLong(xyzStr[0]);
-			long y = Long.parseLong(xyzStr[1]);
-			long z = Long.parseLong(xyzStr[2]);
+			long x = Long.parseLong(xyzStr[0].trim());
+			long y = Long.parseLong(xyzStr[1].trim());
+			long z = Long.parseLong(xyzStr[2].trim());
 
 			ShopLocation loc = new ShopLocation(x, y, z);
 			shop.setLocationA(loc);
@@ -145,9 +145,9 @@ public class ShopData {
 		} else if(cols[0].equalsIgnoreCase("position2")) {		// Position B
 		    String[] xyzStr = cols[1].split(",");
 		    try {
-			long x = Long.parseLong(xyzStr[0]);
-			long y = Long.parseLong(xyzStr[1]);
-			long z = Long.parseLong(xyzStr[2]);
+			long x = Long.parseLong(xyzStr[0].trim());
+			long y = Long.parseLong(xyzStr[1].trim());
+			long z = Long.parseLong(xyzStr[2].trim());
 
 			ShopLocation loc = new ShopLocation(x, y, z);
 			shop.setLocationB(loc);
@@ -206,10 +206,12 @@ public class ShopData {
 	    }
 	    
 	    br.close();
+	    return shop;
+	    
 	} catch(IOException e) {
 	    log.warning(String.format("[%s] Could not load Shop File \"%s\": %s", plugin.pdfFile.getName(), file.toString(), e.getMessage()));
+	    return null;
 	}
-	return null;
     }
     
     public Shop loadShop(File file) {

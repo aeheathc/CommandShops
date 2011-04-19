@@ -126,7 +126,7 @@ public class LocalShops extends JavaPlugin {
 
 	foundWorlds = getServer().getWorlds();
 	// read the shops into memory
-	shopData.LoadShops(shopsDir);
+	shopData.loadShops(shopsDir);
 
 	// update the console that we've started
 	log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with " + shopData.getNumShops() + " shop(s)"));
