@@ -1,221 +1,210 @@
-Stone=1
-Grass=2
-Dirt=3
-Cobblestone=4
-WoodenPlank=5,0
-RedwoodPlank=5,1
-BirchPlank=5,2
-Sapling=6,0
-RedWoodSapling=6,1
-BirchSapling=6,2
-Bedrock=7
-Water=8
-StationaryWater=9
-Lava=10
-StationaryLava=11
-Sand=12
-Gravel=13
-GoldOre=14
-IronOre=15
-CoalOre=16
-Wood=17,0
-Redwood=17,1
-Birch=17,2
-Leaves=18,0
-RedwoodLeaves=18,1
-BirchLeaves=18,2
-Sponge=19
-Glass=20
-LapisLazuliOre=21
-LapisLazuliBlock=22
-Dispenser=23
-Sandstone=24
-NoteBlock=25
-BoosterRail=27
-Detector=28
-Wool=35,0
-OrangeWool=35,1
-MagentaWool=35,2
-LightBlueWool=35,3
-YellowWool=35,4
-LightGreenWool=35,5
-PinkWool=35,6
-GrayWool=35,7
-LightGrayWool=35,8
-CyanWool=35,9
-PurpleWool=35,10
-BlueWool=35,11
-BrownWool=35,12
-DarkGreenWool=35,13
-RedWool=35,14
-BlackWool=35,15
-YellowFlower=37
-RedRose=38
-BrownMushroom=39
-RedMushroom=40
-GoldBlock=41
-IronBlock=42
-DoubleSlab=43
-StoneSlab=44,0
-SandstoneSlab=44,1
-WoodenSlab=44,2
-CobblestoneSlab=44,3
-BrickBlock=45
-TNT=46
-Bookshelf=47
-MossStone=48
-Obsidian=49
-Torch=50
-MonsterSpawner=52
-WoodenStairs=53
-Chest=54
-DiamondOre=56
-DiamondBlock=57
-CraftingTable=58
-Crops=59
-Farmland=60
-Furnace=61
-Ladder=65
-Rails=66
-CobblestoneStairs=67
-Lever=69
-StonePressurePlate=70
-WoodenPressurePlate=72
-RedstoneOre=73
-GlowingRedstoneOre=74
-RedstoneTorch=76
-StoneButton=77
-Snow=78
-Ice=79
-SnowBlock=80
-Cactus=81
-ClayBlock=82
-Jukebox=84
-Fence=85
-Pumpkin=86
-Netherrack=87
-SoulSand=88
-GlowstoneBlock=89
-Portal=90
-Jack-O-Lantern=91
-CakeBlock=92
-IronShovel=256
-IronPickaxe=257
-IronAxe=258
-FlintandSteel=259
-Apple=260
-Bow=261
-Arrow=262
-Coal=263,0
-Charcoal=263,1
-Diamond=264
-IronIngot=265
-GoldIngot=266
-IronSword=267
-WoodenSword=268
-WoodenShovel=269
-WoodenPickaxe=270
-WoodenAxe=271
-StoneSword=272
-StoneShovel=273
-StonePickaxe=274
-StoneAxe=275
-DiamondSword=276
-DiamondShovel=277
-DiamondPickaxe=278
-DiamondAxe=279
-Stick=280
-Bowl=281
-MushroomSoup=282
-GoldSword=283
-GoldShovel=284
-GoldPickaxe=285
-GoldAxe=286
-String=287
-Feather=288
-Gunpowder=289
-WoodenHoe=290
-StoneHoe=291
-IronHoe=292
-DiamondHoe=293
-GoldHoe=294
-Seeds=295
-Wheat=296
-Bread=297
-LeatherHelmet=298
-LeatherChestplate=299
-LeatherLeggings=300
-LeatherBoots=301
-ChainmailHelmet=302
-ChainmailChestplate=303
-ChainmailLeggings=304
-ChainmailBoots=305
-IronHelmet=306
-IronChestplate=307
-IronLeggings=308
-IronBoots=309
-DiamondHelmet=310
-DiamondChestplate=311
-DiamondLeggings=312
-DiamondBoots=313
-GoldHelmet=314
-GoldChestplate=315
-GoldLeggings=316
-GoldBoots=317
-Flint=318
-RawPorkchop=319
-CookedPorkchop=320
-Paintings=321
-Goldenapple=322
-Sign=323
-Woodendoor=324
-Bucket=325
-Waterbucket=326
-Lavabucket=327
-Minecart=328
-Saddle=329
-Irondoor=330
-Redstone=331
-Snowball=332
-Boat=333
-Leather=334
-Milk=335
-ClayBrick=336
-ClayBalls=337
-SugarCane=338
-Paper=339
-Book=340
-Slimeball=341
-StorageMinecart=342
-PoweredMinecart=343
-Egg=344
-Compass=345
-FishingRod=346
-Clock=347
-GlowstoneDust=348
-RawFish=349
-CookedFish=350
-InkSac=351,0
-RoseRed=351,1
-CactusGreen=351,2
-CocoaBeans=351,3
-LapisLazuliDye=351,4
-PurpleDye=351,5
-CyanDye=351,6
-LightGrayDye=351,7
-GrayDye=351,8
-PinkDye=351,9
-LimeDye=351,10
-DandelionYellow=351,11
-LightBlueDye=351,12
-MagentaDye=351,13
-OrangeDye=351,14
-BoneMeal=351,15
-Bone=352
-Sugar=353
-Cake=354
-Bed=355
-RedstoneRepeater=356
-Cookie=357
-GoldMusicDisc=2256
-GreenMusicDisc=2257
+Stone|[stone]|1|0
+Grass|[grass]|2|0
+Dirt|[dirt]|3|0
+Cobblestone|[cobb]|4|0
+Wooden Plank|[wood][wood,plank]|5|0
+Sapling|[sapling]|6|0
+Redwood Sapling|[sapling,red]|6|1
+Birch Sapling|[sapling,birch]|6|2
+Bedrock|[rock]|7|0
+Water|[water]|8|0
+Lava|[lava]|10|0
+Sand|[sand]|12|0
+Gravel|[gravel]|13|0
+Gold Ore|[ore,gold]|14|0
+Iron Ore|[ore,iron]|15|0
+Coal Ore|[ore,coal]|16|0
+Log|[log]|17|0
+Redwood Log[log,red]|17|1
+Birch Log|[birch][log,birch]|17|2
+Leaves|[leaf][leaves]|18|0
+Redwood Leaves|[lea,red]|18|1
+Birch Leaves|[lea,birch]|18|2
+Sponge|[sponge]|19|0
+Glass|[glas][sili]|20|0
+Lapis Lazuli Ore|[laz,ore]|21|0
+Lapis Lazuli Block|[laz,bl]|22|0
+Dispenser|[dispen]|23|0
+Sandstone|[sandst]|24|0
+Note Block|[note]|25|0
+Powered Rail|[rail,pow][trac,pow][boost]|27|0
+Detector Rail|[rail,det][trac,det][detec]|28|0
+Web|[web]|30|0
+White Wool|[wool][wool,whit]|35|0
+Orange Wool|[wool,ora]|35|1
+Magenta Wool|[wool,mag]|35|2
+Light Blue Wool|[wool,blue][wool,lig,blue]|35|3
+Yellow Wool|[wool,yell]|35|4
+Light Green Wool|[wool,gree][wool,lig,gree]|35|5
+Pink Wool|[wool,pink]|35|6
+Gray Wool|[wool,gray][wool,grey]|35|7
+Light Gray Wool|[wool,gra][wool,lig,gra][wool,grey][wool,lig,grey]|35|8
+Cyan Wool|[wool,cya]|35|9
+Purple Wool|[wool,pur]|35|10
+Blue Wool|[wool,blue]|35|11
+Brown Wool|[wool,brow]|35|12
+Dark Green Wool|[wool,gree][wool,dar,gree]|35|13
+Red Wool|[wool,red]|35|14
+Black Wool|[wool,bla]|35|15
+Dandelion|[flow,yell][dande]|37|0
+Red Rose|[flow,red][rose]|38|0
+Brown Mushroom|[mush,bro]|39|0
+Red Mushroom|[mush,red]|40|0
+Gold Block|[gold,bl]|41|0
+Iron Block|[iron,bl]|42|0
+Stone Slab|[slab][slab,sto]|44|0
+Sandstone Slab|[slab,san]|44|1
+Wooden Slab|[slab,woo]|44|2
+Cobblestone Slab|[slab,cobb]|44|3
+Brick|[bric]|45|0
+TNT|[tnt][boom]|46|0
+Bookshelf|[bookshe][book,she]|47|0
+Moss Stone|[moss]|48|0
+Obsidian|[obsi]|49|0
+Torch|[torc]|50|0
+Fire|[fire]|51|0
+Monster Spawner|[spawn]|52|0
+Wooden Stairs|[stair,wood]|53|0
+Chest|[chest]|54|0
+Diamond Ore|[ore,diam]|56|0
+Diamond Block|[diam,bl]|57|0
+Crafting Table|[benc][squa][craft]|58|0
+Farmland|[soil][farm]|60|0
+Furnace|[furna][cooke]|61|0
+Ladder|[ladd]|65|0
+Rails|[rail][trac]|66|0
+Cobblestone Stairs|[stair,cob]|67|0
+Lever|[lever][switc]|69|0
+Stone Pressure Plate|[pres,plat,ston]|70|0
+Wooden Pressure Plate|[pres,plat,wood]|72|0
+Redstone Ore|[ore,red][ore,rs]|73|0
+Redstone Torch|[torc,red][torc,rs]|76|0
+Stone Button|[button]|77|0
+Ice|[ice]|78|0
+Snow Block|[snow]|80|0
+Cactus|[cact]|81|0
+Clay Block|[clay,blo]|82|0
+Jukebox|[jukeb]|84|0
+Fence|[fence]|85|0
+Pumpkin|[pump]|86|0
+Netherrack|[netherr][netherst][hellst]|87|0
+Soul Sand|[soul][slowsa]|88|0
+Glowstone|[glow][light]|89|0
+Jack-O-Lantern|[jack][lante]|91|0
+Iron Shovel|[shov,ir][spad,ir]|256|0
+Iron Pickaxe|[pick,ir]|257|0
+Iron Axe|[axe,ir]|258|0
+Fint and Steel|[steel][lighter][flin,ste]|259|0
+Apple|[appl]|260|0
+Bow|[bow]|261|0
+Arrow|[arro]|262|0
+Coal|[coal]|263|0
+Charcoal|[charc]|263|1
+Diamond|[diamo]|264|0
+Iron Ingot|[ingo,ir]|265|0
+Gold Ingot|[ingo,go]|266|0
+Iron Sword|[swor,ir]|267|0
+Wooden Sword|[swor,wo]|268|0
+Wooden Shovel|[shov,wo][spad,wo]|269|0
+Wooden Pickaxe|[pick,woo]|270|0
+Wooden Axe|[axe,woo]|271|0
+Stone Sword|[swor,sto]|272|0
+Stone Shovel|[shov,sto][spad,sto]|273|0
+Stone Pickaxe|[pick,sto]|274|0
+Stone Axe|[axe,sto]|275|0
+Diamond Sword|[swor,dia]|276|0
+Diamond Shovel|[shov,dia][spad,dia]|277|0
+Diamond Pickaxe|[pick,dia]|278|0
+Diamond Axe|[axe,dia]|279|0
+Stick|[stic]|280|0
+Bowl|[bowl]|281|0
+Mushroom Soup|[soup]|282|0
+Gold Sword|[swor,gol]|283|0
+Gold Shovel|[shov,gol][spad,gol]|284|0
+Gold Pickaxe|[pick,gol]|285|0
+Gold Axe|[axe,gol]|286|0
+String|[stri]|287|0
+Feather|[feat]|288|0
+Gunpowder|[gun][sulph]|279|0
+Wooden Hoe|[hoe,wo]|290|0
+Stone Hoe|[hoe,wo]|291|0
+Iron Hoe|[hoe,wo]|292|0
+Diamond Hoe|[hoe,wo]|293|0
+Gold Hoe|[hoe,wo]|294|0
+Seeds|[seed]|295|0
+Wheat|[whea]|296|0
+Bread|[brea]|297|0
+Leather Cap|[cap,lea][hat,lea][helm,lea]|298|0
+Leather Tunic|[tun,lea][ches,lea]|299|0
+Leather Pants|[pan,lea][trou,lea]|300|0
+Leather Boots|[boo,lea]|301|0
+Chain Cap|[cap,cha][hat,cha][helm,cha]|302|0
+Chain Tunic|[tun,cha][ches,cha]|303|0
+Chain Pants|[pan,cha][trou,cha]|304|0
+Chain Boots|[boo,cha]|305|0
+Iron Cap|[cap,ir][hat,ir][helm,ir]|306|0
+Iron Tunic|[tun,ir][ches,ir]|307|0
+Iron Pants|[pan,ir][trou,ir]|308|0
+Iron Boots|[boo,ir]|309|0
+Diamond Cap|[cap,dia][hat,dia][helm,dia]|310|0
+Diamond Tunic|[tun,dia][ches,dia]|311|0
+Diamond Pants|[pan,dia][trou,dia]|312|0
+Diamond Boots|[boo,dia]|313|0
+Gold Cap|[cap,go][hat,go][helm,go]|314|0
+Gold Tunic|[tun,go][ches,go]|315|0
+Gold Pants|[pan,go][trou,go]|316|0
+Gold Boots|[boo,go]|317|0
+Flint|[flin]|318|0
+Raw Porkchop|[pork][ham]|319|0
+Cooked Porkchop|[pork,cook][baco]|320|0
+Paintings|[paint]|321|0
+Golden Apple|[appl,go]|322|0
+Sign|[sign]|323|0
+Wooden Door|[door][door,wood]|324|0
+Bucket|[buck][bukk]|325|0
+Minecart|[cart]|328|0
+Saddle|[sad][pig]|329|0
+Iron Door|[door,iron]|330|0
+Redstone|[reds][dust,rs][dust,red]|331|0
+Snowball|[snowb]|332|0
+Boat|[boat]|333|0
+Leather|[lea][hide]|334|0
+Clay Brick|[bric,cl][sin,bric]|336|0
+Clay|[cla]|337|0
+Sugar Cane|[reed][cane]|338|0
+Paper|[pape]|339|0
+Book|[book]|340|0
+Slimeball|[slime]|341|0
+Storage Minecart|[cart,sto][cart,che][cargo]|342|0
+Powered Minecart|[cart,pow][engine]|343|0
+Egg|[egg]|344|0
+Compass|[comp]|345|0
+Fishing Rod|[rod][pole]|346|0
+Clock|[cloc][watc]|347|0
+Glowstone Dust|[glow,dus][ligh,dust]|348|0
+Raw Fish|[fish]|349|0
+Cooked Fish|[fish,coo][kipper]|350|0
+Ink Sac|[ink][dye,bla]|351|0
+Rose Red|[dye,red][pain,red][pet,ros][pet,red]|351|1
+Cactus Green|[dye,gree][pain,gree]|351|2
+Cocoa Beans|[beans][choco][dye,bro][pain,bro]|351|3
+Lapis Lazuli|[lapi][dye,blu][pain,blu]|351|4
+Purple Dye|[dye,pur][pain,pur]|351|5
+Cyan Dye|[dye,cya][pain,cya]|351|6
+Light Gray Dye|[dye,lig,gra][dye,lig,grey][pain,lig,grey][pain,lig,grey]|351|7
+Gray Dye|[dye,gra][dye,grey][pain,grey][pain,grey]|351|8
+Pink Dye|[dye,pin][pain,pin]|351|9
+Lime Dye|[dye,lim][pain,lim][dye,lig,gree][pain,lig,gree]|351|10
+Dangelion Yellow|[dye,yel][pet,dan][pet,yel]|351|11
+Light Blue Dye|[dye,lig,blu][pain,lig,blu]|351|12
+Magenta Dye|[dye,mag][pain,mag]|351|13
+Orange Dye|[dye,ora][pain,ora]|351|14
+Bone Meal|[bonem][bone,me][dye,whi][pain,whi]|351|15
+Bone|[bone][femur]|352|0
+Sugar|[suga]|353|0
+Cake|[cake]|354|0
+Bed|[bed]|355|0
+Redstone Repeater|[diod][red,rep][rs,rep]|356|0
+Cookie|[cooki]|357|0
+Gold Music Disc|[dis,gol][rec,gol]|2256|0
+Green Music Disc|[dis,gre][rec,gre]|2257|0
