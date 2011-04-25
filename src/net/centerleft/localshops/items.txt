@@ -15,7 +15,7 @@ Gold Ore|[ore,gold]|14|0
 Iron Ore|[ore,iron]|15|0
 Coal Ore|[ore,coal]|16|0
 Log|[log]|17|0
-Redwood Log[log,red]|17|1
+Redwood Log|[log,red]|17|1
 Birch Log|[birch][log,birch]|17|2
 Leaves|[leaf][leaves]|18|0
 Redwood Leaves|[lea,red]|18|1
