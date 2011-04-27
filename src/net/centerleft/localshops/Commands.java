@@ -910,7 +910,7 @@ public class Commands {
             
             // Variables
             ItemInfo item = null;
-            int amount = -1;
+            int amount = 0;
             PlayerData pData = plugin.playerData.get(player.getName());
             Shop shop = null;
             
@@ -933,7 +933,6 @@ public class Commands {
                         item = Search.itemById(itemId);
                     } else {
                         // shop add id
-                        amount = 1;
                         int itemId = Integer.parseInt(args[1]);
                         item = Search.itemById(itemId);
                     }
@@ -947,7 +946,6 @@ public class Commands {
                         item = Search.itemById(itemId, typeId);
                     } else {
                         // shop add id:type
-                        amount = 1;
                         int itemId = Integer.parseInt(args[1].split(":")[0]);
                         short typeId = Short.parseShort(args[1].split(":")[1]);
                         item = Search.itemById(itemId, typeId);
@@ -964,7 +962,6 @@ public class Commands {
                         item = Search.itemByName(itemName);
                     } else {
                         // All string data
-                        amount = 1;
                         ArrayList<String> itemName = new ArrayList<String>();
                         for (int i = 1; i < args.length; i++) {
                             itemName.add(args[i]);
