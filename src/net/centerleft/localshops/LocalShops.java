@@ -57,6 +57,8 @@ public class LocalShops extends JavaPlugin {
     protected Map<String, PlayerData> playerData; // synchronized player hash
 
     public void onEnable() {
+        
+        Search.loadItems();
 
         pdfFile = getDescription();
 
@@ -152,7 +154,9 @@ public class LocalShops extends JavaPlugin {
 
         if (commandName.equalsIgnoreCase("lshop")) {
             if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("create")) {
+                if (args[0].equalsIgnoreCase("search")) {
+                    commands.shopSearch();
+                } else if (args[0].equalsIgnoreCase("create")) {
                     commands.shopCreate();
                     for (Player player : this.getServer().getOnlinePlayers()) {
                         playerListener.checkPlayerPosition(player);

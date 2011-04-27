@@ -186,5 +186,13 @@ public class PlayerData {
         }
         return false;
     }
+    
+    public String getCurrentShop() {
+        if(shopList.size() == 1) {
+            return shopList.get(0);
+        } else {
+            return null;
+        }
+    }
 
 }

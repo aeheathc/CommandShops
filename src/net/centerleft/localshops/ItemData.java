@@ -314,10 +314,10 @@ public class ItemData {
             ArrayList<String> foundMatches = new ArrayList<String>();
             foundMatches.clear();
 
-            Collection<Item> items = shop.getItems();
-            for (Item item : items) {
-                if (item.getName().matches(name)) {
-                    foundMatches.add(item.getName());
+            Collection<InventoryItem> items = shop.getItems();
+            for (InventoryItem item : items) {
+                if (item.getInfo().name.matches(name)) {
+                    foundMatches.add(item.getInfo().name);
                 }
             }
 

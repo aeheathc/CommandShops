@@ -171,7 +171,7 @@ public class ShopData {
                         return null;
                     }
                     int itemId = Integer.parseInt(itemInfo[0]);
-                    int damageMod = Integer.parseInt(itemInfo[1]);
+                    short damageMod = Short.parseShort(itemInfo[1]);
 
                     String[] dataCols = cols[1].split(",");
                     if (dataCols.length < 3) {
@@ -260,14 +260,14 @@ public class ShopData {
             fileOutput.add(String.format("unlimited-money=%s\n", String.valueOf(shop.isUnlimitedMoney())));
             fileOutput.add("unlimited-stock=" + String.valueOf(shop.isUnlimitedStock()) + "\n");
 
-            for (Item item : shop.getItems()) {
+            for (InventoryItem item : shop.getItems()) {
                 int buyPrice = item.getBuyPrice();
                 int buySize = item.getBuySize();
                 int sellPrice = item.getSellPrice();
                 int sellSize = item.getSellSize();
                 int stock = item.getStock();
                 int maxStock = item.getMaxStock();
-                int[] itemInfo = LocalShops.itemList.getItemInfo(null, item.getName());
+                int[] itemInfo = LocalShops.itemList.getItemInfo(null, item.getInfo().name);
                 if (itemInfo == null)
                     continue;
                 // itemId=dataValue,buyPrice:buyStackSize,sellPrice:sellStackSize,stock

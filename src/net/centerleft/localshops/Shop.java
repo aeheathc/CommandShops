@@ -19,7 +19,7 @@ public class Shop {
     private ArrayList<String> managers = new ArrayList<String>();
     private boolean unlimitedMoney = false;
     private boolean unlimitedStock = false;
-    private HashMap<String, Item> inventory = new HashMap<String, Item>();
+    private HashMap<String, InventoryItem> inventory = new HashMap<String, InventoryItem>();
     private PrimitiveCuboid cuboid = null;
 
     public Shop(UUID uuid) {
@@ -103,14 +103,14 @@ public class Shop {
         unlimitedMoney = b;
     }
 
-    public Item getItem(String item) {
+    public InventoryItem getItem(String item) {
         return inventory.get(item);
     }
 
-    public void addItem(int itemNumber, int itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
+    public void addItem(int itemNumber, short itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
         // TODO add maxStock to item object
-        String itemName = LocalShops.itemList.getItemName(itemNumber, itemData);
-        Item thisItem = new Item(itemName);
+        ItemInfo item = Search.itemById(itemNumber, itemData);
+        InventoryItem thisItem = new InventoryItem(item);
 
         thisItem.setBuy(buyPrice, buyStackSize);
         thisItem.setSell(sellPrice, sellStackSize);
@@ -119,12 +119,11 @@ public class Shop {
 
         thisItem.maxStock = maxStock;
 
-        if (inventory.containsKey(itemName)) {
-            inventory.remove(itemName);
+        if (inventory.containsKey(item.name)) {
+            inventory.remove(item.name);
         }
 
-        inventory.put(itemName, thisItem);
-
+        inventory.put(item.name, thisItem);
     }
 
     public void setManagers(String[] managers) {
@@ -147,7 +146,7 @@ public class Shop {
         return m;
     }
 
-    public Collection<Item> getItems() {
+    public Collection<InventoryItem> getItems() {
         return inventory.values();
     }
 
@@ -237,6 +236,6 @@ public class Shop {
     }
 
     public String toString() {
-        return String.format("Shop \"%s\" is at [%s], [%s] and has %d items", this.name, locationA.toString(), locationB.toString(), inventory.size());
+        return String.format("Shop \"%s\" at [%s], [%s] %d items", this.name, locationA.toString(), locationB.toString(), inventory.size());
     }
 }
