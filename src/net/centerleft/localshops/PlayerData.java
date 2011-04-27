@@ -19,7 +19,6 @@ public class PlayerData {
     protected BookmarkedResult bookmark = new BookmarkedResult();
     protected String playerName = null;
     protected boolean isSelecting = false;
-    protected boolean sizeOkay = false;
     private long xyzA[] = null;
     private long xyzB[] = null;
     protected String size = "";
@@ -40,34 +39,32 @@ public class PlayerData {
 
     public void setPositionA(long[] xyz) {
         xyzA = xyz.clone();
-        checkSize(xyzA, xyzB);
     }
 
     public void setPositionB(long[] xyz) {
         xyzB = xyz.clone();
-        checkSize(xyzA, xyzB);
     }
 
     public String getSizeString() {
         return size;
     }
 
-    private boolean checkSize(long[] xyzA, long[] xyzB) {
-        if (xyzA != null && xyzB != null) {
-            long width1 = Math.abs(xyzA[0] - xyzB[0]) + 1;
-            long height = Math.abs(xyzA[1] - xyzB[1]) + 1;
-            long width2 = Math.abs(xyzA[2] - xyzB[2]) + 1;
-
-            size = "" + width1 + "x" + height + "x" + width2;
-
-            if (width1 > plugin.shopData.maxWidth || width2 > plugin.shopData.maxWidth || height > plugin.shopData.maxHeight) {
-                return false;
-            } else {
-                bit: return true;
-            }
+    public boolean checkSize() {
+        if (xyzA == null || xyzB == null) {
+            return false;
         }
-        return false;
 
+        long width1 = Math.abs(xyzA[0] - xyzB[0]) + 1;
+        long height = Math.abs(xyzA[1] - xyzB[1]) + 1;
+        long width2 = Math.abs(xyzA[2] - xyzB[2]) + 1;
+
+        size = "" + width1 + "x" + height + "x" + width2;
+
+        if (width1 > plugin.shopData.maxWidth || width2 > plugin.shopData.maxWidth || height > plugin.shopData.maxHeight) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public boolean addPlayerToShop(String shopName) {
@@ -102,11 +99,11 @@ public class PlayerData {
 
     public boolean payPlayer(String playerName, int cost) {
         if (plugin.pluginListener.useiConomy) {
-            iConomy ic = plugin.pluginListener.iConomy;
-            Account account = ic.getBank().getAccount(playerName);
+            //iConomy ic = plugin.pluginListener.iConomy;
+            Account account = iConomy.getBank().getAccount(playerName);
             if (account == null) {
-                ic.getBank().addAccount(playerName);
-                account = ic.getBank().getAccount(playerName);
+                iConomy.getBank().addAccount(playerName);
+                account = iConomy.getBank().getAccount(playerName);
             }
             double balance = account.getBalance();
             account.setBalance(balance + (double) cost);
@@ -118,19 +115,19 @@ public class PlayerData {
 
     public boolean payPlayer(String playerFrom, String playerTo, int cost) {
         if (plugin.pluginListener.useiConomy) {
-            iConomy ic = plugin.pluginListener.iConomy;
+            //iConomy ic = plugin.pluginListener.iConomy;
 
-            Account accountFrom = ic.getBank().getAccount(playerFrom);
+            Account accountFrom = iConomy.getBank().getAccount(playerFrom);
             if (accountFrom == null) {
-                ic.getBank().addAccount(playerFrom);
-                accountFrom = ic.getBank().getAccount(playerFrom);
+                iConomy.getBank().addAccount(playerFrom);
+                accountFrom = iConomy.getBank().getAccount(playerFrom);
             }
             double balanceFrom = accountFrom.getBalance();
 
-            Account accountTo = ic.getBank().getAccount(playerTo);
+            Account accountTo = iConomy.getBank().getAccount(playerTo);
             if (accountTo == null) {
-                ic.getBank().addAccount(playerTo);
-                accountTo = ic.getBank().getAccount(playerTo);
+                iConomy.getBank().addAccount(playerTo);
+                accountTo = iConomy.getBank().getAccount(playerTo);
             }
             double balanceTo = accountTo.getBalance();
 
@@ -148,12 +145,12 @@ public class PlayerData {
 
     public long getBalance(String shopOwner) {
         if (plugin.pluginListener.useiConomy) {
-            iConomy ic = plugin.pluginListener.iConomy;
+            //iConomy ic = plugin.pluginListener.iConomy;
 
-            Account account = ic.getBank().getAccount(shopOwner);
+            Account account = iConomy.getBank().getAccount(shopOwner);
             if (account == null) {
-                ic.getBank().addAccount(shopOwner);
-                account = ic.getBank().getAccount(shopOwner);
+                iConomy.getBank().addAccount(shopOwner);
+                account = iConomy.getBank().getAccount(shopOwner);
             }
             double balanceFrom = account.getBalance();
 
@@ -164,14 +161,14 @@ public class PlayerData {
 
     public boolean chargePlayer(String shopOwner, long chargeAmount) {
         if (plugin.pluginListener.useiConomy) {
-            iConomy ic = plugin.pluginListener.iConomy;
+            //iConomy ic = plugin.pluginListener.iConomy;
             if (ic == null)
                 return false;
 
-            Account account = ic.getBank().getAccount(shopOwner);
+            Account account = iConomy.getBank().getAccount(shopOwner);
             if (account == null) {
-                ic.getBank().addAccount(shopOwner);
-                account = ic.getBank().getAccount(shopOwner);
+                iConomy.getBank().addAccount(shopOwner);
+                account = iConomy.getBank().getAccount(shopOwner);
             }
             double balanceFrom = account.getBalance();
             double newBalance = balanceFrom - chargeAmount;

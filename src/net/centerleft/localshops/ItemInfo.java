@@ -3,6 +3,8 @@ package net.centerleft.localshops;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.bukkit.inventory.ItemStack;
+
 public class ItemInfo {
     public String name;
     public ArrayList<String[]> search;
@@ -18,5 +20,9 @@ public class ItemInfo {
     
     public String toString() {
         return String.format("%s, %s [%d,%d]", name, Arrays.deepToString(search.toArray()), typeId, subTypeId);
+    }
+    
+    public ItemStack toStack() {
+        return new ItemStack (typeId, 1, subTypeId);
     }
 }

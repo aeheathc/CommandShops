@@ -367,24 +367,18 @@ public class ShopData {
         return false;
     }
 
-    public boolean logItems(String playerName, String shopName, String action, String itemName,
-            int numberOfItems, int startNumberOfItems, int endNumberOfItems) {
+    public boolean logItems(String playerName, String shopName, String action, String itemName, int numberOfItems, int startNumberOfItems, int endNumberOfItems) {
 
-        return logTransaciton(playerName, shopName, action, itemName, numberOfItems,
-                startNumberOfItems, endNumberOfItems, 0, 0, 0);
+        return logTransaciton(playerName, shopName, action, itemName, numberOfItems, startNumberOfItems, endNumberOfItems, 0, 0, 0);
 
     }
 
-    public boolean logPayment(String playerName, String action, double moneyTransfered,
-            double startingbalance, double endingbalance) {
+    public boolean logPayment(String playerName, String action, double moneyTransfered, double startingbalance, double endingbalance) {
 
-        return logTransaciton(playerName, null, action, null, 0, 0, 0,
-                moneyTransfered, startingbalance, endingbalance);
+        return logTransaciton(playerName, null, action, null, 0, 0, 0, moneyTransfered, startingbalance, endingbalance);
     }
 
-    public boolean logTransaciton(String playerName, String shopName, String action, String itemName,
-            int numberOfItems, int startNumberOfItems, int endNumberOfItems, double moneyTransfered,
-            double startingbalance, double endingbalance) {
+    public boolean logTransaciton(String playerName, String shopName, String action, String itemName, int numberOfItems, int startNumberOfItems, int endNumberOfItems, double moneyTransfered, double startingbalance, double endingbalance) {
         if (!logTransactions)
             return false;
 

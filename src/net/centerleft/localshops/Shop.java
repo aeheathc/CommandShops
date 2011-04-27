@@ -3,6 +3,7 @@ package net.centerleft.localshops;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 import cuboidLocale.PrimitiveCuboid;
@@ -105,6 +106,18 @@ public class Shop {
 
     public InventoryItem getItem(String item) {
         return inventory.get(item);
+    }
+    
+    public boolean containsItem(ItemInfo item) {
+        Iterator<InventoryItem> it = inventory.values().iterator();
+        while(it.hasNext()) {
+            InventoryItem invItem = it.next();
+            ItemInfo invItemInfo = invItem.getInfo();
+            if(invItemInfo.typeId == item.typeId && invItemInfo.subTypeId == item.subTypeId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addItem(int itemNumber, short itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
