@@ -76,6 +76,7 @@ public class LocalShops extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLUGIN_DISABLE, pluginListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
         // TODO: add PLAYER_JOIN, PLAYER_QUIT, PLAYER_KICK events
 
         // check hook for permissions
@@ -156,6 +157,8 @@ public class LocalShops extends JavaPlugin {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("search")) {
                     commands.shopSearch();
+                } else if (args[0].equalsIgnoreCase("debug")) {
+                    commands.shopDebug();
                 } else if (args[0].equalsIgnoreCase("create")) {
                     commands.shopCreate();
                     for (Player player : this.getServer().getOnlinePlayers()) {

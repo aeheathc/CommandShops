@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Search {
@@ -50,16 +51,21 @@ public class Search {
         }
     }
 
-    private static String join(ArrayList<String> array, String glue) {
+    public static String join(List<String> shopList, String glue) {
         String joined = null;
-        for (String element : array) {
+        for (String element : shopList) {
             if (joined == null) {
                 joined = element;
             } else {
                 joined += glue + element;
             }
         }
-        return joined;
+        
+        if(joined == null) {
+            return "";
+        } else {
+            return joined;
+        }
     }
     
     public static ItemInfo itemById(int type) {

@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -57,6 +58,11 @@ public class ShopsPlayerListener extends PlayerListener {
             }
         }
 
+    }
+    
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        String playerName = event.getPlayer().getName();
+        plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
     }
 
     @Override

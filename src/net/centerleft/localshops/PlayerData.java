@@ -1,8 +1,11 @@
 package net.centerleft.localshops;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
+
 import org.bukkit.entity.Player;
 
 import com.nijiko.coelho.iConomy.iConomy;
@@ -22,6 +25,9 @@ public class PlayerData {
     private long xyzA[] = null;
     private long xyzB[] = null;
     protected String size = "";
+    
+    // Logging
+    private static final Logger log = Logger.getLogger("Minecraft");    
 
     // Constructor
     public PlayerData(LocalShops plugin, String playerName) {
@@ -162,8 +168,8 @@ public class PlayerData {
     public boolean chargePlayer(String shopOwner, long chargeAmount) {
         if (plugin.pluginListener.useiConomy) {
             //iConomy ic = plugin.pluginListener.iConomy;
-            if (ic == null)
-                return false;
+            //if (ic == null)
+            //    return false;
 
             Account account = iConomy.getBank().getAccount(shopOwner);
             if (account == null) {

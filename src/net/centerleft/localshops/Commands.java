@@ -77,6 +77,28 @@ public class Commands {
         this.args = args;
     }
     
+    public boolean shopDebug() {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Shop shop = null;
+            
+            // Get current shop
+            String currShop = plugin.playerData.get(player.getName()).getCurrentShop();
+            if (currShop != null) {
+                shop = plugin.shopData.getShop(currShop);
+            }
+            if (shop == null) {
+                return false;
+            }
+
+            shop.log();
+        } else {
+            // TODO: implement
+        }
+
+        return false;
+    }
+
     public boolean shopSearch() {
         if(args.length < 2) {
             return false;
