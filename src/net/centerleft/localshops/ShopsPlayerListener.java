@@ -47,14 +47,19 @@ public class ShopsPlayerListener extends PlayerListener {
         }
 
         if (plugin.playerData.get(playerName).isSelecting) {
+            long x, y, z;
+            Location loc = event.getClickedBlock().getLocation();
+            x = (long) loc.getBlockX();
+            y = (long) loc.getBlockY();
+            z = (long) loc.getBlockZ();
             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                long[] xyz = { event.getClickedBlock().getX(), event.getClickedBlock().getY(), event.getClickedBlock().getZ() };
+                long[] xyz = { x, y, z };
                 plugin.playerData.get(playerName).setPositionA(xyz);
-                player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + xyz[0] + " " + xyz[1] + " " + xyz[2] + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                long[] xyz = { event.getClickedBlock().getX(), event.getClickedBlock().getY(), event.getClickedBlock().getZ() };
+                long[] xyz = { x, y, z };
                 plugin.playerData.get(playerName).setPositionB(xyz);
-                player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + xyz[0] + " " + xyz[1] + " " + xyz[2] + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
             }
         }
 
@@ -76,9 +81,9 @@ public class ShopsPlayerListener extends PlayerListener {
 
         long x, y, z;
         Location xyz = event.getTo();
-        x = (long) xyz.getX();
-        y = (long) xyz.getY();
-        z = (long) xyz.getZ();
+        x = (long) xyz.getBlockX();
+        y = (long) xyz.getBlockY();
+        z = (long) xyz.getBlockZ();
 
         checkPlayerPosition(player, x, y, z);
     }
@@ -146,13 +151,13 @@ public class ShopsPlayerListener extends PlayerListener {
 
     }
 
-    private static void notifyPlayerLeftShop(Player player, String shopName) {
+    private void notifyPlayerLeftShop(Player player, String shopName) {
         // TODO Add formatting
         player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA
                 + "] You have left the shop " + ChatColor.WHITE + shopName);
     }
 
-    private static void notifyPlayerEnterShop(Player player, String shopName) {
+    private void notifyPlayerEnterShop(Player player, String shopName) {
         // TODO Add formatting
         player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA
                 + "] You have entered the shop " + ChatColor.WHITE + shopName);
