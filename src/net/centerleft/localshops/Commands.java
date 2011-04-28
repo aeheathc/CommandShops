@@ -362,7 +362,6 @@ public class Commands {
                 tempShopCuboid.world = player.getWorld().getName();
 
                 if (plugin.shopData.chargeForMove) {
-                    String[] freemove = { "freemove" };
                     if (!canUseCommand(CommandTypes.MOVE_SHOP_FREE)) {
                         if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
                             // insert the old cuboid back into the world
