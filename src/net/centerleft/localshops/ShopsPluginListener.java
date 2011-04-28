@@ -50,12 +50,12 @@ public class ShopsPluginListener extends ServerListener {
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin().getDescription().getName().equals("iConomy")) {
             iConomy = null;
-            System.out.println("LocalShops: Lost connection to iConomy.");
+            System.out.println(String.format("[%s] %s", plugin.pdfFile.getName(), "Lost connection to iConomy."));
             useiConomy = false;
         }
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             permissions = (Permissions) event.getPlugin();
-            System.out.print("LocalShops: Lost connection to Permissions");
+            System.out.print(String.format("[%s] %s", plugin.pdfFile.getName(), "Lost connection to Permissions"));
             usePermissions = false;
         }
     }

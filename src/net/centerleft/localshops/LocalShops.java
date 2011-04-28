@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -34,6 +35,9 @@ public class LocalShops extends JavaPlugin {
     protected ShopsPluginListener pluginListener = new ShopsPluginListener(this);
     protected ShopData shopData = new ShopData(this);
     protected PluginDescriptionFile pdfFile = null;
+    protected UUID uuid = null;
+    protected boolean report = false;
+    protected ReportThread reportThread = null;
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -56,8 +60,6 @@ public class LocalShops extends JavaPlugin {
 
     public void onEnable() {
         pdfFile = getDescription();
-
-        QuadTree cuboidTree = new QuadTree();
         playerData = Collections.synchronizedMap(new HashMap<String, PlayerData>());
 
         // add all the online users to the data trees
@@ -131,12 +133,28 @@ public class LocalShops extends JavaPlugin {
         for (Player player : this.getServer().getOnlinePlayers()) {
             playerListener.checkPlayerPosition(player);
         }
-
+        
+        // Start reporting thread
+        if(report) {
+            reportThread = new ReportThread(this, uuid, false);
+            reportThread.start();
+        }
     }
 
     public void onDisable() {
         // Save all shops
         shopData.saveAllShops();
+        
+        // Stop Reporting thread
+        if(report && reportThread != null && reportThread.isAlive()) {
+            try {
+                reportThread.setRun(false);
+                reportThread.join(2000);
+            } catch (InterruptedException e) {
+                // hmm, thread didn't die
+                log.warning(String.format("[%s] %s", pdfFile.getName(), "ReportThread did not exit"));
+            }
+        }
         
         // update the console that we've stopped
         log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is disabled!"));
@@ -253,6 +271,20 @@ public class LocalShops extends JavaPlugin {
                 shopData.maxDamage = 0;
         } else {
             properties.setInt("max-damage", shopData.maxDamage);
+        }
+        
+        if(properties.keyExists("uuid")) {
+            uuid = properties.getUuid("uuid");
+        } else {
+            uuid = UUID.randomUUID();
+            properties.setUuid("uuid", uuid);
+        }
+        
+        if(properties.keyExists("report-stats")) {
+            report = properties.getBoolean("report-stats");
+        } else {
+            report = true;
+            properties.setBoolean("report-stats", report);
         }
     }
 }

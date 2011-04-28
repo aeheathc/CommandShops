@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -203,6 +204,19 @@ public final class PropertyHandler {
 
         setBoolean(key, value);
         return value;
+    }
+    
+    public UUID getUuid(String key) {
+        if(this.properties.containsKey(key)) {
+            return UUID.fromString(properties.getProperty(key));
+        }
+        
+        return null;
+    }
+    
+    public void setUuid(String key, UUID value) {
+        properties.setProperty(key, value.toString());
+        save();
     }
 
     public void setBoolean(String key, boolean value) {
