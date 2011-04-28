@@ -1,17 +1,16 @@
 package net.centerleft.localshops;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.bukkit.inventory.ItemStack;
 
 public class ItemInfo {
-    public String name;
-    public ArrayList<String[]> search;
-    public int typeId;
-    public short subTypeId;
+    public String name = null;
+    public String[][] search = null;
+    public int typeId = -1;
+    public short subTypeId = 0;
     
-    public ItemInfo(String name, ArrayList<String[]> search, int typeId, short subTypeId) {
+    public ItemInfo(String name, String[][] search, int typeId, short subTypeId) {
         this.name = name;
         this.search = search;
         this.typeId = typeId;
@@ -19,7 +18,7 @@ public class ItemInfo {
     }
     
     public String toString() {
-        return String.format("%s, %s [%d,%d]", name, Arrays.deepToString(search.toArray()), typeId, subTypeId);
+        return String.format("%s, %s [%d,%d]", name, Arrays.toString(search), typeId, subTypeId);
     }
     
     public ItemStack toStack() {

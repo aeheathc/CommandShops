@@ -55,9 +55,6 @@ public class LocalShops extends JavaPlugin {
     protected Map<String, PlayerData> playerData; // synchronized player hash
 
     public void onEnable() {
-        
-        Search.loadItems();
-
         pdfFile = getDescription();
 
         QuadTree cuboidTree = new QuadTree();
@@ -116,9 +113,6 @@ public class LocalShops extends JavaPlugin {
         folderDir.mkdir();
         shopsDir = new File(folderPath + shopsPath);
         shopsDir.mkdir();
-
-        // build data table for item names and values
-        itemList.loadData(new File(folderPath + "items.txt"));
 
         properties = new PropertyHandler(folderPath + "localshops.properties");
         properties.load();
