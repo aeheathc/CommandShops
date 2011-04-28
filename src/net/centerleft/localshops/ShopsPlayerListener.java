@@ -45,14 +45,25 @@ public class ShopsPlayerListener extends PlayerListener {
             x = (long) loc.getBlockX();
             y = (long) loc.getBlockY();
             z = (long) loc.getBlockZ();
+            
+            PlayerData pData = plugin.playerData.get(playerName);
+            
             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 long[] xyz = { x, y, z };
-                plugin.playerData.get(playerName).setPositionA(xyz);
-                player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                pData.setPositionA(xyz);
+                if(pData.checkSize()) {
+                    player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                } else {
+                    player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
+                }
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 long[] xyz = { x, y, z };
-                plugin.playerData.get(playerName).setPositionB(xyz);
-                player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                pData.setPositionB(xyz);
+                if(pData.checkSize()) {
+                    player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                } else {
+                    player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
+                }
             }
         }
 
