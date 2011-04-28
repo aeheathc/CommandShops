@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -37,7 +38,8 @@ public class ShopsPlayerListener extends PlayerListener {
             plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
         }
 
-        if (plugin.playerData.get(playerName).isSelecting) {
+        // If our user is select & is not holding an item, selection time
+        if (plugin.playerData.get(playerName).isSelecting && player.getItemInHand().getType() == Material.AIR) {
             long x, y, z;
             Location loc = event.getClickedBlock().getLocation();
             x = (long) loc.getBlockX();
