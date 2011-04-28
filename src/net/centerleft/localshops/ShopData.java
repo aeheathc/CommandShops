@@ -42,7 +42,7 @@ public class ShopData {
     boolean chargeForMove = false;
     boolean logTransactions = true;
 
-    int maxDamage = 0;
+    int maxDamage = 35;
 
     long maxWidth = 30;
     long maxHeight = 10;
