@@ -107,7 +107,11 @@ public class Commands {
         }
         
         ItemInfo found = Search.itemByName(searchTerms);
-        sender.sendMessage(found.toString());
+        if(found == null) {
+            sender.sendMessage("Item was not found.");
+        } else {
+            sender.sendMessage(found.toString());
+        }
         return true;
     }
 
@@ -584,7 +588,7 @@ public class Commands {
         if (canUseCommand(CommandTypes.RELOAD_PLUGIN)) {
 
             // TODO fix this null pointer exception from ourPlugin
-            PluginManager pm = sender.getServer().getPluginManager();
+            PluginManager pm = plugin.getServer().getPluginManager();
             Plugin ourPlugin = pm.getPlugin(plugin.pdfFile.getName());
             pm.disablePlugin(ourPlugin);
             pm.enablePlugin(ourPlugin);
@@ -1263,6 +1267,246 @@ public class Commands {
 
         return true;
     }
+    
+    public boolean shopSetItem() {
+        if(sender instanceof Player) {
+            // Player has sent command
+            Player player = (Player) sender;
+            
+            // Check Permissions
+            if(!canUseCommand(CommandTypes.SET)) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
+                return false;
+            }
+            
+            // Variables
+            
+            // Check minimum variable length
+            if(args.length < 2) {
+                return false;
+            }
+            
+            // Get current shop
+            Shop shop = null;
+            PlayerData pData = plugin.playerData.get(player.getName());
+            String currShop = pData.getCurrentShop();
+            if(currShop != null) {
+                shop = plugin.shopData.getShop(currShop);
+            }
+            if(shop == null) {
+                return false;
+            }            
+            
+            // Parse Arguments
+            if(args[1].matches("buy")) {
+                // shop set buy itemName price stacksize
+                if (args[2].matches("\\d+")) {
+                    if(args.length == 4) {
+                        // shop set buy itemid price
+                        int id = Integer.parseInt(args[2]);
+                        int price = Integer.parseInt(args[3]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id);
+                        
+                        // Set new values
+                        shop.setItemBuyPrice(item.name, price);
+                    } else if(args.length == 5) {
+                        // shop set buy itemid price stacksize
+                        int id = Integer.parseInt(args[2]);
+                        int price = Integer.parseInt(args[3]);
+                        int size = Integer.parseInt(args[4]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id);
+                        
+                        // Set new values
+                        shop.setItemBuyAmount(item.name, size);
+                        shop.setItemBuyPrice(item.name, price);
+                    } else {
+                        return false;
+                    }
+                } else if(args[2].matches("\\d+:\\d+")) {
+                    // shop set buy id:type price stacksize
+                    if(args.length == 4) {
+                        // shop set buy id:type price
+                        int id = Integer.parseInt(args[2].split(":")[0]);
+                        short type = Short.parseShort(args[2].split(":")[1]);
+                        int price = Integer.parseInt(args[3]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id, type);
+                        
+                        // Set new values
+                        shop.setItemBuyPrice(item.name, price);
+                    } else if(args.length == 5) {
+                        // shop set buy id:type price stacksize
+                        int id = Integer.parseInt(args[2].split(":")[0]);
+                        short type = Short.parseShort(args[2].split(":")[1]);
+                        int price = Integer.parseInt(args[3]);
+                        int size = Integer.parseInt(args[4]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id, type);
+                        
+                        // Set new values
+                        shop.setItemBuyPrice(item.name, price);
+                        shop.setItemBuyAmount(item.name, size);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    // shop set words... price stacksize
+                    if (args[args.length - 1].matches("\\d+") && args[args.length - 2].matches("\\d+")) {
+                        // shop set buy name... price stacksize
+                        int price = Integer.parseInt(args[args.length-2]);
+                        int size = Integer.parseInt(args[args.length-1]);
+                        
+                        // Search for Item
+                        ArrayList<String> itemName = new ArrayList<String>();
+                        for (int i = 1; i < args.length - 2; i++) {
+                            itemName.add(args[i]);
+                        }
+                        ItemInfo item = Search.itemByName(itemName);
+                        
+                        // Set new values
+                        shop.setItemBuyPrice(item.name, price);
+                        shop.setItemBuyAmount(item.name, size);
+                    } else if(args[args.length - 1].matches("\\d+")) {
+                        // shop set buy name... price
+                        int price = Integer.parseInt(args[args.length-1]);
+                        
+                        // Search for Item
+                        ArrayList<String> itemName = new ArrayList<String>();
+                        for (int i = 1; i < args.length - 1; i++) {
+                            itemName.add(args[i]);
+                        }
+                        ItemInfo item = Search.itemByName(itemName);
+                        
+                        // Set new values
+                        shop.setItemBuyPrice(item.name, price);
+                    } else {
+                        return false;
+                    }
+                }
+            } else if(args[1].matches("sell")) {
+                // shop set sell itemname price stacksize
+                if (args[2].matches("\\d+")) {
+                    if(args.length == 4) {
+                        // shop set sell itemid price
+                        int id = Integer.parseInt(args[2]);
+                        int price = Integer.parseInt(args[3]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id);
+                        
+                        // Set new values
+                        shop.setItemSellPrice(item.name, price);
+                    } else if(args.length == 5) {
+                        // shop set sell itemid price stacksize
+                        int id = Integer.parseInt(args[2]);
+                        int price = Integer.parseInt(args[3]);
+                        int size = Integer.parseInt(args[4]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id);
+                        
+                        // Set new values
+                        shop.setItemSellAmount(item.name, size);
+                        shop.setItemSellPrice(item.name, price);
+                    } else {
+                        return false;
+                    }
+                } else if(args[2].matches("\\d+:\\d+")) {
+                    // shop set sell id:type price stacksize
+                    if(args.length == 4) {
+                        // shop set sell id:type price
+                        int id = Integer.parseInt(args[2].split(":")[0]);
+                        short type = Short.parseShort(args[2].split(":")[1]);
+                        int price = Integer.parseInt(args[3]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id, type);
+                        
+                        // Set new values
+                        shop.setItemSellPrice(item.name, price);
+                    } else if(args.length == 5) {
+                        // shop set sell id:type price stacksize
+                        int id = Integer.parseInt(args[2].split(":")[0]);
+                        short type = Short.parseShort(args[2].split(":")[1]);
+                        int price = Integer.parseInt(args[3]);
+                        int size = Integer.parseInt(args[4]);
+                        
+                        // Search for Item
+                        ItemInfo item = Search.itemById(id, type);
+                        
+                        // Set new values
+                        shop.setItemSellPrice(item.name, price);
+                        shop.setItemSellAmount(item.name, size);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    // shop set sell words... price stacksize
+                    if (args[args.length - 1].matches("\\d+") && args[args.length - 2].matches("\\d+")) {
+                        // shop set sell name... price stacksize
+                        int price = Integer.parseInt(args[args.length-2]);
+                        int size = Integer.parseInt(args[args.length-1]);
+                        
+                        // Search for Item
+                        ArrayList<String> itemName = new ArrayList<String>();
+                        for (int i = 1; i < args.length - 2; i++) {
+                            itemName.add(args[i]);
+                        }
+                        ItemInfo item = Search.itemByName(itemName);
+                        
+                        // Set new values
+                        shop.setItemSellPrice(item.name, price);
+                        shop.setItemSellAmount(item.name, size);
+                    } else if(args[args.length - 1].matches("\\d+")) {
+                        // shop set sell name... price
+                        int price = Integer.parseInt(args[args.length-1]);
+                        
+                        // Search for Item
+                        ArrayList<String> itemName = new ArrayList<String>();
+                        for (int i = 1; i < args.length - 1; i++) {
+                            itemName.add(args[i]);
+                        }
+                        ItemInfo item = Search.itemByName(itemName);
+                        
+                        // Set new values
+                        shop.setItemSellPrice(item.name, price);
+                    } else {
+                        return false;
+                    }
+                }                
+            } else if(args[1].matches("max")) {
+                // shop set max itemname amount
+            } else if(args[1].matches("manager")) {
+                // shop set manager +managername -managername
+            } else if(args[1].matches("owner")) {
+                // shop set owner ownername
+                
+                // Check Permissions
+                if(!canUseCommand(CommandTypes.SET_OWNER)) {
+                    sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
+                    return false;
+                }
+
+            }
+            
+            // Save Shop
+            plugin.shopData.saveShop(shop);
+            
+            return true;
+            
+        } else {
+            // Console or other has sent command
+            // TODO: Determine command syntax!
+        }
+        
+        return false;
+    }
 
     /**
      * Processes set command.
@@ -1271,17 +1515,19 @@ public class Commands {
      * @param args
      * @return true - if command succeeds false otherwise
      */
-    public boolean shopSetItem() {
+    public boolean shopSetItemOld() {
         if (!(sender instanceof Player) || !canUseCommand(CommandTypes.SET)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
             return false;
         }
 
         /*
-         * Available formats: /lshop set buy itemName price stackSize /lshop set
-         * sell itemName price stackSize /lshop set max itemName amount /lshop
-         * set manager +managerName +managerName -managerName /lshop set owner
-         * ownerName
+         * Available formats:
+         *      /lshop set buy itemName price stackSize
+         *      /lshop set sell itemName price stackSize
+         *      /lshop set max itemName amount
+         *      /lshop set manager +managerName +managerName -managerName
+         *      /lshop set owner ownerName
          */
 
         Player player = (Player) sender;

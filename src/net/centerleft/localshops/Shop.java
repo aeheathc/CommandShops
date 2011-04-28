@@ -193,7 +193,6 @@ public class Shop {
     public void setItemBuyPrice(String itemName, int price) {
         int buySize = inventory.get(itemName).getBuySize();
         inventory.get(itemName).setBuy(price, buySize);
-
     }
 
     public void setItemBuyAmount(String itemName, int buySize) {
@@ -204,12 +203,15 @@ public class Shop {
     public void setItemSellPrice(String itemName, int price) {
         int sellSize = inventory.get(itemName).getSellPrice();
         inventory.get(itemName).setSell(price, sellSize);
-
     }
+    
+    public void setItemSellAmount(String itemName, int sellSize) {
+        int price = inventory.get(itemName).getSellPrice();
+        inventory.get(itemName).setBuy(price, sellSize);
+    }    
 
     public void removeItem(String itemName) {
         inventory.remove(itemName);
-
     }
 
     // Why are we trying to find the center of the shop???
