@@ -1307,6 +1307,12 @@ public class Commands {
                         ItemInfo item = Search.itemById(id);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
                         }
 
                         // Set new values
@@ -1319,6 +1325,19 @@ public class Commands {
 
                         // Search for Item
                         ItemInfo item = Search.itemById(id);
+                        if (item == null) {
+                            player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        if(size < 0) {
+                            player.sendMessage("[ERROR] Stacks cannot be negative!");
+                            return true;
+                        }
 
                         // Set new values
                         shop.setItemBuyAmount(item.name, size);
@@ -1338,8 +1357,14 @@ public class Commands {
                         ItemInfo item = Search.itemById(id, type);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
                         }
-
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
                     } else if (args.length == 5) {
@@ -1353,6 +1378,16 @@ public class Commands {
                         ItemInfo item = Search.itemById(id, type);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        if(size < 0) {
+                            player.sendMessage("[ERROR] Stacks cannot be negative!");
+                            return true;
                         }
 
                         // Set new values
@@ -1376,6 +1411,16 @@ public class Commands {
                         ItemInfo item = Search.itemByName(itemName);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        if(size < 0) {
+                            player.sendMessage("[ERROR] Stacks cannot be negative!");
+                            return true;
                         }
 
                         // Set new values
@@ -1393,6 +1438,12 @@ public class Commands {
                         ItemInfo item = Search.itemByName(itemName);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
                         }
 
                         // Set new values
@@ -1413,6 +1464,12 @@ public class Commands {
                         ItemInfo item = Search.itemById(id);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
                         }
 
                         // Set new values
@@ -1427,6 +1484,16 @@ public class Commands {
                         ItemInfo item = Search.itemById(id);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        if(size < 0) {
+                            player.sendMessage("[ERROR] Stacks cannot be negative!");
+                            return true;
                         }
 
                         // Set new values
@@ -1447,6 +1514,12 @@ public class Commands {
                         ItemInfo item = Search.itemById(id, type);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
                         }
 
                         // Set new values
@@ -1462,6 +1535,16 @@ public class Commands {
                         ItemInfo item = Search.itemById(id, type);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        if(size < 0) {
+                            player.sendMessage("[ERROR] Stacks cannot be negative!");
+                            return true;
                         }
 
                         // Set new values
@@ -1485,6 +1568,16 @@ public class Commands {
                         ItemInfo item = Search.itemByName(itemName);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
+                        }
+                        if(size < 0) {
+                            player.sendMessage("[ERROR] Stacks cannot be negative!");
+                            return true;
                         }
 
                         // Set new values
@@ -1502,6 +1595,12 @@ public class Commands {
                         ItemInfo item = Search.itemByName(itemName);
                         if (item == null) {
                             player.sendMessage("Item was not found.");
+                            return true;
+                        }
+                        
+                        // Warn about negative items
+                        if(price < 0) {
+                            player.sendMessage("[WARNING] This shop will loose money with negative values!");
                         }
 
                         // Set new values
