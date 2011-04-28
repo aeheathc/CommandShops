@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -214,6 +215,15 @@ public class ShopData {
 
     public Shop loadShop(File file) {
         return null;
+    }
+    
+    public boolean saveAllShops() {
+        Iterator<Shop> it = shops.values().iterator();
+        while(it.hasNext()) {
+            Shop shop = it.next();
+            saveShop(shop);
+        }
+        return true;
     }
 
     public boolean saveShop(Shop shop) {

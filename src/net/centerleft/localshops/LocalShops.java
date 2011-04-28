@@ -141,6 +141,9 @@ public class LocalShops extends JavaPlugin {
     }
 
     public void onDisable() {
+        // Save all shops
+        shopData.saveAllShops();
+        
         // update the console that we've stopped
         log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is disabled!"));
     }
