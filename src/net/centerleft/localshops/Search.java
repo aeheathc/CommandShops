@@ -130,7 +130,7 @@ public class Search {
                     boolean match = false;
                     // Loop through entire criteria strings
                     for (String attribute : attributes) {
-                        if (searchString.contains(attribute)) {
+                        if (searchString.toLowerCase().contains(attribute)) {
                             match = true;
                         } else {
                             match = false;
