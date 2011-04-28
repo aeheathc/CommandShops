@@ -586,23 +586,6 @@ public class Commands {
         return true;
     }
 
-    public boolean shopReload() {
-        if (canUseCommand(CommandTypes.RELOAD_PLUGIN)) {
-
-            // TODO fix this null pointer exception from ourPlugin
-            PluginManager pm = plugin.getServer().getPluginManager();
-            Plugin ourPlugin = pm.getPlugin(plugin.pdfFile.getName());
-            pm.disablePlugin(ourPlugin);
-            pm.enablePlugin(ourPlugin);
-
-            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The plugin has been reloaded.");
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Prints shop inventory with default page # = 1
      * 

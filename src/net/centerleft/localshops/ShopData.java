@@ -227,20 +227,15 @@ public class ShopData {
     }
 
     public boolean saveShop(Shop shop) {
-        String filePath = LocalShops.folderPath + LocalShops.shopsPath
-                + shop.getName() + ".shop";
-
+        String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getName() + ".shop";
         File shopFile = new File(filePath);
         try {
-
             shopFile.createNewFile();
 
             ArrayList<String> fileOutput = new ArrayList<String>();
 
             fileOutput.add("#" + shop.getName() + " shop file\n");
-
-            DateFormat dateFormat = new SimpleDateFormat(
-                    "EEE MMM dd HH:mm:ss z yyyy");
+            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
             Date date = new Date();
             fileOutput.add("#" + dateFormat.format(date) + "\n");
 
