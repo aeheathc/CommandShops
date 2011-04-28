@@ -23,7 +23,6 @@
     	<echo>Compiling</echo>
         <javac srcdir="." destdir="bin" debug="on" debuglevel="lines,vars,source" classpathref="classpath" />
     	<copyfile dest="bin/plugin.yml" src="plugin.yml"/>
-    	<copyfile dest="bin/net/centerleft/localshops/items.txt" src="net/centerleft/localshops/items.txt"/>
     </target>
   
   <target name="compress" description="Compression target">

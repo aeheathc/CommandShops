@@ -18,7 +18,7 @@ public class ItemInfo {
     }
     
     public String toString() {
-        return String.format("%s, %s [%d,%d]", name, Arrays.toString(search), typeId, subTypeId);
+        return String.format("%s, %s [%d,%d]", name, Arrays.deepToString(search), typeId, subTypeId);
     }
     
     public ItemStack toStack() {
