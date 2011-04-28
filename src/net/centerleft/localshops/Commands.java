@@ -954,13 +954,13 @@ public class Commands {
                 amount = itemStack.getAmount();
                 item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
             } else if (args.length > 1) {
-                if (args[1].matches("all") && args.length == 2) {
+                if (args[1].matches("(?i)all") && args.length == 2) {
                     // shop add all
                 } else if (args[1].matches("\\d+")) {
                     // shop add id [count]
                     if (args.length == 3) {
                         // shop add id count
-                        if (args[2].matches("all")) {
+                        if (args[2].matches("(?i)all")) {
                             amount = -1;
                         } else {
                             amount = Integer.parseInt(args[2]);
@@ -976,7 +976,7 @@ public class Commands {
                     // shop add id:type [count]
                     if (args.length == 3) {
                         // shop add id:type count
-                        if (args[2].matches("all")) {
+                        if (args[2].matches("(?i)all")) {
                             amount = -1;
                         } else {
                             amount = Integer.parseInt(args[2]);
@@ -994,7 +994,7 @@ public class Commands {
                     // shop add name, ... [count]
                     if (args[args.length - 1].matches("\\d+")) {
                         // Last element is an integer
-                        if (args[args.length - 1].matches("all")) {
+                        if (args[args.length - 1].matches("(?i)all")) {
                             amount = -1;
                         } else {
                             amount = Integer.parseInt(args[args.length - 1]);
@@ -1295,7 +1295,7 @@ public class Commands {
             }
 
             // Parse Arguments
-            if (args[1].matches("buy")) {
+            if (args[1].matches("(?i)buy")) {
                 // shop set buy itemName price stacksize
                 if (args[2].matches("\\d+")) {
                     if (args.length == 4) {
@@ -1452,7 +1452,7 @@ public class Commands {
                         return false;
                     }
                 }
-            } else if (args[1].matches("sell")) {
+            } else if (args[1].matches("(?i)sell")) {
                 // shop set sell itemname price stacksize
                 if (args[2].matches("\\d+")) {
                     if (args.length == 4) {
@@ -1609,11 +1609,11 @@ public class Commands {
                         return false;
                     }
                 }
-            } else if (args[1].matches("max")) {
+            } else if (args[1].matches("(?i)max")) {
                 // shop set max itemname amount
-            } else if (args[1].matches("manager")) {
+            } else if (args[1].matches("(?i)manager")) {
                 // shop set manager +managername -managername
-            } else if (args[1].matches("owner")) {
+            } else if (args[1].matches("(?i)owner")) {
                 // shop set owner ownername
 
                 // Check Permissions
