@@ -2,8 +2,6 @@ package net.centerleft.localshops;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,13 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Logger;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;

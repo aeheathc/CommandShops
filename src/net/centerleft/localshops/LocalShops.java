@@ -1,7 +1,6 @@
 package net.centerleft.localshops;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.bukkit.plugin.PluginManager;
 import com.nijiko.coelho.iConomy.iConomy;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
-import cuboidLocale.BookmarkedResult;
 import cuboidLocale.QuadTree;
 
 /**
