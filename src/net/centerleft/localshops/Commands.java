@@ -1308,6 +1308,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }
                         
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
@@ -1336,6 +1339,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id, type);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
@@ -1348,6 +1354,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id, type);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
@@ -1368,6 +1377,9 @@ public class Commands {
                             itemName.add(args[i]);
                         }
                         ItemInfo item = Search.itemByName(itemName);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
@@ -1382,6 +1394,9 @@ public class Commands {
                             itemName.add(args[i]);
                         }
                         ItemInfo item = Search.itemByName(itemName);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
@@ -1399,6 +1414,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
@@ -1410,6 +1428,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemSellAmount(item.name, size);
@@ -1427,6 +1448,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id, type);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
@@ -1439,6 +1463,9 @@ public class Commands {
                         
                         // Search for Item
                         ItemInfo item = Search.itemById(id, type);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
@@ -1459,6 +1486,9 @@ public class Commands {
                             itemName.add(args[i]);
                         }
                         ItemInfo item = Search.itemByName(itemName);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
@@ -1473,6 +1503,9 @@ public class Commands {
                             itemName.add(args[i]);
                         }
                         ItemInfo item = Search.itemByName(itemName);
+                        if(item == null) {
+                            player.sendMessage("Item was not found.");
+                        }                        
                         
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
