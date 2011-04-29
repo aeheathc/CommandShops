@@ -1037,6 +1037,13 @@ public class Commands {
             }
 
             // Check Shop Contents, add if necessary
+            if(amount == 0 & shop.containsItem(item)) {
+                // nicely message user
+                player.sendMessage(String.format("This shop already carries %s!", item.name));
+                return true;
+            }
+            
+            // Add item to shop if needed
             if (!shop.containsItem(item)) {
                 shop.addItem(item.typeId, item.subTypeId, 0, 1, 0, 1, 0, 0);
             }
