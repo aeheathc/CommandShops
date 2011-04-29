@@ -1712,6 +1712,22 @@ public class Commands {
                     return false;
                 }
 
+                if (args.length == 3) {
+                    if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
+                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to set this.");
+                        player.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                        return false;
+                    } else if (!canUseCommand(CommandTypes.SET_OWNER)) {
+                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You do not have permission to do this.");
+                        return false;
+                    } else {
+                        shop.setOwner(args[2]);
+                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop owner changed to " + ChatColor.WHITE + args[2]);
+                        return true;
+                    }
+                }
+                return false;                
+                
             }
 
             // Save Shop
@@ -1922,21 +1938,7 @@ public class Commands {
             } else if (args[1].equalsIgnoreCase("manager")) {
 
             } else if (args[1].equalsIgnoreCase("owner")) {
-                if (args.length == 3) {
-                    if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
-                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to set this.");
-                        player.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getOwner());
-                        return false;
-                    } else if (!canUseCommand(CommandTypes.SET_OWNER)) {
-                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You do not have permission to do this.");
-                        return false;
-                    } else {
-                        shop.setOwner(args[2]);
-                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop owner changed to " + ChatColor.WHITE + args[2]);
-                        return true;
-                    }
-                }
-                return false;
+
             } else if (args[1].equalsIgnoreCase("unlimited")) {
                 if (!canUseCommand(CommandTypes.ADMIN)) {
                     player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be a shop admin to do this.");
