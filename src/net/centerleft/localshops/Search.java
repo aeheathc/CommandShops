@@ -141,7 +141,7 @@ public class Search {
         items.add(new ItemInfo("Gold Axe", new String[][] { { "axe", "gol" } }, 286, (short) 0));
         items.add(new ItemInfo("String", new String[][] { { "stri" } }, 287, (short) 0));
         items.add(new ItemInfo("Feather", new String[][] { { "feat" } }, 288, (short) 0));
-        items.add(new ItemInfo("Gunpowder", new String[][] { { "gun" }, { "sulph" } }, 279, (short) 0));
+        items.add(new ItemInfo("Gunpowder", new String[][] { { "gun" }, { "sulph" } }, 289, (short) 0));
         items.add(new ItemInfo("Wooden Hoe", new String[][] { { "hoe", "wo" } }, 290, (short) 0));
         items.add(new ItemInfo("Stone Hoe", new String[][] { { "hoe", "wo" } }, 291, (short) 0));
         items.add(new ItemInfo("Iron Hoe", new String[][] { { "hoe", "wo" } }, 292, (short) 0));
