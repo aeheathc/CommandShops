@@ -1,6 +1,7 @@
 package net.centerleft.localshops;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -1896,57 +1897,28 @@ public class Commands {
                 }
 
             } else if (args[1].equalsIgnoreCase("manager")) {
-                String[] managers = shop.getManagers();
+                // Check if Owner
                 if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
                     player.sendMessage(ChatColor.AQUA + "You must be the shop owner to set this.");
                     player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
                     return false;
                 }
-                for (String newName : args) {
-                    if (newName.equalsIgnoreCase("set") || newName.equalsIgnoreCase("manager")) {
-                        continue;
-                    }
-
-                    String partial = "";
-                    String[] part = newName.split("\\+");
-                    if (part == null)
-                        continue;
-                    if (part.length == 2) {
-                        if (managers != null) {
-                            for (String name : managers) {
-                                partial += name + ",";
-                            }
-                        }
-                        partial += part[1];
-                        managers = partial.split(",");
-
-                    }
-
-                    partial = "";
-                    part = newName.split("\\-");
-                    if (part.length == 2) {
-                        if (managers != null) {
-                            for (String name : managers) {
-                                if (name.equalsIgnoreCase(part[1]))
-                                    continue;
-                                partial += name + ",";
-                            }
-                            managers = partial.split(",");
-                        }
-                    }
-
-                }
-                shop.setManagers(managers);
-
-                String msg = "";
-                if (shop.getManagers() != null) {
-                    for (String name : shop.getManagers()) {
-                        msg += " " + name;
+                
+                String[] managers = shop.getManagers();
+                
+                for(int i=2; i < args.length; i++) {
+                    String arg = args[i];
+                    if(arg.matches("^\\+")) {
+                        // add manager
+                        shop.addManager(arg.replaceFirst("\\+", ""));
+                    } else if(arg.matches("^\\-")) {
+                        // remove manager
+                        shop.removeManager(arg.replaceFirst("\\-", ""));
                     }
                 }
 
                 player.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
-                player.sendMessage("   " + msg.trim());
+                player.sendMessage("   " + Arrays.toString(shop.getManagers()));
 
             } else if (args[1].equalsIgnoreCase("owner")) {
                 if (args.length == 3) {

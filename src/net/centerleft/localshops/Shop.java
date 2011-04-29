@@ -154,7 +154,11 @@ public class Shop {
     }
 
     public void addManager(String manager) {
-        this.managers.add(manager);
+        managers.add(manager);
+    }
+    
+    public void removeManager(String manager) {
+        managers.remove(manager);
     }
 
     public String[] getManagers() {
