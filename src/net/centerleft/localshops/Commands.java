@@ -1308,6 +1308,11 @@ public class Commands {
 
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else if (args.length == 5) {
                         // shop set buy itemid price stacksize
                         int id = Integer.parseInt(args[2]);
@@ -1333,6 +1338,11 @@ public class Commands {
                         // Set new values
                         shop.setItemBuyAmount(item.name, size);
                         shop.setItemBuyPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else {
                         return false;
                     }
@@ -1358,6 +1368,11 @@ public class Commands {
                         
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else if (args.length == 5) {
                         // shop set buy id:type price stacksize
                         int id = Integer.parseInt(args[2].split(":")[0]);
@@ -1384,6 +1399,11 @@ public class Commands {
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
                         shop.setItemBuyAmount(item.name, size);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else {
                         return false;
                     }
@@ -1417,6 +1437,11 @@ public class Commands {
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
                         shop.setItemBuyAmount(item.name, size);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else if (args[args.length - 1].matches("\\d+")) {
                         // shop set buy name... price
                         int price = Integer.parseInt(args[args.length - 1]);
@@ -1439,6 +1464,11 @@ public class Commands {
 
                         // Set new values
                         shop.setItemBuyPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else {
                         return false;
                     }
@@ -1465,6 +1495,11 @@ public class Commands {
 
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else if (args.length == 5) {
                         // shop set sell itemid price stacksize
                         int id = Integer.parseInt(args[2]);
@@ -1490,6 +1525,11 @@ public class Commands {
                         // Set new values
                         shop.setItemSellAmount(item.name, size);
                         shop.setItemSellPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else {
                         return false;
                     }
@@ -1515,6 +1555,11 @@ public class Commands {
 
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else if (args.length == 5) {
                         // shop set sell id:type price stacksize
                         int id = Integer.parseInt(args[2].split(":")[0]);
@@ -1541,6 +1586,11 @@ public class Commands {
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
                         shop.setItemSellAmount(item.name, size);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else {
                         return false;
                     }
@@ -1574,6 +1624,11 @@ public class Commands {
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
                         shop.setItemSellAmount(item.name, size);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else if (args[args.length - 1].matches("\\d+")) {
                         // shop set sell name... price
                         int price = Integer.parseInt(args[args.length - 1]);
@@ -1596,6 +1651,11 @@ public class Commands {
 
                         // Set new values
                         shop.setItemSellPrice(item.name, price);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
+                        return true;
                     } else {
                         return false;
                     }
@@ -1625,6 +1685,11 @@ public class Commands {
                     
                     // Set new values
                     shop.setItemMaxStock(item.name, amount);
+                    
+                    // Save Shop
+                    plugin.shopData.saveShop(shop);
+                    
+                    return true;
                 } else if(args[args.length -1].matches("(?i)all")) {
                     // shop set max itemname all
                     
@@ -1650,6 +1715,11 @@ public class Commands {
                     
                     // Set new values
                     shop.setItemMaxStock(item.name, amount);
+                    
+                    // Save Shop
+                    plugin.shopData.saveShop(shop);
+                    
+                    return true;
                 } else {
                     // syntax error
                     player.sendMessage("Bad formatting");
@@ -1674,6 +1744,7 @@ public class Commands {
                         return true;
                     }
                 }
+                
                 player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
                 player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
                 player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
@@ -1699,9 +1770,14 @@ public class Commands {
                         shop.removeManager(arg.replaceFirst("\\-", ""));
                     }
                 }
+                
+                // Save Shop
+                plugin.shopData.saveShop(shop);
 
                 player.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
                 player.sendMessage("   " + Arrays.toString(shop.getManagers()));
+                
+                return true;
                 
             } else if (args[1].matches("(?i)owner")) {
                 // shop set owner ownername
@@ -1722,16 +1798,15 @@ public class Commands {
                         return false;
                     } else {
                         shop.setOwner(args[2]);
+                        
+                        // Save Shop
+                        plugin.shopData.saveShop(shop);
+                        
                         player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop owner changed to " + ChatColor.WHITE + args[2]);
                         return true;
                     }
                 }
-                return false;                
-                
             }
-
-            // Save Shop
-            plugin.shopData.saveShop(shop);
 
             return true;
 
