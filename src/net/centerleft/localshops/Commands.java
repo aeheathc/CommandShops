@@ -1600,7 +1600,60 @@ public class Commands {
                     }
                 }
             } else if (args[1].matches("(?i)max")) {
-                // shop set max itemname amount
+                // shop set max itemname [amount|all]
+                if (args[args.length - 1].matches("\\d+")) {
+                    // shop set max itemname integer
+                    int amount = Integer.parseInt(args[args.length-1]);
+
+                    // Search for Item
+                    ArrayList<String> itemName = new ArrayList<String>();
+                    for (int i = 1; i < args.length - 1; i++) {
+                        itemName.add(args[i]);
+                    }
+                    ItemInfo item = Search.itemByName(itemName);
+                    if (item == null) {
+                        player.sendMessage("Item was not found.");
+                        return true;
+                    }
+                    
+                    // Check negative values
+                    if(amount < 0) {
+                        player.sendMessage("Only positive values allowed");
+                        return true;
+                    }
+                    
+                    // Set new values
+                    shop.setItemMaxStock(item.name, amount);
+                } else if(args[args.length -1].matches("(?i)all")) {
+                    // shop set max itemname all
+                    
+                    // Search for Item
+                    ArrayList<String> itemName = new ArrayList<String>();
+                    for (int i = 1; i < args.length - 1; i++) {
+                        itemName.add(args[i]);
+                    }
+                    ItemInfo item = Search.itemByName(itemName);
+                    if (item == null) {
+                        player.sendMessage("Item was not found.");
+                        return true;
+                    }
+                    
+                    // Get ammount of item
+                    int amount = countItemsinInventory(player.getInventory(), item.toStack());
+                    
+                    // Check negative values
+                    if(amount < 0) {
+                        player.sendMessage("How do you have negative amounts of an item!?");
+                        return true;
+                    }
+                    
+                    // Set new values
+                    shop.setItemMaxStock(item.name, amount);
+                } else {
+                    // syntax error
+                    player.sendMessage("Bad formatting");
+                    return false;
+                }
             } else if (args[1].matches("(?i)manager")) {
                 // shop set manager +managername -managername
             } else if (args[1].matches("(?i)owner")) {
