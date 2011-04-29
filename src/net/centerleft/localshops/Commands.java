@@ -333,7 +333,7 @@ public class Commands {
                 }
             } else {
                 // otherwise calculate the shop from the player's location
-                if (plugin.shopData.shopSize % 2 == 1) {
+                if (plugin.shopData.shopSize % 2 == 0) {
                     xyzA[0] = x - (plugin.shopData.shopSize / 2);
                     xyzB[0] = x + (plugin.shopData.shopSize / 2);
                     xyzA[2] = z - (plugin.shopData.shopSize / 2);
