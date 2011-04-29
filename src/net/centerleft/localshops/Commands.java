@@ -1654,6 +1654,29 @@ public class Commands {
                     player.sendMessage("Bad formatting");
                     return false;
                 }
+            } else if (args[1].matches("(?i)unlimited")) {
+                if (!canUseCommand(CommandTypes.ADMIN)) {
+                    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be a shop admin to do this.");
+                    return false;
+                }
+                
+                if (args.length == 3) {
+                    if (args[2].matches("(?i)money")) {
+                        shop.setUnlimitedMoney(!shop.isUnlimitedMoney());
+                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited money was set to " + ChatColor.WHITE + shop.isUnlimitedMoney());
+                        plugin.shopData.saveShop(shop);
+                        return true;
+                    } else if (args[2].matches("(?i)stock")) {
+                        shop.setUnlimitedStock(!shop.isUnlimitedStock());
+                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited stock was set to " + ChatColor.WHITE + shop.isUnlimitedStock());
+                        plugin.shopData.saveShop(shop);
+                        return true;
+                    }
+                }
+                player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
+                player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
+                player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
+                return true;
             } else if (args[1].matches("(?i)manager")) {
                 // shop set manager +managername -managername
             } else if (args[1].matches("(?i)owner")) {
