@@ -2,16 +2,19 @@ package net.centerleft.localshops;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -70,10 +73,18 @@ public class ShopData {
 
         File[] shopsList = shopsDir.listFiles();
         for (File file : shopsList) {
+            
             log.info(String.format("[%s] Loading Shop file \"%s\".", plugin.pdfFile.getName(), file.toString()));
-            // TODO: Regex on filename to determine new or old format
-
-            Shop shop = loadShopOldFormat(file);
+            Shop shop = null;
+            
+            // Determine if filename is a UUID or not
+            if(file.getName().matches("^(\\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\\}{0,1})\\.shop$")) {
+                shop = loadShop(file);
+            } else {
+                // Convert old format & delete the file...immediately save using the new format (will generate a new UUID for this shop)
+                shop = convertShopOldFormat(file);                
+            }
+            
             // Check if not null, and add to world
             if (shop != null) {
                 log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
@@ -84,7 +95,7 @@ public class ShopData {
 
     }
 
-    public Shop loadShopOldFormat(File file) {
+    public Shop convertShopOldFormat(File file) {
         log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShopOldFormat(File file)"));
 
         try {
@@ -205,19 +216,74 @@ public class ShopData {
             }
 
             br.close();
-            return shop;
+            
+            if(file.delete()) {
+                saveShop(shop);
+                return shop;
+            } else {
+                return null;
+            }
 
         } catch (IOException e) {
             log.warning(String.format("[%s] Could not load Shop File \"%s\": %s", plugin.pdfFile.getName(), file.toString(), e.getMessage()));
             return null;
         }
     }
+    
+    public static long[] convertStringArraytoLongArray(String[] sarray) {
+        if (sarray != null) {
+            long longArray[] = new long[sarray.length];
+            for (int i = 0; i < sarray.length; i++) {
+                longArray[i] = Long.parseLong(sarray[i]);
+            }
+            return longArray;
+        }
+        return null;
+    }    
 
     public Shop loadShop(File file) {
-        return null;
+        log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShop(File file)"));
+
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream(file));
+        } catch(IOException e) {
+            log.warning(String.format("[%s] %s", plugin.pdfFile.getName(), "IOException: " + e.getMessage()));
+            return null;
+        }
+
+        // Shop attributes
+        UUID uuid = UUID.fromString(props.getProperty("uuid"));
+        String name = props.getProperty("name");
+        boolean unlimitedMoney = Boolean.parseBoolean(props.getProperty("unlimited-money"));
+        boolean unlimitedStock = Boolean.parseBoolean(props.getProperty("unlimited-stock"));
+
+        // Location - locationB=-88, 50, -127
+        long[] locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
+        long[] locationB = convertStringArraytoLongArray(props.getProperty("locationB").split(", "));
+        String world = props.getProperty("world");
+
+        // People
+        String owner = props.getProperty("owner");
+        String[] managers = props.getProperty("managers").replaceAll("[\\[\\]]", "").split(", ");
+        String creator = props.getProperty("creator");
+        
+        Shop shop = new Shop(uuid);
+        shop.setName(name);
+        shop.setUnlimitedMoney(unlimitedMoney);
+        shop.setUnlimitedStock(unlimitedStock);
+        shop.setLocationA(new ShopLocation(locationA));
+        shop.setLocationB(new ShopLocation(locationB));
+        shop.setWorld(world);
+        shop.setOwner(owner);
+        shop.setManagers(managers);
+        shop.setCreator(creator);
+        
+        return shop;
     }
     
     public boolean saveAllShops() {
+        log.info(String.format("[%s] %s", plugin.pdfFile.getName(), "Saving All Shops"));
         Iterator<Shop> it = shops.values().iterator();
         while(it.hasNext()) {
             Shop shop = it.next();
@@ -227,65 +293,49 @@ public class ShopData {
     }
 
     public boolean saveShop(Shop shop) {
-        String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getName() + ".shop";
-        File shopFile = new File(filePath);
-        try {
-            shopFile.createNewFile();
+        DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+        Date date = new Date();
+        Properties props = new Properties();
 
-            ArrayList<String> fileOutput = new ArrayList<String>();
+        // Config attributes
+        props.setProperty("config-version", "2.0");
 
-            fileOutput.add("#" + shop.getName() + " shop file\n");
-            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-            Date date = new Date();
-            fileOutput.add("#" + dateFormat.format(date) + "\n");
+        // Shop attributes
+        props.setProperty("uuid", shop.getUuid().toString());
+        props.setProperty("name", shop.getName());
+        props.setProperty("unlimited-money", String.valueOf(shop.isUnlimitedMoney()));
+        props.setProperty("unlimited-stock", String.valueOf(shop.isUnlimitedStock()));
 
-            fileOutput.add("world=" + shop.getWorld() + "\n");
-            fileOutput.add("owner=" + shop.getOwner() + "\n");
+        // Location
+        props.setProperty("locationA", shop.getLocationA().toString());
+        props.setProperty("locationB", shop.getLocationB().toString());
+        props.setProperty("world", shop.getWorld());
 
-            String outString = "";
-            if (shop.getManagers() != null) {
-                for (String manager : shop.getManagers()) {
-                    outString = outString + manager + ",";
-                }
-            }
-            if (outString.equalsIgnoreCase("null"))
-                outString = "";
+        // People
+        props.setProperty("owner", shop.getOwner());
+        props.setProperty("managers", Arrays.toString(shop.getManagers()));
+        props.setProperty("creator", shop.getCreator());
 
-            fileOutput.add(String.format("managers=%s\n", outString));
-            fileOutput.add(String.format("creator=%s\n", shop.getCreator()));
-            fileOutput.add(String.format("position1=%s\n", shop.getLocationA().toString()));
-            fileOutput.add(String.format("position2=%s\n", shop.getLocationB().toString()));
-            fileOutput.add(String.format("unlimited-money=%s\n", String.valueOf(shop.isUnlimitedMoney())));
-            fileOutput.add("unlimited-stock=" + String.valueOf(shop.isUnlimitedStock()) + "\n");
+        // Inventory
+        for (InventoryItem item : shop.getItems()) {
+            ItemInfo info = item.getInfo();
+            int buyPrice = item.getBuyPrice();
+            int buySize = item.getBuySize();
+            int sellPrice = item.getSellPrice();
+            int sellSize = item.getSellSize();
+            int stock = item.getStock();
+            int maxStock = item.getMaxStock();
 
-            for (InventoryItem item : shop.getItems()) {
-                int buyPrice = item.getBuyPrice();
-                int buySize = item.getBuySize();
-                int sellPrice = item.getSellPrice();
-                int sellSize = item.getSellSize();
-                int stock = item.getStock();
-                int maxStock = item.getMaxStock();
-                int[] itemInfo = LocalShops.itemList.getItemInfo(null, item.getInfo().name);
-                if (itemInfo == null)
-                    continue;
-                // itemId=dataValue,buyPrice:buyStackSize,sellPrice:sellStackSize,stock
-                fileOutput.add(itemInfo[0] + ":" + itemInfo[1] + "=" + buyPrice
-                        + ":" + buySize + "," + sellPrice + ":" + sellSize
-                        + "," + stock + ":" + maxStock + "\n");
-            }
-
-            FileOutputStream shopFileOut = new FileOutputStream(filePath);
-
-            for (String line : fileOutput) {
-                shopFileOut.write(line.getBytes());
-            }
-
-            shopFileOut.close();
-
-        } catch (IOException e1) {
-            System.out.println(plugin.pdfFile.getName() + ": Error - Could not create file " + shopFile.getName());
-            return false;
+            props.setProperty(String.format("%d:%d", info.typeId, info.subTypeId), String.format("%d:%d,%d:%d,%d:%d", buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
         }
+
+        String fileName = LocalShops.folderPath + LocalShops.shopsPath + shop.getUuid().toString() + ".shop";
+        try {
+            props.store(new FileOutputStream(fileName), "LocalShops Config Version 2.0");
+        } catch (IOException e) {
+            log.warning("IOException: " + e.getMessage());
+        }
+
         return true;
     }
 
@@ -310,8 +360,7 @@ public class ShopData {
         }
 
         // delete the file from the directory
-        String filePath = LocalShops.folderPath + LocalShops.shopsPath
-                + shop.getName() + ".shop";
+        String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getName() + ".shop";
         File shopFile = new File(filePath);
         shopFile.delete();
 
