@@ -1680,6 +1680,29 @@ public class Commands {
                 return true;
             } else if (args[1].matches("(?i)manager")) {
                 // shop set manager +managername -managername
+                // Check if Owner
+                if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
+                    player.sendMessage(ChatColor.AQUA + "You must be the shop owner to set this.");
+                    player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                    return false;
+                }
+                
+                String[] managers = shop.getManagers();
+                
+                for(int i=2; i < args.length; i++) {
+                    String arg = args[i];
+                    if(arg.matches("^\\+")) {
+                        // add manager
+                        shop.addManager(arg.replaceFirst("\\+", ""));
+                    } else if(arg.matches("^\\-")) {
+                        // remove manager
+                        shop.removeManager(arg.replaceFirst("\\-", ""));
+                    }
+                }
+
+                player.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
+                player.sendMessage("   " + Arrays.toString(shop.getManagers()));
+                
             } else if (args[1].matches("(?i)owner")) {
                 // shop set owner ownername
 
@@ -1897,28 +1920,6 @@ public class Commands {
                 }
 
             } else if (args[1].equalsIgnoreCase("manager")) {
-                // Check if Owner
-                if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
-                    player.sendMessage(ChatColor.AQUA + "You must be the shop owner to set this.");
-                    player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
-                    return false;
-                }
-                
-                String[] managers = shop.getManagers();
-                
-                for(int i=2; i < args.length; i++) {
-                    String arg = args[i];
-                    if(arg.matches("^\\+")) {
-                        // add manager
-                        shop.addManager(arg.replaceFirst("\\+", ""));
-                    } else if(arg.matches("^\\-")) {
-                        // remove manager
-                        shop.removeManager(arg.replaceFirst("\\-", ""));
-                    }
-                }
-
-                player.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
-                player.sendMessage("   " + Arrays.toString(shop.getManagers()));
 
             } else if (args[1].equalsIgnoreCase("owner")) {
                 if (args.length == 3) {
