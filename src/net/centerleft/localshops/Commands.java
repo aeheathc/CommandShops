@@ -314,6 +314,13 @@ public class Commands {
                  * "Problem with selection. Max size is " + ChatColor.WHITE +
                  * size); return false; } }
                  */
+                
+                // Check if size is ok
+                if (!plugin.playerData.get(player.getName()).checkSize()) {
+                    String size = plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
+                    player.sendMessage(ChatColor.AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
+                    return false;                    
+                }
 
                 // if a custom size had been set, use that
                 PlayerData data = plugin.playerData.get(player.getName());
