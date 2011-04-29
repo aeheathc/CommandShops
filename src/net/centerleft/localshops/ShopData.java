@@ -279,6 +279,35 @@ public class ShopData {
         shop.setManagers(managers);
         shop.setCreator(creator);
         
+        // Iterate through all keys, find items & parse
+        // props.setProperty(String.format("%d:%d", info.typeId, info.subTypeId), String.format("%d:%d,%d:%d,%d:%d", buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
+        Iterator<Object> it = props.keySet().iterator();
+        while(it.hasNext()) {
+            String key = (String) it.next();
+            if(key.matches("\\d+:\\d+")) {
+                String[] k = key.split(":");
+                int id = Integer.parseInt(k[0]);
+                short type = Short.parseShort(k[1]);
+                
+                String value = props.getProperty(key);
+                String[] v = value.split(",");
+
+                String[] buy = v[0].split(":");
+                int buyPrice = Integer.parseInt(buy[0]);
+                int buyStackSize = Integer.parseInt(buy[1]);
+                
+                String[] sell = v[1].split(":");
+                int sellPrice = Integer.parseInt(sell[0]);
+                int sellStackSize = Integer.parseInt(sell[1]);
+                
+                String[] stock = v[2].split(":");
+                int currStock = Integer.parseInt(stock[0]);
+                int maxStock = Integer.parseInt(stock[1]);
+                
+                shop.addItem(id, type, buyPrice, buyStackSize, sellPrice, sellStackSize, currStock, maxStock);
+            }
+        }
+                
         return shop;
     }
     
