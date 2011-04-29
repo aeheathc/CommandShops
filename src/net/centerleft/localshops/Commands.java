@@ -443,36 +443,37 @@ public class Commands {
     public boolean shopHelp() {
         sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Here are the available commands [required] <optional>");
 
-        if (canUseCommand(CommandTypes.LIST)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" list <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
+        if (canUseCommand(CommandTypes.ADD_ITEM)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" add" + ChatColor.AQUA + " - Add the item that you are holding to the shop.");
         }
         if (canUseCommand(CommandTypes.BUY_ITEM)) {
             sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" buy [itemname] [number] " + ChatColor.AQUA + "- Buy this item.");
         }
-        if (canUseCommand(CommandTypes.SELL_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" sell <#|all>" + ChatColor.AQUA + " - Sell the item in your hand.");
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" sell [itemname] [number]");
-        }
-        if (canUseCommand(CommandTypes.ADD_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" add" + ChatColor.AQUA + " - Add the item that you are holding to the shop.");
-        }
-        if (canUseCommand(CommandTypes.REMOVE_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" remove [itemname]" + ChatColor.AQUA + " - Stop selling item in shop.");
-        }
-        if (canUseCommand(CommandTypes.SET)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" set" + ChatColor.AQUA + " - Display list of set commands");
-        }
         if (canUseCommand(CommandTypes.CREATE_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" create [ShopName]" + ChatColor.AQUA + " - Create a shop at your location.");
         }
-        if (canUseCommand(CommandTypes.SELECT_CUBOID)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" select" + ChatColor.AQUA + " - Select two corners for custom shop size.");
+        if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
+        }        
+        if (canUseCommand(CommandTypes.LIST)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" list <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
         }
         if (canUseCommand(CommandTypes.MOVE_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" move [ShopName]" + ChatColor.AQUA + " - Move a shop to your location.");
         }
-        if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
+        sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" search" + ChatColor.AQUA + " - Search for an item name.");        
+        if (canUseCommand(CommandTypes.SELECT_CUBOID)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" select" + ChatColor.AQUA + " - Select two corners for custom shop size.");
+        }        
+        if (canUseCommand(CommandTypes.SELL_ITEM)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" sell <#|all>" + ChatColor.AQUA + " - Sell the item in your hand.");
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" sell [itemname] [number]");
+        }
+        if (canUseCommand(CommandTypes.SET)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" set" + ChatColor.AQUA + " - Display list of set commands");
+        }        
+        if (canUseCommand(CommandTypes.REMOVE_ITEM)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" remove [itemname]" + ChatColor.AQUA + " - Stop selling item in shop.");
         }
         return true;
     }
