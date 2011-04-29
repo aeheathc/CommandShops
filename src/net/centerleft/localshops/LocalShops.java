@@ -162,7 +162,7 @@ public class LocalShops extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        Commands commands = new Commands(this, sender, args);
+        Commands commands = new Commands(this, commandLabel, sender, args);
 
         String commandName = command.getName().toLowerCase();
 
