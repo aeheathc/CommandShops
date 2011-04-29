@@ -1935,6 +1935,7 @@ public class Commands {
                         return true;
                     }
                 }
+                return false;
             } else if (args[1].equalsIgnoreCase("unlimited")) {
                 if (!canUseCommand(CommandTypes.ADMIN)) {
                     player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be a shop admin to do this.");
