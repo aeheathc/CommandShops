@@ -472,9 +472,6 @@ public class Commands {
         if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /lshop destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
         }
-        if (canUseCommand(CommandTypes.RELOAD_PLUGIN)) {
-            sender.sendMessage(ChatColor.WHITE + "   /lshop reload" + ChatColor.AQUA + " - Reload the plugin and shop files.");
-        }
         return true;
     }
 
