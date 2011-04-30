@@ -263,15 +263,28 @@ public class Shop {
     }
     
     public void log() {
-        log.info(String.format("%-16s %s", "UUID:", uuid.toString()));
-        log.info(String.format("%-16s %s", "Name:", name));
-        log.info(String.format("%-16s %s", "Creator:", creator));
-        log.info(String.format("%-16s %s", "Owner:", owner));
-        log.info(String.format("%-16s %s", "Managers:", Search.join(managers, ",")));
-        log.info(String.format("%-16s %s", "Unlimited Money:", unlimitedMoney ? "Yes" : "No"));
-        log.info(String.format("%-16s %s", "Unlimited Stock:", unlimitedStock ? "Yes" : "No"));        
-        log.info(String.format("%-16s %s", "Location A:", locationA.toString()));
-        log.info(String.format("%-16s %s", "Location B:", locationB.toString()));
-        log.info(String.format("%-16s %s", "World:", world));
+        // Details
+        log.info("Shop Information");
+        log.info(String.format("   %-16s %s", "UUID:", uuid.toString()));
+        log.info(String.format("   %-16s %s", "Name:", name));
+        log.info(String.format("   %-16s %s", "Creator:", creator));
+        log.info(String.format("   %-16s %s", "Owner:", owner));
+        log.info(String.format("   %-16s %s", "Managers:", Search.join(managers, ",")));
+        log.info(String.format("   %-16s %s", "Unlimited Money:", unlimitedMoney ? "Yes" : "No"));
+        log.info(String.format("   %-16s %s", "Unlimited Stock:", unlimitedStock ? "Yes" : "No"));        
+        log.info(String.format("   %-16s %s", "Location A:", locationA.toString()));
+        log.info(String.format("   %-16s %s", "Location B:", locationB.toString()));
+        log.info(String.format("   %-16s %s", "World:", world));
+        
+        // Items
+        log.info("Shop Inventory");
+        log.info("   BP=Buy Price, BS=Buy Size, SP=Sell Price, SS=Sell Size, ST=Stock, MX=Max Stock");
+        log.info(String.format("   %-6s %-3s %-3s %-3s %-3s %-3s %-3s", "Id", "BP", "BS", "SP", "SS", "ST", "MX"));        
+        Iterator<InventoryItem> it = inventory.values().iterator();
+        while(it.hasNext()) {
+            InventoryItem item = it.next();
+            ItemInfo info = item.getInfo();
+            log.info(String.format("   %3d:%-2d %-3d %-3d %-3d %-3d %-3d %-3d", info.typeId, info.subTypeId, item.getBuyPrice(), item.getBuySize(), item.getSellPrice(), item.getSellSize(), item.getStock(), item.getMaxStock()));
+        }
     }
 }
