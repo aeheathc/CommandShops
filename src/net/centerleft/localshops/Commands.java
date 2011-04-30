@@ -1705,6 +1705,9 @@ public class Commands {
                     // Save Shop
                     plugin.shopData.saveShop(shop);
                     
+                    // Send Message
+                    player.sendMessage(item.name + " maximum stock is now " + amount);
+                    
                     return true;
                 } else if(args[args.length -1].matches("(?i)all")) {
                     // shop set max itemname all
@@ -1734,6 +1737,9 @@ public class Commands {
                     
                     // Save Shop
                     plugin.shopData.saveShop(shop);
+                    
+                    // Send Message
+                    player.sendMessage(item.name + " maximum stock is now " + amount);
                     
                     return true;
                 } else {
