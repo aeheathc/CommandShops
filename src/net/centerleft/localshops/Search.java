@@ -14,7 +14,7 @@ public class Search {
     
     private static ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
     static {
-        items.add(new ItemInfo("Stone", new String[][] { { "stone" } }, 1, (short) 0));
+        items.add(new ItemInfo("Stone", new String[][] { { "stone" } }, 1, (short) 0, 64));
         items.add(new ItemInfo("Grass", new String[][] { { "grass" } }, 2, (short) 0));
         items.add(new ItemInfo("Dirt", new String[][] { { "dirt" } }, 3, (short) 0));
         items.add(new ItemInfo("Cobblestone", new String[][] { { "cobb" } }, 4, (short) 0));
@@ -225,10 +225,27 @@ public class Search {
         items.add(new ItemInfo("Gold Music Disc", new String[][] { { "dis", "gol" }, { "rec", "gol" } }, 2256, (short) 0));
         items.add(new ItemInfo("Green Music Disc", new String[][] { { "dis", "gre" }, { "rec", "gre" } }, 2257, (short) 0));
     }
-
-    public static String join(List<String> shopList, String glue) {
+    
+    public static String join(String[] array, String glue) {
         String joined = null;
-        for (String element : shopList) {
+        for (String element : array) {
+            if (joined == null) {
+                joined = element;
+            } else {
+                joined += glue + element;
+            }
+        }
+        
+        if(joined == null) {
+            return "";
+        } else {
+            return joined;
+        }
+    }    
+
+    public static String join(List<String> list, String glue) {
+        String joined = null;
+        for (String element : list) {
             if (joined == null) {
                 joined = element;
             } else {

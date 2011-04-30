@@ -25,6 +25,7 @@ public class Commands {
     private String commandLabel = null;
     private CommandSender sender = null;
     private String[] args = null;
+    private String command = null;
 
     // Command Types Enum
     private static enum CommandTypes {
@@ -75,6 +76,7 @@ public class Commands {
         this.commandLabel = commandLabel;
         this.sender = sender;
         this.args = args;
+        this.command = Search.join(args, " ");
     }
 
     public boolean shopDebug() {

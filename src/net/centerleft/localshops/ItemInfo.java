@@ -9,12 +9,18 @@ public class ItemInfo {
     public String[][] search = null;
     public int typeId = -1;
     public short subTypeId = 0;
+    public int maxStackSize = 64;
     
     public ItemInfo(String name, String[][] search, int typeId, short subTypeId) {
         this.name = name;
         this.search = search;
         this.typeId = typeId;
         this.subTypeId = subTypeId;
+    }
+    
+    public ItemInfo(String name, String[][] search, int typeId, short subTypeId, int maxStackSize) {
+        this(name, search, typeId, subTypeId);
+        this.maxStackSize = maxStackSize;
     }
     
     public String toString() {
