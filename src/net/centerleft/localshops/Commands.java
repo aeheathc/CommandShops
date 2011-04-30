@@ -1491,6 +1491,11 @@ public class Commands {
                 }
             } else if (args[1].matches("(?i)sell")) {
                 // shop set sell itemname price stacksize
+                if(args.length < 4) {
+                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set sell [item name] [price] <bundle size>");
+                    return true;
+                }
+                
                 if (args[2].matches("\\d+")) {
                     if (args.length == 4) {
                         // shop set sell itemid price
@@ -1515,6 +1520,9 @@ public class Commands {
                         // Save Shop
                         plugin.shopData.saveShop(shop);
                         
+                        // Send message
+                        player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+                        player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
                         return true;
                     } else if (args.length == 5) {
                         // shop set sell itemid price stacksize
@@ -1545,6 +1553,9 @@ public class Commands {
                         // Save Shop
                         plugin.shopData.saveShop(shop);
                         
+                        // Send message
+                        player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+                        player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
                         return true;
                     } else {
                         return false;
@@ -1575,6 +1586,9 @@ public class Commands {
                         // Save Shop
                         plugin.shopData.saveShop(shop);
                         
+                        // Send message
+                        player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+                        player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
                         return true;
                     } else if (args.length == 5) {
                         // shop set sell id:type price stacksize
@@ -1606,9 +1620,10 @@ public class Commands {
                         // Save Shop
                         plugin.shopData.saveShop(shop);
                         
+                        // Send message
+                        player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+                        player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
                         return true;
-                    } else {
-                        return false;
                     }
                 } else {
                     // shop set sell words... price stacksize
@@ -1643,7 +1658,10 @@ public class Commands {
                         
                         // Save Shop
                         plugin.shopData.saveShop(shop);
-                        
+                                                
+                        // Send message
+                        player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+                        player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
                         return true;
                     } else if (args[args.length - 1].matches("\\d+")) {
                         // shop set sell name... price
@@ -1671,9 +1689,13 @@ public class Commands {
                         // Save Shop
                         plugin.shopData.saveShop(shop);
                         
+                        // Send message
+                        player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+                        player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
                         return true;
                     } else {
-                        return false;
+                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set sell [item name] [price] <bundle size>");
+                        return true;
                     }
                 }
             } else if (args[1].matches("(?i)max")) {
@@ -1828,10 +1850,20 @@ public class Commands {
                         return true;
                     }
                 }
+            } else {
+                // Display list of set commands & return
+                player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
+                player.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
+                player.sendMessage("   " + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
+                player.sendMessage("   " + "/" + commandLabel + " set max [item name] [max number]");
+                player.sendMessage("   " + "/" + commandLabel + " set manager +[playername] -[playername2]");
+                player.sendMessage("   " + "/" + commandLabel + " set owner [player name]");
+                if (canUseCommand(CommandTypes.ADMIN)) {
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
+                }
+                return true;
             }
-
-            return true;
-
         } else {
             // Console or other has sent command
             // TODO: Determine command syntax!
