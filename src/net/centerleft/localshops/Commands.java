@@ -35,7 +35,7 @@ public class Commands {
         CREATE_SHOP_FREE(4, new String[] { "localshops.create.free" }),
         DESTROY_SHOP(5, new String[] { "localshops.destroy" }),
         HELP(6, new String[] {}),
-        LIST(7, new String[] { "localshops.buysell" }),
+        INVENTORY(7, new String[] { "localshops.buysell" }),
         MOVE_SHOP(8, new String[] { "localshops.move" }),
         MOVE_SHOP_FREE(9, new String[] { "localshops.move.free" }),
         RELOAD_PLUGIN(10, new String[] { "localshops.reload" }),
@@ -461,8 +461,8 @@ public class Commands {
         if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
         }        
-        if (canUseCommand(CommandTypes.LIST)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" list <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
+        if (canUseCommand(CommandTypes.INVENTORY)) {
+            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" inventory <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
         }
         if (canUseCommand(CommandTypes.MOVE_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" move [ShopName]" + ChatColor.AQUA + " - Move a shop to your location.");
@@ -525,8 +525,8 @@ public class Commands {
         return false;
     }
 
-    public boolean shopList() {
-        if (canUseCommand(CommandTypes.LIST) && (sender instanceof Player)) {
+    public boolean showBrowse() {
+        if (canUseCommand(CommandTypes.INVENTORY) && (sender instanceof Player)) {
             Player player = (Player) sender;
             String playerName = player.getName();
             String inShopName;
@@ -583,7 +583,7 @@ public class Commands {
                     printInventory(shop, player, "list", pageNumber);
                 }
             } else {
-                player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" list");
+                player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" browse");
             }
         } else {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
