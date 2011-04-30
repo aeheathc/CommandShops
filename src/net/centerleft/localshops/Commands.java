@@ -1276,7 +1276,18 @@ public class Commands {
 
             // Check minimum variable length
             if (args.length < 2) {
-                return false;
+                // Display list of set commands & return
+                player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
+                player.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
+                player.sendMessage("   " + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
+                player.sendMessage("   " + "/" + commandLabel + " set max [item name] [max number]");
+                player.sendMessage("   " + "/" + commandLabel + " set manager +[playername] -[playername2]");
+                player.sendMessage("   " + "/" + commandLabel + " set owner [player name]");
+                if (canUseCommand(CommandTypes.ADMIN)) {
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
+                }
+                return true;
             }
 
             // Get current shop
