@@ -1267,9 +1267,7 @@ public class Commands {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
             return false;
         }
-
-        // Variables
-
+        
         // Check minimum variable length
         if (args.length < 2) {
             return shopSetHelp();
