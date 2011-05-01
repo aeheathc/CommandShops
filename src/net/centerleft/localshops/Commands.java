@@ -864,7 +864,7 @@ public class Commands {
         if (shop.isUnlimitedMoney()) {
             plugin.playerData.get(playerName).payPlayer(playerName, totalCost);
         } else {
-            if (!isShopController(player, shop)) {
+            if (!isShopController(shop)) {
                 if (!plugin.playerData.get(playerName).payPlayer(shop.getOwner(), playerName, totalCost)) {
                     // lshop owner doesn't have enough money
                     // get shop owner's balance and calculate how many it can
@@ -886,7 +886,7 @@ public class Commands {
             shop.addStock(itemName, amount);
         }
 
-        if (isShopController(player, shop)) {
+        if (isShopController(shop)) {
             player.sendMessage(ChatColor.AQUA + "You added " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " to the shop");
         } else {
             player.sendMessage(ChatColor.AQUA + "You sold " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " and gained " + ChatColor.WHITE + totalCost + " " + plugin.shopData.currencyName);
@@ -1087,17 +1087,22 @@ public class Commands {
      * @param shop
      * @return
      */
-    private boolean isShopController(Player player, Shop shop) {
-        if (shop.getOwner().equalsIgnoreCase(player.getName()))
-            return true;
-        if (shop.getManagers() != null) {
-            for (String manager : shop.getManagers()) {
-                if (player.getName().equalsIgnoreCase(manager)) {
-                    return true;
+    private boolean isShopController(Shop shop) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (shop.getOwner().equalsIgnoreCase(player.getName()))
+                return true;
+            if (shop.getManagers() != null) {
+                for (String manager : shop.getManagers()) {
+                    if (player.getName().equalsIgnoreCase(manager)) {
+                        return true;
+                    }
                 }
             }
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     /**
@@ -1152,7 +1157,7 @@ public class Commands {
                 }
 
                 // check if the item has a price, or if this is a shop owner
-                if (shop.getItem(itemName).getBuyPrice() == 0 && !isShopController(player, shop)) {
+                if (shop.getItem(itemName).getBuyPrice() == 0 && !isShopController(shop)) {
                     player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
                     return false;
                 }
@@ -1223,7 +1228,7 @@ public class Commands {
             int totalCost = bundles * itemPrice;
 
             // try to pay the shop owner
-            if (!isShopController(player, shop)) {
+            if (!isShopController(shop)) {
                 if (!plugin.playerData.get(playerName).payPlayer(playerName, shop.getOwner(), totalCost)) {
                     // player doesn't have enough money
                     // get player's balance and calculate how many it can buy
@@ -1243,7 +1248,7 @@ public class Commands {
             if (!shop.isUnlimitedStock()) {
                 shop.removeStock(itemName, amount);
             }
-            if (isShopController(player, shop)) {
+            if (isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You removed " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " from the shop");
             } else {
                 player.sendMessage(ChatColor.AQUA + "You purchased " + ChatColor.WHITE + amount + " " + itemName + ChatColor.AQUA + " for " + ChatColor.WHITE + totalCost + " " + plugin.shopData.currencyName);
@@ -1371,8 +1376,11 @@ public class Commands {
 
         // Get current shop
         if (sender instanceof Player) {
+            // Get player & data
             Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
+            
+            // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
@@ -1380,6 +1388,13 @@ public class Commands {
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
                 return false;
+            }
+            
+            // Check if Player can Modify
+            if (!isShopController(shop)) {
+                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
+                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
@@ -1537,8 +1552,11 @@ public class Commands {
 
         // Get current shop
         if (sender instanceof Player) {
+            // Get player & data
             Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
+            
+            // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
@@ -1546,6 +1564,13 @@ public class Commands {
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
                 return false;
+            }
+            
+            // Check if Player can Modify
+            if (!isShopController(shop)) {
+                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
+                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
@@ -1909,7 +1934,7 @@ public class Commands {
             String shopName = plugin.playerData.get(playerName).shopList.get(0);
             Shop shop = plugin.shopData.getShop(shopName);
 
-            if (!isShopController(player, shop)) {
+            if (!isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
                 player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
                 return false;
@@ -2151,7 +2176,7 @@ public class Commands {
             String shopName = plugin.playerData.get(playerName).shopList.get(0);
             Shop shop = plugin.shopData.getShop(shopName);
 
-            if (!isShopController(player, shop)) {
+            if (!isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to remove an item.");
                 player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
                 return false;
