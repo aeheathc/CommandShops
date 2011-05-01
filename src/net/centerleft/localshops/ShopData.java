@@ -8,13 +8,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -242,7 +239,7 @@ public class ShopData {
     public Shop loadShop(File file) {
         log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShop(File file)"));
 
-        Properties props = new Properties();
+        SortedProperties props = new SortedProperties();
         try {
             props.load(new FileInputStream(file));
         } catch(IOException e) {
@@ -322,7 +319,7 @@ public class ShopData {
     public boolean saveShop(Shop shop) {
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
         Date date = new Date();
-        Properties props = new Properties();
+        SortedProperties props = new SortedProperties();
 
         // Config attributes
         props.setProperty("config-version", "2.0");
