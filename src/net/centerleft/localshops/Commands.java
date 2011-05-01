@@ -1384,13 +1384,9 @@ public class Commands {
             shop = plugin.shopData.getShop(currShop);
         }
         if (shop == null) {
+            sender.sendMessage("You are not in a shop!");
             return false;
         }
-        
-        // Item info
-        ItemInfo item = null;
-        int price = -1;
-        int size = -1;
 
         // Command matching
         
@@ -1399,9 +1395,9 @@ public class Commands {
         Matcher matcher = pattern.matcher(command);
         if(matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
-            item = Search.itemById(id);
-            price = Integer.parseInt(matcher.group(2));
-            size = Integer.parseInt(matcher.group(3));
+            ItemInfo item = Search.itemById(id);
+            int price = Integer.parseInt(matcher.group(2));
+            int size = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price, size);            
         }
         
@@ -1412,9 +1408,9 @@ public class Commands {
         if(matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
-            item = Search.itemById(id, type);
-            price = Integer.parseInt(matcher.group(3));
-            size = Integer.parseInt(matcher.group(4));
+            ItemInfo item = Search.itemById(id, type);
+            int price = Integer.parseInt(matcher.group(3));
+            int size = Integer.parseInt(matcher.group(4));
             return shopSetBuy(shop, item, price, size);
         }
         
@@ -1424,8 +1420,8 @@ public class Commands {
         matcher = pattern.matcher(command);
         if(matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
-            item = Search.itemById(id);
-            price = Integer.parseInt(matcher.group(2));
+            ItemInfo item = Search.itemById(id);
+            int price = Integer.parseInt(matcher.group(2));
             return shopSetBuy(shop, item, price);
         }
         
@@ -1436,8 +1432,8 @@ public class Commands {
         if(matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
-            item = Search.itemById(id, type);
-            price = Integer.parseInt(matcher.group(3));
+            ItemInfo item = Search.itemById(id, type);
+            int price = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price);
         }
         
@@ -1447,9 +1443,9 @@ public class Commands {
         matcher = pattern.matcher(command);
         if(matcher.find()) {
             String name = matcher.group(1);
-            item = Search.itemByName(name);
-            price = Integer.parseInt(matcher.group(2));
-            size = Integer.parseInt(matcher.group(3));
+            ItemInfo item = Search.itemByName(name);
+            int price = Integer.parseInt(matcher.group(2));
+            int size = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price, size);
         }
         
@@ -1459,8 +1455,8 @@ public class Commands {
         matcher = pattern.matcher(command);
         if(matcher.find()) {
             String name = matcher.group(1);
-            item = Search.itemByName(name);
-            price = Integer.parseInt(matcher.group(2));
+            ItemInfo item = Search.itemByName(name);
+            int price = Integer.parseInt(matcher.group(2));
             return shopSetBuy(shop, item, price);
         }
         
