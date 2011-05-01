@@ -1298,6 +1298,8 @@ public class Commands {
             return shopSetManager();
         } else if (command.matches("(?i)set\\s+owner.*")) {
             return shopSetOwner();
+        } else if (command.matches("(?i)set\\s+name.*")) {
+            return shopSetName();
         } else {
             return shopSetHelp();
         }
@@ -1668,53 +1670,104 @@ public class Commands {
         }
         return true;
     }
+    
+    private boolean shopSetName() {
+        log.info("shopSetName");
+        Shop shop = null;
+        
+        // Get current shop
+        if(sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
+            PlayerData pData = plugin.playerData.get(player.getName());
+            
+            // Get Current Shop
+            String currShop = pData.getCurrentShop();
+            if(currShop != null) {
+                shop = plugin.shopData.getShop(currShop);
+            }
+            if(shop == null) {
+                sender.sendMessage("You are not in a shop!");
+                return false;                
+            }
+            
+            // Check if Player can Modify  
+            if(!canModifyShop(shop)) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to set this.");
+                sender.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getOwner());                
+                return true;
+            }
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
+            return false;            
+        }
+        
+        Pattern pattern = Pattern.compile("(?i)set\\s+name\\s+(.*)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String name = matcher.group(1).trim();
+            shop.setName(name);
+            plugin.shopData.saveShop(shop);
+            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop name is now " + ChatColor.WHITE + shop.getName());
+            return true;
+        }
+        
+        sender.sendMessage("   " + "/" + commandLabel + " set name [shop name]");
+        return true;
+    }
 
     private boolean shopSetOwner() {
         log.info("shopSetOwner");
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        Shop shop = null;
 
-            // Get current shop
-            Shop shop = null;
+        // Get current shop
+        if (sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
             }
             if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
                 return false;
             }
-            // shop set owner ownername
 
-            // Check Permissions
-            if (!canUseCommand(CommandTypes.SET_OWNER)) {
+            // Check if Player can Modify     
+            if (!canUseCommand(CommandTypes.ADMIN) && !shop.getOwner().equalsIgnoreCase(player.getName())) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to set this.");
+                sender.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
+            }
+            
+            if (!canUseCommand(CommandTypes.SET_OWNER) && !canUseCommand(CommandTypes.ADMIN)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
                 return false;
             }
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
+            return false;
+        }
 
-            if (args.length == 3) {
-                if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
-                    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to set this.");
-                    player.sendMessage(ChatColor.AQUA + "  The current shop owner is " + ChatColor.WHITE + shop.getOwner());
-                    return false;
-                } else if (!canUseCommand(CommandTypes.SET_OWNER)) {
-                    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You do not have permission to do this.");
-                    return false;
-                } else {
-                    shop.setOwner(args[2]);
+        if (args.length == 3) {
 
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop owner changed to " + ChatColor.WHITE + args[2]);
-                    return true;
-                }
+            if (!canUseCommand(CommandTypes.SET_OWNER)) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You do not have permission to do this.");
+                return false;
             } else {
-                // TODO: do something here?
+                shop.setOwner(args[2]);
+
+                // Save Shop
+                plugin.shopData.saveShop(shop);
+
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Shop owner changed to " + ChatColor.WHITE + args[2]);
                 return true;
             }
         } else {
-            // TODO: Console
+            sender.sendMessage("   " + "/" + commandLabel + " set owner [player name]");
             return true;
         }
     }
@@ -1767,7 +1820,7 @@ public class Commands {
             plugin.shopData.saveShop(shop);
 
             sender.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
-            sender.sendMessage("   " + Arrays.toString(shop.getManagers()));
+            sender.sendMessage("   " + Search.join(shop.getManagers(), ", "));
             return true;
         }
         
@@ -2424,5 +2477,27 @@ public class Commands {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
         }
 
+    }
+    
+    private boolean canModifyShop(Shop shop) {
+        if(sender instanceof Player) {
+            Player player = (Player) sender;
+            // If owner, true
+            if(shop.getOwner().equals(player.getName())) {
+                return true;
+            }
+            // If manager, true
+            if(shop.getManagers().contains(player.getName())) {
+                return true;
+            }
+            // If admin, true
+            if(canUseCommand(CommandTypes.ADMIN)) {
+                return true;
+            }
+            return false;
+        } else {
+            // Console, true
+            return true;
+        }
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -161,10 +162,8 @@ public class Shop {
         managers.remove(manager);
     }
 
-    public String[] getManagers() {
-        String[] m = new String[this.managers.size()];
-        m = managers.toArray(m);
-        return m;
+    public List<String> getManagers() {
+        return managers;
     }
 
     public Collection<InventoryItem> getItems() {

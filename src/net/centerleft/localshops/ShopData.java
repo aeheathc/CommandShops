@@ -342,7 +342,7 @@ public class ShopData {
 
         // People
         props.setProperty("owner", shop.getOwner());
-        props.setProperty("managers", Arrays.toString(shop.getManagers()));
+        props.setProperty("managers", Search.join(shop.getManagers(), ", "));
         props.setProperty("creator", shop.getCreator());
 
         // Inventory
