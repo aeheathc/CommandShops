@@ -1721,29 +1721,37 @@ public class Commands {
 
     private boolean shopSetManager() {
         log.info("shopSetOwner");
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        Shop shop = null;
 
-            // Get current shop
-            Shop shop = null;
+        // Get current shop
+        if (sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
             }
             if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
                 return false;
             }
-            // shop set manager +managername -managername
-            // Check if Owner
+
+            // Check if Player can Modify
             if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner to set this.");
                 player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
                 return false;
             }
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
+            return false;
+        }
 
-            String[] managers = shop.getManagers();
-
+        if (args.length >= 3) {
+            // shop set manager +managername -managername
             for (int i = 2; i < args.length; i++) {
                 String arg = args[i];
                 if (arg.matches("^\\+")) {
@@ -1758,14 +1766,14 @@ public class Commands {
             // Save Shop
             plugin.shopData.saveShop(shop);
 
-            player.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
-            player.sendMessage("   " + Arrays.toString(shop.getManagers()));
-
-            return true;
-        } else {
-            // TODO: Console
+            sender.sendMessage(ChatColor.AQUA + "The shop managers have been updated. The current managers are:");
+            sender.sendMessage("   " + Arrays.toString(shop.getManagers()));
             return true;
         }
+        
+        // show set manager usage
+        sender.sendMessage("   " + "/" + commandLabel + " set manager +[playername] -[playername2]");
+        return true;
     }
 
     private boolean shopSetUnlimited() {
