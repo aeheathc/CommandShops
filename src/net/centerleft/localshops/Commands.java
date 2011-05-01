@@ -1770,47 +1770,72 @@ public class Commands {
 
     private boolean shopSetUnlimited() {
         log.info("shopSetUnlimited");
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        Shop shop = null;
 
-            // Get current shop
-            Shop shop = null;
+        // Get current shop
+        if (sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
             }
             if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
                 return false;
             }
 
+            // Check Permissions
             if (!canUseCommand(CommandTypes.ADMIN)) {
                 player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be a shop admin to do this.");
                 return false;
-            }
-
-            if (args.length == 3) {
-                if (args[2].matches("(?i)money")) {
-                    shop.setUnlimitedMoney(!shop.isUnlimitedMoney());
-                    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited money was set to " + ChatColor.WHITE + shop.isUnlimitedMoney());
-                    plugin.shopData.saveShop(shop);
-                    return true;
-                } else if (args[2].matches("(?i)stock")) {
-                    shop.setUnlimitedStock(!shop.isUnlimitedStock());
-                    player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited stock was set to " + ChatColor.WHITE + shop.isUnlimitedStock());
-                    plugin.shopData.saveShop(shop);
-                    return true;
-                }
-            }
-
-            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
-            player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
-            player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
-            return true;
+            }            
         } else {
-            // TODO: Console
+            sender.sendMessage("Console is not implemented yet.");
+            return false;
+        }
+        
+        // Command matching
+
+        // shop set max int int
+        Pattern pattern = Pattern.compile("(?i)set\\s+max\\s+(\\d+)\\s+(\\d+)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            ItemInfo item = Search.itemById(id);
+            int max = Integer.parseInt(matcher.group(2));
+            return shopSetMax(shop, item, max);
+        }
+
+        // shop set unlimited money
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+unlimited\\s+money");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            shop.setUnlimitedMoney(!shop.isUnlimitedMoney());
+            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited money was set to " + ChatColor.WHITE + shop.isUnlimitedMoney());
+            plugin.shopData.saveShop(shop);
             return true;
         }
+
+        // shop set unlimited stock
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+unlimited\\s+stock");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            shop.setUnlimitedStock(!shop.isUnlimitedStock());
+            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Unlimited stock was set to " + ChatColor.WHITE + shop.isUnlimitedStock());
+            plugin.shopData.saveShop(shop);
+            return true;
+        }
+
+        // show set buy usage
+        sender.sendMessage("   " + "/" + commandLabel + " set unlimited money");
+        sender.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
+        return true;
     }
 
     private boolean shopSetMax(Shop shop, ItemInfo item, int max) {
