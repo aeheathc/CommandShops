@@ -78,7 +78,7 @@ public class Commands {
         this.commandLabel = commandLabel;
         this.sender = sender;
         this.args = args;
-        this.command = Search.join(args, " ");
+        this.command = Search.join(args, " ").trim();
     }
 
     public boolean shopDebug() {
@@ -253,7 +253,7 @@ public class Commands {
             }
         }
         if (args.length != 2) {
-            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" create [ShopName]");
+            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " create [ShopName]");
         }
         if (!canUseCommand(CommandTypes.CREATE_SHOP)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
@@ -317,12 +317,12 @@ public class Commands {
                  * "Problem with selection. Max size is " + ChatColor.WHITE +
                  * size); return false; } }
                  */
-                
+
                 // Check if size is ok
                 if (!plugin.playerData.get(player.getName()).checkSize()) {
                     String size = plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
                     player.sendMessage(ChatColor.AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
-                    return false;                    
+                    return false;
                 }
 
                 // if a custom size had been set, use that
@@ -419,7 +419,7 @@ public class Commands {
             }
         }
         if (args.length != 2) {
-            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" move [ShopName]");
+            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " move [ShopName]");
         }
         if (!canUseCommand(CommandTypes.MOVE_SHOP)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
@@ -454,36 +454,36 @@ public class Commands {
         sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Here are the available commands [required] <optional>");
 
         if (canUseCommand(CommandTypes.ADD_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" add" + ChatColor.AQUA + " - Add the item that you are holding to the shop.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " add" + ChatColor.AQUA + " - Add the item that you are holding to the shop.");
         }
         if (canUseCommand(CommandTypes.BUY_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" buy [itemname] [number] " + ChatColor.AQUA + "- Buy this item.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " buy [itemname] [number] " + ChatColor.AQUA + "- Buy this item.");
         }
         if (canUseCommand(CommandTypes.CREATE_SHOP)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" create [ShopName]" + ChatColor.AQUA + " - Create a shop at your location.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " create [ShopName]" + ChatColor.AQUA + " - Create a shop at your location.");
         }
         if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
-        }        
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
+        }
         if (canUseCommand(CommandTypes.INVENTORY)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" inventory <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " inventory <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
         }
         if (canUseCommand(CommandTypes.MOVE_SHOP)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" move [ShopName]" + ChatColor.AQUA + " - Move a shop to your location.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " move [ShopName]" + ChatColor.AQUA + " - Move a shop to your location.");
         }
-        sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" search" + ChatColor.AQUA + " - Search for an item name.");        
+        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " search" + ChatColor.AQUA + " - Search for an item name.");
         if (canUseCommand(CommandTypes.SELECT_CUBOID)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" select" + ChatColor.AQUA + " - Select two corners for custom shop size.");
-        }        
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " select" + ChatColor.AQUA + " - Select two corners for custom shop size.");
+        }
         if (canUseCommand(CommandTypes.SELL_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" sell <#|all>" + ChatColor.AQUA + " - Sell the item in your hand.");
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" sell [itemname] [number]");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " sell <#|all>" + ChatColor.AQUA + " - Sell the item in your hand.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " sell [itemname] [number]");
         }
         if (canUseCommand(CommandTypes.SET)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" set" + ChatColor.AQUA + " - Display list of set commands");
-        }        
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " set" + ChatColor.AQUA + " - Display list of set commands");
+        }
         if (canUseCommand(CommandTypes.REMOVE_ITEM)) {
-            sender.sendMessage(ChatColor.WHITE + "   /"+commandLabel+" remove [itemname]" + ChatColor.AQUA + " - Stop selling item in shop.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " remove [itemname]" + ChatColor.AQUA + " - Stop selling item in shop.");
         }
         return true;
     }
@@ -587,7 +587,7 @@ public class Commands {
                     printInventory(shop, player, "list", pageNumber);
                 }
             } else {
-                player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" browse");
+                player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " browse");
             }
         } else {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
@@ -703,11 +703,11 @@ public class Commands {
         if (!list) {
             String buySell = (buy ? "buy" : "sell");
             message = ChatColor.AQUA + "To " + buySell + " an item on the list type: " +
-                    ChatColor.WHITE + "/"+commandLabel+" " + buySell + " ItemName [amount]";
+                    ChatColor.WHITE + "/" + commandLabel + " " + buySell + " ItemName [amount]";
             player.sendMessage(message);
         } else {
-            player.sendMessage(ChatColor.AQUA + "Type " + ChatColor.WHITE + "/"+commandLabel+" list buy"
-                    + ChatColor.AQUA + " or " + ChatColor.WHITE + "/"+commandLabel+" list sell");
+            player.sendMessage(ChatColor.AQUA + "Type " + ChatColor.WHITE + "/" + commandLabel + " list buy"
+                    + ChatColor.AQUA + " or " + ChatColor.WHITE + "/" + commandLabel + " list sell");
             player.sendMessage(ChatColor.AQUA + "to see details about price and quantity.");
         }
     }
@@ -748,7 +748,7 @@ public class Commands {
             shopName = plugin.playerData.get(playerName).shopList.get(0);
             shop = plugin.shopData.getShop(shopName);
         } else {
-            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" " + args[0]);
+            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
             return false;
         }
 
@@ -785,7 +785,7 @@ public class Commands {
         }
 
         if (item == null && itemName == null) {
-            player.sendMessage(ChatColor.AQUA + "Input problem. The format is " + ChatColor.WHITE + "/"+commandLabel+" sell <itemName> <# to sell>");
+            player.sendMessage(ChatColor.AQUA + "Input problem. The format is " + ChatColor.WHITE + "/" + commandLabel + " sell <itemName> <# to sell>");
             return false;
         }
 
@@ -1042,12 +1042,12 @@ public class Commands {
             }
 
             // Check Shop Contents, add if necessary
-            if(amount == 0 & shop.containsItem(item)) {
+            if (amount == 0 & shop.containsItem(item)) {
                 // nicely message user
                 player.sendMessage(String.format("This shop already carries %s!", item.name));
                 return true;
             }
-            
+
             // Add item to shop if needed
             if (!shop.containsItem(item)) {
                 shop.addItem(item.typeId, item.subTypeId, 0, 1, 0, 1, 0, 0);
@@ -1193,13 +1193,13 @@ public class Commands {
                     if (args[2].equalsIgnoreCase("all")) {
                         amount = totalAmount;
                     } else {
-                        player.sendMessage(ChatColor.AQUA + "Input problem. The format is " + ChatColor.WHITE + "/"+commandLabel+" buy <itemName> <# to buy>");
+                        player.sendMessage(ChatColor.AQUA + "Input problem. The format is " + ChatColor.WHITE + "/" + commandLabel + " buy <itemName> <# to buy>");
                         return false;
                     }
                 }
 
             } else {
-                player.sendMessage(ChatColor.AQUA + "Input problem. The format is " + ChatColor.WHITE + "/"+commandLabel+" buy <itemName> <# to buy>");
+                player.sendMessage(ChatColor.AQUA + "Input problem. The format is " + ChatColor.WHITE + "/" + commandLabel + " buy <itemName> <# to buy>");
                 return false;
             }
 
@@ -1265,7 +1265,7 @@ public class Commands {
             plugin.shopData.saveShop(shop);
 
         } else {
-            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" " + args[0]);
+            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
         }
 
         return true;
@@ -1277,12 +1277,12 @@ public class Commands {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
             return false;
         }
-        
+
         // Check minimum variable length
         if (args.length < 2) {
             return shopSetHelp();
         }
-        
+
         log.info(String.format("[%s] Command issued: %s", plugin.pdfFile.getName(), command));
 
         // Parse Arguments
@@ -1302,7 +1302,7 @@ public class Commands {
             return shopSetHelp();
         }
     }
-    
+
     private boolean shopSetBuy(Shop shop, ItemInfo item, int price, int size) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
@@ -1379,7 +1379,7 @@ public class Commands {
             // Get player & data
             Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
-            
+
             // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
@@ -1389,7 +1389,7 @@ public class Commands {
                 sender.sendMessage("You are not in a shop!");
                 return false;
             }
-            
+
             // Check if Player can Modify
             if (!isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
@@ -1477,7 +1477,7 @@ public class Commands {
         sender.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
         return true;
     }
-    
+
     private boolean shopSetSell(Shop shop, ItemInfo item, int price, int size) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
@@ -1490,7 +1490,7 @@ public class Commands {
             sender.sendMessage(String.format("This shop does not carry %s!", item.name));
             return true;
         }
-        
+
         // Warn about negative items
         if (price < 0) {
             sender.sendMessage("[WARNING] This shop will loose money with negative values!");
@@ -1503,7 +1503,7 @@ public class Commands {
         // Set new values
         shop.setItemSellAmount(item.name, size);
         shop.setItemSellPrice(item.name, price);
-        
+
         // Save Shop
         plugin.shopData.saveShop(shop);
 
@@ -1527,7 +1527,6 @@ public class Commands {
             return true;
         }
 
-        
         // Warn about negative items
         if (price < 0) {
             sender.sendMessage("[WARNING] This shop will loose money with negative values!");
@@ -1555,7 +1554,7 @@ public class Commands {
             // Get player & data
             Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
-            
+
             // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
@@ -1565,7 +1564,7 @@ public class Commands {
                 sender.sendMessage("You are not in a shop!");
                 return false;
             }
-            
+
             // Check if Player can Modify
             if (!isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
@@ -1669,7 +1668,7 @@ public class Commands {
         }
         return true;
     }
-    
+
     private boolean shopSetOwner() {
         log.info("shopSetOwner");
         if (sender instanceof Player) {
@@ -1719,7 +1718,7 @@ public class Commands {
             return true;
         }
     }
-    
+
     private boolean shopSetManager() {
         log.info("shopSetOwner");
         if (sender instanceof Player) {
@@ -1768,7 +1767,7 @@ public class Commands {
             return true;
         }
     }
-    
+
     private boolean shopSetUnlimited() {
         log.info("shopSetUnlimited");
         if (sender instanceof Player) {
@@ -1813,97 +1812,107 @@ public class Commands {
             return true;
         }
     }
-    
+
+    private boolean shopSetMax(Shop shop, ItemInfo item, int max) {
+        if (item == null) {
+            sender.sendMessage("Item was not found.");
+            return true;
+        }
+
+        // Check if Shop has item
+        if (!shop.containsItem(item)) {
+            // nicely message user
+            sender.sendMessage(String.format("This shop does not carry %s!", item.name));
+            return true;
+        }
+
+        // Check negative values
+        if (max < 0) {
+            sender.sendMessage("Only positive values allowed");
+            return true;
+        }
+
+        // Set new values
+        shop.setItemMaxStock(item.name, max);
+
+        // Save Shop
+        plugin.shopData.saveShop(shop);
+
+        // Send Message
+        sender.sendMessage(item.name + " maximum stock is now " + max);
+
+        return true;
+    }
+
     private boolean shopSetMax() {
         log.info("shopSetMax");
+        Shop shop = null;
+
+        // Get current shop
         if (sender instanceof Player) {
+            // Get player & data
             Player player = (Player) sender;
-            
-            // Get current shop
-            Shop shop = null;
             PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
             }
             if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
                 return false;
             }
 
-            // shop set max itemname [amount|all]
-            if (args[args.length - 1].matches("\\d+")) {
-                // shop set max itemname integer
-                int amount = Integer.parseInt(args[args.length - 1]);
-
-                // Search for Item
-                ArrayList<String> itemName = new ArrayList<String>();
-                for (int i = 1; i < args.length - 1; i++) {
-                    itemName.add(args[i]);
-                }
-                ItemInfo item = Search.itemByName(itemName);
-                if (item == null) {
-                    player.sendMessage("Item was not found.");
-                    return true;
-                }
-
-                // Check negative values
-                if (amount < 0) {
-                    player.sendMessage("Only positive values allowed");
-                    return true;
-                }
-
-                // Set new values
-                shop.setItemMaxStock(item.name, amount);
-
-                // Save Shop
-                plugin.shopData.saveShop(shop);
-
-                // Send Message
-                player.sendMessage(item.name + " maximum stock is now " + amount);
-
+            // Check if Player can Modify
+            if (!isShopController(shop)) {
+                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
+                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
                 return true;
-            } else if (args[args.length - 1].matches("(?i)all")) {
-                // shop set max itemname all
-
-                // Search for Item
-                ArrayList<String> itemName = new ArrayList<String>();
-                for (int i = 1; i < args.length - 1; i++) {
-                    itemName.add(args[i]);
-                }
-                ItemInfo item = Search.itemByName(itemName);
-                if (item == null) {
-                    player.sendMessage("Item was not found.");
-                    return true;
-                }
-
-                // Get ammount of item
-                int amount = countItemsinInventory(player.getInventory(), item.toStack());
-
-                // Check negative values
-                if (amount < 0) {
-                    player.sendMessage("How do you have negative amounts of an item!?");
-                    return true;
-                }
-
-                // Set new values
-                shop.setItemMaxStock(item.name, amount);
-
-                // Save Shop
-                plugin.shopData.saveShop(shop);
-
-                // Send Message
-                player.sendMessage(item.name + " maximum stock is now " + amount);
-
-                return true;
-            } else {
-                // syntax error
-                player.sendMessage("Bad formatting");
-                return false;
             }
         } else {
-            // TODO: Console
-            return true;
+            sender.sendMessage("Console is not implemented yet.");
+            return false;
         }
+
+        // Command matching
+
+        // shop set max int int
+        Pattern pattern = Pattern.compile("(?i)set\\s+max\\s+(\\d+)\\s+(\\d+)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            ItemInfo item = Search.itemById(id);
+            int max = Integer.parseInt(matcher.group(2));
+            return shopSetMax(shop, item, max);
+        }
+
+        // shop set max int:int int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+max\\s+(\\d+):(\\d+)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            short type = Short.parseShort(matcher.group(2));
+            ItemInfo item = Search.itemById(id, type);
+            int max = Integer.parseInt(matcher.group(3));
+            return shopSetMax(shop, item, max);
+        }
+
+        // shop set max chars int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+max\\s+(.*)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String name = matcher.group(1);
+            ItemInfo item = Search.itemByName(name);
+            int max = Integer.parseInt(matcher.group(2));
+            return shopSetMax(shop, item, max);
+        }
+
+        // show set buy usage
+        sender.sendMessage("   " + "/" + commandLabel + " set max [item name] [max number]");
+        return true;
     }
 
     /**
@@ -1968,7 +1977,7 @@ public class Commands {
 
                     if (!shop.getItems().contains(itemName)) {
                         player.sendMessage(ChatColor.AQUA + "Shop is not yet selling " + ChatColor.WHITE + itemName);
-                        player.sendMessage(ChatColor.AQUA + "To add the item use " + ChatColor.WHITE + "/"+commandLabel+" add");
+                        player.sendMessage(ChatColor.AQUA + "To add the item use " + ChatColor.WHITE + "/" + commandLabel + " add");
                         return false;
                     }
 
@@ -1982,7 +1991,7 @@ public class Commands {
                         }
                     } catch (NumberFormatException ex1) {
                         player.sendMessage(ChatColor.AQUA + "The price and bundle size must be a number.");
-                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set buy [item name] [price] <bundle size>");
+                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
                         return false;
                     }
 
@@ -1995,7 +2004,7 @@ public class Commands {
                     plugin.shopData.saveShop(shop);
 
                 } else {
-                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set buy [item name] [price] <bundle size>");
+                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
                     return true;
                 }
 
@@ -2021,7 +2030,7 @@ public class Commands {
 
                     if (!shop.getItems().contains(itemName)) {
                         player.sendMessage(ChatColor.AQUA + "Shop is not yet buying " + ChatColor.WHITE + itemName);
-                        player.sendMessage(ChatColor.AQUA + "To add the item use " + ChatColor.WHITE + "/"+commandLabel+" add");
+                        player.sendMessage(ChatColor.AQUA + "To add the item use " + ChatColor.WHITE + "/" + commandLabel + " add");
                         return false;
                     }
 
@@ -2035,7 +2044,7 @@ public class Commands {
                         }
                     } catch (NumberFormatException ex1) {
                         player.sendMessage(ChatColor.AQUA + "The price and bundle size must be a number.");
-                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set sell [item name] [price] <bundle size>");
+                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
                         return false;
                     }
 
@@ -2048,7 +2057,7 @@ public class Commands {
                     player.sendMessage("   " + ChatColor.WHITE + itemName + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + bundle + ChatColor.AQUA + "]");
 
                 } else {
-                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set sell [item name] [price] <bundle size>");
+                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
                     return true;
                 }
 
@@ -2074,7 +2083,7 @@ public class Commands {
 
                     if (!shop.getItems().contains(itemName)) {
                         player.sendMessage(ChatColor.AQUA + "Shop is not yet buying " + ChatColor.WHITE + itemName);
-                        player.sendMessage(ChatColor.AQUA + "To add the item use " + ChatColor.WHITE + "/"+commandLabel+" add");
+                        player.sendMessage(ChatColor.AQUA + "To add the item use " + ChatColor.WHITE + "/" + commandLabel + " add");
                         return false;
                     }
 
@@ -2082,7 +2091,7 @@ public class Commands {
                         maxStock = Integer.parseInt(args[3]);
                     } catch (NumberFormatException ex1) {
                         player.sendMessage(ChatColor.AQUA + "The price and bundle size must be a number.");
-                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set sell [item name] [price] <bundle size>");
+                        player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
                         return false;
                     }
 
@@ -2094,7 +2103,7 @@ public class Commands {
                             + ChatColor.AQUA + " has been changed to " + maxStock + ".");
 
                 } else {
-                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" set max [item name] [amount]");
+                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set max [item name] [amount]");
                     return true;
                 }
 
@@ -2123,27 +2132,27 @@ public class Commands {
                         }
                     }
                     player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
-                    player.sendMessage("   " + "/"+commandLabel+" set unlimited money");
-                    player.sendMessage("   " + "/"+commandLabel+" set unlimited stock");
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
                     return true;
                 }
             } else {
                 player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "The following set commands are available: ");
-                player.sendMessage("   " + "/"+commandLabel+" set buy [item name] [price] <bundle size>");
-                player.sendMessage("   " + "/"+commandLabel+" set sell [item name] [price] <bundle size>");
-                player.sendMessage("   " + "/"+commandLabel+" set max [item name] [max number]");
-                player.sendMessage("   " + "/"+commandLabel+" set manager +[playername] -[playername2]");
-                player.sendMessage("   " + "/"+commandLabel+" set owner [player name]");
+                player.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
+                player.sendMessage("   " + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
+                player.sendMessage("   " + "/" + commandLabel + " set max [item name] [max number]");
+                player.sendMessage("   " + "/" + commandLabel + " set manager +[playername] -[playername2]");
+                player.sendMessage("   " + "/" + commandLabel + " set owner [player name]");
                 if (canUseCommand(CommandTypes.ADMIN)) {
-                    player.sendMessage("   " + "/"+commandLabel+" set unlimited money");
-                    player.sendMessage("   " + "/"+commandLabel+" set unlimited stock");
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited money");
+                    player.sendMessage("   " + "/" + commandLabel + " set unlimited stock");
                 }
             }
 
             plugin.shopData.saveShop(shop);
 
         } else {
-            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" " + args[0]);
+            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
             return false;
         }
 
@@ -2183,7 +2192,7 @@ public class Commands {
             }
 
             if (args.length != 2) {
-                player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/"+commandLabel+" remove [item name]");
+                player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " remove [item name]");
                 return false;
             }
 
@@ -2218,7 +2227,7 @@ public class Commands {
             plugin.shopData.saveShop(shop);
 
         } else {
-            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" " + args[0]);
+            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
         }
 
         return true;
@@ -2258,7 +2267,7 @@ public class Commands {
             plugin.shopData.deleteShop(shop);
 
         } else {
-            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /"+commandLabel+" " + args[0]);
+            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
         }
 
         return true;
