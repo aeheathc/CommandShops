@@ -1007,6 +1007,7 @@ public class Commands {
             }
 
             if (amount < -1 || item == null) {
+                player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " add [item name|id|id:type] <count>");
                 return false;
             }
 
