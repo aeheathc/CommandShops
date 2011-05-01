@@ -1580,7 +1580,7 @@ public class Commands {
 
         // set sell int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1591,7 +1591,7 @@ public class Commands {
 
         // set sell int:int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1603,7 +1603,7 @@ public class Commands {
 
         // set sell (chars) int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
@@ -1615,7 +1615,7 @@ public class Commands {
 
         // set sell (chars) int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
