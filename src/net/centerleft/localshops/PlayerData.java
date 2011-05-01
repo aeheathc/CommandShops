@@ -3,6 +3,7 @@ package net.centerleft.localshops;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public class PlayerData {
     private LocalShops plugin = null;
 
     // Attributes
-    protected List<String> shopList = Collections.synchronizedList(new ArrayList<String>());
+    protected List<UUID> shopList = Collections.synchronizedList(new ArrayList<UUID>());
     protected BookmarkedResult bookmark = new BookmarkedResult();
     protected String playerName = null;
     protected boolean isSelecting = false;
@@ -72,22 +73,22 @@ public class PlayerData {
         }
     }
 
-    public boolean addPlayerToShop(String shopName) {
+    public boolean addPlayerToShop(Shop shop) {
         String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 
-        if (!playerIsInShop(shopName) && plugin.shopData.getShop(shopName).getWorld().equalsIgnoreCase(playerWorld)) {
-            shopList.add(shopName);
+        if (!playerIsInShop(shop) && shop.getWorld().equalsIgnoreCase(playerWorld)) {
+            shopList.add(shop.getUuid());
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean playerIsInShop(String shopName) {
+    public boolean playerIsInShop(Shop shop) {
         String playerWorld = plugin.getServer().getPlayer(playerName).getWorld().getName();
 
-        if (shopList.contains(shopName)) {
-            if (plugin.shopData.getShop(shopName).getWorld().equalsIgnoreCase(playerWorld)) {
+        if (shopList.contains(shop.getUuid())) {
+            if (shop.getWorld().equalsIgnoreCase(playerWorld)) {
                 return true;
             }
         }
@@ -98,7 +99,7 @@ public class PlayerData {
         shopList.remove(shopName);
     }
 
-    public List<String> playerShopsList(String playerName) {
+    public List<UUID> playerShopsList(String playerName) {
         return shopList;
     }
 
@@ -189,7 +190,7 @@ public class PlayerData {
         return false;
     }
     
-    public String getCurrentShop() {
+    public UUID getCurrentShop() {
         if(shopList.size() == 1) {
             return shopList.get(0);
         } else {

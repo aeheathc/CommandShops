@@ -1,6 +1,7 @@
 package net.centerleft.localshops;
 
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -129,54 +130,57 @@ public class ShopsPlayerListener extends PlayerListener {
         res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
 
         // check to see if we've entered any shops
-        for (PrimitiveCuboid shop : res.results) {
+        for (PrimitiveCuboid cuboid : res.results) {
 
             // for each shop that you find, check to see if we're already in it
 
-            if (shop.name == null)
+            if (cuboid.uuid == null)
                 continue;
-            if (!shop.world.equalsIgnoreCase(player.getWorld().getName()))
+            if (!cuboid.world.equalsIgnoreCase(player.getWorld().getName()))
                 continue;
 
-            if (!pData.playerIsInShop(shop.name)) {
-                if (pData.addPlayerToShop(shop.name)) {
-                    notifyPlayerEnterShop(player, shop.name);
+            Shop shop = plugin.shopData.getShop(cuboid.uuid);
+            if (!pData.playerIsInShop(shop)) {
+                if (pData.addPlayerToShop(shop)) {
+                    notifyPlayerEnterShop(player, shop.getUuid());
                 }
             }
         }
 
         // check to see if we've left any shops
-        Iterator<String> itr = pData.shopList.iterator();
+        Iterator<UUID> itr = pData.shopList.iterator();
         while (itr.hasNext()) {
-            String checkShopName = itr.next();
+            UUID checkShopUuid = itr.next();
             // check the tree search results to see player is no longer in a
             // shop.
             boolean removeShop = true;
             for (PrimitiveCuboid shop : res.results) {
-                if (shop.name.equalsIgnoreCase(checkShopName)) {
+                if (shop.uuid == checkShopUuid) {
                     removeShop = false;
                     break;
                 }
             }
             if (removeShop) {
                 itr.remove();
-                notifyPlayerLeftShop(player, checkShopName);
+                notifyPlayerLeftShop(player, checkShopUuid);
             }
 
         }
 
     }
 
-    private void notifyPlayerLeftShop(Player player, String shopName) {
+    private void notifyPlayerLeftShop(Player player, UUID shopUuid) {
         // TODO Add formatting
+        Shop shop = plugin.shopData.getShop(shopUuid);
         player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA
-                + "] You have left the shop " + ChatColor.WHITE + shopName);
+                + "] You have left the shop " + ChatColor.WHITE + shop.getName());
     }
 
-    private void notifyPlayerEnterShop(Player player, String shopName) {
+    private void notifyPlayerEnterShop(Player player, UUID shopUuid) {
         // TODO Add formatting
+        Shop shop = plugin.shopData.getShop(shopUuid);
         player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA
-                + "] You have entered the shop " + ChatColor.WHITE + shopName);
+                + "] You have entered the shop " + ChatColor.WHITE + shop.getName());
 
     }
 

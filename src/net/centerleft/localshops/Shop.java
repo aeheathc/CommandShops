@@ -250,7 +250,7 @@ public class Shop {
                 return null;
             }
             cuboid = new PrimitiveCuboid(getLocationA().toArray(), getLocationB().toArray());
-            cuboid.name = name;
+            cuboid.uuid = uuid;
             cuboid.world = world;
         }
 

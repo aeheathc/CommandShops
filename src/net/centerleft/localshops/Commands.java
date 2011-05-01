@@ -87,9 +87,9 @@ public class Commands {
             Shop shop = null;
 
             // Get current shop
-            String currShop = plugin.playerData.get(player.getName()).getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = plugin.playerData.get(player.getName()).getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 return false;
@@ -364,7 +364,7 @@ public class Commands {
                 // for each shop that you find, check to see if we're already in
                 // it
                 // this should only find one shop node
-                if (shopLocation.name == null)
+                if (shopLocation.uuid == null)
                     continue;
                 if (!shopLocation.world.equalsIgnoreCase(thisShop.getWorld()))
                     continue;
@@ -376,7 +376,7 @@ public class Commands {
             if (shopPositionOk(player, xyzA, xyzB)) {
 
                 PrimitiveCuboid tempShopCuboid = new PrimitiveCuboid(xyzA, xyzB);
-                tempShopCuboid.name = shopName;
+                tempShopCuboid.uuid = thisShop.getUuid();
                 tempShopCuboid.world = player.getWorld().getName();
 
                 if (plugin.shopData.chargeForMove) {
@@ -384,7 +384,7 @@ public class Commands {
                         if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
                             // insert the old cuboid back into the world
                             tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
-                            tempShopCuboid.name = shopName;
+                            tempShopCuboid.uuid = thisShop.getUuid();
                             tempShopCuboid.world = thisShop.getWorld();
                             LocalShops.cuboidTree.insert(tempShopCuboid);
 
@@ -413,7 +413,7 @@ public class Commands {
             } else {
                 // insert the old cuboid back into the world
                 PrimitiveCuboid tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
-                tempShopCuboid.name = shopName;
+                tempShopCuboid.uuid = thisShop.getUuid();
                 tempShopCuboid.world = thisShop.getWorld();
                 LocalShops.cuboidTree.insert(tempShopCuboid);
             }
@@ -488,7 +488,7 @@ public class Commands {
         return true;
     }
 
-    private static boolean shopPositionOk(Player player, long[] xyzA, long[] xyzB) {
+    private boolean shopPositionOk(Player player, long[] xyzA, long[] xyzB) {
         BookmarkedResult res = new BookmarkedResult();
 
         // make sure coords are in right order
@@ -514,13 +514,13 @@ public class Commands {
         return true;
     }
 
-    private static boolean shopOverlaps(Player player, BookmarkedResult res) {
+    private boolean shopOverlaps(Player player, BookmarkedResult res) {
         if (res.results.size() != 0) {
-            for (PrimitiveCuboid shop : res.results) {
-                if (shop.name != null) {
-                    if (shop.world.equalsIgnoreCase(player.getWorld().getName())) {
-                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop, it overlaps with " + ChatColor.WHITE
-                                + shop.name);
+            for (PrimitiveCuboid cuboid : res.results) {
+                if (cuboid.uuid != null) {
+                    if (cuboid.world.equalsIgnoreCase(player.getWorld().getName())) {
+                        Shop shop = plugin.shopData.getShop(cuboid.uuid);
+                        player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not create shop, it overlaps with " + ChatColor.WHITE + shop.getName());
                         return true;
                     }
                 }
@@ -533,7 +533,6 @@ public class Commands {
         if (canUseCommand(CommandTypes.INVENTORY) && (sender instanceof Player)) {
             Player player = (Player) sender;
             String playerName = player.getName();
-            String inShopName;
 
             int pageNumber = 1;
 
@@ -556,8 +555,8 @@ public class Commands {
             // get the shop the player is currently in
 
             if (plugin.playerData.get(playerName).shopList.size() == 1) {
-                inShopName = plugin.playerData.get(playerName).shopList.get(0);
-                Shop shop = plugin.shopData.getShop(inShopName);
+                UUID shopUuid = plugin.playerData.get(playerName).shopList.get(0);
+                Shop shop = plugin.shopData.getShop(shopUuid);
 
                 if (args.length > 1) {
                     if (args[1].equalsIgnoreCase("buy") || args[1].equalsIgnoreCase("sell")) {
@@ -733,8 +732,7 @@ public class Commands {
          * Available formats: /lshop sell /lshop sell # /lshop sell all /lshop
          * sell item # /lshop sell item all
          */
-        String shopName;
-        Shop shop;
+        Shop shop = null;
 
         Player player = (Player) sender;
         String playerName = player.getName();
@@ -745,8 +743,8 @@ public class Commands {
 
         // get the shop the player is currently in
         if (plugin.playerData.get(playerName).shopList.size() == 1) {
-            shopName = plugin.playerData.get(playerName).shopList.get(0);
-            shop = plugin.shopData.getShop(shopName);
+            UUID shopUuid = plugin.playerData.get(playerName).shopList.get(0);
+            shop = plugin.shopData.getShop(shopUuid);
         } else {
             player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
             return false;
@@ -806,7 +804,7 @@ public class Commands {
 
         // check if the shop is buying that item
         if (!shop.getItems().contains(itemName) || shop.getItem(itemName).getSellPrice() == 0) {
-            player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not buying " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
+            player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " is not buying " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
             return false;
         }
 
@@ -834,7 +832,7 @@ public class Commands {
         // check if the shop has a max stock level set
         if (shop.itemMaxStock(itemName) != 0 && !shop.isUnlimitedStock()) {
             if (shop.getItem(itemName).getStock() >= shop.itemMaxStock(itemName)) {
-                player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not buying any more " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
+                player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " is not buying any more " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
                 return false;
             }
 
@@ -897,7 +895,7 @@ public class Commands {
         int startInv = itemInv - amount;
         if (startInv < 0)
             startInv = 0;
-        plugin.shopData.logItems(playerName, shopName, "sell-item", itemName, amount, startInv, itemInv);
+        plugin.shopData.logItems(playerName, shop.getName(), "sell-item", itemName, amount, startInv, itemInv);
 
         removeItemsFromInventory(player.getInventory(), item, amount);
         plugin.shopData.saveShop(shop);
@@ -1014,9 +1012,9 @@ public class Commands {
             }
 
             // Get current shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 return false;
@@ -1036,7 +1034,7 @@ public class Commands {
                 return false;
             }
 
-            // If ALL (amount == -1), set ammount to the count the player has
+            // If ALL (amount == -1), set amount to the count the player has
             if (amount == -1) {
                 amount = playerItemCount;
             }
@@ -1131,8 +1129,8 @@ public class Commands {
 
         // get the shop the player is currently in
         if (plugin.playerData.get(playerName).shopList.size() == 1) {
-            String shopName = plugin.playerData.get(playerName).shopList.get(0);
-            Shop shop = plugin.shopData.getShop(shopName);
+            UUID shopUuid = plugin.playerData.get(playerName).shopList.get(0);
+            Shop shop = plugin.shopData.getShop(shopUuid);
 
             ItemStack item = null;
             String itemName = null;
@@ -1150,7 +1148,7 @@ public class Commands {
 
                 // check if the shop is selling that item
                 if (!shop.getItems().contains(itemName)) {
-                    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName
+                    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName()
                             + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + itemName
                             + ChatColor.AQUA + " right now.");
                     return false;
@@ -1158,7 +1156,7 @@ public class Commands {
 
                 // check if the item has a price, or if this is a shop owner
                 if (shop.getItem(itemName).getBuyPrice() == 0 && !isShopController(shop)) {
-                    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shopName + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
+                    player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + itemName + ChatColor.AQUA + " right now.");
                     return false;
                 }
 
@@ -1259,7 +1257,7 @@ public class Commands {
             int startInv = itemInv + amount;
             if (shop.isUnlimitedStock())
                 startInv = 0;
-            plugin.shopData.logItems(playerName, shopName, "buy-item", itemName, amount, startInv, itemInv);
+            plugin.shopData.logItems(playerName, shop.getName(), "buy-item", itemName, amount, startInv, itemInv);
 
             givePlayerItem(player, item, amount);
             plugin.shopData.saveShop(shop);
@@ -1383,9 +1381,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
 
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -1558,9 +1556,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
 
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -1682,9 +1680,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
             
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if(currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if(shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if(shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -1727,9 +1725,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
 
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -1783,9 +1781,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
 
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -1840,9 +1838,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
 
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -1941,9 +1939,9 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
 
             // Get Current Shop
-            String currShop = pData.getCurrentShop();
-            if (currShop != null) {
-                shop = plugin.shopData.getShop(currShop);
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
@@ -2026,8 +2024,8 @@ public class Commands {
 
         // get the shop the player is currently in
         if (plugin.playerData.get(playerName).shopList.size() == 1) {
-            String shopName = plugin.playerData.get(playerName).shopList.get(0);
-            Shop shop = plugin.shopData.getShop(shopName);
+            UUID shoopUuid = plugin.playerData.get(playerName).shopList.get(0);
+            Shop shop = plugin.shopData.getShop(shoopUuid);
 
             if (!isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
@@ -2268,8 +2266,8 @@ public class Commands {
 
         // get the shop the player is currently in
         if (plugin.playerData.get(playerName).shopList.size() == 1) {
-            String shopName = plugin.playerData.get(playerName).shopList.get(0);
-            Shop shop = plugin.shopData.getShop(shopName);
+            UUID shopUuid = plugin.playerData.get(playerName).shopList.get(0);
+            Shop shop = plugin.shopData.getShop(shopUuid);
 
             if (!isShopController(shop)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to remove an item.");
@@ -2303,7 +2301,7 @@ public class Commands {
                 int amount = shop.getItem(itemName).getStock();
 
                 // log the transaction
-                plugin.shopData.logItems(playerName, shopName, "remove-item", itemName, amount, amount, 0);
+                plugin.shopData.logItems(playerName, shop.getName(), "remove-item", itemName, amount, amount, 0);
 
                 givePlayerItem(player, item, amount);
                 player.sendMessage("" + ChatColor.WHITE + amount + ChatColor.AQUA + " have been returned to your inventory");
@@ -2341,8 +2339,8 @@ public class Commands {
 
         // get the shop the player is currently in
         if (plugin.playerData.get(playerName).shopList.size() == 1) {
-            String shopName = plugin.playerData.get(playerName).shopList.get(0);
-            Shop shop = plugin.shopData.getShop(shopName);
+            UUID shopUuid = plugin.playerData.get(playerName).shopList.get(0);
+            Shop shop = plugin.shopData.getShop(shopUuid);
 
             if (!shop.getOwner().equalsIgnoreCase(player.getName()) && !canUseCommand(CommandTypes.ADMIN)) {
                 player.sendMessage(ChatColor.AQUA + "You must be the shop owner to destroy it.");

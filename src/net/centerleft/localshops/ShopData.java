@@ -24,7 +24,7 @@ import cuboidLocale.QuadTree;
 
 public class ShopData {
     private LocalShops plugin = null;
-    private HashMap<String, Shop> shops;
+    private HashMap<UUID, Shop> shops = new HashMap<UUID, Shop>();
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -48,12 +48,12 @@ public class ShopData {
         this.plugin = plugin;
     }
 
-    public Shop getShop(String name) {
-        return shops.get(name);
+    public Shop getShop(UUID uuid) {
+        return shops.get(uuid);
     }
 
     public void addShop(Shop shop) {
-        shops.put(shop.getName(), shop);
+        shops.put(shop.getUuid(), shop);
     }
 
     public Collection<Shop> getAllShops() {
@@ -66,8 +66,6 @@ public class ShopData {
 
     public void loadShops(File shopsDir) {
         log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
-        // initialize and setup the hash of shops
-        shops = new HashMap<String, Shop>();
 
         LocalShops.cuboidTree = new QuadTree();
 
@@ -380,10 +378,12 @@ public class ShopData {
 
             // for each shop that you find, check to see if we're already in it
             // this should only find one shop node
-            if (shopLocation.name == null)
+            if (shopLocation.uuid == null) {
                 continue;
-            if (!shopLocation.world.equalsIgnoreCase(shop.getWorld()))
+            }
+            if (!shopLocation.world.equalsIgnoreCase(shop.getWorld())) {
                 continue;
+            }
             LocalShops.cuboidTree.delete(shopLocation);
 
         }
@@ -400,7 +400,7 @@ public class ShopData {
         return true;
     }
 
-    private static boolean shopPositionOk(Shop shop, long[] xyzA, long[] xyzB) {
+    private boolean shopPositionOk(Shop shop, long[] xyzA, long[] xyzB) {
         BookmarkedResult res = new BookmarkedResult();
 
         // make sure coords are in right order
@@ -417,8 +417,7 @@ public class ShopData {
         for (long x = xyzA[0]; x <= xyzB[0]; x++) {
             for (long z = xyzA[2]; z <= xyzB[2]; z++) {
                 for (long y = xyzA[1]; y <= xyzB[1]; y++) {
-                    res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x,
-                            y, z);
+                    res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
                     if (shopOverlaps(shop, res))
                         return false;
                 }
@@ -427,14 +426,13 @@ public class ShopData {
         return true;
     }
 
-    private static boolean shopOverlaps(Shop shop, BookmarkedResult res) {
+    private boolean shopOverlaps(Shop shop, BookmarkedResult res) {
         if (res.results.size() != 0) {
             for (PrimitiveCuboid foundShop : res.results) {
-                if (foundShop.name != null) {
+                if (foundShop.uuid != null) {
                     if (foundShop.world.equalsIgnoreCase(shop.getWorld())) {
-                        System.out
-                                .println("Could not create shop, it overlaps with "
-                                        + foundShop.name);
+                        Shop fShop = getShop(foundShop.uuid);
+                        System.out.println("Could not create shop, it overlaps with " + fShop.getName());
                         return true;
                     }
                 }

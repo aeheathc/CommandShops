@@ -1,9 +1,9 @@
 package cuboidLocale;
 
-import org.bukkit.World;
+import java.util.UUID;
 
 public class PrimitiveCuboid{
-  public String name = null;
+  public UUID uuid = null;
   public String world = null;
   public long[] xyzA = {0,0,0};
   public long[] xyzB = {0,0,0};
