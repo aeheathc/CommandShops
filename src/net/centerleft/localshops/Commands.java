@@ -1367,24 +1367,22 @@ public class Commands {
     
     private boolean shopSetBuy() {
         log.info("shopSetBuy");
+        Shop shop = null;
+        
+        // Get current shop
         if (sender instanceof Player) {
-
+            Player player = (Player) sender;
+            PlayerData pData = plugin.playerData.get(player.getName());
+            String currShop = pData.getCurrentShop();
+            if (currShop != null) {
+                shop = plugin.shopData.getShop(currShop);
+            }
+            if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
+                return false;
+            }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
-        }
-
-        Player player = (Player) sender;
-
-        // Get current shop
-        Shop shop = null;
-        PlayerData pData = plugin.playerData.get(player.getName());
-        String currShop = pData.getCurrentShop();
-        if (currShop != null) {
-            shop = plugin.shopData.getShop(currShop);
-        }
-        if (shop == null) {
-            sender.sendMessage("You are not in a shop!");
             return false;
         }
 
