@@ -1333,7 +1333,7 @@ public class Commands {
 
         return true;
     }
-    
+
     private boolean shopSetBuy(Shop shop, ItemInfo item, int price) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
@@ -1363,12 +1363,12 @@ public class Commands {
         sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
 
         return true;
-    }    
-    
+    }
+
     private boolean shopSetBuy() {
         log.info("shopSetBuy");
         Shop shop = null;
-        
+
         // Get current shop
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -1387,23 +1387,23 @@ public class Commands {
         }
 
         // Command matching
-        
+
         // set buy int int int
         Pattern pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
         Matcher matcher = pattern.matcher(command);
-        if(matcher.find()) {
+        if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
             int price = Integer.parseInt(matcher.group(2));
             int size = Integer.parseInt(matcher.group(3));
-            return shopSetBuy(shop, item, price, size);            
+            return shopSetBuy(shop, item, price, size);
         }
-        
+
         // set buy int:int int int
         matcher.reset();
         pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
-        if(matcher.find()) {
+        if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
@@ -1411,286 +1411,222 @@ public class Commands {
             int size = Integer.parseInt(matcher.group(4));
             return shopSetBuy(shop, item, price, size);
         }
-        
+
         // set buy int int
         matcher.reset();
         pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
-        if(matcher.find()) {
+        if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
             int price = Integer.parseInt(matcher.group(2));
             return shopSetBuy(shop, item, price);
         }
-        
+
         // set buy int:int int
         matcher.reset();
         pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
-        if(matcher.find()) {
+        if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
             int price = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price);
         }
-        
+
         // set buy (chars) int int
         matcher.reset();
         pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)\\s+(\\d+)");
         matcher = pattern.matcher(command);
-        if(matcher.find()) {
+        if (matcher.find()) {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
             int price = Integer.parseInt(matcher.group(2));
             int size = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price, size);
         }
-        
+
         // set buy (chars) int
         matcher.reset();
         pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)");
         matcher = pattern.matcher(command);
-        if(matcher.find()) {
+        if (matcher.find()) {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
             int price = Integer.parseInt(matcher.group(2));
             return shopSetBuy(shop, item, price);
         }
-        
-        // show set help
+
+        // show set buy usage
         sender.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
         return true;
     }
     
+    private boolean shopSetSell(Shop shop, ItemInfo item, int price, int size) {
+        if (item == null) {
+            sender.sendMessage("Item was not found.");
+            return true;
+        }
+
+        // Check if Shop has item
+        if (!shop.containsItem(item)) {
+            // nicely message user
+            sender.sendMessage(String.format("This shop does not carry %s!", item.name));
+            return true;
+        }
+        
+        // Warn about negative items
+        if (price < 0) {
+            sender.sendMessage("[WARNING] This shop will loose money with negative values!");
+        }
+        if (size < 0) {
+            sender.sendMessage("[ERROR] Stacks cannot be negative!");
+            return true;
+        }
+
+        // Set new values
+        shop.setItemSellAmount(item.name, size);
+        shop.setItemSellPrice(item.name, price);
+        
+        // Save Shop
+        plugin.shopData.saveShop(shop);
+
+        // Send Result
+        sender.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+        sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
+
+        return true;
+    }
+
+    private boolean shopSetSell(Shop shop, ItemInfo item, int price) {
+        if (item == null) {
+            sender.sendMessage("Item was not found.");
+            return true;
+        }
+
+        // Check if Shop has item
+        if (!shop.containsItem(item)) {
+            // nicely message user
+            sender.sendMessage(String.format("This shop does not carry %s!", item.name));
+            return true;
+        }
+
+        
+        // Warn about negative items
+        if (price < 0) {
+            sender.sendMessage("[WARNING] This shop will loose money with negative values!");
+        }
+
+        // Set new values
+        shop.setItemSellPrice(item.name, price);
+
+        // Save Shop
+        plugin.shopData.saveShop(shop);
+
+        // Send Result
+        sender.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
+        sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
+
+        return true;
+    }
+
     private boolean shopSetSell() {
         log.info("shopSetSell");
+        Shop shop = null;
+
+        // Get current shop
         if (sender instanceof Player) {
             Player player = (Player) sender;
-
-            // Get current shop
-            Shop shop = null;
             PlayerData pData = plugin.playerData.get(player.getName());
             String currShop = pData.getCurrentShop();
             if (currShop != null) {
                 shop = plugin.shopData.getShop(currShop);
             }
             if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
                 return false;
             }
-            // shop set sell itemname price stacksize
-            if (args.length < 4) {
-                player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
-                return true;
-            }
-
-            if (args[2].matches("\\d+")) {
-                if (args.length == 4) {
-                    // shop set sell itemid price
-                    int id = Integer.parseInt(args[2]);
-                    int price = Integer.parseInt(args[3]);
-
-                    // Search for Item
-                    ItemInfo item = Search.itemById(id);
-                    if (item == null) {
-                        player.sendMessage("Item was not found.");
-                        return true;
-                    }
-
-                    // Warn about negative items
-                    if (price < 0) {
-                        player.sendMessage("[WARNING] This shop will loose money with negative values!");
-                    }
-
-                    // Set new values
-                    shop.setItemSellPrice(item.name, price);
-
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    // Send message
-                    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
-                    player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
-                    return true;
-                } else if (args.length == 5) {
-                    // shop set sell itemid price stacksize
-                    int id = Integer.parseInt(args[2]);
-                    int price = Integer.parseInt(args[3]);
-                    int size = Integer.parseInt(args[4]);
-
-                    // Search for Item
-                    ItemInfo item = Search.itemById(id);
-                    if (item == null) {
-                        player.sendMessage("Item was not found.");
-                        return true;
-                    }
-
-                    // Warn about negative items
-                    if (price < 0) {
-                        player.sendMessage("[WARNING] This shop will loose money with negative values!");
-                    }
-                    if (size < 0) {
-                        player.sendMessage("[ERROR] Stacks cannot be negative!");
-                        return true;
-                    }
-
-                    // Set new values
-                    shop.setItemSellAmount(item.name, size);
-                    shop.setItemSellPrice(item.name, price);
-
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    // Send message
-                    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
-                    player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (args[2].matches("\\d+:\\d+")) {
-                // shop set sell id:type price stacksize
-                if (args.length == 4) {
-                    // shop set sell id:type price
-                    int id = Integer.parseInt(args[2].split(":")[0]);
-                    short type = Short.parseShort(args[2].split(":")[1]);
-                    int price = Integer.parseInt(args[3]);
-
-                    // Search for Item
-                    ItemInfo item = Search.itemById(id, type);
-                    if (item == null) {
-                        player.sendMessage("Item was not found.");
-                        return true;
-                    }
-
-                    // Warn about negative items
-                    if (price < 0) {
-                        player.sendMessage("[WARNING] This shop will loose money with negative values!");
-                    }
-
-                    // Set new values
-                    shop.setItemSellPrice(item.name, price);
-
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    // Send message
-                    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
-                    player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
-                    return true;
-                } else if (args.length == 5) {
-                    // shop set sell id:type price stacksize
-                    int id = Integer.parseInt(args[2].split(":")[0]);
-                    short type = Short.parseShort(args[2].split(":")[1]);
-                    int price = Integer.parseInt(args[3]);
-                    int size = Integer.parseInt(args[4]);
-
-                    // Search for Item
-                    ItemInfo item = Search.itemById(id, type);
-                    if (item == null) {
-                        player.sendMessage("Item was not found.");
-                        return true;
-                    }
-
-                    // Warn about negative items
-                    if (price < 0) {
-                        player.sendMessage("[WARNING] This shop will loose money with negative values!");
-                    }
-                    if (size < 0) {
-                        player.sendMessage("[ERROR] Stacks cannot be negative!");
-                        return true;
-                    }
-
-                    // Set new values
-                    shop.setItemSellPrice(item.name, price);
-                    shop.setItemSellAmount(item.name, size);
-
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    // Send message
-                    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
-                    player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
-                    return true;
-                }
-            } else {
-                // shop set sell words... price stacksize
-                if (args[args.length - 1].matches("\\d+") && args[args.length - 2].matches("\\d+")) {
-                    // shop set sell name... price stacksize
-                    int price = Integer.parseInt(args[args.length - 2]);
-                    int size = Integer.parseInt(args[args.length - 1]);
-
-                    // Search for Item
-                    ArrayList<String> itemName = new ArrayList<String>();
-                    for (int i = 1; i < args.length - 2; i++) {
-                        itemName.add(args[i]);
-                    }
-                    ItemInfo item = Search.itemByName(itemName);
-                    if (item == null) {
-                        player.sendMessage("Item was not found.");
-                        return true;
-                    }
-
-                    // Warn about negative items
-                    if (price < 0) {
-                        player.sendMessage("[WARNING] This shop will loose money with negative values!");
-                    }
-                    if (size < 0) {
-                        player.sendMessage("[ERROR] Stacks cannot be negative!");
-                        return true;
-                    }
-
-                    // Set new values
-                    shop.setItemSellPrice(item.name, price);
-                    shop.setItemSellAmount(item.name, size);
-
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    // Send message
-                    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
-                    player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.AQUA + "]");
-                    return true;
-                } else if (args[args.length - 1].matches("\\d+")) {
-                    // shop set sell name... price
-                    int price = Integer.parseInt(args[args.length - 1]);
-
-                    // Search for Item
-                    ArrayList<String> itemName = new ArrayList<String>();
-                    for (int i = 1; i < args.length - 1; i++) {
-                        itemName.add(args[i]);
-                    }
-                    ItemInfo item = Search.itemByName(itemName);
-                    if (item == null) {
-                        player.sendMessage("Item was not found.");
-                        return true;
-                    }
-
-                    // Warn about negative items
-                    if (price < 0) {
-                        player.sendMessage("[WARNING] This shop will loose money with negative values!");
-                    }
-
-                    // Set new values
-                    shop.setItemSellPrice(item.name, price);
-
-                    // Save Shop
-                    plugin.shopData.saveShop(shop);
-
-                    // Send message
-                    player.sendMessage(ChatColor.AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.AQUA + " has been updated.");
-                    player.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.AQUA + "]");
-                    return true;
-                } else {
-                    player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
-                    return true;
-                }
-            }
         } else {
-            // TODO: Console
-            return true;
+            sender.sendMessage("Console is not implemented yet.");
+            return false;
         }
-        return false;
+
+        // Command matching
+
+        // set sell int int int
+        Pattern pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            ItemInfo item = Search.itemById(id);
+            int price = Integer.parseInt(matcher.group(2));
+            int size = Integer.parseInt(matcher.group(3));
+            return shopSetSell(shop, item, price, size);
+        }
+
+        // set sell int:int int int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+(\\d+)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            short type = Short.parseShort(matcher.group(2));
+            ItemInfo item = Search.itemById(id, type);
+            int price = Integer.parseInt(matcher.group(3));
+            int size = Integer.parseInt(matcher.group(4));
+            return shopSetSell(shop, item, price, size);
+        }
+
+        // set sell int int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            ItemInfo item = Search.itemById(id);
+            int price = Integer.parseInt(matcher.group(2));
+            return shopSetSell(shop, item, price);
+        }
+
+        // set sell int:int int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            short type = Short.parseShort(matcher.group(2));
+            ItemInfo item = Search.itemById(id, type);
+            int price = Integer.parseInt(matcher.group(3));
+            return shopSetSell(shop, item, price);
+        }
+
+        // set sell (chars) int int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String name = matcher.group(1);
+            ItemInfo item = Search.itemByName(name);
+            int price = Integer.parseInt(matcher.group(2));
+            int size = Integer.parseInt(matcher.group(3));
+            return shopSetSell(shop, item, price, size);
+        }
+
+        // set sell (chars) int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String name = matcher.group(1);
+            ItemInfo item = Search.itemByName(name);
+            int price = Integer.parseInt(matcher.group(2));
+            return shopSetSell(shop, item, price);
+        }
+
+        // show set sell usage
+        sender.sendMessage("   " + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
+        return true;
     }
 
     private boolean shopSetHelp() {
