@@ -1805,13 +1805,13 @@ public class Commands {
             // shop set manager +managername -managername
             for (int i = 2; i < args.length; i++) {
                 String arg = args[i];
-                if (arg.matches("^\\+")) {
+                if (arg.matches("\\+.*")) {
                     // add manager
                     shop.addManager(arg.replaceFirst("\\+", ""));
-                } else if (arg.matches("^\\-")) {
+                } else if (arg.matches("\\-.*")) {
                     // remove manager
                     shop.removeManager(arg.replaceFirst("\\-", ""));
-                }
+                } 
             }
 
             // Save Shop
