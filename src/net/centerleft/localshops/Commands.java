@@ -1387,9 +1387,6 @@ public class Commands {
             return false;
         }
         
-        CharSequence inputStr = "abbabcd";
-        String patternStr = "(a(b*))+(c*)";
-        
         // Item info
         ItemInfo item = null;
         int price = -1;
@@ -1468,7 +1465,7 @@ public class Commands {
         }
         
         // show set help
-        sender.sendMessage("usage");
+        sender.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
         return true;
     }
     
