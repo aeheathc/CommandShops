@@ -70,8 +70,20 @@ public class ShopsPlayerListener extends PlayerListener {
     }
     
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String playerName = event.getPlayer().getName();
-        plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
+        Player player = event.getPlayer();
+        String playerName = player.getName();
+        
+        if (!plugin.playerData.containsKey(playerName)) {
+            plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
+        }
+
+        long x, y, z;
+        Location xyz = player.getLocation();
+        x = (long) xyz.getBlockX();
+        y = (long) xyz.getBlockY();
+        z = (long) xyz.getBlockZ();
+
+        checkPlayerPosition(player, x, y, z);        
     }
 
     @Override
