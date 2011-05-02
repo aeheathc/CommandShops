@@ -172,8 +172,7 @@ public class ShopsPlayerListener extends PlayerListener {
     private void notifyPlayerLeftShop(Player player, UUID shopUuid) {
         // TODO Add formatting
         Shop shop = plugin.shopData.getShop(shopUuid);
-        player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA
-                + "] You have left the shop " + ChatColor.WHITE + shop.getName());
+        player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA + "] You have left the shop " + ChatColor.WHITE + shop.getName());
     }
 
     private void notifyPlayerEnterShop(Player player, UUID shopUuid) {
