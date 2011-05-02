@@ -190,7 +190,7 @@ public class LocalShops extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("browse") || args[0].equalsIgnoreCase("bro")) {
                     commands.shopBrowse();
                 } else if (args[0].equalsIgnoreCase("sell")) {
-                    commands.shopSellItem();
+                    commands.shopSell();
                 } else if (args[0].equalsIgnoreCase("add")) {
                     commands.shopAdd();
                 } else if (args[0].equalsIgnoreCase("remove")) {

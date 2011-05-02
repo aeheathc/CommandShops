@@ -718,7 +718,7 @@ public class Commands {
      * @param args
      * @return true - if command succeeds false otherwise
      */
-    public boolean shopSellItem() {
+    public boolean shopSell() {
         if (!(sender instanceof Player) || !canUseCommand(CommandTypes.SELL_ITEM)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
             return false;
