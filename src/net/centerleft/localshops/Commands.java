@@ -529,7 +529,7 @@ public class Commands {
         return false;
     }
 
-    public boolean showBrowse() {
+    public boolean shopBrowse() {
         if (canUseCommand(CommandTypes.INVENTORY) && (sender instanceof Player)) {
             Player player = (Player) sender;
             String playerName = player.getName();

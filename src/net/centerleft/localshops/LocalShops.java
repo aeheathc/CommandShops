@@ -188,7 +188,7 @@ public class LocalShops extends JavaPlugin {
                         playerListener.checkPlayerPosition(player);
                     }
                 } else if (args[0].equalsIgnoreCase("browse") || args[0].equalsIgnoreCase("bro")) {
-                    commands.showBrowse();
+                    commands.shopBrowse();
                 } else if (args[0].equalsIgnoreCase("sell")) {
                     commands.shopSellItem();
                 } else if (args[0].equalsIgnoreCase("add")) {
