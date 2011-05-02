@@ -194,7 +194,7 @@ public class LocalShops extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("add")) {
                     commands.shopAdd();
                 } else if (args[0].equalsIgnoreCase("remove")) {
-                    commands.shopRemoveItem();
+                    commands.shopRemove();
                 } else if (args[0].equalsIgnoreCase("buy")) {
                     commands.shopBuyItem();
                 } else if (args[0].equalsIgnoreCase("set")) {

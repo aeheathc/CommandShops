@@ -1096,7 +1096,7 @@ public class Commands {
             String itemName = matcher.group(1);
             ItemInfo item = Search.itemByName(itemName);
             return shopAdd(shop, item, 0);
-        }        
+        }
         
         // Show buy help
         sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " buy [itemname] [number] " + ChatColor.AQUA + "- Buy this item.");
@@ -1285,7 +1285,7 @@ public class Commands {
                 startInv = 0;
             plugin.shopData.logItems(playerName, shop.getName(), "buy-item", itemName, amount, startInv, itemInv);
 
-            givePlayerItem(player, item, amount);
+            givePlayerItem(item, amount);
             plugin.shopData.saveShop(shop);
 
         } else {
@@ -2268,6 +2268,37 @@ public class Commands {
 
         return true;
     }
+    
+    private boolean shopRemove(Shop shop, ItemInfo item) {
+        if (item == null) {
+            sender.sendMessage(ChatColor.AQUA + "Item not found.");
+            return false;
+        }
+
+        if(!shop.containsItem(item)) {
+            sender.sendMessage(ChatColor.AQUA + "The shop is not selling " + ChatColor.WHITE + item.name);
+            return true;
+        }
+        
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.AQUA + " removed from the shop. ");
+        if (!shop.isUnlimitedStock()) {
+            int amount = shop.getItem(item.name).getStock();
+
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                // log the transaction
+                plugin.shopData.logItems(player.getName(), shop.getName(), "remove-item", item.name, amount, amount, 0);
+
+                givePlayerItem(item.toStack(), amount);
+                player.sendMessage("" + ChatColor.WHITE + amount + ChatColor.AQUA + " have been returned to your inventory");
+            }
+        }
+
+        shop.removeItem(item.name);
+        plugin.shopData.saveShop(shop);        
+        
+        return false;
+    }
 
     /**
      * Processes remove command. Removes item from shop and returns stock to
@@ -2277,69 +2308,78 @@ public class Commands {
      * @param args
      * @return true - if command succeeds false otherwise
      */
-    public boolean shopRemoveItem() {
-        if (!(sender instanceof Player) || !canUseCommand(CommandTypes.REMOVE_ITEM)) {
-            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
+    public boolean shopRemove() {
+        log.info("shopAdd");
+        Shop shop = null;
+
+        // Get current shop
+        if (sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
+            PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
+            }
+            if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
+                return false;
+            }
+            
+            // Check Permissions
+            if (!canUseCommand(CommandTypes.REMOVE_ITEM)) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
+                return false;
+            }            
+
+            // Check if Player can Modify
+            if (!isShopController(shop)) {
+                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to set this.");
+                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
+            }
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
             return false;
         }
 
-        /*
-         * Available formats: /lshop remove itemName
-         */
-
-        Player player = (Player) sender;
-        String playerName = player.getName();
-
-        // get the shop the player is currently in
-        if (plugin.playerData.get(playerName).shopList.size() == 1) {
-            UUID shopUuid = plugin.playerData.get(playerName).shopList.get(0);
-            Shop shop = plugin.shopData.getShop(shopUuid);
-
-            if (!isShopController(shop)) {
-                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to remove an item.");
-                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
-                return false;
-            }
-
-            if (args.length != 2) {
-                player.sendMessage(ChatColor.AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " remove [item name]");
-                return false;
-            }
-
-            ItemStack item = LocalShops.itemList.getShopItem(player, shop, args[1]);
-            String itemName;
-
-            if (item == null) {
-                player.sendMessage(ChatColor.AQUA + "Could not complete command.");
-                return false;
-            } else {
-                int itemData = item.getDurability();
-                itemName = LocalShops.itemList.getItemName(item.getTypeId(), itemData);
-            }
-
-            if (!shop.getItems().contains(itemName)) {
-                player.sendMessage(ChatColor.AQUA + "The shop is not selling " + ChatColor.WHITE + itemName);
-                return true;
-            }
-
-            player.sendMessage(ChatColor.WHITE + itemName + ChatColor.AQUA + " removed from the shop. ");
-            if (!shop.isUnlimitedStock()) {
-                int amount = shop.getItem(itemName).getStock();
-
-                // log the transaction
-                plugin.shopData.logItems(playerName, shop.getName(), "remove-item", itemName, amount, amount, 0);
-
-                givePlayerItem(player, item, amount);
-                player.sendMessage("" + ChatColor.WHITE + amount + ChatColor.AQUA + " have been returned to your inventory");
-            }
-
-            shop.removeItem(itemName);
-            plugin.shopData.saveShop(shop);
-
-        } else {
-            player.sendMessage(ChatColor.AQUA + "You must be inside a shop to use /" + commandLabel + " " + args[0]);
+        // Command matching
+        
+        // remove int
+        Pattern pattern = Pattern.compile("(?i)remove\\s+(\\d+)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            ItemInfo item = Search.itemById(id);
+            return shopRemove(shop, item);
+        }
+        
+        // remove int:int
+        matcher.reset();
+        pattern = Pattern.compile("(?i)remove\\s+(\\d+):(\\d+)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            int id = Integer.parseInt(matcher.group(1));
+            short type = Short.parseShort(matcher.group(2));
+            ItemInfo item = Search.itemById(id, type);
+            return shopRemove(shop, item);
         }
 
+        // remove name
+        matcher.reset();
+        pattern = Pattern.compile("(?i)remove\\s+(.*)");
+        matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String itemName = matcher.group(1);
+            ItemInfo item = Search.itemByName(itemName);
+            return shopRemove(shop, item);
+        }        
+        
+        
+        // Show usage
+        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " remove [itemname]" + ChatColor.AQUA + " - Stop selling item in shop.");
         return true;
     }
 
@@ -2450,7 +2490,9 @@ public class Commands {
         return damage;
     }
 
-    private static void givePlayerItem(Player player, ItemStack item, int amount) {
+    private void givePlayerItem(ItemStack item, int amount) {
+        Player player = (Player) sender;
+        
         int maxStackSize = 64;
 
         // fill all the existing stacks first
