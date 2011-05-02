@@ -1,7 +1,9 @@
 package net.centerleft.localshops;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,6 +26,9 @@ import cuboidLocale.PrimitiveCuboid;
 public class ShopsPlayerListener extends PlayerListener {
     private LocalShops plugin;
 
+    // Logging
+    private static final Logger log = Logger.getLogger("Minecraft");    
+    
     public ShopsPlayerListener(LocalShops plugin) {
         this.plugin = plugin;
     }
@@ -116,10 +121,10 @@ public class ShopsPlayerListener extends PlayerListener {
     }
 
     public void checkPlayerPosition(Player player, long[] xyz) {
-        if (xyz.length > 3) {
+        if (xyz.length == 3) {
             checkPlayerPosition(player, xyz[0], xyz[1], xyz[2]);
         } else {
-            System.out.println("LocalShops: Bad position");
+            log.info(String.format("[%s] Bad Position", plugin.pdfFile.getName()));
         }
 
     }
@@ -130,7 +135,8 @@ public class ShopsPlayerListener extends PlayerListener {
         res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
 
         // check to see if we've entered any shops
-        for (PrimitiveCuboid cuboid : res.results) {
+        ArrayList<PrimitiveCuboid> cuboids = (ArrayList<PrimitiveCuboid>) res.results.clone();
+        for (PrimitiveCuboid cuboid : cuboids) {
 
             // for each shop that you find, check to see if we're already in it
 
@@ -140,6 +146,10 @@ public class ShopsPlayerListener extends PlayerListener {
                 continue;
 
             Shop shop = plugin.shopData.getShop(cuboid.uuid);
+            if(shop == null) {
+                // shop no longer exists...remove from cuboid
+                res.results.remove(cuboid);
+            }
             if (!pData.playerIsInShop(shop)) {
                 if (pData.addPlayerToShop(shop)) {
                     notifyPlayerEnterShop(player, shop.getUuid());
