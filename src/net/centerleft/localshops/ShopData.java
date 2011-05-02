@@ -386,13 +386,12 @@ public class ShopData {
         }
 
         // delete the file from the directory
-        String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getName() + ".shop";
+        String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getUuid() + ".shop";
         File shopFile = new File(filePath);
         shopFile.delete();
 
         // remove shop from data structure
-        String name = shop.getName();
-        shops.remove(name);
+        shops.remove(shop.getUuid());
 
         return true;
     }

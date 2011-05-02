@@ -2493,6 +2493,7 @@ public class Commands {
             }
 
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " has been destroyed");
+            plugin.playerData.get(player.getName()).removePlayerFromShop(player, shop.getUuid());
             plugin.shopData.deleteShop(shop);
 
         } else {

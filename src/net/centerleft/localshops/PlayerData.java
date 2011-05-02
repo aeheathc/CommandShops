@@ -95,8 +95,8 @@ public class PlayerData {
         return false;
     }
 
-    public void removePlayerFromShop(Player player, String shopName) {
-        shopList.remove(shopName);
+    public void removePlayerFromShop(Player player, UUID uuid) {
+        shopList.remove(uuid);
     }
 
     public List<UUID> playerShopsList(String playerName) {
