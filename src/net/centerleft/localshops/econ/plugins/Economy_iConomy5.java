@@ -59,9 +59,7 @@ public class Economy_iConomy5 implements Economy {
 
     @Override
     public double getBalance(String playerName) {
-        Account account = iConomy.getAccount(playerName);
-        BankAccount bankAccount = account.getMainBankAccount();
-        return bankAccount.getHoldings().balance();
+        return iConomy.getAccount(playerName).getHoldings().balance();
     }
 
     @Override
