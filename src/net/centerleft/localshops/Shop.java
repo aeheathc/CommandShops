@@ -194,23 +194,19 @@ public class Shop {
     }
 
     public void setItemBuyPrice(String itemName, int price) {
-        int buySize = inventory.get(itemName).getBuySize();
-        inventory.get(itemName).setBuy(price, buySize);
+        inventory.get(itemName).setBuyPrice(price);
     }
 
     public void setItemBuyAmount(String itemName, int buySize) {
-        int price = inventory.get(itemName).getBuyPrice();
-        inventory.get(itemName).setBuy(price, buySize);
+        inventory.get(itemName).setBuySize(buySize);
     }
 
     public void setItemSellPrice(String itemName, int price) {
-        int sellSize = inventory.get(itemName).getSellPrice();
-        inventory.get(itemName).setSell(price, sellSize);
+        inventory.get(itemName).setSellPrice(price);
     }
     
     public void setItemSellAmount(String itemName, int sellSize) {
-        int price = inventory.get(itemName).getSellPrice();
-        inventory.get(itemName).setBuy(price, sellSize);
+        inventory.get(itemName).setSellSize(sellSize);
     }    
 
     public void removeItem(String itemName) {
