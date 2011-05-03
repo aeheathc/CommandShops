@@ -2116,7 +2116,7 @@ public class Commands {
                 // Save Shop
                 plugin.shopData.saveShop(shop);
 
-                notifyPlayers(shop, new String[] { LocalShops.CHAT_PREFIX + ChatColor.AQUA + shop.getName() + " is now under new management!  The new owner is " + ChatColor.WHITE + shop.getOwner() } );
+                notifyPlayers(shop, new String[] { LocalShops.CHAT_PREFIX + ChatColor.AQUA + shop.getName() +" is now under new management!  The new owner is " + ChatColor.WHITE + shop.getOwner() } );
                 return true;
             }
         } else {
