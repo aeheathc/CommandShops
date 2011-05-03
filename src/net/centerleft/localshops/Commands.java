@@ -718,6 +718,11 @@ public class Commands {
         message += " (Page " + pageNumber + " of " + (int) Math.ceil((double) inventoryMessage.size() / (double) 7) + ")";
 
         sender.sendMessage(message);
+        
+        if(inventoryMessage.size() <= (pageNumber - 1) * 7) {
+            sender.sendMessage(String.format("%s does not have this many pages!", shop.getName()));
+            return;
+        }
 
         int amount = (pageNumber > 0 ? (pageNumber - 1) * 7 : 0);
         for (int i = amount; i < amount + 7; i++) {
