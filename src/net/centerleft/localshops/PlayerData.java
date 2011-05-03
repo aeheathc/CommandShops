@@ -167,10 +167,6 @@ public class PlayerData {
 
     public boolean chargePlayer(String shopOwner, long chargeAmount) {
         if (plugin.pluginListener.useiConomy) {
-            //iConomy ic = plugin.pluginListener.iConomy;
-            //if (ic == null)
-            //    return false;
-
             Account account = iConomy.getBank().getAccount(shopOwner);
             if (account == null) {
                 iConomy.getBank().addAccount(shopOwner);
