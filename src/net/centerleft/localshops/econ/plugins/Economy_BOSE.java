@@ -12,6 +12,8 @@ import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import com.iConomy.iConomy;
+
 import cosine.boseconomy.BOSEconomy;
 
 public class Economy_BOSE implements Economy {
@@ -20,16 +22,26 @@ public class Economy_BOSE implements Economy {
     private PluginManager pluginManager = null;
     private BOSEconomy economy = null;
     private EconomyServerListener economyServerListener = null;
-    
+
     public Economy_BOSE(LocalShops plugin) {
         this.plugin = plugin;
         pluginManager = this.plugin.getServer().getPluginManager();
-        
 
         economyServerListener = new EconomyServerListener(this);
-        
+
         this.pluginManager.registerEvent(Type.PLUGIN_ENABLE, economyServerListener, Priority.Monitor, plugin);
         this.pluginManager.registerEvent(Type.PLUGIN_DISABLE, economyServerListener, Priority.Monitor, plugin);
+
+        // Load Plugin in case it was loaded before
+        if (economy == null) {
+            Plugin bose = plugin.getServer().getPluginManager().getPlugin("BOSEconomy");
+            if (bose != null) {
+                if (bose.isEnabled()) {
+                    economy = (BOSEconomy) bose;
+                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
+                }
+            }
+        }
     }
 
     @Override

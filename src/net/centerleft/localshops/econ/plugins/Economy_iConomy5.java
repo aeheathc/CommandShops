@@ -32,6 +32,15 @@ public class Economy_iConomy5 implements Economy {
         
         this.pluginManager.registerEvent(Type.PLUGIN_ENABLE, economyServerListener, Priority.Monitor, plugin);
         this.pluginManager.registerEvent(Type.PLUGIN_DISABLE, economyServerListener, Priority.Monitor, plugin);
+        
+        // Load Plugin in case it was loaded before
+        if(economy == null) {
+            Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
+            if (iConomy.isEnabled() && iConomy instanceof com.iConomy.iConomy) {
+                economy = (iConomy) iConomy;
+                log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
+            }
+        }
     }
     
     @Override
