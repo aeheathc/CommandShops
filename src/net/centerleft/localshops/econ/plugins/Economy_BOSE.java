@@ -75,13 +75,11 @@ public class Economy_BOSE implements Economy {
         return false;
     }
 
-    @Override
-    public String getMoneyNamePlural() {
+    private String getMoneyNamePlural() {
         return economy.getMoneyNamePlural();
     }
 
-    @Override
-    public String getMoneyNameSingular() {
+    private String getMoneyNameSingular() {
         return economy.getMoneyName();
     }
     
@@ -112,6 +110,15 @@ public class Economy_BOSE implements Economy {
                     log.info(String.format("[%s] %s un-hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
+        }
+    }
+
+    @Override
+    public String format(double amount) {
+        if (amount == 1) {
+            return String.format("%f %s", amount, getMoneyNameSingular());
+        } else {
+            return String.format("%f %s", amount, getMoneyNamePlural());
         }
     }
 }

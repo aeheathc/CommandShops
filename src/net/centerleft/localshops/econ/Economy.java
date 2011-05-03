@@ -10,8 +10,7 @@ public interface Economy {
 
     public boolean isEnabled();
     public String getName();
-    public String getMoneyNamePlural();
-    public String getMoneyNameSingular();
+    public String format(double amount);
     public double getBalance(String playerName);
     public boolean withdrawPlayer(String playerName, double amount);
     public boolean depositPlayer(String playerName, double amount);

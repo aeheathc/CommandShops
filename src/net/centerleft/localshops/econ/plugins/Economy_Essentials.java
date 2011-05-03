@@ -84,13 +84,11 @@ public class Economy_Essentials implements Economy {
         return false;
     }
 
-    @Override
-    public String getMoneyNamePlural() {
+    private String getMoneyNamePlural() {
         return "samolians";
     }
 
-    @Override
-    public String getMoneyNameSingular() {
+    private String getMoneyNameSingular() {
         return "samolian";
     }
     
@@ -121,6 +119,15 @@ public class Economy_Essentials implements Economy {
                     log.info(String.format("[%s] %s un-hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
+        }
+    }
+
+    @Override
+    public String format(double amount) {
+        if (amount == 1) {
+            return String.format("%f %s", amount, getMoneyNameSingular());
+        } else {
+            return String.format("%f %s", amount, getMoneyNamePlural());
         }
     }
 }

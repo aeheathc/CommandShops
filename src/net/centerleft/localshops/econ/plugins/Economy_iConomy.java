@@ -86,18 +86,6 @@ public class Economy_iConomy implements Economy {
         // Currently not supported
         return false;
     }
-
-    @Override
-    public String getMoneyNamePlural() {
-        // iConomy 5 has not method to obtain said info - wtf
-        return null;
-    }
-
-    @Override
-    public String getMoneyNameSingular() {
-        // iConomy 5 has not method to obtain said info - wtf
-        return null;
-    }
     
     private class EconomyServerListener extends ServerListener {
         Economy_iConomy economy = null;
@@ -127,5 +115,10 @@ public class Economy_iConomy implements Economy {
                 }
             }
         }
+    }
+
+    @Override
+    public String format(double amount) {
+        return economy.format(amount);
     }
 }
