@@ -119,6 +119,6 @@ public class Economy_iConomy implements Economy {
 
     @Override
     public String format(double amount) {
-        return economy.format(amount);
+        return iConomy.format(amount);
     }
 }
