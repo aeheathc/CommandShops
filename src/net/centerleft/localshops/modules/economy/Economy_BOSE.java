@@ -11,8 +11,6 @@ import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-import com.iConomy.iConomy;
-
 import cosine.boseconomy.BOSEconomy;
 
 public class Economy_BOSE implements Economy {
