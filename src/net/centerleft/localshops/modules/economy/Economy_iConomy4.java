@@ -92,7 +92,7 @@ public class Economy_iConomy4 implements Economy {
             account = iConomy.getBank().getAccount(playerName);
         }
         account.add(amount);
-        return false;
+        return true;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class Economy_iConomy4 implements Economy {
                 Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
 
                 if (iConomy != null) {
-                    if (iConomy.isEnabled() && iConomy instanceof com.nijiko.coelho.iConomy.iConomy) {
+                    if (iConomy.isEnabled() && iConomy.getClass().getName().equals("com.nijiko.coelho.iConomy.iConomy")) {
                         economy.economy = (iConomy) iConomy;
                         log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                     }

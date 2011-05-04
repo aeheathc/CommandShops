@@ -105,7 +105,7 @@ public class Economy_iConomy5 implements Economy {
                 Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
 
                 if (iConomy != null) {
-                    if (iConomy.isEnabled() && iConomy.getClass().getName().equals("com.iConomy.iConomy.class")) {
+                    if (iConomy.isEnabled() && iConomy.getClass().getName().equals("com.iConomy.iConomy")) {
                         economy.economy = (iConomy) iConomy;
                         log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                     }

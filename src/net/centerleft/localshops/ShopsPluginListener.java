@@ -6,7 +6,6 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
 
-import com.nijiko.coelho.iConomy.iConomy;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
@@ -18,7 +17,6 @@ public class ShopsPluginListener extends ServerListener {
 
     // Attributes
 
-    protected iConomy iConomy;
     protected Permissions permissions;
     protected PermissionHandler gmPermissionCheck;
     protected boolean usePermissions = false;
@@ -30,13 +28,6 @@ public class ShopsPluginListener extends ServerListener {
 
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
-        if (event.getPlugin().getDescription().getName().equals("iConomy")) {
-            iConomy = (iConomy) event.getPlugin();
-            System.out.println("LocalShops: Attached to iConomy.");
-            useiConomy = true;
-            plugin.shopData.currencyName = iConomy.getBank().getCurrency();
-        }
-
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             permissions = (Permissions) event.getPlugin();
             gmPermissionCheck = permissions.getHandler();
@@ -48,11 +39,6 @@ public class ShopsPluginListener extends ServerListener {
 
     @Override
     public void onPluginDisable(PluginDisableEvent event) {
-        if (event.getPlugin().getDescription().getName().equals("iConomy")) {
-            iConomy = null;
-            System.out.println(String.format("[%s] %s", plugin.pdfFile.getName(), "Lost connection to iConomy."));
-            useiConomy = false;
-        }
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             permissions = (Permissions) event.getPlugin();
             System.out.print(String.format("[%s] %s", plugin.pdfFile.getName(), "Lost connection to Permissions"));

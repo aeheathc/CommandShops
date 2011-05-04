@@ -112,7 +112,20 @@ public class PlayerData {
         double balanceFrom = plugin.econManager.getBalance(playerFrom);
         double balanceTo = plugin.econManager.getBalance(playerTo);
         
-        if (plugin.econManager.withdrawPlayer(playerFrom, cost) && plugin.econManager.depositPlayer(playerTo, cost)) {
+        log.info("PlayerFrom: " + playerFrom + " balanceFrom: " + balanceFrom + " PlayerTo: " + playerTo + " balanceTo: " + balanceTo + " Cost: " + cost);
+        
+        boolean withdraw = plugin.econManager.withdrawPlayer(playerFrom, cost);
+        boolean deposit = plugin.econManager.depositPlayer(playerTo, cost);
+        
+        if(!withdraw) {
+            log.info("Failed to withdraw");
+        }
+        
+        if(!deposit) {
+            log.info("Failed to deposit");
+        }
+        
+        if (withdraw && deposit) {
             plugin.shopData.logPayment(playerFrom, "payment", cost, balanceFrom, balanceFrom + cost);
             plugin.shopData.logPayment(playerTo, "payment", cost, balanceTo, balanceTo + cost);
             return true;
