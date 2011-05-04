@@ -1,8 +1,7 @@
-package net.centerleft.localshops.econ.plugins;
+package net.centerleft.localshops.modules.economy;
 
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
-import net.centerleft.localshops.econ.Economy;
 
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
@@ -12,19 +11,19 @@ import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
+import com.nijiko.coelho.iConomy.iConomy;
+import com.nijiko.coelho.iConomy.system.Account;
 
-public class Economy_Essentials implements Economy {
-    private String name = "Essentials Economy";
+public class Economy_iConomy4 implements Economy {
+    private String name = "iConomy 4";
     private LocalShops plugin = null;
     private PluginManager pluginManager = null;
-    private Essentials economy = null;
+    protected iConomy economy = null;
     private EconomyServerListener economyServerListener = null;
     
-    public Economy_Essentials(LocalShops plugin) {
+    public Economy_iConomy4(LocalShops plugin) {
         this.plugin = plugin;
-        pluginManager = this.plugin.getServer().getPluginManager();
+        this.pluginManager = this.plugin.getServer().getPluginManager();
 
         economyServerListener = new EconomyServerListener(this);
         
@@ -32,17 +31,15 @@ public class Economy_Essentials implements Economy {
         this.pluginManager.registerEvent(Type.PLUGIN_DISABLE, economyServerListener, Priority.Monitor, plugin);
         
         // Load Plugin in case it was loaded before
-        if (economy == null) {
-            Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
-            if (essentials != null) {
-                if (essentials.isEnabled()) {
-                    economy = (Essentials) essentials;
-                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
-                }
+        if(economy == null) {
+            Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
+            if (iConomy.isEnabled() && iConomy.getClass().getName().equals("com.nijiko.coelho.iConomy.iConomy.class")) {
+                economy = (iConomy) iConomy;
+                log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
     }
-    
+
     @Override
     public boolean isEnabled() {
         if(economy == null) {
@@ -51,24 +48,36 @@ public class Economy_Essentials implements Economy {
             return economy.isEnabled();
         }
     }
-    
+
     @Override
     public String getName() {
         return name;
     }
 
     @Override
+    public String format(double amount) {
+        return String.format("%d %s", iConomy.getBank().format(amount));
+    }
+
+    @Override
     public double getBalance(String playerName) {
-        User u = User.get(playerName);
-        return u.getMoney();
+        Account account = iConomy.getBank().getAccount(playerName);
+        if (account == null) {
+            iConomy.getBank().addAccount(playerName);
+            account = iConomy.getBank().getAccount(playerName);
+        }
+        return account.getBalance();
     }
 
     @Override
     public boolean withdrawPlayer(String playerName, double amount) {
-        User u = User.get(playerName);
-        if(u.canAfford(amount)) {
-            double money = u.getMoney();
-            u.setMoney(money - amount);
+        double balance = getBalance(playerName);
+        if(balance >= amount) {
+            Account account = iConomy.getBank().getAccount(playerName);
+            if(account == null) {
+                return false;
+            }
+            account.subtract(amount);
             return true;
         } else {
             return false;
@@ -77,10 +86,13 @@ public class Economy_Essentials implements Economy {
 
     @Override
     public boolean depositPlayer(String playerName, double amount) {
-        User u = User.get(playerName);
-        double money = u.getMoney();
-        u.setMoney(money + amount);
-        return true;
+        Account account = iConomy.getBank().getAccount(playerName);
+        if(account == null) {
+            iConomy.getBank().addAccount(playerName);
+            account = iConomy.getBank().getAccount(playerName);
+        }
+        account.add(amount);
+        return false;
     }
 
     @Override
@@ -94,29 +106,21 @@ public class Economy_Essentials implements Economy {
         // Currently not supported
         return false;
     }
-
-    private String getMoneyNamePlural() {
-        return "samolians";
-    }
-
-    private String getMoneyNameSingular() {
-        return "samolian";
-    }
     
     private class EconomyServerListener extends ServerListener {
-        Economy_Essentials economy = null;
+        Economy_iConomy4 economy = null;
         
-        public EconomyServerListener(Economy_Essentials economy) {
+        public EconomyServerListener(Economy_iConomy4 economy) {
             this.economy = economy;
         }
         
         public void onPluginEnable(PluginEnableEvent event) {
             if (economy.economy == null) {
-                Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
+                Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
 
-                if (essentials != null) {
-                    if (essentials.isEnabled()) {
-                        economy.economy = (Essentials) essentials;
+                if (iConomy != null) {
+                    if (iConomy.isEnabled() && iConomy instanceof com.nijiko.coelho.iConomy.iConomy) {
+                        economy.economy = (iConomy) iConomy;
                         log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                     }
                 }
@@ -125,20 +129,11 @@ public class Economy_Essentials implements Economy {
         
         public void onPluginDisable(PluginDisableEvent event) {
             if (economy.economy != null) {
-                if (event.getPlugin().getDescription().getName().equals("Essentials")) {
+                if (event.getPlugin().getDescription().getName().equals("iConomy")) {
                     economy.economy = null;
                     log.info(String.format("[%s] %s un-hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
-        }
-    }
-
-    @Override
-    public String format(double amount) {
-        if (amount == 1) {
-            return String.format("%f %s", amount, getMoneyNameSingular());
-        } else {
-            return String.format("%f %s", amount, getMoneyNamePlural());
         }
     }
 }

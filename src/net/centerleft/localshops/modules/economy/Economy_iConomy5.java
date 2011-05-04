@@ -1,8 +1,7 @@
-package net.centerleft.localshops.econ.plugins;
+package net.centerleft.localshops.modules.economy;
 
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
-import net.centerleft.localshops.econ.Economy;
 
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
@@ -106,7 +105,7 @@ public class Economy_iConomy5 implements Economy {
                 Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
 
                 if (iConomy != null) {
-                    if (iConomy.isEnabled() && iConomy instanceof com.iConomy.iConomy) {
+                    if (iConomy.isEnabled() && iConomy.getClass().getName().equals("com.iConomy.iConomy.class")) {
                         economy.economy = (iConomy) iConomy;
                         log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                     }

@@ -1,4 +1,4 @@
-package net.centerleft.localshops.econ;
+package net.centerleft.localshops.modules.economy;
 
 import java.util.logging.Logger;
 

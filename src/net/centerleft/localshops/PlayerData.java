@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import net.centerleft.localshops.modules.economy.Economy;
+
 import org.bukkit.entity.Player;
 
-import com.nijiko.coelho.iConomy.iConomy;
 import com.nijiko.coelho.iConomy.system.Account;
 
 import cuboidLocale.BookmarkedResult;
@@ -104,86 +105,35 @@ public class PlayerData {
     }
 
     public boolean payPlayer(String playerName, int cost) {
-        if (plugin.pluginListener.useiConomy) {
-            //iConomy ic = plugin.pluginListener.iConomy;
-            Account account = iConomy.getBank().getAccount(playerName);
-            if (account == null) {
-                iConomy.getBank().addAccount(playerName);
-                account = iConomy.getBank().getAccount(playerName);
-            }
-            double balance = account.getBalance();
-            account.setBalance(balance + (double) cost);
-            plugin.shopData.logPayment(playerName, "payment", cost, balance, balance + (double) cost);
-            return true;
-        }
-        return false;
+        return plugin.econManager.depositPlayer(playerName, cost);
     }
 
-    public boolean payPlayer(String playerFrom, String playerTo, int cost) {
-        if (plugin.pluginListener.useiConomy) {
-            //iConomy ic = plugin.pluginListener.iConomy;
-
-            Account accountFrom = iConomy.getBank().getAccount(playerFrom);
-            if (accountFrom == null) {
-                iConomy.getBank().addAccount(playerFrom);
-                accountFrom = iConomy.getBank().getAccount(playerFrom);
-            }
-            double balanceFrom = accountFrom.getBalance();
-
-            Account accountTo = iConomy.getBank().getAccount(playerTo);
-            if (accountTo == null) {
-                iConomy.getBank().addAccount(playerTo);
-                accountTo = iConomy.getBank().getAccount(playerTo);
-            }
-            double balanceTo = accountTo.getBalance();
-
-            if (balanceFrom < cost)
-                return false;
-
-            accountFrom.setBalance(balanceFrom - cost);
+    public boolean payPlayer(String playerFrom, String playerTo, int cost) {       
+        double balanceFrom = plugin.econManager.getBalance(playerFrom);
+        double balanceTo = plugin.econManager.getBalance(playerTo);
+        
+        if (plugin.econManager.withdrawPlayer(playerFrom, cost) && plugin.econManager.depositPlayer(playerTo, cost)) {
             plugin.shopData.logPayment(playerFrom, "payment", cost, balanceFrom, balanceFrom + cost);
-            accountTo.setBalance(balanceTo + cost);
             plugin.shopData.logPayment(playerTo, "payment", cost, balanceTo, balanceTo + cost);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
-    public long getBalance(String shopOwner) {
-        if (plugin.pluginListener.useiConomy) {
-            //iConomy ic = plugin.pluginListener.iConomy;
-
-            Account account = iConomy.getBank().getAccount(shopOwner);
-            if (account == null) {
-                iConomy.getBank().addAccount(shopOwner);
-                account = iConomy.getBank().getAccount(shopOwner);
-            }
-            double balanceFrom = account.getBalance();
-
-            return (long) Math.floor(balanceFrom);
-        }
-        return 0;
+    public double getBalance(String playerName) {
+        return plugin.econManager.getBalance(playerName);
     }
 
-    public boolean chargePlayer(String shopOwner, long chargeAmount) {
-        if (plugin.pluginListener.useiConomy) {
-            Account account = iConomy.getBank().getAccount(shopOwner);
-            if (account == null) {
-                iConomy.getBank().addAccount(shopOwner);
-                account = iConomy.getBank().getAccount(shopOwner);
-            }
-            double balanceFrom = account.getBalance();
-            double newBalance = balanceFrom - chargeAmount;
-            if (balanceFrom >= chargeAmount) {
-                account.setBalance(newBalance);
-                plugin.shopData.logPayment(shopOwner, "payment", chargeAmount, balanceFrom, newBalance);
-                return true;
-            } else {
-                return false;
-            }
-
+    public boolean chargePlayer(String shopOwner, double chargeAmount) {        
+        double balanceFrom = plugin.econManager.getBalance(shopOwner);
+        
+        if(plugin.econManager.withdrawPlayer(shopOwner, chargeAmount)) {
+            plugin.shopData.logPayment(shopOwner, "payment", chargeAmount, balanceFrom, balanceFrom - chargeAmount);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
     
     public UUID getCurrentShop() {

@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import net.centerleft.localshops.modules.economy.EconomyManager;
+
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -20,7 +22,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nijiko.coelho.iConomy.iConomy;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 import cuboidLocale.QuadTree;
@@ -39,6 +40,7 @@ public class LocalShops extends JavaPlugin {
     protected UUID uuid = null;
     protected boolean report = false;
     protected ReportThread reportThread = null;
+    protected EconomyManager econManager = null;
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -94,23 +96,6 @@ public class LocalShops extends JavaPlugin {
             pluginListener.usePermissions = false;
         }
 
-        // check hook for iConomy
-        Plugin ic = pm.getPlugin("iConomy");
-        if (ic != null) {
-            if (ic.isEnabled()) {
-                iConomy icon = (iConomy) ic;
-                pluginListener.iConomy = icon;
-                log.info(String.format("[%s] %s", pdfFile.getName(), "iConomy found."));
-                pluginListener.useiConomy = true;
-            } else {
-                pluginListener.useiConomy = false;
-                log.info(String.format("[%s] %s", pdfFile.getName(), "Waiting for iConomy to start."));
-            }
-        } else {
-            log.severe(String.format("[%s] %s", pdfFile.getName(), "iConomy not found."));
-            pluginListener.useiConomy = false;
-        }
-
         // setup the file IO
         folderDir = new File(folderPath);
         folderDir.mkdir();
@@ -140,6 +125,10 @@ public class LocalShops extends JavaPlugin {
             reportThread = new ReportThread(this, uuid, false);
             reportThread.start();
         }
+        
+        econManager = new EconomyManager(this);
+        econManager.loadEconomies();
+        
     }
 
     public void onDisable() {

@@ -808,7 +808,7 @@ public class Commands {
                     // lshop owner doesn't have enough money
                     // get shop owner's balance and calculate how many it can
                     // buy
-                    long shopBalance = plugin.playerData.get(player.getName()).getBalance(shop.getOwner());
+                    double shopBalance = plugin.playerData.get(player.getName()).getBalance(shop.getOwner());
                     int bundlesCanAford = (int) shopBalance / itemPrice;
                     totalCost = bundlesCanAford * itemPrice;
                     amount = bundlesCanAford * invItem.getSellSize();
@@ -1405,7 +1405,7 @@ public class Commands {
             if (!pData.payPlayer(player.getName(), shop.getOwner(), totalCost)) {
                 // player doesn't have enough money
                 // get player's balance and calculate how many it can buy
-                long playerBalance = pData.getBalance(player.getName());
+                double playerBalance = pData.getBalance(player.getName());
                 int bundlesCanAford = (int) Math.floor(playerBalance / itemPrice);
                 totalCost = bundlesCanAford * itemPrice;
                 amount = bundlesCanAford * invItem.getSellSize();
