@@ -222,7 +222,7 @@ public class Commands {
                         return false;
                     }
                 }
-            }            
+            }
             
         } else {
             sender.sendMessage("Console is not implemented yet.");
@@ -250,6 +250,12 @@ public class Commands {
 
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     plugin.playerListener.checkPlayerPosition(player);
+                }
+                
+                // Disable selecting for player (if player)
+                if(sender instanceof Player) {
+                    Player player = (Player) sender;
+                    plugin.playerData.get(player.getName()).isSelecting = false;
                 }
 
                 // write the file
@@ -1093,7 +1099,11 @@ public class Commands {
         // Check Shop Contents, add if necessary
         if (amount == 0 & shop.containsItem(item)) {
             // nicely message user
-            sender.sendMessage(String.format("This shop already carries %s!", item.name));
+            sender.sendMessage(String.format("%s already carries %s!", shop.getName(), item.name));
+            return true;
+        } else if(shop.isUnlimitedStock()) {
+            // nicely message user
+            sender.sendMessage(String.format("%s has unlimited stock and already carries %s!", shop.getName(), item.name));
             return true;
         }
 
