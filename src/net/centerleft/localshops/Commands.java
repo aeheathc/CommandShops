@@ -1214,6 +1214,7 @@ public class Commands {
             pattern = Pattern.compile("(?i)add\\s+all$");
             matcher = pattern.matcher(command);
             if (matcher.find()) {
+                log.info("1");
                 ItemStack itemStack = player.getItemInHand();
                 if (itemStack == null) {
                     return false;
@@ -2237,6 +2238,7 @@ public class Commands {
     private boolean shopSetOwner() {
         log.info("shopSetOwner");
         Shop shop = null;
+        boolean reset = false;
 
         // Get current shop
         if (sender instanceof Player) {
@@ -2265,6 +2267,11 @@ public class Commands {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You don't have permission to use this command");
                 return false;
             }
+            
+            if(!canUseCommand(CommandTypes.ADMIN)) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + shop.getName() + " is no longer buying items.");
+                reset = true;
+            }
         } else {
             sender.sendMessage("Console is not implemented yet.");
             return false;
@@ -2284,6 +2291,15 @@ public class Commands {
                 // Save Shop
                 plugin.shopData.saveShop(shop);
 
+                // Reset buy prices (0)
+                if(reset) {
+                    Iterator<InventoryItem> it = shop.getItems().iterator();
+                    while(it.hasNext()) {
+                        InventoryItem item = it.next();
+                        item.setSellPrice(0);
+                    }
+                }
+                
                 notifyPlayers(shop, new String[] { LocalShops.CHAT_PREFIX + ChatColor.AQUA + shop.getName() + " is now under new management!  The new owner is " + ChatColor.WHITE + shop.getOwner() });
                 return true;
             }
