@@ -593,7 +593,7 @@ public class Commands {
         int pageNumber = 1;
         
         // browse
-        Pattern pattern = Pattern.compile("(?i)bro.*$");
+        Pattern pattern = Pattern.compile("(?i)(bro|brow|brows|browse)$");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             printInventory(shop, "list", pageNumber);
@@ -1496,7 +1496,113 @@ public class Commands {
                     return false;
                 }
                 return shopBuy(shop, item, 0);
-            }            
+            }
+
+            // buy all (player only command)
+            matcher.reset();
+            pattern = Pattern.compile("(?i)buy\\s+all$");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                ItemStack itemStack = player.getItemInHand();
+                if (itemStack == null) {
+                    return false;
+                }
+                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count;
+                if(shop.isUnlimitedStock()) {
+                    // get player avail space
+                    count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+                } else {
+                    // use shop stock
+                    count = shop.getItem(item.name).getStock();
+                }
+                
+                return shopBuy(shop, item, count);
+            }
+
+            // buy int all
+            matcher.reset();
+            pattern = Pattern.compile("(?i)buy\\s+(\\d+)\\s+all");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                int id = Integer.parseInt(matcher.group(1));
+                ItemInfo item = Search.itemById(id);
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count;
+                if(shop.isUnlimitedStock()) {
+                    // get player avail space
+                    count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+                } else {
+                    // use shop stock
+                    count = shop.getItem(item.name).getStock();
+                }
+                if(count < 1) {
+                    sender.sendMessage("You must buy at least one " + item.name + "!");
+                    return true;
+                }
+                return shopBuy(shop, item, count);
+            }
+            
+            // buy int:int all
+            matcher.reset();
+            pattern = Pattern.compile("(?i)buy\\s+(\\d+):(\\d+)\\s+all");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                int id = Integer.parseInt(matcher.group(1));
+                short type = Short.parseShort(matcher.group(2));
+                ItemInfo item = Search.itemById(id, type);
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count;
+                if(shop.isUnlimitedStock()) {
+                    // get player avail space
+                    count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+                } else {
+                    // use shop stock
+                    count = shop.getItem(item.name).getStock();
+                }
+                if(count < 1) {
+                    sender.sendMessage("You must but at least one " + item.name + "!");
+                    return true;
+                }
+                return shopBuy(shop, item, count);
+            }
+            
+            // buy name, ... all
+            matcher.reset();
+            pattern = Pattern.compile("(?i)buy\\s+(.*)\\s+all");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                String itemName = matcher.group(1);
+                ItemInfo item = Search.itemByName(itemName);
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count;
+                if(shop.isUnlimitedStock()) {
+                    // get player avail space
+                    count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+                } else {
+                    // use shop stock
+                    count = shop.getItem(item.name).getStock();
+                }
+                if(count < 1) {
+                    sender.sendMessage("You must but at least one " + item.name + "!");
+                    return true;
+                }
+                return shopBuy(shop, item, count);
+            }
+            
         } else {
             sender.sendMessage("Console is not implemented yet.");
             return false;
@@ -1520,25 +1626,6 @@ public class Commands {
         // buy int int
         matcher.reset();
         pattern = Pattern.compile("(?i)buy\\s+(\\d+)\\s+(\\d+)");
-        matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            int id = Integer.parseInt(matcher.group(1));
-            int count = Integer.parseInt(matcher.group(2));
-            ItemInfo item = Search.itemById(id);
-            if(item == null) {
-                sender.sendMessage("Could not find an item.");
-                return false;
-            }
-            if(count < 1) {
-                sender.sendMessage("You must buy at least one " + item.name + "!");
-                return true;
-            }
-            return shopBuy(shop, item, count);
-        }
-        
-        // buy int all
-        matcher.reset();
-        pattern = Pattern.compile("(?i)buy\\s+(\\d+)\\s+all");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1590,26 +1677,6 @@ public class Commands {
             return shopBuy(shop, item, count);
         }
         
-        // buy int:int all
-        matcher.reset();
-        pattern = Pattern.compile("(?i)buy\\s+(\\d+):(\\d+)\\s+all");
-        matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            int id = Integer.parseInt(matcher.group(1));
-            short type = Short.parseShort(matcher.group(2));
-            ItemInfo item = Search.itemById(id, type);
-            int count = Integer.parseInt(matcher.group(3));
-            if(item == null) {
-                sender.sendMessage("Could not find an item.");
-                return false;
-            }
-            if(count < 1) {
-                sender.sendMessage("You must but at least one " + item.name + "!");
-                return true;
-            }
-            return shopBuy(shop, item, count);
-        }        
-        
         // buy name, ... int
         matcher.reset();
         pattern = Pattern.compile("(?i)buy\\s+(.*)\\s+(\\d+)");
@@ -1628,25 +1695,6 @@ public class Commands {
             }
             return shopBuy(shop, item, count);
         }
-        
-        // buy name, ... all
-        matcher.reset();
-        pattern = Pattern.compile("(?i)buy\\s+(.*)\\s+all");
-        matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            String itemName = matcher.group(1);
-            ItemInfo item = Search.itemByName(itemName);
-            int count = Integer.parseInt(matcher.group(2));
-            if(item == null) {
-                sender.sendMessage("Could not find an item.");
-                return false;
-            }
-            if(count < 1) {
-                sender.sendMessage("You must but at least one " + item.name + "!");
-                return true;
-            }
-            return shopBuy(shop, item, count);
-        }        
         
         // buy name, ...
         matcher.reset();
@@ -2576,6 +2624,21 @@ public class Commands {
         }
 
         return true;
+    }
+    
+    public int countAvailableSpaceForItemInInventory(PlayerInventory inventory, ItemInfo item) {
+        int count = 0;
+        for (ItemStack thisSlot : inventory.getContents()) {
+            if (thisSlot == null || thisSlot.getType() == Material.AIR) {
+                count += 64;
+                continue;
+            }
+            if (thisSlot.getTypeId() == item.typeId && thisSlot.getDurability() == item.subTypeId) {
+                count += 64 - thisSlot.getAmount();
+            }
+        }
+        
+        return count;
     }
 
     public int countItemsInInventory(PlayerInventory inventory, ItemStack item) {
