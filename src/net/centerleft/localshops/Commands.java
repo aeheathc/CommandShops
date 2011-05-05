@@ -1209,6 +1209,70 @@ public class Commands {
                 return shopAdd(shop, item, amount);
             }
             
+            // add all (player only command)
+            matcher.reset();
+            pattern = Pattern.compile("(?i)add\\s+all$");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                ItemStack itemStack = player.getItemInHand();
+                if (itemStack == null) {
+                    return false;
+                }
+                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int amount = countItemsInInventory(player.getInventory(), itemStack);
+                return shopAdd(shop, item, amount);
+            }
+            
+            // add int all
+            matcher.reset();
+            pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+all");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                int id = Integer.parseInt(matcher.group(1));
+                ItemInfo item = Search.itemById(id);
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count = countItemsInInventory(player.getInventory(), item.toStack());
+                return shopAdd(shop, item, count);
+            }
+            
+            // add int:int all
+            matcher.reset();
+            pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+all");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                int id = Integer.parseInt(matcher.group(1));
+                short type = Short.parseShort(matcher.group(2));
+                ItemInfo item = Search.itemById(id, type);
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count = countItemsInInventory(player.getInventory(), item.toStack());
+                return shopAdd(shop, item, count);
+            }
+            
+            // shop add name, ... all
+            matcher.reset();
+            pattern = Pattern.compile("(?i)add\\s+(.*)\\s+all");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                String itemName = matcher.group(1);
+                ItemInfo item = Search.itemByName(itemName);
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                int count = countItemsInInventory(player.getInventory(), item.toStack());
+                return shopAdd(shop, item, count);
+            }
+            
         } else {
             sender.sendMessage("Console is not implemented yet.");
             return false;
