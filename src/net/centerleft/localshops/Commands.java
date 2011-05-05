@@ -1158,6 +1158,93 @@ public class Commands {
         plugin.shopData.saveShop(shop);
         return true;
     }
+    
+    public boolean shopInfo() {
+        log.info("shopInfo");
+        Shop shop = null;
+        
+        log.info(command);
+
+        // Get current shop
+        if (sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
+            PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
+            }
+            if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
+                return false;
+            }            
+
+            /**
+            // Check if Player can Modify
+            if (!isShopController(shop)) {
+                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to view this.");
+                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
+            }
+            */
+            
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
+            return false;
+        }
+        
+        int managerCount = shop.getManagers().size();
+        
+        sender.sendMessage(String.format(ChatColor.AQUA + "Shop Info about " + ChatColor.WHITE + "\"%s\"" + ChatColor.AQUA + " ID: " + ChatColor.WHITE + "%s", shop.getName(), shop.getShortUuidString()));
+        if(shop.getCreator().equalsIgnoreCase(shop.getOwner())) {
+            if(managerCount == 0) {
+                sender.sendMessage(String.format("  Owned & Created by %s with no managers.", shop.getCreator()));
+            } else {
+                sender.sendMessage(String.format("  Owned & Created by %s with %d managers.", shop.getCreator(), managerCount));
+            }
+        }
+        if(managerCount > 0) {
+            sender.sendMessage(String.format("  Managed by %s", Search.join(shop.getManagers(), " ")));
+        }
+        
+        if(command.matches("info\\s+full")) {
+            sender.sendMessage(String.format("  Full Id: %s", shop.getUuid().toString()));
+        }
+        
+        sender.sendMessage(String.format("  Located at %s x %s in \"%s\"", shop.getLocationA().toString(), shop.getLocationB().toString(), shop.getWorld()));
+        
+        // Calculate values
+        int sellCount = 0;
+        int buyCount = 0;
+        int worth = 0;
+        
+        Iterator<InventoryItem> it = shop.getItems().iterator();
+        while(it.hasNext()) {
+            InventoryItem i = it.next();
+            if(i.getBuyPrice() > 0) {
+                sellCount++;
+                worth += (i.getStock()/i.getBuySize()) * i.getBuyPrice();
+            }
+            
+            if(i.getSellPrice() > 0) {
+                buyCount++;
+            }
+        }
+        
+        // Selling %d items & buying %d items
+        sender.sendMessage(String.format("  Selling %d items & buying %d items", sellCount, buyCount));
+        
+        // Shop stock is worth %d coins
+        sender.sendMessage(String.format("  Inventory worth %s", plugin.econManager.format(worth)));
+        
+        if(shop.isUnlimitedMoney() || shop.isUnlimitedStock()) {
+            sender.sendMessage(String.format("  Shop %s unlimited money and %s unlimited stock.", shop.isUnlimitedMoney() ? "has" : "doesn't have", shop.isUnlimitedStock() ? "has" : "doesn't have"));
+        }
+        
+        return true;
+    }
 
     /**
      * Add an item to the shop. Checks if shop manager or owner and takes item
