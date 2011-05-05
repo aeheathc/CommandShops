@@ -809,10 +809,14 @@ public class Commands {
                     // get shop owner's balance and calculate how many it can
                     // buy
                     double shopBalance = plugin.playerData.get(player.getName()).getBalance(shop.getOwner());
+                    if(shopBalance <= 0) {
+                        player.sendMessage(ChatColor.AQUA + shop.getName() + " is broke!");
+                        return false;
+                    }
                     int bundlesCanAford = (int) shopBalance / itemPrice;
                     totalCost = bundlesCanAford * itemPrice;
                     amount = bundlesCanAford * invItem.getSellSize();
-                    player.sendMessage(ChatColor.AQUA + "The shop could only afford " + ChatColor.WHITE + amount);
+                    player.sendMessage(ChatColor.AQUA + shop.getName() + " could only afford " + ChatColor.WHITE + bundlesCanAford + ChatColor.AQUA + " bundles.");
                     if (!pData.payPlayer(shop.getOwner(), player.getName(), totalCost)) {
                         player.sendMessage(ChatColor.AQUA + "Unexpected money problem: could not complete sale.");
                         return false;
