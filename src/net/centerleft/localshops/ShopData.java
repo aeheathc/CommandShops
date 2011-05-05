@@ -52,6 +52,18 @@ public class ShopData {
     public Shop getShop(UUID uuid) {
         return shops.get(uuid);
     }
+    
+    public Shop getShop(String partialUuid) {       
+        Iterator<Shop> it = shops.values().iterator();
+        while (it.hasNext()) {
+            Shop cShop = it.next();
+            if(cShop.getUuid().toString().matches(".*"+partialUuid.toLowerCase()+"$")) {
+                return cShop;
+            }
+        }
+        
+        return null;
+    }
 
     public void addShop(Shop shop) {
         String uuid = shop.getUuid().toString();

@@ -306,7 +306,7 @@ public class Commands {
         Pattern pattern = Pattern.compile("(?i)move\\s+(.*)");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
-            String name = matcher.group(1);
+            String id = matcher.group(1);
             
             Player player = (Player) sender;
             Location location = player.getLocation();
@@ -315,22 +315,14 @@ public class Commands {
             long[] xyzAold = new long[3];
             long[] xyzBold = new long[3];
 
-            // check to see if that shop name exists and has access
-            boolean foundShop = false;
-            Collection<Shop> shops = plugin.shopData.getAllShops();
-            for (Shop shop : shops) {
-                if (shop.getName().equalsIgnoreCase(name)) {
-                    thisShop = shop;
-                    foundShop = true;
-                    break;
-                }
-            }
-
-            if (!foundShop) {
-                player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not find shop: " + ChatColor.WHITE + name);
+            // check to see if that shop exists
+            thisShop = plugin.shopData.getShop(id);
+            if(thisShop == null) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "Could not find shop: " + ChatColor.WHITE + id);
                 return false;
             }
 
+            // check if player has access
             if (!thisShop.getOwner().equalsIgnoreCase(player.getName())) {
                 player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.AQUA + "You must be the shop owner to move this shop.");
                 return false;
