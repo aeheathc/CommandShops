@@ -162,7 +162,11 @@ public class LocalShops extends JavaPlugin {
             type = "sell";
         } else {
             commands = new Commands(this, commandLabel, sender, args);
-            type = args[0];
+            if(args.length > 0) {
+                type = args[0];
+            } else {
+                return commands.shopHelp();
+            }
         }
 
         String commandName = command.getName().toLowerCase();
