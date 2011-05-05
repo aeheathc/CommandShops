@@ -79,18 +79,19 @@ public class ShopData {
     }
     
     private void calcShortUuidSize() {
-            uniqueIds.clear();
-            Iterator<Shop> it = shops.values().iterator();
-            while (it.hasNext()) {
-                Shop cShop = it.next();
-                String cUuid = cShop.getUuid().toString();
-                String sUuid = cUuid.substring(cUuid.length() - MIN_UNIQUE_ID_LENGTH);
-                if(uniqueIds.contains(sUuid)) {
-                    calcShortUuidSize();
-                } else {
-                    uniqueIds.add(sUuid);
-                }
+        MIN_UNIQUE_ID_LENGTH++;
+        uniqueIds.clear();
+        Iterator<Shop> it = shops.values().iterator();
+        while (it.hasNext()) {
+            Shop cShop = it.next();
+            String cUuid = cShop.getUuid().toString();
+            String sUuid = cUuid.substring(cUuid.length() - MIN_UNIQUE_ID_LENGTH);
+            if (uniqueIds.contains(sUuid)) {
+                calcShortUuidSize();
+            } else {
+                uniqueIds.add(sUuid);
             }
+        }
     }
 
     public Collection<Shop> getAllShops() {

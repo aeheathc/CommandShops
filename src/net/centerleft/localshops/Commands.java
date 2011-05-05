@@ -1165,24 +1165,33 @@ public class Commands {
             Player player = (Player) sender;
             PlayerData pData = plugin.playerData.get(player.getName());
 
-            // Get Current Shop
-            UUID shopUuid = pData.getCurrentShop();
-            if (shopUuid != null) {
-                shop = plugin.shopData.getShop(shopUuid);
+            // info (player only command)
+            Pattern pattern = Pattern.compile("(?i)info$");
+            Matcher matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                // Get Current Shop
+                UUID shopUuid = pData.getCurrentShop();
+                if (shopUuid != null) {
+                    shop = plugin.shopData.getShop(shopUuid);
+                }
+                if (shop == null) {
+                    sender.sendMessage("You are not in a shop!");
+                    return false;
+                }
             }
-            if (shop == null) {
-                sender.sendMessage("You are not in a shop!");
-                return false;
-            }            
-
-            /**
-            // Check if Player can Modify
-            if (!isShopController(shop)) {
-                player.sendMessage(ChatColor.AQUA + "You must be the shop owner or a manager to view this.");
-                player.sendMessage(ChatColor.AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
-                return true;
+            
+            // info id
+            matcher.reset();
+            pattern = Pattern.compile("(?i)info\\s+(.*)$");
+            matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                String input = matcher.group(1);
+                shop = plugin.shopData.getShop(input);
+                if (shop == null) {
+                    sender.sendMessage("Could not find shop with ID " + input);
+                    return false;
+                }
             }
-            */
             
         } else {
             sender.sendMessage("Console is not implemented yet.");
