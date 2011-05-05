@@ -41,7 +41,7 @@ public class ShopData {
 
     long maxWidth = 30;
     long maxHeight = 10;
-    
+
     static int MIN_UNIQUE_ID_LENGTH = 1;
     ArrayList<String> uniqueIds = new ArrayList<String>();
 
@@ -52,7 +52,7 @@ public class ShopData {
     public Shop getShop(UUID uuid) {
         return shops.get(uuid);
     }
-    
+
     public Shop getShop(String partialUuid) {       
         Iterator<Shop> it = shops.values().iterator();
         while (it.hasNext()) {
@@ -61,7 +61,7 @@ public class ShopData {
                 return cShop;
             }
         }
-        
+
         return null;
     }
 
@@ -77,7 +77,7 @@ public class ShopData {
         }
         shops.put(shop.getUuid(), shop);
     }
-    
+
     private void calcShortUuidSize() {
         MIN_UNIQUE_ID_LENGTH++;
         uniqueIds.clear();
@@ -109,10 +109,10 @@ public class ShopData {
 
         File[] shopsList = shopsDir.listFiles();
         for (File file : shopsList) {
-            
+
             log.info(String.format("[%s] Loading Shop file \"%s\".", plugin.pdfFile.getName(), file.toString()));
             Shop shop = null;
-            
+
             // Determine if filename is a UUID or not
             if(file.getName().matches("^(\\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\\}{0,1})\\.shop$")) {
                 shop = loadShop(file);
@@ -120,7 +120,7 @@ public class ShopData {
                 // Convert old format & delete the file...immediately save using the new format (will generate a new UUID for this shop)
                 shop = convertShopOldFormat(file);                
             }
-            
+
             // Check if not null, and add to world
             if (shop != null) {
                 log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
@@ -172,7 +172,7 @@ public class ShopData {
                 } else if (cols[0].equalsIgnoreCase("creator")) { // Creator
                     shop.setCreator(cols[1]);
                 } else if (cols[0].equalsIgnoreCase("position1")) { // Position
-                                                                    // A
+                    // A
                     String[] xyzStr = cols[1].split(",");
                     try {
                         long x = Long.parseLong(xyzStr[0].trim());
@@ -186,7 +186,7 @@ public class ShopData {
                         return null;
                     }
                 } else if (cols[0].equalsIgnoreCase("position2")) { // Position
-                                                                    // B
+                    // B
                     String[] xyzStr = cols[1].split(",");
                     try {
                         long x = Long.parseLong(xyzStr[0].trim());
@@ -200,10 +200,10 @@ public class ShopData {
                         return null;
                     }
                 } else if (cols[0].equalsIgnoreCase("unlimited-money")) { // Unlimited
-                                                                          // Money
+                    // Money
                     shop.setUnlimitedMoney(Boolean.parseBoolean(cols[1]));
                 } else if (cols[0].equalsIgnoreCase("unlimited-stock")) { // Unlimited
-                                                                          // Stock
+                    // Stock
                     shop.setUnlimitedStock(Boolean.parseBoolean(cols[1]));
                 } else if (cols[0].matches("\\d+:\\d+")) { // Items
                     String[] itemInfo = cols[0].split(":");
@@ -252,7 +252,7 @@ public class ShopData {
             }
 
             br.close();
-            
+
             if(file.delete()) {
                 saveShop(shop);
                 return shop;
@@ -265,7 +265,7 @@ public class ShopData {
             return null;
         }
     }
-    
+
     public static long[] convertStringArraytoLongArray(String[] sarray) {
         if (sarray != null) {
             long longArray[] = new long[sarray.length];
@@ -303,7 +303,7 @@ public class ShopData {
         String owner = props.getProperty("owner");
         String[] managers = props.getProperty("managers").replaceAll("[\\[\\]]", "").split(", ");
         String creator = props.getProperty("creator");
-        
+
         Shop shop = new Shop(uuid);
         shop.setName(name);
         shop.setUnlimitedMoney(unlimitedMoney);
@@ -314,7 +314,7 @@ public class ShopData {
         shop.setOwner(owner);
         shop.setManagers(managers);
         shop.setCreator(creator);
-        
+
         // Iterate through all keys, find items & parse
         // props.setProperty(String.format("%d:%d", info.typeId, info.subTypeId), String.format("%d:%d,%d:%d,%d:%d", buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
         Iterator<Object> it = props.keySet().iterator();
@@ -324,29 +324,29 @@ public class ShopData {
                 String[] k = key.split(":");
                 int id = Integer.parseInt(k[0]);
                 short type = Short.parseShort(k[1]);
-                
+
                 String value = props.getProperty(key);
                 String[] v = value.split(",");
 
                 String[] buy = v[0].split(":");
                 int buyPrice = Integer.parseInt(buy[0]);
                 int buyStackSize = Integer.parseInt(buy[1]);
-                
+
                 String[] sell = v[1].split(":");
                 int sellPrice = Integer.parseInt(sell[0]);
                 int sellStackSize = Integer.parseInt(sell[1]);
-                
+
                 String[] stock = v[2].split(":");
                 int currStock = Integer.parseInt(stock[0]);
                 int maxStock = Integer.parseInt(stock[1]);
-                
+
                 shop.addItem(id, type, buyPrice, buyStackSize, sellPrice, sellStackSize, currStock, maxStock);
             }
         }
-                
+
         return shop;
     }
-    
+
     public boolean saveAllShops() {
         log.info(String.format("[%s] %s", plugin.pdfFile.getName(), "Saving All Shops"));
         Iterator<Shop> it = shops.values().iterator();
@@ -426,7 +426,7 @@ public class ShopData {
             LocalShops.cuboidTree.delete(shopLocation);
 
         }
-        
+
         // remove string from uuid short list
         uniqueIds.remove(shortUuid);
 
@@ -507,7 +507,7 @@ public class ShopData {
             String fileOutput = "";
 
             DateFormat dateFormat = new SimpleDateFormat(
-                    "yyyy/MM/dd HH:mm:ss z");
+            "yyyy/MM/dd HH:mm:ss z");
             Date date = new Date();
             fileOutput += dateFormat.format(date) + ": ";
             fileOutput += "Action: ";
