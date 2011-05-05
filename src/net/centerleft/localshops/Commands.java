@@ -429,10 +429,12 @@ public class Commands {
                 }
 
                 // insert the shop into the world
-                LocalShops.cuboidTree.insert(tempShopCuboid);
                 thisShop.setWorld(player.getWorld().getName());
                 thisShop.setLocations(new ShopLocation(xyzA), new ShopLocation(xyzB));
+                log.info(thisShop.getUuid().toString());
+                plugin.shopData.deleteShop(thisShop);
                 plugin.shopData.addShop(thisShop);
+                LocalShops.cuboidTree.insert(tempShopCuboid);
 
                 plugin.playerData.put(player.getName(), new PlayerData(plugin, player.getName()));
 

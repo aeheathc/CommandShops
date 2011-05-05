@@ -69,20 +69,28 @@ public class ShopData {
         String uuid = shop.getUuid().toString();
         while (true) {
             if (uniqueIds.contains(uuid.substring(uuid.length() - MIN_UNIQUE_ID_LENGTH))) {
-                MIN_UNIQUE_ID_LENGTH++;
-                uniqueIds.clear();
-                Iterator<Shop> it = shops.values().iterator();
-                while (it.hasNext()) {
-                    Shop cShop = it.next();
-                    String cUuid = cShop.getUuid().toString();
-                    uniqueIds.add(cUuid.substring(cUuid.length() - MIN_UNIQUE_ID_LENGTH));
-                }
+                calcShortUuidSize();
             } else {
                 uniqueIds.add(uuid.substring(uuid.length() - MIN_UNIQUE_ID_LENGTH));
                 break;
             }
         }
         shops.put(shop.getUuid(), shop);
+    }
+    
+    private void calcShortUuidSize() {
+            uniqueIds.clear();
+            Iterator<Shop> it = shops.values().iterator();
+            while (it.hasNext()) {
+                Shop cShop = it.next();
+                String cUuid = cShop.getUuid().toString();
+                String sUuid = cUuid.substring(cUuid.length() - MIN_UNIQUE_ID_LENGTH);
+                if(uniqueIds.contains(sUuid)) {
+                    calcShortUuidSize();
+                } else {
+                    uniqueIds.add(sUuid);
+                }
+            }
     }
 
     public Collection<Shop> getAllShops() {
@@ -396,6 +404,7 @@ public class ShopData {
     }
 
     public boolean deleteShop(Shop shop) {
+        String shortUuid = shop.getShortUuidString();
         long[] xyzA = shop.getLocation();
         BookmarkedResult res = new BookmarkedResult();
 
@@ -416,6 +425,9 @@ public class ShopData {
             LocalShops.cuboidTree.delete(shopLocation);
 
         }
+        
+        // remove string from uuid short list
+        uniqueIds.remove(shortUuid);
 
         // delete the file from the directory
         String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getUuid() + ".shop";
