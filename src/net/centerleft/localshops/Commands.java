@@ -1521,6 +1521,10 @@ public class Commands {
                 sender.sendMessage("Could not find an item.");
                 return false;
             }
+            if(count < 1) {
+                sender.sendMessage("You must but at least one " + item.name + "!");
+                return true;
+            }
             return shopBuy(shop, item, count);
         }
         
@@ -1535,6 +1539,10 @@ public class Commands {
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
                 return false;
+            }
+            if(count < 1) {
+                sender.sendMessage("You must but at least one " + item.name + "!");
+                return true;
             }
             return shopBuy(shop, item, count);
         }
@@ -1567,6 +1575,10 @@ public class Commands {
                 sender.sendMessage("Could not find an item.");
                 return false;
             }
+            if(count < 1) {
+                sender.sendMessage("You must but at least one " + item.name + "!");
+                return true;
+            }
             return shopBuy(shop, item, count);
         }
         
@@ -1583,6 +1595,10 @@ public class Commands {
                 sender.sendMessage("Could not find an item.");
                 return false;
             }
+            if(count < 1) {
+                sender.sendMessage("You must but at least one " + item.name + "!");
+                return true;
+            }
             return shopBuy(shop, item, count);
         }        
         
@@ -1598,6 +1614,10 @@ public class Commands {
                 sender.sendMessage("Could not find an item.");
                 return false;
             }
+            if(count < 1) {
+                sender.sendMessage("You must but at least one " + item.name + "!");
+                return true;
+            }
             return shopBuy(shop, item, count);
         }
         
@@ -1612,6 +1632,10 @@ public class Commands {
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
                 return false;
+            }
+            if(count < 1) {
+                sender.sendMessage("You must but at least one " + item.name + "!");
+                return true;
             }
             return shopBuy(shop, item, count);
         }        
