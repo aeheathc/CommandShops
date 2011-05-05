@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +41,9 @@ public class ShopData {
 
     long maxWidth = 30;
     long maxHeight = 10;
+    
+    static int MIN_UNIQUE_ID_LENGTH = 1;
+    ArrayList<String> uniqueIds = new ArrayList<String>();
 
     public ShopData(LocalShops plugin) {
         this.plugin = plugin;
@@ -50,6 +54,22 @@ public class ShopData {
     }
 
     public void addShop(Shop shop) {
+        String uuid = shop.getUuid().toString();
+        while (true) {
+            if (uniqueIds.contains(uuid.substring(uuid.length() - MIN_UNIQUE_ID_LENGTH))) {
+                MIN_UNIQUE_ID_LENGTH++;
+                uniqueIds.clear();
+                Iterator<Shop> it = shops.values().iterator();
+                while (it.hasNext()) {
+                    Shop cShop = it.next();
+                    String cUuid = cShop.getUuid().toString();
+                    uniqueIds.add(cUuid.substring(cUuid.length() - MIN_UNIQUE_ID_LENGTH));
+                }
+            } else {
+                uniqueIds.add(uuid.substring(uuid.length() - MIN_UNIQUE_ID_LENGTH));
+                break;
+            }
+        }
         shops.put(shop.getUuid(), shop);
     }
 

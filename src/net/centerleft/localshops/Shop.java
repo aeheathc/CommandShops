@@ -124,6 +124,11 @@ public class Shop {
         }
         return false;
     }
+    
+    public String getShortUuidString() {
+        String sUuid = uuid.toString();
+        return sUuid.substring(sUuid.length() - ShopData.MIN_UNIQUE_ID_LENGTH);
+    }
 
     public void addItem(int itemNumber, short itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
         // TODO add maxStock to item object

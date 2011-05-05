@@ -82,6 +82,15 @@ public class Commands {
     public Commands(LocalShops plugin, String commandLabel, CommandSender sender, String[] args) {
         this(plugin, commandLabel, sender, Search.join(args, " ").trim());
     }
+    
+    public boolean shopList() {
+        Iterator<Shop> it = plugin.shopData.getAllShops().iterator();
+        while(it.hasNext()) {
+            Shop shop = it.next();
+            sender.sendMessage(String.format("%s: %s", shop.getShortUuidString(), shop.getName()));
+        }
+        return true;
+    }
 
     public boolean shopDebug() {
         if (sender instanceof Player) {

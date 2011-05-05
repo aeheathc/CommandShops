@@ -204,6 +204,8 @@ public class LocalShops extends JavaPlugin {
                 return commands.shopSet();
             } else if (type.equalsIgnoreCase("select")) {
                 return commands.shopSelect();
+            } else if (type.equalsIgnoreCase("list")) {
+                return commands.shopList();
             } else if (type.equalsIgnoreCase("version")) {
                 sender.sendMessage(String.format("LocalShops Version %s", pdfFile.getVersion()));
                 return true;
