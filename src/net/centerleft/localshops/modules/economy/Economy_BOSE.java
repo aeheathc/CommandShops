@@ -60,24 +60,31 @@ public class Economy_BOSE implements Economy {
 
     @Override
     public boolean withdrawPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         double balance = getBalance(playerName);
+        if(balance - amount < 0) {
+            return false;
+        }
         return economy.setPlayerMoney(playerName, (int) (balance - amount), false);
     }
 
     @Override
     public boolean depositPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         double balance = getBalance(playerName);
         return economy.setPlayerMoney(playerName, (int) (balance + amount), false);
     }
 
     @Override
     public boolean depositShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         // Currently not supported
         return false;
     }
 
     @Override
     public boolean withdrawShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         // Currently not supported
         return false;
     }

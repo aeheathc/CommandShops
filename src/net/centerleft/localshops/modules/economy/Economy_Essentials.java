@@ -62,6 +62,7 @@ public class Economy_Essentials implements Economy {
 
     @Override
     public boolean withdrawPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         User u = User.get(playerName);
         if(u.canAfford(amount)) {
             double money = u.getMoney();
@@ -74,6 +75,7 @@ public class Economy_Essentials implements Economy {
 
     @Override
     public boolean depositPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         User u = User.get(playerName);
         double money = u.getMoney();
         u.setMoney(money + amount);
@@ -82,12 +84,14 @@ public class Economy_Essentials implements Economy {
 
     @Override
     public boolean withdrawShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         // Currently not supported
         return false;
     }
 
     @Override
     public boolean depositShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         // Currently not supported
         return false;
     }

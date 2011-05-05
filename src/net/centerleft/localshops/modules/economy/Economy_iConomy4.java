@@ -71,6 +71,7 @@ public class Economy_iConomy4 implements Economy {
 
     @Override
     public boolean withdrawPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         double balance = getBalance(playerName);
         if(balance >= amount) {
             Account account = iConomy.getBank().getAccount(playerName);
@@ -86,6 +87,7 @@ public class Economy_iConomy4 implements Economy {
 
     @Override
     public boolean depositPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         Account account = iConomy.getBank().getAccount(playerName);
         if(account == null) {
             iConomy.getBank().addAccount(playerName);
@@ -97,12 +99,14 @@ public class Economy_iConomy4 implements Economy {
 
     @Override
     public boolean withdrawShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         // Currently not supported
         return false;
     }
 
     @Override
     public boolean depositShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         // Currently not supported
         return false;
     }

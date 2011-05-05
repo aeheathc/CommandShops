@@ -66,18 +66,22 @@ public class EconomyManager {
     }
     
     public boolean withdrawPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         return getEconomy().withdrawPlayer(playerName, amount);
     }
     
     public boolean depositPlayer(String playerName, double amount) {
+        amount = Math.abs(amount);
         return getEconomy().depositPlayer(playerName, amount);
     }
     
     public boolean withdrawShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         return getEconomy().withdrawShop(shop, amount);
     }
     
     public boolean depositShop(Shop shop, double amount) {
+        amount = Math.abs(amount);
         return getEconomy().depositShop(shop, amount);
     }
 }
