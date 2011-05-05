@@ -152,57 +152,64 @@ public class LocalShops extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        Commands commands = new Commands(this, commandLabel, sender, args);
+        Commands commands = null;
+        String type = null;
+        if (commandLabel.equalsIgnoreCase("buy")) {
+            commands = new Commands(this, commandLabel, sender, "buy " + Search.join(args, " "));
+            type = "buy";
+        } else if (commandLabel.equalsIgnoreCase("sell")) {
+            commands = new Commands(this, commandLabel, sender, "sell " + Search.join(args, " "));
+            type = "sell";
+        } else {
+            commands = new Commands(this, commandLabel, sender, args);
+            type = args[0];
+        }
 
         String commandName = command.getName().toLowerCase();
 
-        if (commandName.equalsIgnoreCase("lshop")) {
-            if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("search")) {
-                    commands.shopSearch();
-                } else if (args[0].equalsIgnoreCase("debug")) {
-                    commands.shopDebug();
-                } else if (args[0].equalsIgnoreCase("create")) {
-                    commands.shopCreate();
-                    for (Player player : this.getServer().getOnlinePlayers()) {
-                        playerListener.checkPlayerPosition(player);
-                    }
-                } else if (args[0].equalsIgnoreCase("destroy")) {
-                    commands.shopDestroy();
-                    for (Player player : this.getServer().getOnlinePlayers()) {
-                        playerListener.checkPlayerPosition(player);
-                    }
-                } else if (args[0].equalsIgnoreCase("move")) {
-                    commands.shopMove();
-                    for (Player player : this.getServer().getOnlinePlayers()) {
-                        playerListener.checkPlayerPosition(player);
-                    }
-                } else if (args[0].equalsIgnoreCase("browse") || args[0].equalsIgnoreCase("bro")) {
-                    commands.shopBrowse();
-                } else if (args[0].equalsIgnoreCase("sell")) {
-                    commands.shopSell();
-                } else if (args[0].equalsIgnoreCase("add")) {
-                    commands.shopAdd();
-                } else if (args[0].equalsIgnoreCase("remove")) {
-                    commands.shopRemove();
-                } else if (args[0].equalsIgnoreCase("buy")) {
-                    commands.shopBuy();
-                } else if (args[0].equalsIgnoreCase("set")) {
-                    commands.shopSet();
-                } else if (args[0].equalsIgnoreCase("select")) {
-                    return commands.shopSelect();
-                } else if (args[0].equalsIgnoreCase("version")) {
-                    sender.sendMessage(String.format("LocalShops Version %s", pdfFile.getVersion()));
-                    return true;
-                } else {
-                    return commands.shopHelp();
+        if (commandName.equalsIgnoreCase("lshop") || commandLabel.equalsIgnoreCase("buy") || commandLabel.equalsIgnoreCase("sell")) {
+            if (type.equalsIgnoreCase("search")) {
+                return commands.shopSearch();
+            } else if (type.equalsIgnoreCase("debug")) {
+                return  commands.shopDebug();
+            } else if (type.equalsIgnoreCase("create")) {
+                commands.shopCreate();
+                for (Player player : this.getServer().getOnlinePlayers()) {
+                    playerListener.checkPlayerPosition(player);
                 }
-
+                return true;
+            } else if (type.equalsIgnoreCase("destroy")) {
+                commands.shopDestroy();
+                for (Player player : this.getServer().getOnlinePlayers()) {
+                    playerListener.checkPlayerPosition(player);
+                }
+                return true;
+            } else if (type.equalsIgnoreCase("move")) {
+                commands.shopMove();
+                for (Player player : this.getServer().getOnlinePlayers()) {
+                    playerListener.checkPlayerPosition(player);
+                }
+                return true;
+            } else if (type.equalsIgnoreCase("browse") || type.equalsIgnoreCase("bro")) {
+                return commands.shopBrowse();
+            } else if (type.equalsIgnoreCase("sell")) {
+                return commands.shopSell();
+            } else if (type.equalsIgnoreCase("add")) {
+                return commands.shopAdd();
+            } else if (type.equalsIgnoreCase("remove")) {
+                return commands.shopRemove();
+            } else if (type.equalsIgnoreCase("buy")) {
+                return commands.shopBuy();
+            } else if (type.equalsIgnoreCase("set")) {
+                return commands.shopSet();
+            } else if (type.equalsIgnoreCase("select")) {
+                return commands.shopSelect();
+            } else if (type.equalsIgnoreCase("version")) {
+                sender.sendMessage(String.format("LocalShops Version %s", pdfFile.getVersion()));
+                return true;
             } else {
                 return commands.shopHelp();
             }
-
-            return true;
         }
         return false;
     }

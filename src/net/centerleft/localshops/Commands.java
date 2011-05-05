@@ -76,7 +76,7 @@ public class Commands {
         this.plugin = plugin;
         this.commandLabel = commandLabel;
         this.sender = sender;
-        this.command = command;
+        this.command = command.trim();
     }
     
     public Commands(LocalShops plugin, String commandLabel, CommandSender sender, String[] args) {

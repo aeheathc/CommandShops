@@ -10,4 +10,4 @@ commands:
     description: Command for managing shops 
     usage: |
            /<command> - displays command help
-    aliases: shop
+    aliases: [shop, buy, sell]
