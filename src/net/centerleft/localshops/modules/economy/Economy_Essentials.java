@@ -33,11 +33,9 @@ public class Economy_Essentials implements Economy {
         // Load Plugin in case it was loaded before
         if (economy == null) {
             Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
-            if (essentials != null) {
-                if (essentials.isEnabled()) {
-                    economy = (Essentials) essentials;
-                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
-                }
+            if (essentials != null && essentials.isEnabled()) {
+                economy = (Essentials) essentials;
+                log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
     }
@@ -113,11 +111,9 @@ public class Economy_Essentials implements Economy {
             if (economy.economy == null) {
                 Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
 
-                if (essentials != null) {
-                    if (essentials.isEnabled()) {
-                        economy.economy = (Essentials) essentials;
-                        log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
-                    }
+                if (essentials != null && essentials.isEnabled()) {
+                    economy.economy = (Essentials) essentials;
+                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }

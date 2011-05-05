@@ -32,11 +32,9 @@ public class Economy_BOSE implements Economy {
         // Load Plugin in case it was loaded before
         if (economy == null) {
             Plugin bose = plugin.getServer().getPluginManager().getPlugin("BOSEconomy");
-            if (bose != null) {
-                if (bose.isEnabled()) {
-                    economy = (BOSEconomy) bose;
-                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
-                }
+            if (bose != null && bose.isEnabled()) {
+                economy = (BOSEconomy) bose;
+                log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
     }
@@ -103,11 +101,9 @@ public class Economy_BOSE implements Economy {
             if (economy.economy == null) {
                 Plugin bose = plugin.getServer().getPluginManager().getPlugin("BOSEconomy");
 
-                if (bose != null) {
-                    if (bose.isEnabled()) {
-                        economy.economy = (BOSEconomy) bose;
-                        log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
-                    }
+                if (bose != null && bose.isEnabled()) {
+                    economy.economy = (BOSEconomy) bose;
+                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }
