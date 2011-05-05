@@ -1341,7 +1341,7 @@ public class Commands {
         if (invItem == null || invItem.getBuyPrice() == 0) {
             player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + item.name + ChatColor.AQUA + " right now.");
             return false;
-        } else if(invItem.getStock() == 0) {
+        } else if(invItem.getStock() == 0 && !shop.isUnlimitedStock()) {
             player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " is sold out of " + ChatColor.WHITE + item.name + ChatColor.AQUA + " right now.");
             return false;
         }
@@ -1355,13 +1355,6 @@ public class Commands {
         // if amount = 0, assume single stack size
         if(amount == 0) {
             amount = invItem.getBuySize();
-        }
-        
-        // Check that shop has enough
-        if(amount >= invItem.getStock()) {
-            // enough
-        } else {
-            // not enough
         }
 
         int totalAmount;
