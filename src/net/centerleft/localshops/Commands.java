@@ -84,10 +84,16 @@ public class Commands {
     }
     
     public boolean shopList() {
+        int idWidth = ShopData.MIN_UNIQUE_ID_LENGTH + 1;
+        if(idWidth < 4) {
+            idWidth = 4;
+        }
+        sender.sendMessage(String.format("%-"+idWidth+"s  %s", "Id", "Name"));
+        
         Iterator<Shop> it = plugin.shopData.getAllShops().iterator();
         while(it.hasNext()) {
             Shop shop = it.next();
-            sender.sendMessage(String.format("%s: %s", shop.getShortUuidString(), shop.getName()));
+            sender.sendMessage(String.format("%-"+idWidth+"s  %s", shop.getShortUuidString(), shop.getName()));
         }
         return true;
     }
