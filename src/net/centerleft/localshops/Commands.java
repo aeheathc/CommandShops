@@ -506,6 +506,15 @@ public class Commands {
 
             if (plugin.pluginListener.usePermissions) {
                 // Using permissions, check them
+                
+                // check if admin first
+                for (String permission : CommandTypes.ADMIN.getPermissions()) {
+                    if (pm.has(player, permission)) {
+                        return true;
+                    }
+                }
+                
+                // fail back to provided permissions second
                 for (String permission : type.getPermissions()) {
                     if (!pm.has(player, permission)) {
                         return false;
