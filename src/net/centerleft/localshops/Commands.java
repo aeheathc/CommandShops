@@ -91,11 +91,28 @@ public class Commands {
         if(idWidth < 4) {
             idWidth = 4;
         }
-        sender.sendMessage(String.format("%-"+idWidth+"s  %s", "Id", "Name"));
         
+        boolean showAll = false;
+        boolean isPlayer = false;
+        
+        // list all
+        Pattern pattern = Pattern.compile("(?i)list\\d+all$");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            showAll = true;
+        }        
+        
+        if(sender instanceof Player) {
+            isPlayer = true;
+        }
+        
+        sender.sendMessage(String.format("%-"+idWidth+"s  %s", "Id", "Name"));
         Iterator<Shop> it = plugin.shopData.getAllShops().iterator();
         while(it.hasNext()) {
             Shop shop = it.next();
+            if(!showAll && isPlayer && !isShopController(shop)) {
+                continue;
+            }
             sender.sendMessage(String.format("%-"+idWidth+"s  %s", shop.getShortUuidString(), shop.getName()));
         }
         return true;
@@ -1912,7 +1929,7 @@ public class Commands {
         // Check Permissions
         if (!canUseCommand(CommandTypes.SET)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
-            return false;
+            return true;
         }
 
         log.info(String.format("[%s] Command issued: %s", plugin.pdfFile.getName(), command));
@@ -2018,7 +2035,7 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check if Player can Modify
@@ -2029,7 +2046,7 @@ public class Commands {
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
 
         // Command matching
@@ -2188,7 +2205,7 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check if Player can Modify
@@ -2199,7 +2216,7 @@ public class Commands {
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
 
         // Command matching
@@ -2310,7 +2327,7 @@ public class Commands {
             }
             if(shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;                
+                return true;                
             }
             
             // Check if Player can Modify  
@@ -2321,7 +2338,7 @@ public class Commands {
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;            
+            return true;            
         }
         
         Pattern pattern = Pattern.compile("(?i)set\\s+name\\s+(.*)");
@@ -2370,7 +2387,7 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check if Player can Modify
@@ -2382,7 +2399,7 @@ public class Commands {
 
             if (!canUseCommand(CommandTypes.SET_OWNER) && !canUseCommand(CommandTypes.ADMIN)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
-                return false;
+                return true;
             }
             
             if(!canUseCommand(CommandTypes.ADMIN)) {
@@ -2391,7 +2408,7 @@ public class Commands {
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
 
         // set owner name
@@ -2401,7 +2418,7 @@ public class Commands {
             String name = matcher.group(1);
             if (!canUseCommand(CommandTypes.SET_OWNER)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You do not have permission to do this.");
-                return false;
+                return true;
             } else {
                 shop.setOwner(name);
 
@@ -2442,18 +2459,18 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check if Player can Modify
             if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
                 player.sendMessage(ChatColor.DARK_AQUA + "You must be the shop owner to set this.");
                 player.sendMessage(ChatColor.DARK_AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
-                return false;
+                return true;
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
         
         // set manager +name -name ...
@@ -2502,17 +2519,17 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check Permissions
             if (!canUseCommand(CommandTypes.ADMIN)) {
                 player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You must be a shop admin to do this.");
-                return false;
+                return true;
             }            
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
         
         // Command matching
@@ -2602,7 +2619,7 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check if Player can Modify
@@ -2613,7 +2630,7 @@ public class Commands {
             }
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
 
         // Command matching
