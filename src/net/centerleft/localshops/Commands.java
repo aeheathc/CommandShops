@@ -2794,7 +2794,7 @@ public class Commands {
      * @return true - if command succeeds false otherwise
      */
     public boolean shopDestroy() {
-        if (!(sender instanceof Player) || !canUseCommand(CommandTypes.ADMIN)) {
+        if (!(sender instanceof Player) || !canUseCommand(CommandTypes.DESTROY)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
             return false;
         }
