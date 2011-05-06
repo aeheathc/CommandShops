@@ -2701,7 +2701,7 @@ public class Commands {
         shop.removeItem(item.name);
         plugin.shopData.saveShop(shop);        
         
-        return false;
+        return true;
     }
 
     /**
@@ -2744,6 +2744,23 @@ public class Commands {
                 player.sendMessage(ChatColor.DARK_AQUA + "The current shop owner is " + ChatColor.WHITE + shop.getOwner());
                 return true;
             }
+            
+            // remove (player only command)
+            Pattern pattern = Pattern.compile("(?i)remove$");
+            Matcher matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                ItemStack itemStack = player.getItemInHand();
+                if (itemStack == null) {
+                    return false;
+                }
+                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                if(item == null) {
+                    sender.sendMessage("Could not find an item.");
+                    return false;
+                }
+                return shopRemove(shop, item);
+            }
+            
         } else {
             sender.sendMessage("Console is not implemented yet.");
             return false;
