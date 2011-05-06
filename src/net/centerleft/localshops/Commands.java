@@ -599,18 +599,18 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
 
             // Check Permissions
             if (!canUseCommand(CommandTypes.BROWSE)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
-                return false;
+                return true;
             }
 
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
         
         if(shop.getItems().size() == 0) {
