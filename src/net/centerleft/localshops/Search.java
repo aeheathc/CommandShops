@@ -37,7 +37,7 @@ public class Search {
         items.add(new ItemInfo("Lapis Lazuli Ore", new String[][] { { "laz", "ore" } }, 21, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Lapis Lazuli Block", new String[][] { { "laz", "bl" } }, 22, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Dispenser", new String[][] { { "dispen" } }, 23, (short) 0, new int[]{ 0, 0, 0 } ));
-        items.add(new ItemInfo("Sandstone", new String[][] { { "sandst" } }, 24, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Sandstone", new String[][] { { "sand", "st" } }, 24, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Note Block", new String[][] { { "note" } }, 25, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Powered Rail", new String[][] { { "rail", "pow" }, { "trac", "pow" }, { "boost" } }, 27, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Detector Rail", new String[][] { { "rail", "det" }, { "trac", "det" }, { "detec" } }, 28, (short) 0, new int[]{ 0, 0, 0 } ));
