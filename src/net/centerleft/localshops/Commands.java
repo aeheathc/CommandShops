@@ -368,15 +368,6 @@ public class Commands {
             long[] xyzB = new long[3];
 
             if (plugin.playerData.containsKey(player.getName()) && plugin.playerData.get(player.getName()).isSelecting) {
-                /**
-                 * if (!plugin.playerData.get(player.getName()).sizeOkay) { if
-                 * (!canUseCommand(player, "admin".split(""))) { String size =
-                 * "" + plugin.shopData.maxWidth + "x" +
-                 * plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
-                 * player.sendMessage(ChatColor.DARK_AQUA +
-                 * "Problem with selection. Max size is " + ChatColor.WHITE +
-                 * size); return false; } }
-                 */
 
                 // Check if size is ok
                 if (!plugin.playerData.get(player.getName()).checkSize()) {
@@ -483,7 +474,8 @@ public class Commands {
         }
         
         // Show usage
-        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " move [ShopName]");
+        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " move [id]");
+        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE + "/" + commandLabel + " info" + ChatColor.DARK_AQUA + " to obtain the id.");
         return true;
     }
 
@@ -1178,8 +1170,10 @@ public class Commands {
             }
             plugin.shopData.logItems(player.getName(), shop.getName(), "add-item", item.name, amount, startInv, itemInv);
 
-            // take items from player
-            removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+            // take items from player only if shop doesn't have unlim stock
+            if(!shop.isUnlimitedStock()) {
+                removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+            }
         }
         plugin.shopData.saveShop(shop);
         return true;
