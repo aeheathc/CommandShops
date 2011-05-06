@@ -490,6 +490,9 @@ public class Commands {
         if (canUseCommand(CommandTypes.ADD_ITEM)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " add" + ChatColor.AQUA + " - Add the item that you are holding to the shop.");
         }
+        if (canUseCommand(CommandTypes.INVENTORY)) {
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " browse <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
+        }
         if (canUseCommand(CommandTypes.BUY_ITEM)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " buy [itemname] [number] " + ChatColor.AQUA + "- Buy this item.");
         }
@@ -498,9 +501,6 @@ public class Commands {
         }
         if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " destroy" + ChatColor.AQUA + " - Destroy the shop you're in.");
-        }
-        if (canUseCommand(CommandTypes.INVENTORY)) {
-            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " inventory <buy|sell> " + ChatColor.AQUA + "- List the shop's inventory.");
         }
         if (canUseCommand(CommandTypes.MOVE_SHOP)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " move [ShopName]" + ChatColor.AQUA + " - Move a shop to your location.");
