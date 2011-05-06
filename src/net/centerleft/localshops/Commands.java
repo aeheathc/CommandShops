@@ -1183,8 +1183,6 @@ public class Commands {
     
     public boolean shopInfo() {
         Shop shop = null;
-        
-        log.info(command);
 
         // Get current shop
         if (sender instanceof Player) {
