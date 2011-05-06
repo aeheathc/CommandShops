@@ -917,13 +917,13 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
             
             // Check Permissions
             if (!canUseCommand(CommandTypes.SELL_ITEM)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
-                return false;
+                return true;
             }
             
             // sell all (player only command)
@@ -932,13 +932,14 @@ public class Commands {
             if (matcher.find()) {
                 ItemStack itemStack = player.getItemInHand();
                 if (itemStack == null) {
-                    return false;
+                    sender.sendMessage("You must be holding an item, or specify an item.");
+                    return true;
                 }
                 int amount = countItemsInInventory(player.getInventory(), itemStack);
                 ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 return shopSell(shop, item, amount);
             }
@@ -950,19 +951,19 @@ public class Commands {
             if (matcher.find()) {
                 ItemStack itemStack = player.getItemInHand();
                 if (itemStack == null) {
-                    return false;
+                    return true;
                 }
                 int amount = itemStack.getAmount();
                 ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 return shopSell(shop, item, amount);
             }            
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
 
         // Command matching
@@ -975,7 +976,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, 0);
         }
@@ -990,7 +991,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, count);
         }
@@ -1005,7 +1006,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, count);
         }        
@@ -1020,7 +1021,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id, type);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, 0);
         }
@@ -1036,7 +1037,7 @@ public class Commands {
             int count = Integer.parseInt(matcher.group(3));
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, count);
         }
@@ -1052,7 +1053,7 @@ public class Commands {
             int count = Integer.parseInt(matcher.group(3));
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, count);
         }        
@@ -1067,7 +1068,7 @@ public class Commands {
             int count = Integer.parseInt(matcher.group(2));
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, count);
         }
@@ -1082,7 +1083,7 @@ public class Commands {
             ItemInfo item = Search.itemByName(itemName);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             int count = this.countItemsInInventory(player.getInventory(), item.toStack());
             return shopSell(shop, item, count);
@@ -1097,7 +1098,7 @@ public class Commands {
             ItemInfo item = Search.itemByName(itemName);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopSell(shop, item, 1);
         }
