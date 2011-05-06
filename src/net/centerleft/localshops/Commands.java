@@ -31,21 +31,21 @@ public class Commands {
     // Command Types Enum
     private static enum CommandTypes {
         ADMIN(0, new String[] { "localshops.admin" }),
-        ADD_ITEM(1, new String[] { "localshops.manage" }),
-        BUY_ITEM(2, new String[] { "localshops.buysell" }),
-        CREATE_SHOP(3, new String[] { "localshops.create" }),
-        CREATE_SHOP_FREE(4, new String[] { "localshops.create.free" }),
-        DESTROY_SHOP(5, new String[] { "localshops.destroy" }),
+        ADD(1, new String[] { "localshops.manager.add" }),
+        BUY(2, new String[] { "localshops.user.buy" }),
+        CREATE(3, new String[] { "localshops.manager.create" }),
+        CREATE_FREE(4, new String[] { "localshops.manager.create.free" }),
+        DESTROY(5, new String[] { "localshops.manager.destroy" }),
         HELP(6, new String[] {}),
-        INVENTORY(7, new String[] { "localshops.buysell" }),
-        MOVE_SHOP(8, new String[] { "localshops.move" }),
-        MOVE_SHOP_FREE(9, new String[] { "localshops.move.free" }),
-        REMOVE_ITEM(10, new String[] { "localshops.manage" }),
-        SEARCH_ITEM(11, new String[] {}),
-        SELECT_CUBOID(12, new String[] { "localshops.create" }),
-        SELL_ITEM(13, new String[] { "localshops.buysell" }),
-        SET_OWNER(14, new String[] { "localshops.manage.owner" }),
-        SET(15, new String[] { "localshops.manage" });
+        BROWSE(7, new String[] { "localshops.user.browse" }),
+        MOVE(8, new String[] { "localshops.manager.move" }),
+        MOVE_FREE(9, new String[] { "localshops.manager.move.free" }),
+        REMOVE(10, new String[] { "localshops.manager.remove" }),
+        SEARCH(11, new String[] {}),
+        SELECT(12, new String[] { "localshops.manager.select" }),
+        SELL(13, new String[] { "localshops.user.sell" }),
+        SET_OWNER(14, new String[] { "localshops.manager.set.owner" }),
+        SET(15, new String[] { "localshops.manager.set" });
 
         int id = -1;
         String[] permissions = null;
@@ -175,7 +175,7 @@ public class Commands {
             return false;
         }
 
-        if (canUseCommand(CommandTypes.SELECT_CUBOID)) {
+        if (canUseCommand(CommandTypes.SELECT)) {
 
             Player player = (Player) sender;
 
@@ -210,7 +210,7 @@ public class Commands {
             PlayerData pData = plugin.playerData.get(player.getName());
             
             // Check Permissions
-            if (!canUseCommand(CommandTypes.CREATE_SHOP)) {
+            if (!canUseCommand(CommandTypes.CREATE)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
                 return false;
             }
@@ -262,7 +262,7 @@ public class Commands {
             }
             
             if (plugin.shopData.chargeForShop) {
-                if (!canUseCommand(CommandTypes.CREATE_SHOP_FREE)) {
+                if (!canUseCommand(CommandTypes.CREATE_FREE)) {
                     if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
                         sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.shopData.shopCost + " " + plugin.shopData.currencyName + " to create a shop.");
                         return false;
@@ -321,7 +321,7 @@ public class Commands {
 
     public boolean shopMove() {
         
-        if(!canUseCommand(CommandTypes.MOVE_SHOP)) {
+        if(!canUseCommand(CommandTypes.MOVE)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
             return false;
         }
@@ -433,7 +433,7 @@ public class Commands {
                 tempShopCuboid.world = player.getWorld().getName();
 
                 if (plugin.shopData.chargeForMove) {
-                    if (!canUseCommand(CommandTypes.MOVE_SHOP_FREE)) {
+                    if (!canUseCommand(CommandTypes.MOVE_FREE)) {
                         if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
                             // insert the old cuboid back into the world
                             tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
@@ -507,36 +507,36 @@ public class Commands {
     public boolean shopHelp() {
         sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "Here are the available commands [required] <optional>");
 
-        if (canUseCommand(CommandTypes.ADD_ITEM)) {
+        if (canUseCommand(CommandTypes.ADD)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " add" + ChatColor.DARK_AQUA + " - Add the item that you are holding to the shop.");
         }
-        if (canUseCommand(CommandTypes.INVENTORY)) {
+        if (canUseCommand(CommandTypes.BROWSE)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " browse <buy|sell> " + ChatColor.DARK_AQUA + "- List the shop's inventory.");
         }
-        if (canUseCommand(CommandTypes.BUY_ITEM)) {
+        if (canUseCommand(CommandTypes.BUY)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " buy [itemname] [number] " + ChatColor.DARK_AQUA + "- Buy this item.");
         }
-        if (canUseCommand(CommandTypes.CREATE_SHOP)) {
+        if (canUseCommand(CommandTypes.CREATE)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " create [ShopName]" + ChatColor.DARK_AQUA + " - Create a shop at your location.");
         }
-        if (canUseCommand(CommandTypes.DESTROY_SHOP)) {
+        if (canUseCommand(CommandTypes.DESTROY)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " destroy" + ChatColor.DARK_AQUA + " - Destroy the shop you're in.");
         }
-        if (canUseCommand(CommandTypes.MOVE_SHOP)) {
+        if (canUseCommand(CommandTypes.MOVE)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " move [ShopName]" + ChatColor.DARK_AQUA + " - Move a shop to your location.");
         }
         sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " search" + ChatColor.DARK_AQUA + " - Search for an item name.");
-        if (canUseCommand(CommandTypes.SELECT_CUBOID)) {
+        if (canUseCommand(CommandTypes.SELECT)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " select" + ChatColor.DARK_AQUA + " - Select two corners for custom shop size.");
         }
-        if (canUseCommand(CommandTypes.SELL_ITEM)) {
+        if (canUseCommand(CommandTypes.SELL)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " sell <#|all>" + ChatColor.DARK_AQUA + " - Sell the item in your hand.");
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " sell [itemname] [number]");
         }
         if (canUseCommand(CommandTypes.SET)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " set" + ChatColor.DARK_AQUA + " - Display list of set commands");
         }
-        if (canUseCommand(CommandTypes.REMOVE_ITEM)) {
+        if (canUseCommand(CommandTypes.REMOVE)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " remove [itemname]" + ChatColor.DARK_AQUA + " - Stop selling item in shop.");
         }
         return true;
@@ -603,7 +603,7 @@ public class Commands {
             }
 
             // Check Permissions
-            if (!canUseCommand(CommandTypes.INVENTORY)) {
+            if (!canUseCommand(CommandTypes.BROWSE)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
                 return false;
             }
@@ -917,7 +917,7 @@ public class Commands {
             }
             
             // Check Permissions
-            if (!canUseCommand(CommandTypes.SELL_ITEM)) {
+            if (!canUseCommand(CommandTypes.SELL)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
                 return true;
             }
@@ -1308,7 +1308,7 @@ public class Commands {
             }
             
             // Check Permissions
-            if (!canUseCommand(CommandTypes.ADD_ITEM)) {
+            if (!canUseCommand(CommandTypes.ADD)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
                 return false;
             }            
@@ -1669,7 +1669,7 @@ public class Commands {
             }
             
             // Check Permissions
-            if (!canUseCommand(CommandTypes.SELL_ITEM)) {
+            if (!canUseCommand(CommandTypes.SELL)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
                 return true;
             }
@@ -2721,7 +2721,7 @@ public class Commands {
             }
             
             // Check Permissions
-            if (!canUseCommand(CommandTypes.REMOVE_ITEM)) {
+            if (!canUseCommand(CommandTypes.REMOVE)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
                 return false;
             }            
