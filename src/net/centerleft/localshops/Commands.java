@@ -2360,7 +2360,6 @@ public class Commands {
             PlayerData p = it.next();
             if(p.shopList.contains(shop.getUuid())) {
                 Player thisPlayer = plugin.getServer().getPlayer(p.playerName);
-                p.removePlayerFromShop(thisPlayer, shop.getUuid());
                 for(String message : messages) {
                     thisPlayer.sendMessage(message);
                 }
@@ -2433,7 +2432,7 @@ public class Commands {
                     }
                 }
                 
-                notifyPlayers(shop, new String[] { LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + shop.getName() + " is now under new management!  The new owner is " + ChatColor.WHITE + shop.getOwner() });
+                notifyPlayers(shop, new String[] { LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + shop.getName() + " is now under new management!  The new owner is " + ChatColor.WHITE + shop.getOwner() } );
                 return true;
             }
         }
