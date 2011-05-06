@@ -200,7 +200,6 @@ public class Commands {
     }
 
     public boolean shopCreate() {
-        log.info("shopCreate");
         String creator = null;
         String world = null;
         long[] xyzA = new long[3];
@@ -586,7 +585,6 @@ public class Commands {
     }
 
     public boolean shopBrowse() {
-        log.info("shopBrowse");
         Shop shop = null;
 
         // Get current shop
@@ -901,7 +899,6 @@ public class Commands {
      * @return true - if command succeeds false otherwise
      */
     public boolean shopSell() {
-        log.info("shopSell");
         Shop shop = null;
 
         // Get current shop
@@ -1185,7 +1182,6 @@ public class Commands {
     }
     
     public boolean shopInfo() {
-        log.info("shopInfo");
         Shop shop = null;
         
         log.info(command);
@@ -1296,7 +1292,6 @@ public class Commands {
      * @return true if the commands succeeds, otherwise false
      */
     public boolean shopAdd() {
-        log.info("shopAdd");
         Shop shop = null;
 
         // Get current shop
@@ -1658,7 +1653,6 @@ public class Commands {
     }
     
     public boolean shopBuy() {
-        log.info("shopBuy");
         Shop shop = null;
 
         // Get current shop
@@ -2014,7 +2008,6 @@ public class Commands {
     }
 
     private boolean shopSetSell() {
-        log.info("shopSetSell");
         Shop shop = null;
 
         // Get current shop
@@ -2189,7 +2182,6 @@ public class Commands {
     }
 
     private boolean shopSetBuy() {
-        log.info("shopSetBuy");
         Shop shop = null;
 
         // Get current shop
@@ -2297,7 +2289,6 @@ public class Commands {
     }
 
     private boolean shopSetHelp() {
-        log.info("shopSetHelp");
         // Display list of set commands & return
         sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "The following set commands are available: ");
         sender.sendMessage("   " + "/" + commandLabel + " set buy [item name] [price] <bundle size>");
@@ -2313,7 +2304,6 @@ public class Commands {
     }
     
     private boolean shopSetName() {
-        log.info("shopSetName");
         Shop shop = null;
         
         // Get current shop
@@ -2373,7 +2363,6 @@ public class Commands {
     }
 
     private boolean shopSetOwner() {
-        log.info("shopSetOwner");
         Shop shop = null;
         boolean reset = false;
 
@@ -2447,7 +2436,6 @@ public class Commands {
     }
 
     private boolean shopSetManager() {
-        log.info("shopSetOwner");
         Shop shop = null;
 
         // Get current shop
@@ -2508,7 +2496,6 @@ public class Commands {
     }
 
     private boolean shopSetUnlimited() {
-        log.info("shopSetUnlimited");
         Shop shop = null;
 
         // Get current shop
@@ -2609,7 +2596,6 @@ public class Commands {
     }
 
     private boolean shopSetMax() {
-        log.info("shopSetMax");
         Shop shop = null;
 
         // Get current shop
@@ -2719,7 +2705,6 @@ public class Commands {
      * @return true - if command succeeds false otherwise
      */
     public boolean shopRemove() {
-        log.info("shopAdd");
         Shop shop = null;
 
         // Get current shop
@@ -2818,7 +2803,6 @@ public class Commands {
      * @return true - if command succeeds false otherwise
      */
     public boolean shopDestroy() {
-        log.info("shopDestory");
         if (!(sender instanceof Player) || !canUseCommand(CommandTypes.ADMIN)) {
             sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
             return false;
