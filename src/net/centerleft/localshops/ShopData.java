@@ -27,7 +27,7 @@ public class ShopData {
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
 
-    long shopSize = 10;
+    long shopSize = 5;
     long shopHeight = 3;
     String currencyName = "Coin";
 
