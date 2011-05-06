@@ -1118,7 +1118,7 @@ public class Commands {
             // nicely message user
             sender.sendMessage(String.format("%s already carries %s!", shop.getName(), item.name));
             return true;
-        } else if(shop.isUnlimitedStock()) {
+        } else if(shop.isUnlimitedStock()  && shop.containsItem(item)) {
             // nicely message user
             sender.sendMessage(String.format("%s has unlimited stock and already carries %s!", shop.getName(), item.name));
             return true;
@@ -1528,7 +1528,7 @@ public class Commands {
         if (invItem.getBuyPrice() == 0 && !isShopController(shop)) {
             player.sendMessage(ChatColor.AQUA + "Sorry, " + ChatColor.WHITE + shop.getName() + ChatColor.AQUA + " is not selling " + ChatColor.WHITE + item.name + ChatColor.AQUA + " right now.");
             return false;
-        }        
+        }
 
         // if amount = 0, assume single stack size
         if(amount == 0) {
