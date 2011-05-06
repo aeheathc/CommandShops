@@ -99,25 +99,51 @@ public class Commands {
     }
 
     public boolean shopDebug() {
+        Shop shop = null;
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Shop shop = null;
+            PlayerData pData = plugin.playerData.get(player.getName());
 
-            // Get current shop
-            UUID shopUuid = plugin.playerData.get(player.getName()).getCurrentShop();
-            if (shopUuid != null) {
-                shop = plugin.shopData.getShop(shopUuid);
+            // info (player only command)
+            Pattern pattern = Pattern.compile("(?i)debug$");
+            Matcher matcher = pattern.matcher(command);
+            if (matcher.find()) {
+                // Get Current Shop
+                UUID shopUuid = pData.getCurrentShop();
+                if (shopUuid != null) {
+                    shop = plugin.shopData.getShop(shopUuid);
+                }
+                if (shop == null) {
+                    sender.sendMessage("You are not in a shop!");
+                    return false;
+                }
             }
+        } else {
+            // ignore?
+        }
+        
+        // info id
+        Pattern pattern = Pattern.compile("(?i)debug\\s+(.*)$");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String input = matcher.group(1);
+            shop = plugin.shopData.getShop(input);
             if (shop == null) {
+                sender.sendMessage("Could not find shop with ID " + input);
                 return false;
             }
-
-            shop.log();
-        } else {
-            // TODO: implement
         }
 
-        return false;
+        if(shop != null) {
+            shop.log();
+            if(sender instanceof Player) {
+                sender.sendMessage("Shop has been logged to console!");
+            }
+            return true;
+        } else {
+            sender.sendMessage("Could not find shop!");
+            return false;
+        }
     }
 
     public boolean shopSearch() {
