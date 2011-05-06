@@ -101,7 +101,7 @@ public class Search {
         items.add(new ItemInfo("Pumpkin", new String[][] { { "pump" } }, 86, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Netherrack", new String[][] { { "netherr" }, { "netherst" }, { "hellst" } }, 87, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Soul Sand", new String[][] { { "soul" }, { "slowsa" } }, 88, (short) 0, new int[]{ 0, 0, 0 } ));
-        items.add(new ItemInfo("Glowstone", new String[][] { { "glow" }, { "light" } }, 89, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Glowstone", new String[][] { { "glow", "stone" }, { "light", "stone" } }, 89, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Jack-O-Lantern", new String[][] { { "jack" }, { "lante" } }, 91, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Iron Shovel", new String[][] { { "shov", "ir" }, { "spad", "ir" } }, 256, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Iron Pickaxe", new String[][] { { "pick", "ir" } }, 257, (short) 0, new int[]{ 0, 0, 0 } ));
@@ -113,8 +113,8 @@ public class Search {
         items.add(new ItemInfo("Coal", new String[][] { { "coal" } }, 263, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Charcoal", new String[][] { { "charc" } }, 263, (short) 1, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Diamond", new String[][] { { "diamo" } }, 264, (short) 0, new int[]{ 0, 0, 0 } ));
-        items.add(new ItemInfo("Iron Ingot", new String[][] { { "ingo", "ir" } }, 265, (short) 0, new int[]{ 0, 0, 0 } ));
-        items.add(new ItemInfo("Gold Ingot", new String[][] { { "ingo", "go" } }, 266, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Iron Ingot", new String[][] { { "ingo", "ir" }, { "iron" } }, 265, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Gold Ingot", new String[][] { { "ingo", "go" }, { "gold" } }, 266, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Iron Sword", new String[][] { { "swor", "ir" } }, 267, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Wooden Sword", new String[][] { { "swor", "wo" } }, 268, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Wooden Shovel", new String[][] { { "shov", "wo" }, { "spad", "wo" } }, 269, (short) 0, new int[]{ 0, 0, 0 } ));
