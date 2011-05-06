@@ -40,13 +40,12 @@ public class Commands {
         INVENTORY(7, new String[] { "localshops.buysell" }),
         MOVE_SHOP(8, new String[] { "localshops.move" }),
         MOVE_SHOP_FREE(9, new String[] { "localshops.move.free" }),
-        RELOAD_PLUGIN(10, new String[] { "localshops.reload" }),
-        REMOVE_ITEM(11, new String[] { "localshops.manage" }),
-        SEARCH_ITEM(12, new String[] {}),
-        SELECT_CUBOID(13, new String[] { "localshops.create" }),
-        SELL_ITEM(14, new String[] { "localshops.buysell" }),
-        SET_OWNER(15, new String[] { "localshops.manage.owner" }),
-        SET(16, new String[] { "localshops.manage" });
+        REMOVE_ITEM(10, new String[] { "localshops.manage" }),
+        SEARCH_ITEM(11, new String[] {}),
+        SELECT_CUBOID(12, new String[] { "localshops.create" }),
+        SELL_ITEM(13, new String[] { "localshops.buysell" }),
+        SET_OWNER(14, new String[] { "localshops.manage.owner" }),
+        SET(15, new String[] { "localshops.manage" });
 
         int id = -1;
         String[] permissions = null;
