@@ -46,7 +46,7 @@ public class LocalShops extends JavaPlugin {
     private final Logger log = Logger.getLogger("Minecraft");
 
     // Constants
-    public static final String CHAT_PREFIX = ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA + "] ";
+    public static final String CHAT_PREFIX = ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA + "] ";
 
     // TBD
     static QuadTree cuboidTree = new QuadTree();

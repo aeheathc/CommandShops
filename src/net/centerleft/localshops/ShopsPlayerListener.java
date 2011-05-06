@@ -58,17 +58,17 @@ public class ShopsPlayerListener extends PlayerListener {
                 long[] xyz = { x, y, z };
                 pData.setPositionA(xyz);
                 if(pData.checkSize()) {
-                    player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                    player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
                 } else {
-                    player.sendMessage(ChatColor.AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
+                    player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
                 }
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 long[] xyz = { x, y, z };
                 pData.setPositionB(xyz);
                 if(pData.checkSize()) {
-                    player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                    player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
                 } else {
-                    player.sendMessage(ChatColor.AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
+                    player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
                 }
             }
         }
@@ -182,13 +182,13 @@ public class ShopsPlayerListener extends PlayerListener {
     private void notifyPlayerLeftShop(Player player, UUID shopUuid) {
         // TODO Add formatting
         Shop shop = plugin.shopData.getShop(shopUuid);
-        player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA + "] You have left the shop " + ChatColor.WHITE + shop.getName());
+        player.sendMessage(ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA + "] You have left the shop " + ChatColor.WHITE + shop.getName());
     }
 
     private void notifyPlayerEnterShop(Player player, UUID shopUuid) {
         // TODO Add formatting
         Shop shop = plugin.shopData.getShop(shopUuid);
-        player.sendMessage(ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA
+        player.sendMessage(ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA
                 + "] You have entered the shop " + ChatColor.WHITE + shop.getName());
 
     }

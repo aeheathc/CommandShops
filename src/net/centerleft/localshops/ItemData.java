@@ -75,12 +75,12 @@ public class ItemData {
             } else {
                 if (sender != null) {
                     if (foundMatches.size() > 1) {
-                        sender.sendMessage(name + ChatColor.AQUA + " matched multiple items:");
+                        sender.sendMessage(name + ChatColor.DARK_AQUA + " matched multiple items:");
                         for (String foundName : foundMatches) {
                             sender.sendMessage("  " + foundName);
                         }
                     } else {
-                        sender.sendMessage(name + ChatColor.AQUA + " did not match any items.");
+                        sender.sendMessage(name + ChatColor.DARK_AQUA + " did not match any items.");
                     }
                 }
                 return null;
@@ -155,12 +155,12 @@ public class ItemData {
             } else {
                 if (sender != null) {
                     if (list.size() > 1) {
-                        sender.sendMessage(arg0 + ChatColor.AQUA + " matched multiple items:");
+                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " matched multiple items:");
                         for (String foundName : list) {
                             sender.sendMessage("  " + foundName);
                         }
                     } else {
-                        sender.sendMessage(arg0 + ChatColor.AQUA + " did not match any items.");
+                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " did not match any items.");
                     }
                 }
             }
@@ -195,12 +195,12 @@ public class ItemData {
             } else {
                 if (sender != null) {
                     if (list.size() > 1) {
-                        sender.sendMessage(arg0 + ChatColor.AQUA + " matched multiple items:");
+                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " matched multiple items:");
                         for (String foundName : list) {
                             sender.sendMessage("  " + foundName);
                         }
                     } else {
-                        sender.sendMessage(arg0 + ChatColor.AQUA + " did not match any items.");
+                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " did not match any items.");
                     }
                 }
             }
@@ -251,12 +251,12 @@ public class ItemData {
             } else {
                 if (sender != null) {
                     if (foundMatches.size() > 1) {
-                        sender.sendMessage(name + ChatColor.AQUA + " matched multiple items:");
+                        sender.sendMessage(name + ChatColor.DARK_AQUA + " matched multiple items:");
                         for (String foundName : foundMatches) {
                             sender.sendMessage("  " + foundName);
                         }
                     } else {
-                        sender.sendMessage(name + ChatColor.AQUA + " did not match any items.");
+                        sender.sendMessage(name + ChatColor.DARK_AQUA + " did not match any items.");
                     }
                 }
                 return null;

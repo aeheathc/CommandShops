@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class ShopMessages {
-    static String chatPrefix = ChatColor.AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.AQUA + "] ";
+    static String chatPrefix = ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA + "] ";
     static String shopAlreadyExists = "$CHATPREFIX $AQUA Could not create shop. $WHITE" + " $SHOPNAME $AQUA already exists.";
 
     static public void createShopFailNameExists(CommandSender sender, String shopName) {
