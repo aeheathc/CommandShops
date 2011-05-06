@@ -1967,8 +1967,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.DARK_AQUA + "The buy information for " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " has been updated.");
-        sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now sells for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
 
         return true;
     }
@@ -1998,8 +1997,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.DARK_AQUA + "The buy information for " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " has been updated.");
-        sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + "]");
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now sells for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName);
 
         return true;
     }
@@ -2141,9 +2139,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.DARK_AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " has been updated.");
-        sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + "] [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
-
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now is purchased for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
         return true;
     }
 
@@ -2172,9 +2168,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.DARK_AQUA + "The sell information for " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " has been updated.");
-        sender.sendMessage("   " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + "]");
-
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now is purchased for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName);
         return true;
     }
 
