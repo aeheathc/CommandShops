@@ -154,6 +154,11 @@ public class LocalShops extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         Commands commands = null;
         String type = null;
+        String user = "CONSOLE";
+        if(sender instanceof Player) {
+            user = ((Player)sender).getName();
+        }
+        
         if (commandLabel.equalsIgnoreCase("buy")) {
             commands = new Commands(this, commandLabel, sender, "buy " + Search.join(args, " "));
             type = "buy";
@@ -168,6 +173,8 @@ public class LocalShops extends JavaPlugin {
                 return commands.shopHelp();
             }
         }
+        
+        log.info(String.format("[%s] %s issued: %s", pdfFile.getName(), user, commands.getCommand()));
 
         String commandName = command.getName().toLowerCase();
 

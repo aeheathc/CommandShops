@@ -83,6 +83,10 @@ public class Commands {
         this(plugin, commandLabel, sender, Search.join(args, " ").trim());
     }
     
+    public String getCommand() {
+        return command;
+    }
+    
     public boolean shopList() {
         int idWidth = ShopData.MIN_UNIQUE_ID_LENGTH + 1;
         if(idWidth < 4) {
@@ -1669,13 +1673,13 @@ public class Commands {
             }
             if (shop == null) {
                 sender.sendMessage("You are not in a shop!");
-                return false;
+                return true;
             }
             
             // Check Permissions
             if (!canUseCommand(CommandTypes.SELL_ITEM)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
-                return false;
+                return true;
             }
             
             // buy (player only command)
@@ -1689,7 +1693,7 @@ public class Commands {
                 ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 return shopBuy(shop, item, 0);
             }
@@ -1701,12 +1705,13 @@ public class Commands {
             if (matcher.find()) {
                 ItemStack itemStack = player.getItemInHand();
                 if (itemStack == null) {
-                    return false;
+                    sender.sendMessage("You must be holding an item, or specify an item.");
+                    return true;
                 }
                 ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 int count;
                 if(shop.isUnlimitedStock()) {
@@ -1729,7 +1734,7 @@ public class Commands {
                 ItemInfo item = Search.itemById(id);
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 int count;
                 if(shop.isUnlimitedStock()) {
@@ -1756,7 +1761,7 @@ public class Commands {
                 ItemInfo item = Search.itemById(id, type);
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 int count;
                 if(shop.isUnlimitedStock()) {
@@ -1782,7 +1787,7 @@ public class Commands {
                 ItemInfo item = Search.itemByName(itemName);
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
-                    return false;
+                    return true;
                 }
                 int count;
                 if(shop.isUnlimitedStock()) {
@@ -1801,7 +1806,7 @@ public class Commands {
             
         } else {
             sender.sendMessage("Console is not implemented yet.");
-            return false;
+            return true;
         }
 
         // Command matching
@@ -1814,7 +1819,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopBuy(shop, item, 0);
         }
@@ -1829,7 +1834,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             if(count < 1) {
                 sender.sendMessage("You must buy at least one " + item.name + "!");
@@ -1848,7 +1853,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id, type);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopBuy(shop, item, 0);
         }
@@ -1864,7 +1869,7 @@ public class Commands {
             int count = Integer.parseInt(matcher.group(3));
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             if(count < 1) {
                 sender.sendMessage("You must but at least one " + item.name + "!");
@@ -1883,7 +1888,7 @@ public class Commands {
             int count = Integer.parseInt(matcher.group(2));
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             if(count < 1) {
                 sender.sendMessage("You must but at least one " + item.name + "!");
@@ -1901,7 +1906,7 @@ public class Commands {
             ItemInfo item = Search.itemByName(itemName);
             if(item == null) {
                 sender.sendMessage("Could not find an item.");
-                return false;
+                return true;
             }
             return shopBuy(shop, item, 0);
         }
