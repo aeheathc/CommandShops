@@ -1359,7 +1359,6 @@ public class Commands {
             pattern = Pattern.compile("(?i)add\\s+all$");
             matcher = pattern.matcher(command);
             if (matcher.find()) {
-                log.info("1");
                 ItemStack itemStack = player.getItemInHand();
                 if (itemStack == null) {
                     return false;
@@ -1375,7 +1374,7 @@ public class Commands {
             
             // add int all
             matcher.reset();
-            pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+all");
+            pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+all$");
             matcher = pattern.matcher(command);
             if (matcher.find()) {
                 int id = Integer.parseInt(matcher.group(1));
@@ -1390,7 +1389,7 @@ public class Commands {
             
             // add int:int all
             matcher.reset();
-            pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+all");
+            pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+all$");
             matcher = pattern.matcher(command);
             if (matcher.find()) {
                 int id = Integer.parseInt(matcher.group(1));
@@ -1406,7 +1405,7 @@ public class Commands {
             
             // shop add name, ... all
             matcher.reset();
-            pattern = Pattern.compile("(?i)add\\s+(.*)\\s+all");
+            pattern = Pattern.compile("(?i)add\\s+(.*)\\s+all$");
             matcher = pattern.matcher(command);
             if (matcher.find()) {
                 String itemName = matcher.group(1);
@@ -1427,7 +1426,7 @@ public class Commands {
         // Command matching     
         
         // add int
-        Pattern pattern = Pattern.compile("(?i)add\\s+(\\d+)");
+        Pattern pattern = Pattern.compile("(?i)add\\s+(\\d+)$");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1441,7 +1440,7 @@ public class Commands {
         
         // add int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+(\\d+)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1456,7 +1455,7 @@ public class Commands {
         
         // add int:int
         matcher.reset();
-        pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)");
+        pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1471,7 +1470,7 @@ public class Commands {
 
         // add int:int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+(\\d+)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -1487,7 +1486,7 @@ public class Commands {
         
         // shop add name, ... int
         matcher.reset();
-        pattern = Pattern.compile("(?i)add\\s+(.*)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)add\\s+(.*)\\s+(\\d+)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String itemName = matcher.group(1);
@@ -1502,7 +1501,7 @@ public class Commands {
         
         // shop add name, ...
         matcher.reset();
-        pattern = Pattern.compile("(?i)add\\s+(.*)");
+        pattern = Pattern.compile("(?i)add\\s+(.*)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String itemName = matcher.group(1);
