@@ -2850,7 +2850,19 @@ public class Commands {
                 }
             }
             
-            plugin.shopData.deleteShop(shop);
+            Collection<InventoryItem> shopItems = shop.getItems();
+            
+            if(plugin.shopData.deleteShop(shop)) {
+                // return items to player (if a player)
+                if(sender instanceof Player) {
+                    for(InventoryItem item : shopItems) {
+                        givePlayerItem(item.getInfo().toStack(), item.getStock());
+                    }
+                }
+            } else {
+                // error message :(
+                sender.sendMessage("Could not return shop inventory!");
+            }
 
         } else {
             player.sendMessage(ChatColor.DARK_AQUA + "You must be inside a shop to use /" + commandLabel + " destroy");
