@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import net.centerleft.localshops.Commands.CommandTypes;
+
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 import cuboidLocale.QuadTree;
@@ -113,7 +115,7 @@ public class ShopData {
         }
         return numShops;
     }
-    
+
     public void loadShops(File shopsDir) {
         log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
 
@@ -277,7 +279,7 @@ public class ShopData {
             return null;
         }
     }
-
+    
     public static long[] convertStringArraytoLongArray(String[] sarray) {
         if (sarray != null) {
             long longArray[] = new long[sarray.length];
