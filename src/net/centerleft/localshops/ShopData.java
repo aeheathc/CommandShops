@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import net.centerleft.localshops.Commands.CommandTypes;
+
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 import cuboidLocale.QuadTree;
@@ -36,6 +38,8 @@ public class ShopData {
     boolean chargeForShop = false;
     boolean chargeForMove = false;
     boolean logTransactions = true;
+    
+    int maxPlayerShops = -1;        // Anything < 0 = unlimited player shops.
 
     int maxDamage = 35;
 
@@ -100,6 +104,16 @@ public class ShopData {
 
     public int getNumShops() {
         return shops.size();
+    }
+    
+    public int numOwnedShops(String playerName) {
+        int numShops = 0;
+        for ( Shop shop : shops.values() ) {
+            if (shop.getOwner().equals(playerName) ) {
+                numShops++;
+            }
+        }
+        return numShops;
     }
 
     public void loadShops(File shopsDir) {
@@ -265,7 +279,7 @@ public class ShopData {
             return null;
         }
     }
-
+    
     public static long[] convertStringArraytoLongArray(String[] sarray) {
         if (sarray != null) {
             long longArray[] = new long[sarray.length];
