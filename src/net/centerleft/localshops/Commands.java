@@ -2426,7 +2426,7 @@ public class Commands {
             if (!canUseCommand(CommandTypes.SET_OWNER)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You do not have permission to do this.");
                 return true;
-            }  else if ( canCreateShop(name) ) {
+            }  else if ( !canCreateShop(name) ) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "that player already has the maximum number of shops!");
                 return true;
             } else {
