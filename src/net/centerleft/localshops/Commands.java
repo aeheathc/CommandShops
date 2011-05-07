@@ -106,14 +106,23 @@ public class Commands {
             isPlayer = true;
         }
 
-        sender.sendMessage(String.format("%-"+idWidth+"s  %s", "Id", "Name"));
+        if(isPlayer) {
+            sender.sendMessage(String.format("%-"+idWidth+"s  %s", "Id", "Name"));
+        } else {
+            sender.sendMessage(String.format("%-"+idWidth+"s  %-25s %s", "Id", "Name", "Owner"));
+        }
         Iterator<Shop> it = plugin.shopData.getAllShops().iterator();
         while(it.hasNext()) {
             Shop shop = it.next();
             if(!showAll && isPlayer && !isShopController(shop)) {
                 continue;
             }
-            sender.sendMessage(String.format("%-"+idWidth+"s  %s", shop.getShortUuidString(), shop.getName()));
+            
+            if(isPlayer) {
+                sender.sendMessage(String.format("%-"+idWidth+"s  %s", shop.getShortUuidString(), shop.getName()));
+            } else {
+                sender.sendMessage(String.format("%-"+idWidth+"s  %-25s %s", shop.getShortUuidString(), shop.getName(), shop.getOwner()));
+            }
         }
         return true;
     }
