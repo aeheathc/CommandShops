@@ -35,7 +35,7 @@ public class Economy_iConomy5 implements Economy {
         // Load Plugin in case it was loaded before
         if(economy == null) {
             Plugin ec = plugin.getServer().getPluginManager().getPlugin("iConomy");
-            if (ec != null && ec.isEnabled() && ec instanceof com.iConomy.iConomy) {
+            if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("com.iConomy.iConomy")) {
                 economy = (iConomy) ec;
                 log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
             }
@@ -102,10 +102,10 @@ public class Economy_iConomy5 implements Economy {
         
         public void onPluginEnable(PluginEnableEvent event) {
             if (economy.economy == null) {
-                Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
+                Plugin ec = plugin.getServer().getPluginManager().getPlugin("iConomy");
 
-                if (iConomy != null && iConomy.isEnabled() && iConomy.getClass().getName().equals("com.iConomy.iConomy")) {
-                    economy.economy = (iConomy) iConomy;
+                if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("com.iConomy.iConomy")) {
+                    economy.economy = (iConomy) ec;
                     log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
