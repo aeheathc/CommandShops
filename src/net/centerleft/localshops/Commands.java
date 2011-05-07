@@ -235,6 +235,12 @@ public class Commands {
             creator = player.getName();
             world = player.getWorld().getName();
             
+            //Check admin permission and current number of shops.
+            if (!canUseCommand(CommandTypes.ADMIN) && plugin.shopData.numOwnedShops(creator) >= plugin.shopData.maxPlayerShops ) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You already have the maximum number of shops!");
+                return false;
+            }
+            
             // If player is select, use their selection
             if (pData.isSelecting) {
                 if (!pData.checkSize()) {
@@ -2425,6 +2431,9 @@ public class Commands {
             String name = matcher.group(1);
             if (!canUseCommand(CommandTypes.SET_OWNER)) {
                 sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You do not have permission to do this.");
+                return true;
+            }  else if (!canUseCommand(CommandTypes.ADMIN) && plugin.shopData.numOwnedShops(name) >= plugin.shopData.maxPlayerShops ) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "that player already has the maximum number of shops!");
                 return true;
             } else {
                 shop.setOwner(name);

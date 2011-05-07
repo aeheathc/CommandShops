@@ -36,6 +36,8 @@ public class ShopData {
     boolean chargeForShop = false;
     boolean chargeForMove = false;
     boolean logTransactions = true;
+    
+    int maxPlayerShops = -1;        // Anything < 0 = unlimited player shops.
 
     int maxDamage = 35;
 
@@ -101,7 +103,17 @@ public class ShopData {
     public int getNumShops() {
         return shops.size();
     }
-
+    
+    public int numOwnedShops(String playerName) {
+        int numShops = 0;
+        for ( Shop shop : shops.values() ) {
+            if (shop.getOwner().equals(playerName) ) {
+                numShops++;
+            }
+        }
+        return numShops;
+    }
+    
     public void loadShops(File shopsDir) {
         log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
 

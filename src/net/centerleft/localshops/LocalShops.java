@@ -271,6 +271,11 @@ public class LocalShops extends JavaPlugin {
         } else {
             properties.setLong("max-height", shopData.maxHeight);
         }
+        if (properties.keyExists("shops-per-player")) {
+            shopData.maxPlayerShops = properties.getInt("shops-per-player");
+        } else {
+            properties.setInt("shops-per-player", shopData.maxPlayerShops);
+        }
 
         if (properties.keyExists("log-transactions")) {
             shopData.logTransactions = properties.getBoolean("log-transactions");
