@@ -96,7 +96,7 @@ public class Commands {
         boolean isPlayer = false;
 
         // list all
-        Pattern pattern = Pattern.compile("(?i)list\\d+all$");
+        Pattern pattern = Pattern.compile("(?i)list\\s+all$");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             showAll = true;
@@ -212,6 +212,7 @@ public class Commands {
             plugin.playerData.get(playerName).isSelecting = !plugin.playerData.get(playerName).isSelecting;
 
             if (plugin.playerData.get(playerName).isSelecting) {
+                sender.sendMessage(ChatColor.WHITE + "Shop Selection enabled!  Follow the directions to create a shop.");
                 sender.sendMessage(ChatColor.DARK_AQUA + "Left click to select the bottom corner for a shop.");
                 sender.sendMessage(ChatColor.DARK_AQUA + "Right click to select the far upper corner for the shop.");
             } else {
