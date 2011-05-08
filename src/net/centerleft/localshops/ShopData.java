@@ -140,6 +140,8 @@ public class ShopData {
                 log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
                 LocalShops.cuboidTree.insert(shop.getCuboid());
                 plugin.shopData.addShop(shop);
+            } else {
+                log.warning(String.format("[%s] Failed to load Shop file: \"%s\"", plugin.pdfFile.getName(), file.getName()));
             }
         }
 
@@ -258,7 +260,10 @@ public class ShopData {
                     int stock = Integer.parseInt(stockInfo[0]);
                     int maxStock = Integer.parseInt(stockInfo[1]);
 
-                    shop.addItem(itemId, damageMod, buyPrice, buySize, sellPrice, sellSize, stock, maxStock);
+                    if(!shop.addItem(itemId, damageMod, buyPrice, buySize, sellPrice, sellSize, stock, maxStock)) {
+                        log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data (%d:%d), could not load.", plugin.pdfFile.getName(), file.toString(), itemId, damageMod));
+                        return null;
+                    }
                 } else { // Not defined
                     log.info(String.format("[%s] Shop File \"%s\" has undefined data, ignoring.", plugin.pdfFile.getName(), file.toString()));
                 }
@@ -354,7 +359,10 @@ public class ShopData {
                 int currStock = Integer.parseInt(stock[0]);
                 int maxStock = Integer.parseInt(stock[1]);
 
-                shop.addItem(id, type, buyPrice, buyStackSize, sellPrice, sellStackSize, currStock, maxStock);
+                if(!shop.addItem(id, type, buyPrice, buyStackSize, sellPrice, sellStackSize, currStock, maxStock)) {
+                    log.warning(String.format("[%s] Shop File \"%s\" has bad Item Data (%d:%d), could not load.", plugin.pdfFile.getName(), file.toString(), id, type));
+                    return null;
+                }
             }
         }
 

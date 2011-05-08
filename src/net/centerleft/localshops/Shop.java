@@ -130,9 +130,13 @@ public class Shop {
         return sUuid.substring(sUuid.length() - ShopData.MIN_UNIQUE_ID_LENGTH);
     }
 
-    public void addItem(int itemNumber, short itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
+    public boolean addItem(int itemNumber, short itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
         // TODO add maxStock to item object
         ItemInfo item = Search.itemById(itemNumber, itemData);
+        if(item == null) {
+            return false;
+        }
+        
         InventoryItem thisItem = new InventoryItem(item);
 
         thisItem.setBuy(buyPrice, buyStackSize);
@@ -147,6 +151,8 @@ public class Shop {
         }
 
         inventory.put(item.name, thisItem);
+        
+        return true;
     }
 
     public void setManagers(String[] managers) {
