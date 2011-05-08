@@ -31,7 +31,6 @@ public class ShopData {
 
     long shopSize = 5;
     long shopHeight = 3;
-    String currencyName = "Coin";
 
     long shopCost = 4000;
     long moveCost = 1000;
