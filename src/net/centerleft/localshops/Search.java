@@ -11,7 +11,7 @@ public class Search {
     private static ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
     static {
         items.add(new ItemInfo("Stone", new String[][] { { "stone" } }, 1, (short) 0, new int[]{ 0, 0, 0 } ));
-        items.add(new ItemInfo("Grass", new String[][] { { "grass" } }, 2, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Grass", new String[][] { { "gras" } }, 2, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Dirt", new String[][] { { "dirt" } }, 3, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Cobblestone", new String[][] { { "cobb", "sto" }, { "cobb" } }, 4, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Wooden Plank", new String[][] { { "wood" }, { "wood", "plank" } }, 5, (short) 0, new int[]{ 0, 0, 0 } ));
@@ -174,6 +174,8 @@ public class Search {
         items.add(new ItemInfo("Sign", new String[][] { { "sign" } }, 323, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Wooden Door", new String[][] {  { "door", "wood" }, { "door" } }, 324, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Bucket", new String[][] { { "buck" }, { "bukk" } }, 325, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Water Bucket", new String[][] { { "water", "buck" } }, 326, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Lava Bucket", new String[][] { { "lava", "buck" } }, 327, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Minecart", new String[][] { { "cart" } }, 328, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Saddle", new String[][] { { "sad" }, { "pig" } }, 329, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Iron Door", new String[][] { { "door", "iron" } }, 330, (short) 0, new int[]{ 0, 0, 0 } ));
@@ -181,6 +183,7 @@ public class Search {
         items.add(new ItemInfo("Snowball", new String[][] { { "snow", "ball" } }, 332, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Boat", new String[][] { { "boat" } }, 333, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Leather", new String[][] { { "lea" }, { "hide" } }, 334, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Milk Bucket", new String[][] { { "milk" } }, 335, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Clay Brick", new String[][] { { "bric", "cl" }, { "sin", "bric" } }, 336, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Clay", new String[][] { { "cla" } }, 337, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Sugar Cane", new String[][] { { "reed" }, { "cane" } }, 338, (short) 0, new int[]{ 0, 0, 0 } ));
