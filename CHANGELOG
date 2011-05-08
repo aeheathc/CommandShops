@@ -1,3 +1,16 @@
+Version 3.0.0 Alpha 3
+    * Added debug setting (debug=true in config file enables verbose console messages)
+    * Added additional messages to /shop select
+    * Fixed /shop list all (now shows all shops)
+
+Version 3.0.0 Alpha 2
+    * Unsupported items no longer cause a NullPointerException, the shop is skipped.
+    * Permissions for free items have been moved:
+         - localshops.free.create
+         - localshops.free.move
+    * Output now correctly uses economy values (ie: showing the correct names)
+    * Added missing items
+
 Version 3.0.0 Alpha 1
     * /shop list on Console shows the owner of the Shops
     * Implementation of maximum shops per player (via config file: 'shops-per-player'), default is unlimited
