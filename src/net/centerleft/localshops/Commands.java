@@ -212,8 +212,8 @@ public class Commands {
             plugin.playerData.get(playerName).isSelecting = !plugin.playerData.get(playerName).isSelecting;
 
             if (plugin.playerData.get(playerName).isSelecting) {
-                sender.sendMessage(ChatColor.DARK_AQUA + "Left click to select the first corner for a shop.");
-                sender.sendMessage(ChatColor.DARK_AQUA + "Right click to select the second corner for the shop.");
+                sender.sendMessage(ChatColor.DARK_AQUA + "Left click to select the bottom corner for a shop.");
+                sender.sendMessage(ChatColor.DARK_AQUA + "Right click to select the far upper corner for the shop.");
             } else {
                 sender.sendMessage(ChatColor.DARK_AQUA + "Selection disabled");
                 plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
@@ -290,7 +290,7 @@ public class Commands {
             if (plugin.shopData.chargeForShop) {
                 if (!canUseCommand(CommandTypes.CREATE_FREE)) {
                     if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
-                        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.shopData.shopCost + " " + plugin.shopData.currencyName + " to create a shop.");
+                        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.econManager.format(plugin.shopData.shopCost) + " to create a shop.");
                         return false;
                     }
                 }
@@ -467,7 +467,7 @@ public class Commands {
                             tempShopCuboid.world = thisShop.getWorld();
                             LocalShops.cuboidTree.insert(tempShopCuboid);
 
-                            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.shopData.moveCost + " " + plugin.shopData.currencyName + " to move a shop.");
+                            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.econManager.format(plugin.shopData.moveCost) + " to move a shop.");
                             return false;
                         }
                     }
@@ -744,7 +744,7 @@ public class Commands {
                 if (price == 0) {
                     continue;
                 }
-                subMessage += ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + "]";
+                subMessage += ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + plugin.econManager.format(price) + ChatColor.DARK_AQUA + "]";
                 // get stack size
                 int stack = 0;
                 if (buy) {
@@ -909,7 +909,7 @@ public class Commands {
         if (isShopController(shop)) {
             player.sendMessage(ChatColor.DARK_AQUA + "You added " + ChatColor.WHITE + amount + " " + item.name + ChatColor.DARK_AQUA + " to the shop");
         } else {
-            player.sendMessage(ChatColor.DARK_AQUA + "You sold " + ChatColor.WHITE + amount + " " + item.name + ChatColor.DARK_AQUA + " and gained " + ChatColor.WHITE + totalCost + " " + plugin.shopData.currencyName);
+            player.sendMessage(ChatColor.DARK_AQUA + "You sold " + ChatColor.WHITE + amount + " " + item.name + ChatColor.DARK_AQUA + " and gained " + ChatColor.WHITE + plugin.econManager.format(totalCost));
         }
 
         // log the transaction
@@ -1666,7 +1666,7 @@ public class Commands {
         if (isShopController(shop)) {
             player.sendMessage(ChatColor.DARK_AQUA + "You removed " + ChatColor.WHITE + amount + " " + item.name + ChatColor.DARK_AQUA + " from the shop");
         } else {
-            player.sendMessage(ChatColor.DARK_AQUA + "You purchased " + ChatColor.WHITE + amount + " " + item.name + ChatColor.DARK_AQUA + " for " + ChatColor.WHITE + totalCost + " " + plugin.shopData.currencyName);
+            player.sendMessage(ChatColor.DARK_AQUA + "You purchased " + ChatColor.WHITE + amount + " " + item.name + ChatColor.DARK_AQUA + " for " + ChatColor.WHITE + plugin.econManager.format(totalCost));
         }
 
         // log the transaction
@@ -2001,7 +2001,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now sells for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now sells for "+ ChatColor.WHITE + plugin.econManager.format(price) + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
 
         return true;
     }
@@ -2031,7 +2031,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now sells for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName);
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now sells for "+ ChatColor.WHITE + plugin.econManager.format(price));
 
         return true;
     }
@@ -2173,7 +2173,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now is purchased for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now is purchased for "+ ChatColor.WHITE + plugin.econManager.format(price) + ChatColor.DARK_AQUA + " [" + ChatColor.WHITE + "Bundle: " + size + ChatColor.DARK_AQUA + "]");
         return true;
     }
 
@@ -2202,7 +2202,7 @@ public class Commands {
         plugin.shopData.saveShop(shop);
 
         // Send Result
-        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now is purchased for "+ ChatColor.WHITE + price + " " + plugin.shopData.currencyName);
+        sender.sendMessage(ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " now is purchased for "+ ChatColor.WHITE + plugin.econManager.format(price));
         return true;
     }
 

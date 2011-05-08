@@ -56,7 +56,7 @@ public class Economy_iConomy4 implements Economy {
 
     @Override
     public String format(double amount) {
-        return String.format("%d %s", iConomy.getBank().format(amount));
+        return iConomy.getBank().format(amount);
     }
 
     @Override

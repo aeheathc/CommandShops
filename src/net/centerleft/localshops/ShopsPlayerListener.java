@@ -62,6 +62,12 @@ public class ShopsPlayerListener extends PlayerListener {
                 } else {
                     player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
                 }
+                
+                if(pData.getPositionA() != null && pData.getPositionB() == null) {
+                    player.sendMessage(ChatColor.DARK_AQUA + "Now, right click to select the far upper corner for the shop.");
+                } else if(pData.getPositionA() != null && pData.getPositionB() != null) {
+                    player.sendMessage(ChatColor.DARK_AQUA + "Type " + ChatColor.WHITE + "/shop create [Shop Name]" + ChatColor.DARK_AQUA + ", if you're happy with your selection, otherwise keep selecting!");
+                }
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 long[] xyz = { x, y, z };
                 pData.setPositionB(xyz);
@@ -69,6 +75,12 @@ public class ShopsPlayerListener extends PlayerListener {
                     player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
                 } else {
                     player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
+                }
+                
+                if(pData.getPositionB() != null && pData.getPositionA() == null) {
+                    player.sendMessage(ChatColor.DARK_AQUA + "Now, left click to select the bottom corner for a shop.");
+                } else if(pData.getPositionA() != null && pData.getPositionB() != null) {
+                    player.sendMessage(ChatColor.DARK_AQUA + "Type " + ChatColor.WHITE + "/shop create [Shop Name]" + ChatColor.DARK_AQUA + ", if you're happy with your selection, otherwise keep selecting!");
                 }
             }
         }
