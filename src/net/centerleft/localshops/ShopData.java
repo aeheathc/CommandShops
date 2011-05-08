@@ -116,14 +116,18 @@ public class ShopData {
     }
 
     public void loadShops(File shopsDir) {
-        log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
+        if(plugin.debug) {
+            log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
+        }
 
         LocalShops.cuboidTree = new QuadTree();
 
         File[] shopsList = shopsDir.listFiles();
         for (File file : shopsList) {
 
-            log.info(String.format("[%s] Loading Shop file \"%s\".", plugin.pdfFile.getName(), file.toString()));
+            if(plugin.debug) {
+                log.info(String.format("[%s] Loading Shop file \"%s\".", plugin.pdfFile.getName(), file.toString()));
+            }
             Shop shop = null;
 
             // Determine if filename is a UUID or not
@@ -136,7 +140,9 @@ public class ShopData {
 
             // Check if not null, and add to world
             if (shop != null) {
-                log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
+                if(plugin.debug) {
+                    log.info(String.format("[%s] Loaded Shop %s", plugin.pdfFile.getName(), shop.toString()));
+                }
                 LocalShops.cuboidTree.insert(shop.getCuboid());
                 plugin.shopData.addShop(shop);
             } else {
@@ -147,7 +153,9 @@ public class ShopData {
     }
 
     public Shop convertShopOldFormat(File file) {
-        log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShopOldFormat(File file)"));
+        if(plugin.debug) {
+            log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShopOldFormat(File file)"));
+        }
 
         try {
             // Create new empty shop (this format has no UUID, so generate one)
@@ -160,7 +168,9 @@ public class ShopData {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
             while (line != null) {
-                log.info(String.format("[%s] %s", plugin.pdfFile.getName(), line));
+                if(plugin.debug) {
+                    log.info(String.format("[%s] %s", plugin.pdfFile.getName(), line));
+                }
 
                 // Skip comment lines / metadata
                 if (line.startsWith("#")) {
@@ -296,7 +306,9 @@ public class ShopData {
     }    
 
     public Shop loadShop(File file) {
-        log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShop(File file)"));
+        if(plugin.debug) {
+            log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShop(File file)"));
+        }
 
         SortedProperties props = new SortedProperties();
         try {
@@ -379,8 +391,6 @@ public class ShopData {
     }
 
     public boolean saveShop(Shop shop) {
-        DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-        Date date = new Date();
         SortedProperties props = new SortedProperties();
 
         // Config attributes

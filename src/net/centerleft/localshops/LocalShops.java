@@ -41,6 +41,7 @@ public class LocalShops extends JavaPlugin {
     protected boolean report = false;
     protected ReportThread reportThread = null;
     protected EconomyManager econManager = null;
+    protected boolean debug = false;
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -301,8 +302,13 @@ public class LocalShops extends JavaPlugin {
         if(properties.keyExists("report-stats")) {
             report = properties.getBoolean("report-stats");
         } else {
-            report = true;
             properties.setBoolean("report-stats", report);
+        }
+        
+        if(properties.keyExists("debug")) {
+            debug = properties.getBoolean("debug");
+        } else {
+            properties.setBoolean("debug", debug);
         }
     }
 }
