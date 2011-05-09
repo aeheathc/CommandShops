@@ -1197,6 +1197,12 @@ public class Commands {
             shop.addStock(item.name, amount);
             sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " to the shop. Stock is now " + ChatColor.WHITE + shop.getItem(item.name).getStock());
         }
+        
+        if(amount == 0) {
+            sender.sendMessage(ChatColor.DARK_AQUA + item.name + " is almost ready to be purchased or sold!");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE + "\"/shop set sell " + item.name + " price bundle\"" + ChatColor.DARK_AQUA + " to sell this item!");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE + "\"/shop set  buy " + item.name + " price bundle\"" + ChatColor.DARK_AQUA + " to  buy this item!");
+        }
 
         // log the transaction
         if (player != null) {
