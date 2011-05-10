@@ -18,7 +18,7 @@ public class Economy_Essentials implements Economy {
     private String name = "Essentials Economy";
     private LocalShops plugin = null;
     private PluginManager pluginManager = null;
-    private Essentials economy = null;
+    private Essentials ess = null;
     private EconomyServerListener economyServerListener = null;
     
     public Economy_Essentials(LocalShops plugin) {
@@ -31,10 +31,10 @@ public class Economy_Essentials implements Economy {
         this.pluginManager.registerEvent(Type.PLUGIN_DISABLE, economyServerListener, Priority.Monitor, plugin);
         
         // Load Plugin in case it was loaded before
-        if (economy == null) {
+        if (ess == null) {
             Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
             if (essentials != null && essentials.isEnabled()) {
-                economy = (Essentials) essentials;
+                ess = (Essentials) essentials;
                 log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
@@ -42,10 +42,10 @@ public class Economy_Essentials implements Economy {
     
     @Override
     public boolean isEnabled() {
-        if(economy == null) {
+        if(ess == null) {
             return false;
         } else {
-            return economy.isEnabled();
+            return ess.isEnabled();
         }
     }
     
@@ -56,17 +56,13 @@ public class Economy_Essentials implements Economy {
 
     @Override
     public double getBalance(String playerName) {
-        User u = User.get(playerName);
-        return u.getMoney();
+        return com.earth2me.essentials.api.Economy.getMoney(playerName);
     }
 
     @Override
     public boolean withdrawPlayer(String playerName, double amount) {
-        amount = Math.abs(amount);
-        User u = User.get(playerName);
-        if(u.canAfford(amount)) {
-            double money = u.getMoney();
-            u.setMoney(money - amount);
+        if(getBalance(playerName) >= amount) {
+            com.earth2me.essentials.api.Economy.subtract(playerName, amount);
             return true;
         } else {
             return false;
@@ -76,9 +72,7 @@ public class Economy_Essentials implements Economy {
     @Override
     public boolean depositPlayer(String playerName, double amount) {
         amount = Math.abs(amount);
-        User u = User.get(playerName);
-        double money = u.getMoney();
-        u.setMoney(money + amount);
+        com.earth2me.essentials.api.Economy.add(playerName, amount);
         return true;
     }
 
@@ -97,11 +91,11 @@ public class Economy_Essentials implements Economy {
     }
 
     private String getMoneyNamePlural() {
-        return "samolians";
+        return com.earth2me.essentials.api.Economy.getCurrencyPlural();
     }
 
     private String getMoneyNameSingular() {
-        return "samolian";
+        return com.earth2me.essentials.api.Economy.getCurrency();
     }
     
     private class EconomyServerListener extends ServerListener {
@@ -112,20 +106,20 @@ public class Economy_Essentials implements Economy {
         }
         
         public void onPluginEnable(PluginEnableEvent event) {
-            if (economy.economy == null) {
+            if (economy.ess == null) {
                 Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
 
                 if (essentials != null && essentials.isEnabled()) {
-                    economy.economy = (Essentials) essentials;
+                    economy.ess = (Essentials) essentials;
                     log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }
         
         public void onPluginDisable(PluginDisableEvent event) {
-            if (economy.economy != null) {
+            if (economy.ess != null) {
                 if (event.getPlugin().getDescription().getName().equals("Essentials")) {
-                    economy.economy = null;
+                    economy.ess = null;
                     log.info(String.format("[%s] %s un-hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
