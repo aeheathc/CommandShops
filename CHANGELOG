@@ -1,3 +1,7 @@
+Version 3.0.0 Alpha 4
+    * Essentials Economy fix
+    * Add instructions for buying/selling after /shop add item
+
 Version 3.0.0 Alpha 3
     * Added debug setting (debug=true in config file enables verbose console messages)
     * Added additional messages to /shop select
