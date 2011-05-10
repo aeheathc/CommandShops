@@ -12,7 +12,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
 
 public class Economy_Essentials implements Economy {
     private String name = "Essentials Economy";
@@ -128,10 +127,6 @@ public class Economy_Essentials implements Economy {
 
     @Override
     public String format(double amount) {
-        if (amount == 1) {
-            return String.format("%f %s", amount, getMoneyNameSingular());
-        } else {
-            return String.format("%f %s", amount, getMoneyNamePlural());
-        }
+        return com.earth2me.essentials.api.Economy.format(amount);
     }
 }
