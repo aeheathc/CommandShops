@@ -58,6 +58,14 @@ public class Economy_iConomy4 implements Economy {
     public String format(double amount) {
         return iConomy.getBank().format(amount);
     }
+    
+    public String getMoneyNamePlural() {
+        return iConomy.getBank().getCurrency() + "s";
+    }
+
+    public String getMoneyNameSingular() {
+        return iConomy.getBank().getCurrency();
+    }
 
     @Override
     public double getBalance(String playerName) {

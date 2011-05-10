@@ -89,11 +89,11 @@ public class Economy_Essentials implements Economy {
         return false;
     }
 
-    private String getMoneyNamePlural() {
+    public String getMoneyNamePlural() {
         return com.earth2me.essentials.api.Economy.getCurrencyPlural();
     }
 
-    private String getMoneyNameSingular() {
+    public String getMoneyNameSingular() {
         return com.earth2me.essentials.api.Economy.getCurrency();
     }
     

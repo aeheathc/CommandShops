@@ -89,11 +89,11 @@ public class Economy_BOSE implements Economy {
         return false;
     }
 
-    private String getMoneyNamePlural() {
+    public String getMoneyNamePlural() {
         return economy.getMoneyNamePlural();
     }
 
-    private String getMoneyNameSingular() {
+    public String getMoneyNameSingular() {
         return economy.getMoneyName();
     }
     
