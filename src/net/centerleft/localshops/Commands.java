@@ -559,7 +559,7 @@ public class Commands {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " destroy" + ChatColor.DARK_AQUA + " - Destroy the shop you're in.");
         }
         if (canUseCommand(CommandTypes.MOVE)) {
-            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " move [ShopName]" + ChatColor.DARK_AQUA + " - Move a shop to your location.");
+            sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " move [ShopID]" + ChatColor.DARK_AQUA + " - Move a shop to your location.");
         }
         sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " search" + ChatColor.DARK_AQUA + " - Search for an item name.");
         if (canUseCommand(CommandTypes.SELECT)) {
