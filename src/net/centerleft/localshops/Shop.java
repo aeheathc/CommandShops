@@ -265,7 +265,7 @@ public class Shop {
     }
 
     public String toString() {
-        return String.format("Shop \"%s\" at [%s], [%s] %d items", this.name, locationA.toString(), locationB.toString(), inventory.size());
+        return String.format("Shop \"%s\" at [%s], [%s] %d items - %s", this.name, locationA.toString(), locationB.toString(), inventory.size(), uuid.toString());
     }
     
     public void log() {
