@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class Search {
-    private static final Logger log = Logger.getLogger("Minecraft");
-    private static final String ITEMS_FILE = "plugins/LocalShops/items.txt"; 
+public class Search { 
     
     private static ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
     static {
