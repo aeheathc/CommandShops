@@ -1,3 +1,11 @@
+Version 3.0.0 Alpha 5
+    * Essentials Economy now uses included formatting.
+    * Items update: Ice corrected
+    * /shop move [ShopID] is now correctly shown in /shop help
+    * Initial implementation of maximum stack sizes (not in use yet)
+    * Shop file loading sanity checks
+         - Invalid shops will be moved to the "broken-shops" folder.
+
 Version 3.0.0 Alpha 4
     * Essentials Economy fix
     * Add instructions for buying/selling after /shop add item
