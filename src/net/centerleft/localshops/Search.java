@@ -92,7 +92,7 @@ public class Search {
         items.add(new ItemInfo("Redstone Ore", new String[][] { { "ore", "red" }, { "ore", "rs" } }, 73, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Redstone Torch", new String[][] { { "torc", "red" }, { "torc", "rs" } }, 76, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Stone Button", new String[][] { { "stone", "button" }, { "button" } }, 77, (short) 0, new int[]{ 0, 0, 0 } ));
-        items.add(new ItemInfo("Ice", new String[][] { { "ice" } }, 78, (short) 0, new int[]{ 0, 0, 0 } ));
+        items.add(new ItemInfo("Ice", new String[][] { { "ice" } }, 79, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Snow Block", new String[][] { { "snow" } }, 80, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Cactus", new String[][] { { "cact" } }, 81, (short) 0, new int[]{ 0, 0, 0 } ));
         items.add(new ItemInfo("Clay Block", new String[][] { { "clay", "blo" } }, 82, (short) 0, new int[]{ 0, 0, 0 } ));
