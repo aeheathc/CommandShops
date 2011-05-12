@@ -62,35 +62,43 @@ public class Economy_iConomy5 implements Economy {
     }
 
     @Override
-    public boolean withdrawPlayer(String playerName, double amount) {
+    public double withdrawPlayer(String playerName, double amount) {
         Account account = iConomy.getAccount(playerName);
         Holdings holdings = account.getHoldings();
         if (holdings.hasEnough(amount)) {
             holdings.subtract(amount);
-            return true;
+            return amount;
         } else {
-            return false;
+            return -1;
         }
     }
 
     @Override
-    public boolean depositPlayer(String playerName, double amount) {
+    public double depositPlayer(String playerName, double amount) {
         Account account = iConomy.getAccount(playerName);
         Holdings holdings = account.getHoldings();
         holdings.add(amount);
-        return true;
+        return amount;
     }
 
     @Override
-    public boolean withdrawShop(Shop shop, double amount) {
+    public double withdrawShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.round(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
 
     @Override
-    public boolean depositShop(Shop shop, double amount) {
+    public double depositShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.round(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
     
     private class EconomyServerListener extends ServerListener {

@@ -27,6 +27,7 @@ public class Commands {
     private String commandLabel = null;
     private CommandSender sender = null;
     private String command = null;
+    private static String DECIMAL_REGEX = "(\\d+\\.\\d+)|(\\d+\\.)|(\\.\\d+)|(\\d+)";
 
     // Command Types Enum
     static enum CommandTypes {
@@ -734,7 +735,7 @@ public class Commands {
 
             // NOT list
             if (!list) {
-                int price = 0;
+                double price = 0;
                 if (buy) {
                     // get buy price
                     price = item.getBuyPrice();
@@ -867,14 +868,14 @@ public class Commands {
             return false;
         }
 
-        int itemPrice = invItem.getSellPrice();
+        double itemPrice = invItem.getSellPrice();
         // recalculate # of items since may not fit cleanly into bundles
         // notify player if there is a change
         if (amount % invItem.getSellSize() != 0) {
             player.sendMessage(ChatColor.DARK_AQUA + "The bundle size is  " + ChatColor.WHITE + invItem.getSellSize() + ChatColor.DARK_AQUA + " order reduced to " + ChatColor.WHITE + bundles * invItem.getSellSize());
         }
         amount = bundles * invItem.getSellSize();
-        int totalCost = bundles * itemPrice;
+        double totalCost = bundles * itemPrice;
 
         // try to pay the player for order
         if (shop.isUnlimitedMoney()) {
@@ -891,7 +892,7 @@ public class Commands {
                         player.sendMessage(ChatColor.DARK_AQUA + shop.getName() + " is broke!");
                         return false;
                     }
-                    int bundlesCanAford = (int) shopBalance / itemPrice;
+                    int bundlesCanAford = (int) Math.floor(shopBalance / itemPrice);
                     totalCost = bundlesCanAford * itemPrice;
                     amount = bundlesCanAford * invItem.getSellSize();
                     player.sendMessage(ChatColor.DARK_AQUA + shop.getName() + " could only afford " + ChatColor.WHITE + bundlesCanAford + ChatColor.DARK_AQUA + " bundles.");
@@ -1644,10 +1645,10 @@ public class Commands {
 
         // calculate cost
         int bundles = amount / invItem.getBuySize();
-        int itemPrice = invItem.getBuyPrice();
+        double itemPrice = invItem.getBuyPrice();
         // recalculate # of items since may not fit cleanly into bundles
         amount = bundles * invItem.getBuySize();
-        int totalCost = bundles * itemPrice;
+        double totalCost = bundles * itemPrice;
 
         // try to pay the shop owner
         if (!isShopController(shop)) {
@@ -1978,7 +1979,7 @@ public class Commands {
         }
     }
 
-    private boolean shopSetSell(Shop shop, ItemInfo item, int price, int size) {
+    private boolean shopSetSell(Shop shop, ItemInfo item, double price, int size) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
             return true;
@@ -2013,7 +2014,7 @@ public class Commands {
         return true;
     }
 
-    private boolean shopSetSell(Shop shop, ItemInfo item, int price) {
+    private boolean shopSetSell(Shop shop, ItemInfo item, double price) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
             return true;
@@ -2076,72 +2077,73 @@ public class Commands {
         // Command matching
 
         // set buy int int int
-        Pattern pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
+        Pattern pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+("+DECIMAL_REGEX+")\\s+(\\d+)");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             int size = Integer.parseInt(matcher.group(3));
             return shopSetSell(shop, item, price, size);
         }
 
         // set buy int:int int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+("+DECIMAL_REGEX+")\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
-            int price = Integer.parseInt(matcher.group(3));
+            log.info(matcher.group(3));
+            double price = Double.parseDouble(matcher.group(3));
             int size = Integer.parseInt(matcher.group(4));
             return shopSetSell(shop, item, price, size);
         }
 
         // set buy int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+("+DECIMAL_REGEX+")");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             return shopSetSell(shop, item, price);
         }
 
         // set buy int:int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+("+DECIMAL_REGEX+")");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
-            int price = Integer.parseInt(matcher.group(3));
+            double price = Double.parseDouble(matcher.group(3));
             return shopSetSell(shop, item, price);
         }
 
         // set buy (chars) int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+("+DECIMAL_REGEX+")\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             int size = Integer.parseInt(matcher.group(3));
             return shopSetSell(shop, item, price, size);
         }
 
         // set buy (chars) int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+("+DECIMAL_REGEX+")");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             return shopSetSell(shop, item, price);
         }
 
@@ -2150,7 +2152,7 @@ public class Commands {
         return true;
     }
 
-    private boolean shopSetBuy(Shop shop, ItemInfo item, int price, int size) {
+    private boolean shopSetBuy(Shop shop, ItemInfo item, double price, int size) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
             return true;
@@ -2184,7 +2186,7 @@ public class Commands {
         return true;
     }
 
-    private boolean shopSetBuy(Shop shop, ItemInfo item, int price) {
+    private boolean shopSetBuy(Shop shop, ItemInfo item, double price) {
         if (item == null) {
             sender.sendMessage("Item was not found.");
             return true;
@@ -2246,72 +2248,72 @@ public class Commands {
         // Command matching
 
         // set sell int int int
-        Pattern pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
+        Pattern pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+("+DECIMAL_REGEX+")\\s+(\\d+)");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             int size = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price, size);
         }
 
         // set sell int:int int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+("+DECIMAL_REGEX+")\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
-            int price = Integer.parseInt(matcher.group(3));
+            double price = Double.parseDouble(matcher.group(3));
             int size = Integer.parseInt(matcher.group(4));
             return shopSetBuy(shop, item, price, size);
         }
 
         // set sell int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+("+DECIMAL_REGEX+")");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             return shopSetBuy(shop, item, price);
         }
 
         // set sell int:int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+("+DECIMAL_REGEX+")");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
-            int price = Integer.parseInt(matcher.group(3));
+            double price = Double.parseDouble(matcher.group(3));
             return shopSetBuy(shop, item, price);
         }
 
         // set sell (chars) int int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+("+DECIMAL_REGEX+")\\s+(\\d+)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             int size = Integer.parseInt(matcher.group(3));
             return shopSetBuy(shop, item, price, size);
         }
 
         // set sell (chars) int
         matcher.reset();
-        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(\\d+)");
+        pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+("+DECIMAL_REGEX+")");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
-            int price = Integer.parseInt(matcher.group(2));
+            double price = Double.parseDouble(matcher.group(2));
             return shopSetBuy(shop, item, price);
         }
 

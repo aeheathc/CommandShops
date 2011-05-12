@@ -130,7 +130,7 @@ public class Shop {
         return sUuid.substring(sUuid.length() - ShopData.MIN_UNIQUE_ID_LENGTH);
     }
 
-    public boolean addItem(int itemNumber, short itemData, int buyPrice, int buyStackSize, int sellPrice, int sellStackSize, int stock, int maxStock) {
+    public boolean addItem(int itemNumber, short itemData, double buyPrice, int buyStackSize, double sellPrice, int sellStackSize, int stock, int maxStock) {
         // TODO add maxStock to item object
         ItemInfo item = Search.itemById(itemNumber, itemData);
         if(item == null) {
@@ -204,7 +204,7 @@ public class Shop {
         return true;
     }
 
-    public void setItemBuyPrice(String itemName, int price) {
+    public void setItemBuyPrice(String itemName, double price) {
         inventory.get(itemName).setBuyPrice(price);
     }
 
@@ -212,7 +212,7 @@ public class Shop {
         inventory.get(itemName).setBuySize(buySize);
     }
 
-    public void setItemSellPrice(String itemName, int price) {
+    public void setItemSellPrice(String itemName, double price) {
         inventory.get(itemName).setSellPrice(price);
     }
     
@@ -285,12 +285,12 @@ public class Shop {
         // Items
         log.info("Shop Inventory");
         log.info("   BP=Buy Price, BS=Buy Size, SP=Sell Price, SS=Sell Size, ST=Stock, MX=Max Stock");
-        log.info(String.format("   %-6s %-3s %-3s %-3s %-3s %-3s %-3s", "Id", "BP", "BS", "SP", "SS", "ST", "MX"));        
+        log.info(String.format("   %-9s %-6s %-3s %-6s %-3s %-3s %-3s", "Id", "BP", "BS", "SP", "SS", "ST", "MX"));        
         Iterator<InventoryItem> it = inventory.values().iterator();
         while(it.hasNext()) {
             InventoryItem item = it.next();
             ItemInfo info = item.getInfo();
-            log.info(String.format("   %3d:%-2d %-3d %-3d %-3d %-3d %-3d %-3d", info.typeId, info.subTypeId, item.getBuyPrice(), item.getBuySize(), item.getSellPrice(), item.getSellSize(), item.getStock(), item.getMaxStock()));
+            log.info(String.format("   %6d:%-2d %-6.2f %-3d %-6.2f %-3d %-3d %-3d", info.typeId, info.subTypeId, item.getBuyPrice(), item.getBuySize(), item.getSellPrice(), item.getSellSize(), item.getStock(), item.getMaxStock()));
         }
     }
 }

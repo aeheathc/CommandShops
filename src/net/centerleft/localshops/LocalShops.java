@@ -238,15 +238,15 @@ public class LocalShops extends JavaPlugin {
         }
 
         if (properties.keyExists("shop-cost")) {
-            shopData.shopCost = properties.getLong("shop-cost");
+            shopData.shopCost = properties.getDouble("shop-cost");
         } else {
-            properties.setLong("shop-cost", shopData.shopCost);
+            properties.setDouble("shop-cost", shopData.shopCost);
         }
 
         if (properties.keyExists("move-cost")) {
-            shopData.moveCost = properties.getLong("move-cost");
+            shopData.moveCost = properties.getDouble("move-cost");
         } else {
-            properties.setLong("move-cost", shopData.moveCost);
+            properties.setDouble("move-cost", shopData.moveCost);
         }
 
         if (properties.keyExists("shop-width")) {

@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import net.centerleft.localshops.Commands.CommandTypes;
-
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 import cuboidLocale.QuadTree;
@@ -32,8 +30,8 @@ public class ShopData {
     long shopSize = 5;
     long shopHeight = 3;
 
-    long shopCost = 4000;
-    long moveCost = 1000;
+    double shopCost = 4000;
+    double moveCost = 1000;
     boolean chargeForShop = false;
     boolean chargeForMove = false;
     boolean logTransactions = true;
@@ -396,11 +394,11 @@ public class ShopData {
                 String[] v = value.split(",");
 
                 String[] buy = v[0].split(":");
-                int buyPrice = Integer.parseInt(buy[0]);
+                double buyPrice = Double.parseDouble(buy[0]);
                 int buyStackSize = Integer.parseInt(buy[1]);
 
                 String[] sell = v[1].split(":");
-                int sellPrice = Integer.parseInt(sell[0]);
+                double sellPrice = Double.parseDouble(sell[0]);
                 int sellStackSize = Integer.parseInt(sell[1]);
 
                 String[] stock = v[2].split(":");
@@ -479,14 +477,14 @@ public class ShopData {
         // Inventory
         for (InventoryItem item : shop.getItems()) {
             ItemInfo info = item.getInfo();
-            int buyPrice = item.getBuyPrice();
+            double buyPrice = item.getBuyPrice();
             int buySize = item.getBuySize();
-            int sellPrice = item.getSellPrice();
+            double sellPrice = item.getSellPrice();
             int sellSize = item.getSellSize();
             int stock = item.getStock();
             int maxStock = item.getMaxStock();
 
-            props.setProperty(String.format("%d:%d", info.typeId, info.subTypeId), String.format("%d:%d,%d:%d,%d:%d", buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
+            props.setProperty(String.format("%d:%d", info.typeId, info.subTypeId), String.format("%f:%d,%f:%d,%d:%d", buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
         }
 
         String fileName = LocalShops.folderPath + LocalShops.shopsPath + shop.getUuid().toString() + ".shop";

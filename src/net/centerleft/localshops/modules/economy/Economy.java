@@ -12,8 +12,8 @@ public interface Economy {
     public String getName();
     public String format(double amount);
     public double getBalance(String playerName);
-    public boolean withdrawPlayer(String playerName, double amount);
-    public boolean depositPlayer(String playerName, double amount);
-    public boolean withdrawShop(Shop shop, double amount);
-    public boolean depositShop(Shop shop, double amount);
+    public double withdrawPlayer(String playerName, double amount);
+    public double depositPlayer(String playerName, double amount);
+    public double withdrawShop(Shop shop, double amount);
+    public double depositShop(Shop shop, double amount);
 }

@@ -4,9 +4,9 @@ public class InventoryItem {
 
     private ItemInfo info;
     private int buySize;
-    private int buyPrice;
+    private double buyPrice;
     private int sellSize;
-    private int sellPrice;
+    private double sellPrice;
     private int stock;
     public int maxStock;
 
@@ -29,7 +29,7 @@ public class InventoryItem {
         stock = 0;
     }
     
-    public InventoryItem(ItemInfo info, int buySize, int buyPrice, int sellSize, int sellPrice, int stock, int maxStock) {
+    public InventoryItem(ItemInfo info, int buySize, double buyPrice, int sellSize, double sellPrice, int stock, int maxStock) {
         this.info = info;
         this.buySize = buySize;
         this.buyPrice = buyPrice;
@@ -43,13 +43,13 @@ public class InventoryItem {
         return info;
     }
 
-    public void setSell(int sellPrice, int sellSize) {
+    public void setSell(double sellPrice, int sellSize) {
         this.sellPrice = sellPrice;
         this.sellSize = sellSize;
 
     }
 
-    public void setBuy(int buyPrice, int buySize) {
+    public void setBuy(double buyPrice, int buySize) {
         this.buyPrice = buyPrice;
         this.buySize = buySize;
     }
@@ -77,11 +77,11 @@ public class InventoryItem {
         return stock;
     }
 
-    public void setSellPrice(int price) {
+    public void setSellPrice(double price) {
         sellPrice = price;
     }
 
-    public int getSellPrice() {
+    public double getSellPrice() {
         return sellPrice;
     }
 
@@ -101,11 +101,11 @@ public class InventoryItem {
         return buySize;
     }
 
-    public void setBuyPrice(int price) {
+    public void setBuyPrice(double price) {
         buyPrice = price;
     }
 
-    public int getBuyPrice() {
+    public double getBuyPrice() {
         return buyPrice;
     }
 }

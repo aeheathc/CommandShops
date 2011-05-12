@@ -104,30 +104,35 @@ public class PlayerData {
         return shopList;
     }
 
-    public boolean payPlayer(String playerName, int cost) {
-        return plugin.econManager.depositPlayer(playerName, cost);
+    public boolean payPlayer(String playerName, double cost) {
+        double payed = plugin.econManager.depositPlayer(playerName, cost);
+        if(payed != -1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public boolean payPlayer(String playerFrom, String playerTo, int cost) {       
+    public boolean payPlayer(String playerFrom, String playerTo, double cost) {       
         double balanceFrom = plugin.econManager.getBalance(playerFrom);
         double balanceTo = plugin.econManager.getBalance(playerTo);
         
         log.info("PlayerFrom: " + playerFrom + " balanceFrom: " + balanceFrom + " PlayerTo: " + playerTo + " balanceTo: " + balanceTo + " Cost: " + cost);
         
-        boolean withdraw = plugin.econManager.withdrawPlayer(playerFrom, cost);
-        boolean deposit = plugin.econManager.depositPlayer(playerTo, cost);
+        double withdrawAmt = plugin.econManager.withdrawPlayer(playerFrom, cost);
+        double depositAmt = plugin.econManager.depositPlayer(playerTo, cost);
         
-        if(!withdraw) {
+        if(withdrawAmt == -1) {
             log.info("Failed to withdraw");
         }
         
-        if(!deposit) {
+        if(depositAmt == -1) {
             log.info("Failed to deposit");
         }
         
-        if (withdraw && deposit) {
-            plugin.shopData.logPayment(playerFrom, "payment", cost, balanceFrom, balanceFrom + cost);
-            plugin.shopData.logPayment(playerTo, "payment", cost, balanceTo, balanceTo + cost);
+        if (withdrawAmt != -1 && depositAmt != -1) {
+            plugin.shopData.logPayment(playerFrom, "payment", withdrawAmt, balanceFrom, balanceFrom - withdrawAmt);
+            plugin.shopData.logPayment(playerTo, "payment", depositAmt, balanceTo, balanceTo + depositAmt);
             return true;
         } else {
             return false;
@@ -141,8 +146,9 @@ public class PlayerData {
     public boolean chargePlayer(String shopOwner, double chargeAmount) {        
         double balanceFrom = plugin.econManager.getBalance(shopOwner);
         
-        if(plugin.econManager.withdrawPlayer(shopOwner, chargeAmount)) {
-            plugin.shopData.logPayment(shopOwner, "payment", chargeAmount, balanceFrom, balanceFrom - chargeAmount);
+        double chargedAmount = plugin.econManager.withdrawPlayer(shopOwner, chargeAmount);
+        if(chargedAmount != -1) {
+            plugin.shopData.logPayment(shopOwner, "payment", chargedAmount, balanceFrom, balanceFrom - chargedAmount);
             return true;
         } else {
             return false;

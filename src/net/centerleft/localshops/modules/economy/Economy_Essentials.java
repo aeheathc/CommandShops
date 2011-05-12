@@ -59,34 +59,45 @@ public class Economy_Essentials implements Economy {
     }
 
     @Override
-    public boolean withdrawPlayer(String playerName, double amount) {
+    public double withdrawPlayer(String playerName, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
         if(getBalance(playerName) >= amount) {
             com.earth2me.essentials.api.Economy.subtract(playerName, amount);
-            return true;
+            return amount;
         } else {
-            return false;
+            return -1;
         }
     }
 
     @Override
-    public boolean depositPlayer(String playerName, double amount) {
-        amount = Math.abs(amount);
+    public double depositPlayer(String playerName, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
         com.earth2me.essentials.api.Economy.add(playerName, amount);
-        return true;
+        return amount;
     }
 
     @Override
-    public boolean withdrawShop(Shop shop, double amount) {
-        amount = Math.abs(amount);
+    public double withdrawShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.round(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
 
     @Override
-    public boolean depositShop(Shop shop, double amount) {
-        amount = Math.abs(amount);
+    public double depositShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.round(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
 
     public String getMoneyNamePlural() {

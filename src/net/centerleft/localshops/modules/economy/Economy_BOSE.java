@@ -59,34 +59,54 @@ public class Economy_BOSE implements Economy {
     }
 
     @Override
-    public boolean withdrawPlayer(String playerName, double amount) {
-        amount = Math.abs(amount);
+    public double withdrawPlayer(String playerName, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.ceil(amount);
         double balance = getBalance(playerName);
         if(balance - amount < 0) {
-            return false;
+            return -1;
         }
-        return economy.setPlayerMoney(playerName, (int) (balance - amount), false);
+        if(economy.setPlayerMoney(playerName, (int) (balance - amount), false)) {
+            return amount;
+        } else {
+            return -1;
+        }
     }
 
     @Override
-    public boolean depositPlayer(String playerName, double amount) {
-        amount = Math.abs(amount);
+    public double depositPlayer(String playerName, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.ceil(amount);
         double balance = getBalance(playerName);
-        return economy.setPlayerMoney(playerName, (int) (balance + amount), false);
+        if(economy.setPlayerMoney(playerName, (int) (balance + amount), false)) {
+            return amount;
+        } else {
+            return -1;
+        }
     }
 
     @Override
-    public boolean depositShop(Shop shop, double amount) {
-        amount = Math.abs(amount);
+    public double depositShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.ceil(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
 
     @Override
-    public boolean withdrawShop(Shop shop, double amount) {
-        amount = Math.abs(amount);
+    public double withdrawShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.ceil(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
 
     public String getMoneyNamePlural() {

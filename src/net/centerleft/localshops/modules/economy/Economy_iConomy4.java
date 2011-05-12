@@ -78,45 +78,55 @@ public class Economy_iConomy4 implements Economy {
     }
 
     @Override
-    public boolean withdrawPlayer(String playerName, double amount) {
-        amount = Math.abs(amount);
+    public double withdrawPlayer(String playerName, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
         double balance = getBalance(playerName);
         if(balance >= amount) {
             Account account = iConomy.getBank().getAccount(playerName);
             if(account == null) {
-                return false;
+                return -1;
             }
             account.subtract(amount);
-            return true;
+            return amount;
         } else {
-            return false;
+            return -1;
         }
     }
 
     @Override
-    public boolean depositPlayer(String playerName, double amount) {
-        amount = Math.abs(amount);
+    public double depositPlayer(String playerName, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
         Account account = iConomy.getBank().getAccount(playerName);
         if(account == null) {
             iConomy.getBank().addAccount(playerName);
             account = iConomy.getBank().getAccount(playerName);
         }
         account.add(amount);
-        return true;
+        return amount;
     }
 
     @Override
-    public boolean withdrawShop(Shop shop, double amount) {
-        amount = Math.abs(amount);
+    public double withdrawShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.round(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
 
     @Override
-    public boolean depositShop(Shop shop, double amount) {
-        amount = Math.abs(amount);
+    public double depositShop(Shop shop, double amount) {
+        if(amount < 0) {
+            return -1;
+        }
+        amount = Math.round(amount);
         // Currently not supported
-        return false;
+        return -1;
     }
     
     private class EconomyServerListener extends ServerListener {
