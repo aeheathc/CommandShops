@@ -24,6 +24,7 @@ public class Shop {
     private boolean unlimitedStock = false;
     private HashMap<String, InventoryItem> inventory = new HashMap<String, InventoryItem>();
     private PrimitiveCuboid cuboid = null;
+    private double minBalance = 0;
     
     // Logging
     private static final Logger log = Logger.getLogger("Minecraft");    
@@ -127,7 +128,25 @@ public class Shop {
     
     public String getShortUuidString() {
         String sUuid = uuid.toString();
-        return sUuid.substring(sUuid.length() - ShopData.MIN_UNIQUE_ID_LENGTH);
+        return sUuid.substring(sUuid.length() - Config.UUID_MIN_LENGTH);
+    }
+    
+    /**
+     * Gets the minimum account balance this shop allows.
+     * 
+     * @return int minBalance
+     */
+    public double getMinBalance() {
+        return this.minBalance;
+    }
+
+    /**
+     * Sets the minBalance this shop allows.
+     * 
+     * @param int newBalance
+     */
+    public void setMinBalance(double newBalance) {
+        this.minBalance = newBalance;
     }
 
     public boolean addItem(int itemNumber, short itemData, double buyPrice, int buyStackSize, double sellPrice, int sellStackSize, int stock, int maxStock) {

@@ -888,11 +888,14 @@ public class Commands {
                     // get shop owner's balance and calculate how many it can
                     // buy
                     double shopBalance = plugin.playerData.get(player.getName()).getBalance(shop.getOwner());
-                    if(shopBalance <= 0) {
+                    // the current shop balance must be greater than the minimum
+                    // balance to do the transaction.
+                    if (shopBalance <= shop.getMinBalance()) {
                         player.sendMessage(ChatColor.DARK_AQUA + shop.getName() + " is broke!");
                         return false;
                     }
-                    int bundlesCanAford = (int) Math.floor(shopBalance / itemPrice);
+                    // Added Min Balance calculation for maximum items the shop can afford
+                    int bundlesCanAford = (int) Math.floor(shopBalance - shop.getMinBalance() / itemPrice);
                     totalCost = bundlesCanAford * itemPrice;
                     amount = bundlesCanAford * invItem.getSellSize();
                     player.sendMessage(ChatColor.DARK_AQUA + shop.getName() + " could only afford " + ChatColor.WHITE + bundlesCanAford + ChatColor.DARK_AQUA + " bundles.");
@@ -1970,6 +1973,8 @@ public class Commands {
             return shopSetUnlimited();
         } else if (command.matches("(?i)set\\s+manager.*")) {
             return shopSetManager();
+        } else if (command.matches("(?i)set\\s+minbalance.*")) {
+            return shopSetMinBalance();
         } else if (command.matches("(?i)set\\s+owner.*")) {
             return shopSetOwner();
         } else if (command.matches("(?i)set\\s+name.*")) {
@@ -1977,6 +1982,54 @@ public class Commands {
         } else {
             return shopSetHelp();
         }
+    }
+
+    private boolean shopSetMinBalance() {
+        Shop shop = null;
+        boolean reset = false;
+
+        // Get current shop
+        if (sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
+            PlayerData pData = plugin.playerData.get(player.getName());
+
+            // Get Current Shop
+            UUID shopUuid = pData.getCurrentShop();
+            if (shopUuid != null) {
+                shop = plugin.shopData.getShop(shopUuid);
+            }
+            if (shop == null) {
+                sender.sendMessage("You are not in a shop!");
+                return true;
+            }
+
+            // Check if Player can Modify
+            if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You must be the shop owner to set this.");
+                sender.sendMessage(ChatColor.DARK_AQUA + " The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
+            }
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
+            return true;
+        }
+
+        // set minbalance amount
+        Pattern pattern = Pattern.compile("(?i)set\\s+minbalance\\s+(\\d+)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            double min = Double.parseDouble(matcher.group(1));
+            shop.setMinBalance(min);
+            // Save Shop
+            plugin.shopData.saveShop(shop);
+
+            sender.sendMessage(ChatColor.WHITE + shop.getName() + ChatColor.DARK_AQUA + " now has a minimum balance of "+ ChatColor.WHITE + plugin.econManager.format(min));
+            return true;
+        }
+
+        sender.sendMessage(" " + "/" + commandLabel + " set minbalance [amount]");
+        return true;
     }
 
     private boolean shopSetSell(Shop shop, ItemInfo item, double price, int size) {

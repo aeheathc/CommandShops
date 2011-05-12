@@ -339,6 +339,7 @@ public class ShopData {
         String name = props.getProperty("name");
         boolean unlimitedMoney = Boolean.parseBoolean(props.getProperty("unlimited-money"));
         boolean unlimitedStock = Boolean.parseBoolean(props.getProperty("unlimited-stock"));
+        double minBalance = Double.parseDouble((props.getProperty("min-balance")));
 
         // Location - locationB=-88, 50, -127
         long[] locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
@@ -360,6 +361,13 @@ public class ShopData {
         shop.setOwner(owner);
         shop.setManagers(managers);
         shop.setCreator(creator);
+        
+        // Make sure minimum balance isn't negative
+        if (minBalance < 0) {
+            shop.setMinBalance(0);
+        } else {
+            shop.setMinBalance(minBalance);
+        }
 
         // Iterate through all keys, find items & parse
         // props.setProperty(String.format("%d:%d", info.typeId, info.subTypeId), String.format("%d:%d,%d:%d,%d:%d", buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
@@ -444,6 +452,7 @@ public class ShopData {
         props.setProperty("name", shop.getName());
         props.setProperty("unlimited-money", String.valueOf(shop.isUnlimitedMoney()));
         props.setProperty("unlimited-stock", String.valueOf(shop.isUnlimitedStock()));
+        props.setProperty("min-balance", String.valueOf(shop.getMinBalance()));
 
         // Location
         props.setProperty("locationA", shop.getLocationA().toString());
