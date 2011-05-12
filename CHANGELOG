@@ -1,3 +1,10 @@
+Version 3.0.0 Alpha 6
+    * "/shop set name" is now in help
+    * Add minimum balance for shops (see /shop set minbalance) - Sleaker
+    * Default values for shop settings
+    * Decimal support
+    * Code optimization
+
 Version 3.0.0 Alpha 5
     * Essentials Economy now uses included formatting.
     * Items update: Ice corrected
