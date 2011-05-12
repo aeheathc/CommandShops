@@ -295,6 +295,7 @@ public class Shop {
         log.info(String.format("   %-16s %s", "Creator:", creator));
         log.info(String.format("   %-16s %s", "Owner:", owner));
         log.info(String.format("   %-16s %s", "Managers:", Search.join(managers, ",")));
+        log.info(String.format("   %-16s %.2f", "Minimum Balance:", minBalance));
         log.info(String.format("   %-16s %s", "Unlimited Money:", unlimitedMoney ? "Yes" : "No"));
         log.info(String.format("   %-16s %s", "Unlimited Stock:", unlimitedStock ? "Yes" : "No"));        
         log.info(String.format("   %-16s %s", "Location A:", locationA.toString()));
