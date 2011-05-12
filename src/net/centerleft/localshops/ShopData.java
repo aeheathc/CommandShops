@@ -335,21 +335,21 @@ public class ShopData {
         }
 
         // Shop attributes
-        UUID uuid = UUID.fromString(props.getProperty("uuid"));
-        String name = props.getProperty("name");
-        boolean unlimitedMoney = Boolean.parseBoolean(props.getProperty("unlimited-money"));
-        boolean unlimitedStock = Boolean.parseBoolean(props.getProperty("unlimited-stock"));
+        UUID uuid = UUID.fromString(props.getProperty("uuid", "00000000-0000-0000-0000-000000000000"));
+        String name = props.getProperty("name", "Nameless Shop");
+        boolean unlimitedMoney = Boolean.parseBoolean(props.getProperty("unlimited-money", "false"));
+        boolean unlimitedStock = Boolean.parseBoolean(props.getProperty("unlimited-stock", "false"));
         double minBalance = Double.parseDouble((props.getProperty("min-balance", "0.0")));
 
         // Location - locationB=-88, 50, -127
         long[] locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
         long[] locationB = convertStringArraytoLongArray(props.getProperty("locationB").split(", "));
-        String world = props.getProperty("world");
+        String world = props.getProperty("world", "world1");
 
         // People
-        String owner = props.getProperty("owner");
-        String[] managers = props.getProperty("managers").replaceAll("[\\[\\]]", "").split(", ");
-        String creator = props.getProperty("creator");
+        String owner = props.getProperty("owner", "");
+        String[] managers = props.getProperty("managers", "").replaceAll("[\\[\\]]", "").split(", ");
+        String creator = props.getProperty("creator", "LocalShops");
 
         Shop shop = new Shop(uuid);
         shop.setName(name);
