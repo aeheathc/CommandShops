@@ -27,25 +27,6 @@ public class ShopData {
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
 
-    long shopSize = 5;
-    long shopHeight = 3;
-
-    double shopCost = 4000;
-    double moveCost = 1000;
-    boolean chargeForShop = false;
-    boolean chargeForMove = false;
-    boolean logTransactions = true;
-    
-    int maxPlayerShops = -1;        // Anything < 0 = unlimited player shops.
-
-    int maxDamage = 35;
-
-    long maxWidth = 30;
-    long maxHeight = 10;
-
-    static int MIN_UNIQUE_ID_LENGTH = 1;
-    ArrayList<String> uniqueIds = new ArrayList<String>();
-
     public ShopData(LocalShops plugin) {
         this.plugin = plugin;
     }
@@ -67,15 +48,15 @@ public class ShopData {
     }
 
     public void addShop(Shop shop) {
-        if(plugin.debug) {
+        if(Config.SRV_DEBUG) {
             log.info(String.format("[%s] Adding %s", plugin.pdfFile.getName(), shop.toString()));
         }
         String uuid = shop.getUuid().toString();
         while (true) {
-            if (uniqueIds.contains(uuid.substring(uuid.length() - MIN_UNIQUE_ID_LENGTH))) {
+            if (Config.UUID_LIST.contains(uuid.substring(uuid.length() - Config.UUID_MIN_LENGTH))) {
                 calcShortUuidSize();
             } else {
-                uniqueIds.add(uuid.substring(uuid.length() - MIN_UNIQUE_ID_LENGTH));
+                Config.UUID_LIST.add(uuid.substring(uuid.length() - Config.UUID_MIN_LENGTH));
                 break;
             }
         }
@@ -83,19 +64,19 @@ public class ShopData {
     }
 
     private void calcShortUuidSize() {
-        if(MIN_UNIQUE_ID_LENGTH < 36) {
-            MIN_UNIQUE_ID_LENGTH++;
+        if(Config.UUID_MIN_LENGTH < 36) {
+            Config.UUID_MIN_LENGTH++;
         }
-        uniqueIds.clear();
+        Config.UUID_LIST.clear();
         Iterator<Shop> it = shops.values().iterator();
         while (it.hasNext()) {
             Shop cShop = it.next();
             String cUuid = cShop.getUuid().toString();
-            String sUuid = cUuid.substring(cUuid.length() - MIN_UNIQUE_ID_LENGTH);
-            if (uniqueIds.contains(sUuid)) {
+            String sUuid = cUuid.substring(cUuid.length() - Config.UUID_MIN_LENGTH);
+            if (Config.UUID_LIST.contains(sUuid)) {
                 calcShortUuidSize();
             } else {
-                uniqueIds.add(sUuid);
+                Config.UUID_LIST.add(sUuid);
             }
         }
     }
@@ -119,7 +100,7 @@ public class ShopData {
     }
 
     public void loadShops(File shopsDir) {
-        if(plugin.debug) {
+        if(Config.SRV_DEBUG) {
             log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
         }
 
@@ -128,7 +109,7 @@ public class ShopData {
         File[] shopsList = shopsDir.listFiles();
         for (File file : shopsList) {
 
-            if(plugin.debug) {
+            if(Config.SRV_DEBUG) {
                 log.info(String.format("[%s] Loading Shop file \"%s\".", plugin.pdfFile.getName(), file.toString()));
             }
             Shop shop = null;
@@ -143,7 +124,7 @@ public class ShopData {
 
             // Check if not null, and add to world
             if (shop != null) {
-                if(plugin.debug) {
+                if(Config.SRV_DEBUG) {
                     log.info(String.format("[%s] Loaded %s", plugin.pdfFile.getName(), shop.toString()));
                 }
                 LocalShops.cuboidTree.insert(shop.getCuboid());
@@ -156,7 +137,7 @@ public class ShopData {
     }
 
     public Shop convertShopOldFormat(File file) {
-        if(plugin.debug) {
+        if(Config.SRV_DEBUG) {
             log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShopOldFormat(File file)"));
         }
 
@@ -171,7 +152,7 @@ public class ShopData {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
             while (line != null) {
-                if(plugin.debug) {
+                if(Config.SRV_DEBUG) {
                     log.info(String.format("[%s] %s", plugin.pdfFile.getName(), line));
                 }
 
@@ -521,7 +502,7 @@ public class ShopData {
         }
 
         // remove string from uuid short list
-        uniqueIds.remove(shortUuid);
+        Config.UUID_LIST.remove(shortUuid);
 
         // delete the file from the directory
         String filePath = LocalShops.folderPath + LocalShops.shopsPath + shop.getUuid() + ".shop";
@@ -587,7 +568,7 @@ public class ShopData {
     }
 
     public boolean logTransaciton(String playerName, String shopName, String action, String itemName, int numberOfItems, int startNumberOfItems, int endNumberOfItems, double moneyTransfered, double startingbalance, double endingbalance) {
-        if (!logTransactions)
+        if (!Config.SRV_LOG_TRANSACTIONS)
             return false;
 
         String filePath = LocalShops.folderPath + "transactions.log";

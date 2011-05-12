@@ -88,7 +88,7 @@ public class Commands {
     }
 
     public boolean shopList() {
-        int idWidth = ShopData.MIN_UNIQUE_ID_LENGTH + 1;
+        int idWidth = Config.UUID_MIN_LENGTH + 1;
         if(idWidth < 4) {
             idWidth = 4;
         }
@@ -249,7 +249,7 @@ public class Commands {
             // If player is select, use their selection
             if (pData.isSelecting) {
                 if (!pData.checkSize()) {
-                    String size = plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
+                    String size = Config.SHOP_SIZE_MAX_WIDTH + "x" + Config.SHOP_SIZE_MAX_HEIGHT + "x" + Config.SHOP_SIZE_MAX_WIDTH;
                     player.sendMessage(ChatColor.DARK_AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
                     return false;
                 }
@@ -268,20 +268,20 @@ public class Commands {
                 long y = loc.getBlockY();
                 long z = loc.getBlockZ();
 
-                if (plugin.shopData.shopSize % 2 == 0) {
-                    xyzA[0] = x - (plugin.shopData.shopSize / 2);
-                    xyzB[0] = x + (plugin.shopData.shopSize / 2);
-                    xyzA[2] = z - (plugin.shopData.shopSize / 2);
-                    xyzB[2] = z + (plugin.shopData.shopSize / 2);
+                if (Config.SHOP_SIZE_DEF_WIDTH % 2 == 0) {
+                    xyzA[0] = x - (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzB[0] = x + (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzA[2] = z - (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzB[2] = z + (Config.SHOP_SIZE_DEF_WIDTH / 2);
                 } else {
-                    xyzA[0] = x - (plugin.shopData.shopSize / 2) + 1;
-                    xyzB[0] = x + (plugin.shopData.shopSize / 2);
-                    xyzA[2] = z - (plugin.shopData.shopSize / 2) + 1;
-                    xyzB[2] = z + (plugin.shopData.shopSize / 2);
+                    xyzA[0] = x - (Config.SHOP_SIZE_DEF_WIDTH / 2) + 1;
+                    xyzB[0] = x + (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzA[2] = z - (Config.SHOP_SIZE_DEF_WIDTH / 2) + 1;
+                    xyzB[2] = z + (Config.SHOP_SIZE_DEF_WIDTH / 2);
                 }
 
                 xyzA[1] = y - 1;
-                xyzB[1] = y + plugin.shopData.shopHeight - 1;
+                xyzB[1] = y + Config.SHOP_SIZE_DEF_HEIGHT - 1;
             }
 
             if(!shopPositionOk(xyzA, xyzB, world)) {
@@ -289,10 +289,10 @@ public class Commands {
                 return false;
             }
 
-            if (plugin.shopData.chargeForShop) {
+            if (Config.SHOP_CHARGE_CREATE) {
                 if (!canUseCommand(CommandTypes.CREATE_FREE)) {
-                    if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
-                        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.econManager.format(plugin.shopData.shopCost) + " to create a shop.");
+                    if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), Config.SHOP_CHARGE_CREATE_COST)) {
+                        sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.econManager.format(Config.SHOP_CHARGE_CREATE_COST) + " to create a shop.");
                         return false;
                     }
                 }
@@ -401,7 +401,7 @@ public class Commands {
 
                 // Check if size is ok
                 if (!plugin.playerData.get(player.getName()).checkSize()) {
-                    String size = plugin.shopData.maxWidth + "x" + plugin.shopData.maxHeight + "x" + plugin.shopData.maxWidth;
+                    String size = Config.SHOP_SIZE_MAX_WIDTH + "x" + Config.SHOP_SIZE_MAX_HEIGHT + "x" + Config.SHOP_SIZE_MAX_WIDTH;
                     player.sendMessage(ChatColor.DARK_AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
                     return false;
                 }
@@ -417,20 +417,20 @@ public class Commands {
                 }
             } else {
                 // otherwise calculate the shop from the player's location
-                if (plugin.shopData.shopSize % 2 == 0) {
-                    xyzA[0] = x - (plugin.shopData.shopSize / 2);
-                    xyzB[0] = x + (plugin.shopData.shopSize / 2);
-                    xyzA[2] = z - (plugin.shopData.shopSize / 2);
-                    xyzB[2] = z + (plugin.shopData.shopSize / 2);
+                if (Config.SHOP_SIZE_DEF_WIDTH % 2 == 0) {
+                    xyzA[0] = x - (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzB[0] = x + (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzA[2] = z - (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzB[2] = z + (Config.SHOP_SIZE_DEF_WIDTH / 2);
                 } else {
-                    xyzA[0] = x - (plugin.shopData.shopSize / 2) + 1;
-                    xyzB[0] = x + (plugin.shopData.shopSize / 2);
-                    xyzA[2] = z - (plugin.shopData.shopSize / 2) + 1;
-                    xyzB[2] = z + (plugin.shopData.shopSize / 2);
+                    xyzA[0] = x - (Config.SHOP_SIZE_DEF_WIDTH / 2) + 1;
+                    xyzB[0] = x + (Config.SHOP_SIZE_DEF_WIDTH / 2);
+                    xyzA[2] = z - (Config.SHOP_SIZE_DEF_WIDTH / 2) + 1;
+                    xyzB[2] = z + (Config.SHOP_SIZE_DEF_WIDTH / 2);
                 }
 
                 xyzA[1] = y - 1;
-                xyzB[1] = y + plugin.shopData.shopHeight - 1;
+                xyzB[1] = y + Config.SHOP_SIZE_DEF_HEIGHT - 1;
 
             }
 
@@ -460,16 +460,16 @@ public class Commands {
                 tempShopCuboid.uuid = thisShop.getUuid();
                 tempShopCuboid.world = player.getWorld().getName();
 
-                if (plugin.shopData.chargeForMove) {
+                if (Config.SHOP_CHARGE_MOVE) {
                     if (!canUseCommand(CommandTypes.MOVE_FREE)) {
-                        if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), plugin.shopData.shopCost)) {
+                        if (!plugin.playerData.get(player.getName()).chargePlayer(player.getName(), Config.SHOP_CHARGE_MOVE_COST)) {
                             // insert the old cuboid back into the world
                             tempShopCuboid = new PrimitiveCuboid(xyzAold, xyzBold);
                             tempShopCuboid.uuid = thisShop.getUuid();
                             tempShopCuboid.world = thisShop.getWorld();
                             LocalShops.cuboidTree.insert(tempShopCuboid);
 
-                            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.econManager.format(plugin.shopData.moveCost) + " to move a shop.");
+                            player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You need " + plugin.econManager.format(Config.SHOP_CHARGE_MOVE_COST) + " to move a shop.");
                             return false;
                         }
                     }
@@ -2915,7 +2915,7 @@ public class Commands {
             ItemStack thisStack = inventory.getItem(i);
             if (isDurable) {
                 int damage = calcDurabilityPercentage(thisStack);
-                if (damage > plugin.shopData.maxDamage && plugin.shopData.maxDamage != 0)
+                if (damage > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0)
                     continue;
             } else {
                 if (thisStack.getDurability() != item.getDurability())
@@ -2939,7 +2939,7 @@ public class Commands {
             ItemStack thisStack = inventory.getItem(i);
             if (isDurable) {
                 int damage = calcDurabilityPercentage(thisStack);
-                if (damage > plugin.shopData.maxDamage && plugin.shopData.maxDamage != 0)
+                if (damage > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0)
                     continue;
             } else {
                 if (thisStack.getDurability() != item.getDurability())
@@ -3054,7 +3054,7 @@ public class Commands {
     private boolean canCreateShop(String playerName) {
         if (canUseCommand(CommandTypes.ADMIN)) {
             return true;
-        } else if (( plugin.shopData.numOwnedShops(playerName) < plugin.shopData.maxPlayerShops || plugin.shopData.maxPlayerShops < 0) && canUseCommand(CommandTypes.CREATE)) {
+        } else if (( plugin.shopData.numOwnedShops(playerName) < Config.PLAYER_MAX_SHOPS || Config.PLAYER_MAX_SHOPS < 0) && canUseCommand(CommandTypes.CREATE)) {
             return true;
         }
 

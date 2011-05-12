@@ -67,7 +67,7 @@ public class PlayerData {
 
         size = "" + width1 + "x" + height + "x" + width2;
 
-        if (width1 > plugin.shopData.maxWidth || width2 > plugin.shopData.maxWidth || height > plugin.shopData.maxHeight) {
+        if (width1 > Config.SHOP_SIZE_MAX_WIDTH || width2 > Config.SHOP_SIZE_MAX_WIDTH || height > Config.SHOP_SIZE_MAX_HEIGHT) {
             return false;
         } else {
             return true;

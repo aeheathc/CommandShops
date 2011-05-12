@@ -37,11 +37,8 @@ public class LocalShops extends JavaPlugin {
     protected ShopsPluginListener pluginListener = new ShopsPluginListener(this);
     protected ShopData shopData = new ShopData(this);
     protected PluginDescriptionFile pdfFile = null;
-    protected UUID uuid = null;
-    protected boolean report = false;
     protected ReportThread reportThread = null;
     protected EconomyManager econManager = null;
-    protected boolean debug = false;
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -122,8 +119,8 @@ public class LocalShops extends JavaPlugin {
         }
         
         // Start reporting thread
-        if(report) {
-            reportThread = new ReportThread(this, uuid, false);
+        if(Config.SRV_REPORT) {
+            reportThread = new ReportThread(this, Config.SRV_UUID, false);
             reportThread.start();
         }
         
@@ -137,7 +134,7 @@ public class LocalShops extends JavaPlugin {
         shopData.saveAllShops();
         
         // Stop Reporting thread
-        if(report && reportThread != null && reportThread.isAlive()) {
+        if(Config.SRV_REPORT && reportThread != null && reportThread.isAlive()) {
             try {
                 reportThread.setRun(false);
                 reportThread.join(2000);
@@ -232,83 +229,83 @@ public class LocalShops extends JavaPlugin {
 
     private void loadProperties(PropertyHandler properties) {
         if (properties.keyExists("charge-for-shop")) {
-            shopData.chargeForShop = properties.getBoolean("charge-for-shop");
+            Config.SHOP_CHARGE_CREATE = properties.getBoolean("charge-for-shop");
         } else {
-            properties.setBoolean("charge-for-shop", shopData.chargeForShop);
+            properties.setBoolean("charge-for-shop", Config.SHOP_CHARGE_CREATE);
         }
 
         if (properties.keyExists("shop-cost")) {
-            shopData.shopCost = properties.getDouble("shop-cost");
+            Config.SHOP_CHARGE_CREATE_COST = properties.getDouble("shop-cost");
         } else {
-            properties.setDouble("shop-cost", shopData.shopCost);
+            properties.setDouble("shop-cost", Config.SHOP_CHARGE_CREATE_COST);
         }
 
         if (properties.keyExists("move-cost")) {
-            shopData.moveCost = properties.getDouble("move-cost");
+            Config.SHOP_CHARGE_MOVE_COST = properties.getDouble("move-cost");
         } else {
-            properties.setDouble("move-cost", shopData.moveCost);
+            properties.setDouble("move-cost", Config.SHOP_CHARGE_MOVE_COST);
         }
 
         if (properties.keyExists("shop-width")) {
-            shopData.shopSize = properties.getLong("shop-width");
+            Config.SHOP_SIZE_DEF_WIDTH = properties.getLong("shop-width");
         } else {
-            properties.setLong("shop-width", shopData.shopSize);
+            properties.setLong("shop-width", Config.SHOP_SIZE_DEF_WIDTH);
         }
 
         if (properties.keyExists("shop-height")) {
-            shopData.shopHeight = properties.getLong("shop-height");
+            Config.SHOP_SIZE_DEF_HEIGHT = properties.getLong("shop-height");
         } else {
-            properties.setLong("shop-height", shopData.shopHeight);
+            properties.setLong("shop-height", Config.SHOP_SIZE_DEF_HEIGHT);
         }
 
         if (properties.keyExists("max-width")) {
-            shopData.maxWidth = properties.getLong("max-width");
+            Config.SHOP_SIZE_MAX_WIDTH = properties.getLong("max-width");
         } else {
-            properties.setLong("max-width", shopData.maxWidth);
+            properties.setLong("max-width", Config.SHOP_SIZE_MAX_WIDTH);
         }
 
         if (properties.keyExists("max-height")) {
-            shopData.maxHeight = properties.getLong("max-height");
+            Config.SHOP_SIZE_MAX_HEIGHT = properties.getLong("max-height");
         } else {
-            properties.setLong("max-height", shopData.maxHeight);
+            properties.setLong("max-height", Config.SHOP_SIZE_MAX_HEIGHT);
         }
         if (properties.keyExists("shops-per-player")) {
-            shopData.maxPlayerShops = properties.getInt("shops-per-player");
+            Config.PLAYER_MAX_SHOPS = properties.getInt("shops-per-player");
         } else {
-            properties.setInt("shops-per-player", shopData.maxPlayerShops);
+            properties.setInt("shops-per-player", Config.PLAYER_MAX_SHOPS);
         }
 
         if (properties.keyExists("log-transactions")) {
-            shopData.logTransactions = properties.getBoolean("log-transactions");
+            Config.SRV_LOG_TRANSACTIONS = properties.getBoolean("log-transactions");
         } else {
-            properties.setBoolean("log-transactions", shopData.logTransactions);
+            properties.setBoolean("log-transactions", Config.SRV_LOG_TRANSACTIONS);
         }
 
         if (properties.keyExists("max-damage")) {
-            shopData.maxDamage = properties.getInt("max-damage");
-            if (shopData.maxDamage < 0)
-                shopData.maxDamage = 0;
+            Config.ITEM_MAX_DAMAGE = properties.getInt("max-damage");
+            if (Config.ITEM_MAX_DAMAGE < 0)
+                Config.ITEM_MAX_DAMAGE = 0;
         } else {
-            properties.setInt("max-damage", shopData.maxDamage);
+            properties.setInt("max-damage", Config.ITEM_MAX_DAMAGE);
         }
         
         if(properties.keyExists("uuid")) {
-            uuid = properties.getUuid("uuid");
+            Config.SRV_UUID = properties.getUuid("uuid");
         } else {
-            uuid = UUID.randomUUID();
-            properties.setUuid("uuid", uuid);
+            Config.SRV_UUID = UUID.randomUUID();
+            properties.setUuid("uuid", Config.SRV_UUID);
         }
         
         if(properties.keyExists("report-stats")) {
-            report = properties.getBoolean("report-stats");
+            Config.SRV_REPORT = properties.getBoolean("report-stats");
         } else {
-            properties.setBoolean("report-stats", report);
+            properties.setBoolean("report-stats", Config.SRV_REPORT);
         }
         
         if(properties.keyExists("debug")) {
-            debug = properties.getBoolean("debug");
+            Config.SRV_DEBUG = properties.getBoolean("debug");
         } else {
-            properties.setBoolean("debug", debug);
+            properties.setBoolean("debug", Config.SRV_DEBUG);
         }
     }
 }
