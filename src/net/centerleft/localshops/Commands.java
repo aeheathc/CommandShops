@@ -2382,6 +2382,7 @@ public class Commands {
         sender.sendMessage("   " + "/" + commandLabel + " set sell [item name] [price] <bundle size>");
         sender.sendMessage("   " + "/" + commandLabel + " set max [item name] [max number]");
         sender.sendMessage("   " + "/" + commandLabel + " set manager +[playername] -[playername2]");
+        sender.sendMessage("   " + "/" + commandLabel + " set minbalance [amount]");
         sender.sendMessage("   " + "/" + commandLabel + " set owner [player name]");
         if (canUseCommand(CommandTypes.ADMIN)) {
             sender.sendMessage("   " + "/" + commandLabel + " set unlimited money");

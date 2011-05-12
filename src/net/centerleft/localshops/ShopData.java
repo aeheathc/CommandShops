@@ -339,7 +339,7 @@ public class ShopData {
         String name = props.getProperty("name");
         boolean unlimitedMoney = Boolean.parseBoolean(props.getProperty("unlimited-money"));
         boolean unlimitedStock = Boolean.parseBoolean(props.getProperty("unlimited-stock"));
-        double minBalance = Double.parseDouble((props.getProperty("min-balance")));
+        double minBalance = Double.parseDouble((props.getProperty("min-balance", "0.0")));
 
         // Location - locationB=-88, 50, -127
         long[] locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
