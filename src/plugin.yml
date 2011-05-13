@@ -1,9 +1,9 @@
 name: LocalShops
 main: net.centerleft.localshops.LocalShops
-version: 3.0.0-Alpha-6
+version: 3.0.0-Beta
 author: Cereal, Jonbas
 description: >
-             A localized shop plugin for use with iConomy.
+             A localized shop plugin for use with Bukkit economies.
              Users can create and manage their own shops.
 commands:
   lshop:
