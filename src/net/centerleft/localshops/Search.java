@@ -103,7 +103,7 @@ public class Search {
         items.add(new ItemInfo("Fence", new String[][] { { "fence" } }, 85, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Pumpkin", new String[][] { { "pump" } }, 86, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Netherrack", new String[][] { { "netherr" }, { "netherst" }, { "hellst" } }, 87, (short) 0, new int[]{ 64, 64, 64 } ));
-        items.add(new ItemInfo("Soul Sand", new String[][] { { "soul" }, { "slowsa" } }, 88, (short) 0, new int[]{ 64, 64, 64 } ));
+        items.add(new ItemInfo("Soul Sand", new String[][] { { "soul", "sand" }, { "soul" }, { "slowsa" }, { "nether", "mud" }, { "slow", "sand" }, { "quick", "sand" }, { "mud" } }, 88, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Glowstone", new String[][] { { "glow", "stone" }, { "light", "stone" } }, 89, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Jack-O-Lantern", new String[][] { { "jack" }, { "lante" } }, 91, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Iron Shovel", new String[][] { { "shov", "ir" }, { "spad", "ir" } }, 256, (short) 0, new int[]{ 64, 64, 64 } ));
