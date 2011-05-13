@@ -971,8 +971,18 @@ public class Commands {
                     sender.sendMessage("You must be holding an item, or specify an item.");
                     return true;
                 }
-                int amount = countItemsInInventory(player.getInventory(), itemStack);
-                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                ItemInfo item = null;
+                int amount = itemStack.getAmount();
+                if(LocalShops.itemList.isDurable(itemStack)) {
+                    item = Search.itemById(itemStack.getTypeId());
+                    if (calcDurabilityPercentage(itemStack) > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0) {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Your " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " is too damaged to sell!");
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Items must be damanged less than " + ChatColor.WHITE + Config.ITEM_MAX_DAMAGE + "%");
+                        return true;
+                    }
+                } else {
+                    item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                }
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
                     return true;
@@ -989,8 +999,18 @@ public class Commands {
                 if (itemStack == null) {
                     return true;
                 }
+                ItemInfo item = null;
                 int amount = itemStack.getAmount();
-                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                if(LocalShops.itemList.isDurable(itemStack)) {
+                    item = Search.itemById(itemStack.getTypeId());
+                    if (calcDurabilityPercentage(itemStack) > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0) {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Your " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " is too damaged to sell!");
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Items must be damanged less than " + ChatColor.WHITE + Config.ITEM_MAX_DAMAGE + "%");
+                        return true;
+                    }
+                } else {
+                    item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                }
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
                     return true;
@@ -1374,8 +1394,18 @@ public class Commands {
                 if (itemStack == null) {
                     return false;
                 }
+                ItemInfo item = null;
                 int amount = itemStack.getAmount();
-                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                if(LocalShops.itemList.isDurable(itemStack)) {
+                    item = Search.itemById(itemStack.getTypeId());
+                    if (calcDurabilityPercentage(itemStack) > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0) {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Your " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " is too damaged to add to stock!");
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Items must be damanged less than " + ChatColor.WHITE + Config.ITEM_MAX_DAMAGE + "%");
+                        return true;
+                    }
+                } else {
+                    item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                }
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
                     return false;
@@ -1392,7 +1422,17 @@ public class Commands {
                 if (itemStack == null) {
                     return false;
                 }
-                ItemInfo item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                ItemInfo item = null;
+                if(LocalShops.itemList.isDurable(itemStack)) {
+                    item = Search.itemById(itemStack.getTypeId());
+                    if (calcDurabilityPercentage(itemStack) > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0) {
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Your " + ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " is too damaged to add to stock!");
+                        sender.sendMessage(ChatColor.DARK_AQUA + "Items must be damanged less than " + ChatColor.WHITE + Config.ITEM_MAX_DAMAGE + "%");
+                        return true;
+                    }
+                } else {
+                    item = Search.itemById(itemStack.getTypeId(), itemStack.getDurability());
+                }
                 if(item == null) {
                     sender.sendMessage("Could not find an item.");
                     return false;
