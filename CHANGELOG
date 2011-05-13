@@ -1,3 +1,13 @@
+Version 3.0.1 Beta
+    * Item durability checks & messages
+    * Fix regex groupings
+    * Converted shops are now moved to plugins/LocalShops/shops-converted/
+    * Broken shops are now moved to plugins/LocalShops/shops-broken/
+    * Report LocalShops UUID during onEnable()
+
+Version 3.0.0 Beta
+    * Update default settings
+
 Version 3.0.0 Alpha 6
     * "/shop set name" is now in help
     * Add minimum balance for shops (see /shop set minbalance) - Sleaker
