@@ -297,8 +297,10 @@ public class ShopData {
 
             br.close();
 
-            if(file.delete()) {
-                saveShop(shop);
+            File dir = new File("plugins/LocalShops/shops-converted/");
+            dir.mkdir();
+            if (file.renameTo(new File(dir, file.getName()))) {
+                file.delete();
                 return shop;
             } else {
                 return null;
@@ -421,7 +423,7 @@ public class ShopData {
     }
     
     public boolean isolateBrokenShopFile(File file) {
-        File dir = new File("plugins/LocalShops/broken-shops/");
+        File dir = new File("plugins/LocalShops/shops-broken/");
         dir.mkdir();
         if (file.renameTo(new File(dir, file.getName()))) {
             file.delete();
