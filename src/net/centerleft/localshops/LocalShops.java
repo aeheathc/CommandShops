@@ -111,7 +111,7 @@ public class LocalShops extends JavaPlugin {
 
         // update the console that we've started
         log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with " + shopData.getNumShops() + " shop(s)"));
-        log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is enabled!"));
+        log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is enabled: " + Config.SRV_UUID.toString()));
 
         // check which shops players are inside
         for (Player player : this.getServer().getOnlinePlayers()) {
