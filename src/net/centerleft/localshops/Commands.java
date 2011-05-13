@@ -2136,7 +2136,7 @@ public class Commands {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
             double price = Double.parseDouble(matcher.group(2));
-            int size = Integer.parseInt(matcher.group(3));
+            int size = Integer.parseInt(matcher.group(7));
             return shopSetSell(shop, item, price, size);
         }
 
@@ -2150,7 +2150,7 @@ public class Commands {
             ItemInfo item = Search.itemById(id, type);
             log.info(matcher.group(3));
             double price = Double.parseDouble(matcher.group(3));
-            int size = Integer.parseInt(matcher.group(4));
+            int size = Integer.parseInt(matcher.group(8));
             return shopSetSell(shop, item, price, size);
         }
 
@@ -2185,7 +2185,7 @@ public class Commands {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
             double price = Double.parseDouble(matcher.group(2));
-            int size = Integer.parseInt(matcher.group(3));
+            int size = Integer.parseInt(matcher.group(7));
             return shopSetSell(shop, item, price, size);
         }
 
@@ -2307,7 +2307,7 @@ public class Commands {
             int id = Integer.parseInt(matcher.group(1));
             ItemInfo item = Search.itemById(id);
             double price = Double.parseDouble(matcher.group(2));
-            int size = Integer.parseInt(matcher.group(3));
+            int size = Integer.parseInt(matcher.group(7));
             return shopSetBuy(shop, item, price, size);
         }
 
@@ -2320,7 +2320,7 @@ public class Commands {
             short type = Short.parseShort(matcher.group(2));
             ItemInfo item = Search.itemById(id, type);
             double price = Double.parseDouble(matcher.group(3));
-            int size = Integer.parseInt(matcher.group(4));
+            int size = Integer.parseInt(matcher.group(8));
             return shopSetBuy(shop, item, price, size);
         }
 
@@ -2355,7 +2355,7 @@ public class Commands {
             String name = matcher.group(1);
             ItemInfo item = Search.itemByName(name);
             double price = Double.parseDouble(matcher.group(2));
-            int size = Integer.parseInt(matcher.group(3));
+            int size = Integer.parseInt(matcher.group(7));
             return shopSetBuy(shop, item, price, size);
         }
 
