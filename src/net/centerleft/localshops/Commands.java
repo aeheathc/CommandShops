@@ -882,7 +882,7 @@ public class Commands {
             pData.payPlayer(player.getName(), totalCost);
         } else {
             if (!isShopController(shop)) {
-                log.info(String.format("From: %s, To: %s, Cost: %d", shop.getOwner(), player.getName(), totalCost));
+                log.info(String.format("From: %s, To: %s, Cost: %f", shop.getOwner(), player.getName(), totalCost));
                 if (!pData.payPlayer(shop.getOwner(), player.getName(), totalCost)) {
                     // lshop owner doesn't have enough money
                     // get shop owner's balance and calculate how many it can
