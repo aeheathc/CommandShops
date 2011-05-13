@@ -14,16 +14,16 @@ public class Config {
     protected static long SHOP_SIZE_MAX_HEIGHT = 10;
     
     // Shop Charge settings
-    protected static double SHOP_CHARGE_CREATE_COST = 4000;
-    protected static double SHOP_CHARGE_MOVE_COST = 1000;
-    protected static boolean SHOP_CHARGE_CREATE = false;
-    protected static boolean SHOP_CHARGE_MOVE = false;
+    protected static double SHOP_CHARGE_CREATE_COST = 100;
+    protected static double SHOP_CHARGE_MOVE_COST = 10;
+    protected static boolean SHOP_CHARGE_CREATE = true;
+    protected static boolean SHOP_CHARGE_MOVE = true;
     
     // Server Settings
     protected static boolean SRV_LOG_TRANSACTIONS = true;
     protected static boolean SRV_DEBUG = false;
     protected static UUID SRV_UUID = null;
-    protected static boolean SRV_REPORT = false;
+    protected static boolean SRV_REPORT = true;
     
     // Player Settings
     protected static int PLAYER_MAX_SHOPS = -1;        // Anything < 0 = unlimited player shops.

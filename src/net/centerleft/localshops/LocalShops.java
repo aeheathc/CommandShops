@@ -230,6 +230,7 @@ public class LocalShops extends JavaPlugin {
     private void loadProperties(PropertyHandler properties) {
         if (properties.keyExists("charge-for-shop")) {
             Config.SHOP_CHARGE_CREATE = properties.getBoolean("charge-for-shop");
+            Config.SHOP_CHARGE_MOVE = properties.getBoolean("charge-for-shop");
         } else {
             properties.setBoolean("charge-for-shop", Config.SHOP_CHARGE_CREATE);
         }
