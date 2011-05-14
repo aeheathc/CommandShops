@@ -890,9 +890,9 @@ public class Commands {
                     double shopBalance = plugin.playerData.get(player.getName()).getBalance(shop.getOwner());
                     // the current shop balance must be greater than the minimum
                     // balance to do the transaction.
-                    if (shopBalance <= shop.getMinBalance()) {
-                        player.sendMessage(ChatColor.DARK_AQUA + shop.getName() + " is broke!");
-                        return false;
+                    if (shopBalance <= shop.getMinBalance() || shopBalance < invItem.getSellPrice()) {
+                        player.sendMessage(ChatColor.WHITE + shop.getName() + ChatColor.DARK_AQUA + " is broke!");
+                        return true;
                     }
                     // Added Min Balance calculation for maximum items the shop can afford
                     int bundlesCanAford = (int) Math.floor(shopBalance - shop.getMinBalance() / itemPrice);
@@ -901,7 +901,7 @@ public class Commands {
                     player.sendMessage(ChatColor.DARK_AQUA + shop.getName() + " could only afford " + ChatColor.WHITE + bundlesCanAford + ChatColor.DARK_AQUA + " bundles.");
                     if (!pData.payPlayer(shop.getOwner(), player.getName(), totalCost)) {
                         player.sendMessage(ChatColor.DARK_AQUA + "Unexpected money problem: could not complete sale.");
-                        return false;
+                        return true;
                     }
                 }
             }

@@ -120,14 +120,17 @@ public class PlayerData {
         log.info("PlayerFrom: " + playerFrom + " balanceFrom: " + balanceFrom + " PlayerTo: " + playerTo + " balanceTo: " + balanceTo + " Cost: " + cost);
         
         double withdrawAmt = plugin.econManager.withdrawPlayer(playerFrom, cost);
-        double depositAmt = plugin.econManager.depositPlayer(playerTo, cost);
-        
         if(withdrawAmt == -1) {
             log.info("Failed to withdraw");
+            return false;
         }
         
+        double depositAmt = plugin.econManager.depositPlayer(playerTo, cost);
         if(depositAmt == -1) {
             log.info("Failed to deposit");
+            // Return money to shop owner
+            plugin.econManager.depositPlayer(playerFrom, cost);
+            return false;
         }
         
         if (withdrawAmt != -1 && depositAmt != -1) {
