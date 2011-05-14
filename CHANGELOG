@@ -1,3 +1,9 @@
+Version 3.0.3 Beta
+    * Fixed money exploit
+    * Fix typo on selling or buying 0 items
+    * Redstone Dust match criteria updated
+    * Soul Sand match criteria updated
+
 Version 3.0.2 Beta
     * Fixed IllegalFormatConversionException on /sell
 

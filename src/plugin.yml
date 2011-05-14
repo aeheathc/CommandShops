@@ -1,6 +1,6 @@
 name: LocalShops
 main: net.centerleft.localshops.LocalShops
-version: 3.0.2-Beta
+version: 3.0.3-Beta
 author: Cereal, Jonbas
 description: >
              A localized shop plugin for use with Bukkit economies.
