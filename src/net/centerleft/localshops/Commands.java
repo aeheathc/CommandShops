@@ -1849,7 +1849,7 @@ public class Commands {
                     count = shop.getItem(item.name).getStock();
                 }
                 if(count < 1) {
-                    sender.sendMessage("You must but at least one " + item.name + "!");
+                    sender.sendMessage("You must buy at least one " + item.name + "!");
                     return true;
                 }
                 return shopBuy(shop, item, count);
@@ -1875,7 +1875,7 @@ public class Commands {
                     count = shop.getItem(item.name).getStock();
                 }
                 if(count < 1) {
-                    sender.sendMessage("You must but at least one " + item.name + "!");
+                    sender.sendMessage("You must buy at least one " + item.name + "!");
                     return true;
                 }
                 return shopBuy(shop, item, count);
@@ -1949,7 +1949,7 @@ public class Commands {
                 return true;
             }
             if(count < 1) {
-                sender.sendMessage("You must but at least one " + item.name + "!");
+                sender.sendMessage("You must buy at least one " + item.name + "!");
                 return true;
             }
             return shopBuy(shop, item, count);
@@ -1968,7 +1968,7 @@ public class Commands {
                 return true;
             }
             if(count < 1) {
-                sender.sendMessage("You must but at least one " + item.name + "!");
+                sender.sendMessage("You must buy at least one " + item.name + "!");
                 return true;
             }
             return shopBuy(shop, item, count);
