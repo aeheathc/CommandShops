@@ -39,7 +39,7 @@ public class Economy_Essentials implements Economy {
                 log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
-    }
+    }    
     
     @Override
     public boolean isEnabled() {

@@ -13,7 +13,6 @@ import org.bukkit.plugin.PluginManager;
 
 import com.iConomy.iConomy;
 import com.iConomy.system.Account;
-import com.iConomy.system.BankAccount;
 import com.iConomy.system.Holdings;
 
 public class Economy_iConomy5 implements Economy {
