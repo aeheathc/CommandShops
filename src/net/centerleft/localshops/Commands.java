@@ -2,7 +2,9 @@ package net.centerleft.localshops;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -110,7 +112,11 @@ public class Commands {
         } else {
             sender.sendMessage(String.format("%-"+idWidth+"s  %-25s %s", "Id", "Name", "Owner"));
         }
-        Iterator<Shop> it = plugin.shopData.getAllShops().iterator();
+        
+        List<Shop> shops = plugin.shopData.getAllShops();
+        Collections.sort(shops, new ShopSortByName());
+        
+        Iterator<Shop> it = shops.iterator();
         while(it.hasNext()) {
             Shop shop = it.next();
             if(!showAll && isPlayer && !isShopController(shop)) {
@@ -711,7 +717,8 @@ public class Commands {
      */
     public void printInventory(Shop shop, String buySellorList, int pageNumber) {
         String inShopName = shop.getName();
-        Collection<InventoryItem> items = shop.getItems();
+        List<InventoryItem> items = shop.getItems();
+        Collections.sort(items, new InventoryItemShortByName());
 
         boolean buy = buySellorList.equalsIgnoreCase("buy");
         boolean sell = buySellorList.equalsIgnoreCase("sell");

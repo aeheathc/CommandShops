@@ -196,8 +196,8 @@ public class Shop {
         return managers;
     }
 
-    public Collection<InventoryItem> getItems() {
-        return inventory.values();
+    public List<InventoryItem> getItems() {
+        return new ArrayList<InventoryItem>(inventory.values());
     }
 
     public boolean isUnlimitedStock() {

@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -81,8 +81,8 @@ public class ShopData {
         }
     }
 
-    public Collection<Shop> getAllShops() {
-        return shops.values();
+    public List<Shop> getAllShops() {
+        return new ArrayList<Shop>(shops.values());
     }
 
     public int getNumShops() {
@@ -116,7 +116,12 @@ public class ShopData {
 
             // Determine if filename is a UUID or not
             if(file.getName().matches("^(\\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\\}{0,1})\\.shop$")) {
-                shop = loadShop(file);
+                try {
+                    shop = loadShop(file);
+                } catch(Exception e) {
+                    // log error
+                    log.info(String.format("[%s] Error loading Shop file \"%s\", ignored.", plugin.pdfFile.getName(), file.toString()));
+                }
             } else {
                 // Convert old format & delete the file...immediately save using the new format (will generate a new UUID for this shop)
                 shop = convertShopOldFormat(file);                
@@ -327,7 +332,7 @@ public class ShopData {
         return null;
     }    
 
-    public Shop loadShop(File file) {
+    public Shop loadShop(File file) throws Exception {
         SortedProperties props = new SortedProperties();
         try {
             props.load(new FileInputStream(file));
