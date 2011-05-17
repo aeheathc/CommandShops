@@ -2,6 +2,7 @@ package net.centerleft.localshops.modules.permission.plugins;
 
 import net.centerleft.localshops.modules.permission.Permission;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -50,8 +51,8 @@ public class Permission_Permissions implements Permission {
     }
 
     @Override
-    public boolean hasPermission(String playerName, String permission) {
-        return this.permission.getHandler().has(plugin.getServer().getPlayer(playerName), permission);
+    public boolean hasPermission(Player player, String permission) {
+        return this.permission.getHandler().has(player, permission);
     }
 
     private class PermissionServerListener extends ServerListener {

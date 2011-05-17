@@ -211,7 +211,7 @@ public class Commands {
             plugin.playerData.get(playerName).isSelecting = !plugin.playerData.get(playerName).isSelecting;
 
             if (plugin.playerData.get(playerName).isSelecting) {
-                sender.sendMessage(ChatColor.WHITE + "Shop selection enabled, follow the directions to create a shop");
+                sender.sendMessage(ChatColor.WHITE + "Shop selection enabled." + ChatColor.DARK_AQUA + " Use " + ChatColor.WHITE + "bare hands " + ChatColor.DARK_AQUA + "to select!");
                 sender.sendMessage(ChatColor.DARK_AQUA + "Left click to select the bottom corner for a shop");
                 sender.sendMessage(ChatColor.DARK_AQUA + "Right click to select the far upper corner for the shop");
             } else {
@@ -220,7 +220,8 @@ public class Commands {
             }
             return true;
         } else {
-            return false;
+            sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
+            return true;
         }
     }
 
@@ -513,14 +514,14 @@ public class Commands {
 
             // check if admin first
             for (String permission : CommandTypes.ADMIN.getPermissions()) {
-                if (plugin.permManager.hasPermission(player.toString(), permission)) {
+                if (plugin.permManager.hasPermission(player, permission)) {
                     return true;
                 }
             }
 
             // fail back to provided permissions second
             for (String permission : type.getPermissions()) {
-                if (plugin.permManager.hasPermission(player.toString(), permission)) {
+                if (!plugin.permManager.hasPermission(player, permission)) {
                     return false;
                 }
             }

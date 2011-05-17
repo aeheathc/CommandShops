@@ -2,15 +2,10 @@ package net.centerleft.localshops.modules.permission.plugins;
 
 import net.centerleft.localshops.modules.permission.Permission;
 
-import org.bukkit.plugin.Plugin;
+import org.bukkit.entity.Player;
 
 public class Permission_None implements Permission {
     private String name = "Local Fallback Permissions";
-    private Plugin plugin = null;
-    
-    public Permission_None(Plugin plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public boolean isEnabled() {
@@ -19,9 +14,9 @@ public class Permission_None implements Permission {
     }
 
     @Override
-    public boolean hasPermission(String playerName, String permission) {
+    public boolean hasPermission(Player player, String permission) {
         // Allow OPs to everything
-        if(plugin.getServer().getPlayer(playerName).isOp()) {
+        if(player.isOp()) {
             return true;
         }
         

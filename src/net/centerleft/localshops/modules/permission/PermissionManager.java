@@ -5,7 +5,10 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import net.centerleft.localshops.LocalShops;
-import net.centerleft.localshops.modules.permission.plugins.*;
+import net.centerleft.localshops.modules.permission.plugins.Permission_None;
+import net.centerleft.localshops.modules.permission.plugins.Permission_Permissions;
+
+import org.bukkit.entity.Player;
 
 public class PermissionManager {
     
@@ -31,7 +34,7 @@ public class PermissionManager {
         
         // Try to load Local Fallback Permissions (aka None)
         {
-            Permission lPerms = new Permission_None(plugin);
+            Permission lPerms = new Permission_None();
             perms.put(10, lPerms);
             log.info(String.format("[%s][Permission] Local Fallback Permissions found: %s", plugin.getDescription().getName(), lPerms.isEnabled() ? "Loaded" : "Waiting"));
         }
@@ -69,8 +72,10 @@ public class PermissionManager {
         }
     }
     
-    public boolean hasPermission(String playerName, String permission) {
-        return getPermission().hasPermission(playerName, permission);
+    public boolean hasPermission(Player player, String permission) {
+        boolean rVal = getPermission().hasPermission(player, permission);
+        log.info(String.format("[%s] Player %s %s %s", plugin.getDescription().getName(), player.getName(), rVal ? "has" : "doesn't have", permission));
+        return rVal;
     }
 
 }
