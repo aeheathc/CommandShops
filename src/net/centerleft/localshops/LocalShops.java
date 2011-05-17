@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import net.centerleft.localshops.modules.economy.EconomyManager;
+import net.centerleft.localshops.modules.permission.PermissionManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -17,12 +18,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.nijikokun.bukkit.Permissions.Permissions;
 
 import cuboidLocale.QuadTree;
 
@@ -34,11 +32,11 @@ import cuboidLocale.QuadTree;
 public class LocalShops extends JavaPlugin {
     // Listeners & Objects
     protected ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
-    protected ShopsPluginListener pluginListener = new ShopsPluginListener(this);
     protected ShopData shopData = new ShopData(this);
     protected PluginDescriptionFile pdfFile = null;
     protected ReportThread reportThread = null;
     protected EconomyManager econManager = null;
+    protected PermissionManager permManager = null;
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -72,27 +70,8 @@ public class LocalShops extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.PLUGIN_DISABLE, pluginListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
         // TODO: add PLAYER_JOIN, PLAYER_QUIT, PLAYER_KICK events
-
-        // check hook for permissions
-        Plugin p = pm.getPlugin("Permissions");
-        if (p != null) {
-            if (p.isEnabled()) {
-                Permissions gm = (Permissions) p;
-                pluginListener.permissions = gm;
-                pluginListener.gmPermissionCheck = gm.getHandler();
-                log.info(String.format("[%s] %s", pdfFile.getName(), "Permissions found."));
-                pluginListener.usePermissions = true;
-            } else {
-                pluginListener.usePermissions = false;
-            }
-        } else {
-            log.severe(String.format("[%s] %s", pdfFile.getName(), "Permissions not found."));
-            pluginListener.usePermissions = false;
-        }
 
         // setup the file IO
         folderDir = new File(folderPath);
@@ -127,10 +106,16 @@ public class LocalShops extends JavaPlugin {
         econManager = new EconomyManager(this);
         if(!econManager.loadEconomies()) {
             // No valid economies, display error message and disables
-            log.warning(String.format("[%s] FATAL:  No economic plugins found, please refer to the documentation.", pdfFile.getName()));
+            log.warning(String.format("[%s] FATAL: No economic plugins found, please refer to the documentation.", pdfFile.getName()));
             getPluginLoader().disablePlugin(this);
         }
         
+        permManager = new PermissionManager(this);
+        if(!permManager.load()) {
+            // no valid permissions, display error message and disables
+            log.warning(String.format("[%s] FATAL: No permission plugins found, please refer to the documentation.", pdfFile.getName()));
+            getPluginLoader().disablePlugin(this);
+        }
     }
 
     public void onDisable() {

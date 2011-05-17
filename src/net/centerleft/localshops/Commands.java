@@ -16,8 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.nijiko.permissions.PermissionHandler;
-
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 
@@ -510,32 +508,23 @@ public class Commands {
     }
 
     public boolean canUseCommand(CommandTypes type) {
-        PermissionHandler pm = plugin.pluginListener.gmPermissionCheck;
-
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            if (plugin.pluginListener.usePermissions) {
-                // Using permissions, check them
-
-                // check if admin first
-                for (String permission : CommandTypes.ADMIN.getPermissions()) {
-                    if (pm.has(player, permission)) {
-                        return true;
-                    }
+            // check if admin first
+            for (String permission : CommandTypes.ADMIN.getPermissions()) {
+                if (plugin.permManager.hasPermission(player.toString(), permission)) {
+                    return true;
                 }
-
-                // fail back to provided permissions second
-                for (String permission : type.getPermissions()) {
-                    if (!pm.has(player, permission)) {
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                // Not using permissions, use op status
-                return player.isOp();
             }
+
+            // fail back to provided permissions second
+            for (String permission : type.getPermissions()) {
+                if (plugin.permManager.hasPermission(player.toString(), permission)) {
+                    return false;
+                }
+            }
+            return true;
         } else {
             return true;
         }
