@@ -199,7 +199,7 @@ public class Search {
         items.add(new ItemInfo("Compass", new String[][] { { "comp" } }, 345, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Fishing Rod", new String[][] { { "rod" }, { "pole" } }, 346, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Clock", new String[][] { { "cloc" }, { "watc" } }, 347, (short) 0, new int[]{ 64, 64, 64 } ));
-        items.add(new ItemInfo("Glowstone Dust", new String[][] { { "glow", "dus" }, { "ligh", "dust" } }, 348, (short) 0, new int[]{ 64, 64, 64 } ));
+        items.add(new ItemInfo("Glowstone Dust", new String[][] { { "glow", "sto", "dus" }, { "glow", "dus" }, { "ligh", "dust" } }, 348, (short) 0, new int[]{ 64, 64, 64 } ));
         items.add(new ItemInfo("Raw Fish", new String[][] { { "fish" } }, 349, (short) 0, new int[]{ 1, 8, 64 } ));
         items.add(new ItemInfo("Cooked Fish", new String[][] { { "fish", "coo" }, { "kipper" } }, 350, (short) 0, new int[]{ 1, 4, 64 } ));
         items.add(new ItemInfo("Ink Sac", new String[][] { { "ink" }, { "dye", "bla" } }, 351, (short) 0, new int[]{ 64, 64, 64 } ));
