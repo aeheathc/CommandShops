@@ -54,59 +54,98 @@ public class Economy_BOSE implements Economy {
     }
 
     @Override
-    public double getBalance(String playerName) {
-        return (double) economy.getPlayerMoney(playerName);
+    public EconomyResponse getBalance(String playerName) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
+        balance = (double) economy.getPlayerMoney(playerName);
+        type = EconomyResponse.ResponseType.SUCCESS;
+
+        return new EconomyResponse(balance, balance, type, errorMessage);
     }
 
     @Override
-    public double withdrawPlayer(String playerName, double amount) {
+    public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
         if(amount < 0) {
-            return -1;
+            errorMessage = "Cannot withdraw negative funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(balance, balance, type, errorMessage);
         }
+        
         amount = Math.ceil(amount);
-        double balance = getBalance(playerName);
+        balance = (double) economy.getPlayerMoney(playerName);
         if(balance - amount < 0) {
-            return -1;
+            errorMessage = "Insufficient funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(balance, balance, type, errorMessage);
         }
         if(economy.setPlayerMoney(playerName, (int) (balance - amount), false)) {
-            return amount;
+            type = EconomyResponse.ResponseType.SUCCESS;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         } else {
-            return -1;
+            errorMessage = "Error withdrawing funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         }
     }
 
     @Override
-    public double depositPlayer(String playerName, double amount) {
+    public EconomyResponse depositPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
         if(amount < 0) {
-            return -1;
+            errorMessage = "Cannot deposit negative funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(balance, balance, type, errorMessage);
         }
         amount = Math.ceil(amount);
-        double balance = getBalance(playerName);
+        balance = (double) economy.getPlayerMoney(playerName);
         if(economy.setPlayerMoney(playerName, (int) (balance + amount), false)) {
-            return amount;
+            type = EconomyResponse.ResponseType.SUCCESS;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         } else {
-            return -1;
+            errorMessage = "Error withdrawing funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = (double) economy.getPlayerMoney(playerName);
+            
+            return new EconomyResponse(balance, balance, type, errorMessage);
         }
     }
 
     @Override
-    public double depositShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.ceil(amount);
+    public EconomyResponse depositShop(Shop shop, double amount) {       
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
 
     @Override
-    public double withdrawShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.ceil(amount);
+    public EconomyResponse withdrawShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
 
     public String getMoneyNamePlural() {

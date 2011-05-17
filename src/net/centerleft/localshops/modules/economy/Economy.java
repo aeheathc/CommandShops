@@ -11,9 +11,9 @@ public interface Economy {
     public boolean isEnabled();
     public String getName();
     public String format(double amount);
-    public double getBalance(String playerName);
-    public double withdrawPlayer(String playerName, double amount);
-    public double depositPlayer(String playerName, double amount);
-    public double withdrawShop(Shop shop, double amount);
-    public double depositShop(Shop shop, double amount);
+    public EconomyResponse getBalance(String playerName);
+    public EconomyResponse withdrawPlayer(String playerName, double amount);
+    public EconomyResponse depositPlayer(String playerName, double amount);
+    public EconomyResponse withdrawShop(Shop shop, double amount);
+    public EconomyResponse depositShop(Shop shop, double amount);
 }

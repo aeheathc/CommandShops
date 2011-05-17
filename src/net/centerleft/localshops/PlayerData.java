@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import net.centerleft.localshops.modules.economy.Economy;
+import net.centerleft.localshops.modules.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
 
@@ -105,8 +106,8 @@ public class PlayerData {
     }
 
     public boolean payPlayer(String playerName, double cost) {
-        double payed = plugin.econManager.depositPlayer(playerName, cost);
-        if(payed != -1) {
+        EconomyResponse depositResp = plugin.econManager.depositPlayer(playerName, cost);
+        if(depositResp.transactionSuccess()) {
             return true;
         } else {
             return false;
@@ -114,28 +115,31 @@ public class PlayerData {
     }
 
     public boolean payPlayer(String playerFrom, String playerTo, double cost) {       
-        double balanceFrom = plugin.econManager.getBalance(playerFrom);
-        double balanceTo = plugin.econManager.getBalance(playerTo);
+        EconomyResponse balanceFromResp = plugin.econManager.getBalance(playerFrom);
+        EconomyResponse balanceToResp = plugin.econManager.getBalance(playerTo);
         
-        log.info("PlayerFrom: " + playerFrom + " balanceFrom: " + balanceFrom + " PlayerTo: " + playerTo + " balanceTo: " + balanceTo + " Cost: " + cost);
+        log.info("PlayerFrom: " + playerFrom + " balanceFrom: " + balanceFromResp.amount + " PlayerTo: " + playerTo + " balanceTo: " + balanceToResp.amount + " Cost: " + cost);
         
-        double withdrawAmt = plugin.econManager.withdrawPlayer(playerFrom, cost);
-        if(withdrawAmt == -1) {
+        EconomyResponse withdrawResp = plugin.econManager.withdrawPlayer(playerFrom, cost);
+        if(!withdrawResp.transactionSuccess()) {
             log.info("Failed to withdraw");
             return false;
         }
         
-        double depositAmt = plugin.econManager.depositPlayer(playerTo, cost);
-        if(depositAmt == -1) {
+        EconomyResponse depositResp = plugin.econManager.depositPlayer(playerTo, cost);
+        if(!depositResp.transactionSuccess()) {
             log.info("Failed to deposit");
             // Return money to shop owner
-            plugin.econManager.depositPlayer(playerFrom, cost);
+            EconomyResponse returnResp = plugin.econManager.depositPlayer(playerFrom, cost);
+            if(!returnResp.transactionSuccess()) {
+                log.warning(String.format("[%s] ERROR:  Payment failed and could not return funds to original state!  %s may need %s!", plugin.pdfFile.getName(), playerName, plugin.econManager.format(cost)));
+            }
             return false;
         }
         
-        if (withdrawAmt != -1 && depositAmt != -1) {
-            plugin.shopData.logPayment(playerFrom, "payment", withdrawAmt, balanceFrom, balanceFrom - withdrawAmt);
-            plugin.shopData.logPayment(playerTo, "payment", depositAmt, balanceTo, balanceTo + depositAmt);
+        if (withdrawResp.transactionSuccess() && depositResp.transactionSuccess()) {
+            plugin.shopData.logPayment(playerFrom, "payment", withdrawResp.amount, balanceFromResp.amount, withdrawResp.balance);
+            plugin.shopData.logPayment(playerTo, "payment", depositResp.amount, balanceToResp.amount, depositResp.balance);
             return true;
         } else {
             return false;
@@ -143,15 +147,19 @@ public class PlayerData {
     }
 
     public double getBalance(String playerName) {
-        return plugin.econManager.getBalance(playerName);
+        EconomyResponse balanceResp = plugin.econManager.getBalance(playerName);
+        return balanceResp.amount;
     }
 
-    public boolean chargePlayer(String shopOwner, double chargeAmount) {        
-        double balanceFrom = plugin.econManager.getBalance(shopOwner);
+    public boolean chargePlayer(String playerName, double chargeAmount) {
+        EconomyResponse balanceResp = plugin.econManager.getBalance(playerName);
+        if(!balanceResp.transactionSuccess()) {
+            return false;
+        }
         
-        double chargedAmount = plugin.econManager.withdrawPlayer(shopOwner, chargeAmount);
-        if(chargedAmount != -1) {
-            plugin.shopData.logPayment(shopOwner, "payment", chargedAmount, balanceFrom, balanceFrom - chargedAmount);
+        EconomyResponse withdrawResp = plugin.econManager.withdrawPlayer(playerName, chargeAmount);
+        if(withdrawResp.transactionSuccess()) {
+            plugin.shopData.logPayment(playerName, "payment", withdrawResp.amount, balanceResp.balance, withdrawResp.balance);
             return true;
         } else {
             return false;

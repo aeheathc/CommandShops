@@ -61,23 +61,23 @@ public class EconomyManager {
         return getEconomy().format(amount);
     }
     
-    public double getBalance(String playerName) {
+    public EconomyResponse getBalance(String playerName) {
         return getEconomy().getBalance(playerName);
     }
     
-    public double withdrawPlayer(String playerName, double amount) {
+    public EconomyResponse withdrawPlayer(String playerName, double amount) {
         return getEconomy().withdrawPlayer(playerName, amount);
     }
     
-    public double depositPlayer(String playerName, double amount) {
+    public EconomyResponse depositPlayer(String playerName, double amount) {
         return getEconomy().depositPlayer(playerName, amount);
     }
     
-    public double withdrawShop(Shop shop, double amount) {
+    public EconomyResponse withdrawShop(Shop shop, double amount) {
         return getEconomy().withdrawShop(shop, amount);
     }
     
-    public double depositShop(Shop shop, double amount) {
+    public EconomyResponse depositShop(Shop shop, double amount) {
         return getEconomy().depositShop(shop, amount);
     }
 }

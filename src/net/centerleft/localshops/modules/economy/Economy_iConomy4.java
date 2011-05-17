@@ -68,7 +68,18 @@ public class Economy_iConomy4 implements Economy {
     }
 
     @Override
-    public double getBalance(String playerName) {
+    public EconomyResponse getBalance(String playerName) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
+        balance = getAccountBalance(playerName);
+        type = EconomyResponse.ResponseType.SUCCESS;
+        
+        return new EconomyResponse(balance, balance, type, errorMessage);
+    }
+    
+    private double getAccountBalance(String playerName) {
         Account account = iConomy.getBank().getAccount(playerName);
         if (account == null) {
             iConomy.getBank().addAccount(playerName);
@@ -78,55 +89,78 @@ public class Economy_iConomy4 implements Economy {
     }
 
     @Override
-    public double withdrawPlayer(String playerName, double amount) {
+    public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
         if(amount < 0) {
-            return -1;
+            errorMessage = "Cannot withdraw negative funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = getAccountBalance(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         }
-        double balance = getBalance(playerName);
+        balance = getAccountBalance(playerName);
         if(balance >= amount) {
             Account account = iConomy.getBank().getAccount(playerName);
             if(account == null) {
-                return -1;
+                return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Could not find account");
             }
             account.subtract(amount);
-            return amount;
+            
+            type = EconomyResponse.ResponseType.SUCCESS;
+            balance = getAccountBalance(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         } else {
-            return -1;
+            errorMessage = "Error withdrawing funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = getAccountBalance(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         }
     }
 
     @Override
-    public double depositPlayer(String playerName, double amount) {
+    public EconomyResponse depositPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
         if(amount < 0) {
-            return -1;
+            errorMessage = "Cannot deposit negative funds";
+            type = EconomyResponse.ResponseType.FAILURE;
+            amount = 0;
+            balance = getAccountBalance(playerName);
+            
+            return new EconomyResponse(amount, balance, type, errorMessage);
         }
+        
         Account account = iConomy.getBank().getAccount(playerName);
         if(account == null) {
             iConomy.getBank().addAccount(playerName);
             account = iConomy.getBank().getAccount(playerName);
         }
         account.add(amount);
-        return amount;
+        balance = getAccountBalance(playerName);
+        type = EconomyResponse.ResponseType.SUCCESS;
+        
+        return new EconomyResponse(amount, balance, type, errorMessage);
     }
 
     @Override
-    public double withdrawShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.round(amount);
+    public EconomyResponse withdrawShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
 
     @Override
-    public double depositShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.round(amount);
+    public EconomyResponse depositShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
     
     private class EconomyServerListener extends ServerListener {

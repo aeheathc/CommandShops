@@ -55,50 +55,70 @@ public class Economy_iConomy5 implements Economy {
     public String getName() {
         return name;
     }
-
-    @Override
-    public double getBalance(String playerName) {
+    
+    private double getAccountBalance(String playerName) {
         return iConomy.getAccount(playerName).getHoldings().balance();
     }
 
     @Override
-    public double withdrawPlayer(String playerName, double amount) {
+    public EconomyResponse getBalance(String playerName) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
+        balance = getAccountBalance(playerName);
+        type = EconomyResponse.ResponseType.SUCCESS;
+        
+        return new EconomyResponse(balance, balance, type, errorMessage);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
         Account account = iConomy.getAccount(playerName);
         Holdings holdings = account.getHoldings();
         if (holdings.hasEnough(amount)) {
             holdings.subtract(amount);
-            return amount;
+            balance = getAccountBalance(playerName);
+            type = EconomyResponse.ResponseType.SUCCESS;
+            return new EconomyResponse(balance, balance, type, errorMessage);
         } else {
-            return -1;
+            amount = 0;
+            balance = getAccountBalance(playerName);
+            type = EconomyResponse.ResponseType.FAILURE;
+            errorMessage = "Insufficient funds";
+            return new EconomyResponse(balance, balance, type, errorMessage);
         }
     }
 
     @Override
-    public double depositPlayer(String playerName, double amount) {
+    public EconomyResponse depositPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
         Account account = iConomy.getAccount(playerName);
         Holdings holdings = account.getHoldings();
         holdings.add(amount);
-        return amount;
+        balance = getAccountBalance(playerName);
+        type = EconomyResponse.ResponseType.SUCCESS;
+        
+        return new EconomyResponse(amount, balance, type, errorMessage);
     }
 
     @Override
-    public double withdrawShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.round(amount);
+    public EconomyResponse withdrawShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
 
     @Override
-    public double depositShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.round(amount);
+    public EconomyResponse depositShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
     
     private class EconomyServerListener extends ServerListener {

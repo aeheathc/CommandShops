@@ -12,6 +12,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.api.NoLoanPermittedException;
+import com.earth2me.essentials.api.UserDoesNotExistException;
 
 public class Economy_Essentials implements Economy {
     private String name = "Essentials Economy";
@@ -54,58 +56,121 @@ public class Economy_Essentials implements Economy {
     }
 
     @Override
-    public double getBalance(String playerName) {
-        return com.earth2me.essentials.api.Economy.getMoney(playerName);
+    public EconomyResponse getBalance(String playerName) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
+        try {
+            balance = com.earth2me.essentials.api.Economy.getMoney(playerName);
+            type = EconomyResponse.ResponseType.SUCCESS;
+        } catch (UserDoesNotExistException e) {
+            if(createPlayerAccount(playerName)) {
+                balance = 0;
+                type = EconomyResponse.ResponseType.SUCCESS;
+            } else {
+                balance = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "User does not exist";
+            }
+        }
+        
+        return new EconomyResponse(balance, balance, type, errorMessage);
+    }
+    
+    private boolean createPlayerAccount(String playerName) {
+        try {
+            com.earth2me.essentials.api.Economy.add(playerName, 0);
+            return true;
+        } catch (UserDoesNotExistException e1) {
+            return false;
+        } catch (NoLoanPermittedException e1) {
+            return false;
+        }
     }
 
     @Override
-    public double withdrawPlayer(String playerName, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        if(getBalance(playerName) >= amount) {
+    public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
+        try {
             com.earth2me.essentials.api.Economy.subtract(playerName, amount);
-            return amount;
-        } else {
-            return -1;
+            balance = com.earth2me.essentials.api.Economy.getMoney(playerName);
+            type = EconomyResponse.ResponseType.SUCCESS;
+        } catch (UserDoesNotExistException e) {
+            if (createPlayerAccount(playerName)) {
+                return withdrawPlayer(playerName, amount);
+            } else {
+                amount = 0;
+                balance = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "User does not exist";
+            }
+        } catch (NoLoanPermittedException e) {
+            try {
+                balance = com.earth2me.essentials.api.Economy.getMoney(playerName);
+                amount = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "Loan was not permitted";
+            } catch (UserDoesNotExistException e1) {
+                amount = 0;
+                balance = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "User does not exist";
+            }
         }
+        
+        return new EconomyResponse(amount, balance, type, errorMessage);
     }
 
     @Override
-    public double depositPlayer(String playerName, double amount) {
-        if(amount < 0) {
-            return -1;
+    public EconomyResponse depositPlayer(String playerName, double amount) {
+        double balance;
+        EconomyResponse.ResponseType type;
+        String errorMessage = null;
+        
+        try {
+            com.earth2me.essentials.api.Economy.add(playerName, amount);
+            balance = com.earth2me.essentials.api.Economy.getMoney(playerName);
+            type = EconomyResponse.ResponseType.SUCCESS;
+        } catch (UserDoesNotExistException e) {
+            if(createPlayerAccount(playerName)) {
+                return depositPlayer(playerName, amount);
+            } else {
+                amount = 0;
+                balance = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "User does not exist";
+            }
+        } catch (NoLoanPermittedException e) {
+            try {
+                balance = com.earth2me.essentials.api.Economy.getMoney(playerName);
+                amount = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "Loan was not permitted";
+            } catch (UserDoesNotExistException e1) {
+                balance = 0;
+                amount = 0;
+                type = EconomyResponse.ResponseType.FAILURE;
+                errorMessage = "Loan was not permitted";
+            }
         }
-        com.earth2me.essentials.api.Economy.add(playerName, amount);
-        return amount;
+        
+        return new EconomyResponse(amount, balance, type, errorMessage);
     }
 
     @Override
-    public double withdrawShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.round(amount);
+    public EconomyResponse withdrawShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
 
     @Override
-    public double depositShop(Shop shop, double amount) {
-        if(amount < 0) {
-            return -1;
-        }
-        amount = Math.round(amount);
+    public EconomyResponse depositShop(Shop shop, double amount) {
         // Currently not supported
-        return -1;
-    }
-
-    public String getMoneyNamePlural() {
-        return com.earth2me.essentials.api.Economy.getCurrencyPlural();
-    }
-
-    public String getMoneyNameSingular() {
-        return com.earth2me.essentials.api.Economy.getCurrency();
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Shops are not implemented yet");
     }
     
     private class EconomyServerListener extends ServerListener {
