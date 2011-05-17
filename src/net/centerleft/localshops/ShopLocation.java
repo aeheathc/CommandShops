@@ -1,39 +1,47 @@
 package net.centerleft.localshops;
 
-public class ShopLocation {
-    private long x = 0;
-    private long y = 0;
-    private long z = 0;
+import org.bukkit.Location;
 
-    public ShopLocation(long x, long y, long z) {
+public class ShopLocation {
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
+
+    public ShopLocation(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public ShopLocation(long[] xyz) {
+    public ShopLocation(double[] xyz) {
         this.x = xyz[0];
         this.y = xyz[1];
         this.z = xyz[2];
     }
+    
+    public ShopLocation(Location loc) {
+        this.x = loc.getX();
+        this.y = loc.getY();
+        this.z = loc.getZ();
+    }
 
-    public long getX() {
+    public double getX() {
         return x;
     }
 
-    public long getY() {
+    public double getY() {
         return y;
     }
 
-    public long getZ() {
+    public double getZ() {
         return z;
     }
 
-    public long[] toArray() {
-        return new long[] { x, y, z };
+    public double[] toArray() {
+        return new double[] { x, y, z };
     }
 
     public String toString() {
-        return String.format("%d, %d, %d", x, y, z);
+        return String.format("%.0f, %.0f, %.0f", x, y, z);
     }
 }

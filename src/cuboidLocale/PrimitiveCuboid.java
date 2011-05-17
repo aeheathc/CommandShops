@@ -5,8 +5,8 @@ import java.util.UUID;
 public class PrimitiveCuboid{
   public UUID uuid = null;
   public String world = null;
-  public long[] xyzA = {0,0,0};
-  public long[] xyzB = {0,0,0};
+  public double[] xyzA = {0,0,0};
+  public double[] xyzB = {0,0,0};
   long lowIndex[] = new long[3];
   long highIndex[] = new long[3];
   
@@ -15,7 +15,7 @@ public class PrimitiveCuboid{
    * This is CRITICAL for the correct functioning of the MortonCodes, and nice to have for comparison to a point
    */
   final private void normalize(){
-    long temp;
+    double temp;
     for(int i=0; i<3; i++){
       if(this.xyzA[i] > this.xyzB[i]){
         temp = this.xyzA[i];
@@ -25,34 +25,34 @@ public class PrimitiveCuboid{
     }
   }
   
-  public PrimitiveCuboid(long[] xyzA, long[] xyzB){
+  public PrimitiveCuboid(double[] xyzA, double[] xyzB){
     this.xyzA = xyzA.clone();
     this.xyzB = xyzB.clone();
     this.normalize();
   }
   
-  public PrimitiveCuboid(long xA,long yA,long zA, long xB, long yB, long zB){
-    this.xyzA[0] = xA;
-    this.xyzA[1] = yA;
-    this.xyzA[2] = zA;
+  public PrimitiveCuboid(double xyzA2,double d,double e, double tmp, double f, double xyzB2){
+    this.xyzA[0] = xyzA2;
+    this.xyzA[1] = d;
+    this.xyzA[2] = e;
     
-    this.xyzB[0] = xB;
-    this.xyzB[1] = yB;
-    this.xyzB[2] = zB;
+    this.xyzB[0] = tmp;
+    this.xyzB[1] = f;
+    this.xyzB[2] = xyzB2;
     
     this.normalize();
   }
   
-  final public boolean includesPoint(long x, long y, long z){
-    if(this.xyzA[0] <= x && this.xyzA[1] <= y && this.xyzA[2] <= z &&
-       this.xyzB[0] >= x && this.xyzB[1] >= y && this.xyzB[2] >= z
+  final public boolean includesPoint(double d, double e, double f){
+    if(this.xyzA[0] <= d && this.xyzA[1] <= e && this.xyzA[2] <= f &&
+       this.xyzB[0] >= d && this.xyzB[1] >= e && this.xyzB[2] >= f
     ){
       return true;
     }
     return false;
   }
   
-  final public boolean includesPoint(long[] pt){
+  final public boolean includesPoint(double[] pt){
     return this.includesPoint(pt[0], pt[1], pt[2]);
   }
   

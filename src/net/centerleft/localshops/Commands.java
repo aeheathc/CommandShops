@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -179,8 +180,99 @@ public class Commands {
             return false;
         }
     }
+    
+    public static double calculateDistance(ShopLocation from, ShopLocation to) {
+        double x1 = from.getX();
+        double x2 = to.getX();
 
+        double y1 = from.getY();
+        double y2 = to.getY();
+
+        double z1 = from.getZ();
+        double z2 = to.getZ();
+
+        double distance = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2) + Math.pow((z1 - z2), 2));
+        
+        return distance;
+    }
+    
     public boolean shopSearch() {
+        if(!(sender instanceof Player)) {
+            sender.sendMessage("Console is not implemented");
+        }
+        
+        Player player = (Player) sender;
+        String playerWorld = player.getWorld().getName();
+        ShopLocation playerLoc = new ShopLocation(player.getLocation());
+        
+        Pattern pattern = Pattern.compile("(?i)search\\s+(.*)");
+        Matcher matcher = pattern.matcher(command);
+        if (matcher.find()) {
+            String name = matcher.group(1);
+            ItemInfo found = Search.itemByName(name);
+            if (found == null) {
+                sender.sendMessage(String.format("No item was not found matching \"%s\"", name));
+            } else {
+                TreeMap<UUID,Double> foundShops = new TreeMap<UUID,Double>();
+                List<Shop> shops = plugin.shopData.getAllShops();
+                for(Shop shop : shops) {
+                    // Check that its the current world
+                    if(!playerWorld.equals(shop.getWorld())) {
+                        continue;
+                    }
+                    
+                    // Determine distance, if too far away ignore
+                    double distance = calculateDistance(playerLoc, shop.getLocationCenter());
+                    int MAX_DISTANCE = -1;
+                    if(MAX_DISTANCE > 0 && distance > MAX_DISTANCE) {
+                        continue;
+                    }
+                    
+                    // Check shop has item & is either buying or selling it
+                    if(!shop.containsItem(found)) {
+                        continue;
+                    }
+                    
+                    // This shop is valid, add to list
+                    foundShops.put(shop.getUuid(), distance);
+                }
+                
+                if(foundShops.size() > 0) {
+                    sender.sendMessage(ChatColor.DARK_AQUA + "Found " + ChatColor.WHITE + foundShops.size() + ChatColor.DARK_AQUA + " shop(s) having " + ChatColor.WHITE + found.name);
+                    sender.sendMessage(String.format("%-20s %-6s %-6s %s", "Shop", "Buy", "Sell", "Distance"));
+                    Iterator<UUID> it = foundShops.keySet().iterator();
+                    while(it.hasNext()) {
+                        UUID uuid = it.next();
+                        double distance = foundShops.get(uuid);
+                        Shop shop = plugin.shopData.getShop(uuid);
+                        InventoryItem item = shop.getItem(found.name);
+                        String buyPrice;
+                        if(item.getBuyPrice() < 1) {
+                            buyPrice = "--";
+                        } else {
+                            buyPrice = String.format("%.2f", item.getBuyPrice());
+                        }
+                        
+                        String sellPrice;
+                        if(item.getSellPrice() < 1) {
+                            sellPrice = "--";
+                        } else {
+                            sellPrice = String.format("%.2f", item.getSellPrice());
+                        }
+                        
+                        sender.sendMessage(String.format("%-20s %-6s %-6s %2.0fm", shop.getName(), buyPrice, sellPrice, distance));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.DARK_AQUA + "No shops were found having " + ChatColor.WHITE + found.name);
+                }
+            }
+            return true;            
+        }
+        
+        return true;
+    }
+
+    public boolean shopSearch2() {
 
         Pattern pattern = Pattern.compile("(?i)search\\s+(.*)");
         Matcher matcher = pattern.matcher(command);
@@ -234,8 +326,8 @@ public class Commands {
     public boolean shopCreate() {
         String creator = null;
         String world = null;
-        long[] xyzA = new long[3];
-        long[] xyzB = new long[3];
+        double[] xyzA = new double[3];
+        double[] xyzB = new double[3];
 
         // Get current shop
         if (sender instanceof Player) {
@@ -373,8 +465,8 @@ public class Commands {
             Location location = player.getLocation();
             Shop thisShop = null;
 
-            long[] xyzAold = new long[3];
-            long[] xyzBold = new long[3];
+            double[] xyzAold = new double[3];
+            double[] xyzBold = new double[3];
 
             // check to see if that shop exists
             thisShop = plugin.shopData.getShop(id);
@@ -394,13 +486,13 @@ public class Commands {
             xyzAold = thisShop.getLocationA().toArray();
             xyzBold = thisShop.getLocationB().toArray();
 
-            long x = (long) location.getX();
-            long y = (long) location.getY();
-            long z = (long) location.getZ();
+            double x = location.getX();
+            double y = location.getY();
+            double z = location.getZ();
 
             // setup the cuboid for the tree
-            long[] xyzA = new long[3];
-            long[] xyzB = new long[3];
+            double[] xyzA = new double[3];
+            double[] xyzB = new double[3];
 
             if (plugin.playerData.containsKey(player.getName()) && plugin.playerData.get(player.getName()).isSelecting) {
 
@@ -440,9 +532,9 @@ public class Commands {
             }
 
             // remove the old shop from the cuboid
-            long[] xyz = thisShop.getLocation();
+            ShopLocation xyz = thisShop.getLocationCenter();
             BookmarkedResult res = new BookmarkedResult();
-            res = LocalShops.cuboidTree.relatedSearch(res.bookmark, xyz[0], xyz[1], xyz[2]);
+            res = LocalShops.cuboidTree.relatedSearch(res.bookmark, xyz.getX(), xyz.getY(), xyz.getZ());
 
             // get the shop's tree node and delete it
             for (PrimitiveCuboid shopLocation : res.results) {
@@ -575,13 +667,13 @@ public class Commands {
         return true;
     }
 
-    private boolean shopPositionOk(long[] xyzA, long[] xyzB, String worldName) {
+    private boolean shopPositionOk(double[] xyzA, double[] xyzB, String worldName) {
         BookmarkedResult res = new BookmarkedResult();
 
         // make sure coords are in right order
         for (int i = 0; i < 3; i++) {
             if (xyzA[i] > xyzB[i]) {
-                long temp = xyzA[i];
+                double temp = xyzA[i];
                 xyzA[i] = xyzB[i];
                 xyzB[i] = temp;
             }
@@ -589,9 +681,9 @@ public class Commands {
 
         // Need to test every position to account for variable shop sizes
 
-        for (long x = xyzA[0]; x <= xyzB[0]; x++) {
-            for (long z = xyzA[2]; z <= xyzB[2]; z++) {
-                for (long y = xyzA[1]; y <= xyzB[1]; y++) {
+        for (double x = xyzA[0]; x <= xyzB[0]; x++) {
+            for (double z = xyzA[2]; z <= xyzB[2]; z++) {
+                for (double y = xyzA[1]; y <= xyzB[1]; y++) {
                     res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
                     if (shopOverlaps(res, worldName))
                         return false;

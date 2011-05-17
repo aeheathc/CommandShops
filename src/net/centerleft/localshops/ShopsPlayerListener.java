@@ -46,16 +46,16 @@ public class ShopsPlayerListener extends PlayerListener {
 
         // If our user is select & is not holding an item, selection time
         if (plugin.playerData.get(playerName).isSelecting && player.getItemInHand().getType() == Material.AIR) {
-            long x, y, z;
+            double x, y, z;
             Location loc = event.getClickedBlock().getLocation();
-            x = (long) loc.getBlockX();
-            y = (long) loc.getBlockY();
-            z = (long) loc.getBlockZ();
+            x = loc.getBlockX();
+            y = loc.getBlockY();
+            z = loc.getBlockZ();
             
             PlayerData pData = plugin.playerData.get(playerName);
             
             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                long[] xyz = { x, y, z };
+                double[] xyz = { x, y, z };
                 pData.setPositionA(xyz);
                 if(pData.checkSize()) {
                     player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
@@ -69,7 +69,7 @@ public class ShopsPlayerListener extends PlayerListener {
                     player.sendMessage(ChatColor.DARK_AQUA + "Type " + ChatColor.WHITE + "/shop create [Shop Name]" + ChatColor.DARK_AQUA + ", if you're happy with your selection, otherwise keep selecting!");
                 }
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                long[] xyz = { x, y, z };
+                double[] xyz = { x, y, z };
                 pData.setPositionB(xyz);
                 if(pData.checkSize()) {
                     player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());

@@ -9,8 +9,8 @@ public class QuadTree{
   int ct = 0;
   private void beginTree(PrimitiveCuboid c){
     long size = 2;
-    long minSize = Math.abs(c.xyzA[0] - c.xyzB[0]);
-    long minSizeB = Math.abs(c.xyzA[2] - c.xyzB[2]);
+    double minSize = Math.abs(c.xyzA[0] - c.xyzB[0]);
+    double minSizeB = Math.abs(c.xyzA[2] - c.xyzB[2]);
     if(minSize < minSizeB){
       minSize = minSizeB;
     }
@@ -39,8 +39,8 @@ public class QuadTree{
    * @return
    */
   private int containerFit(QuadNode node, PrimitiveCuboid c){
-    long minSize = Math.abs(c.xyzA[0] - c.xyzB[0]);
-    long minSizeB = Math.abs(c.xyzA[2] - c.xyzB[2]);
+    double minSize = Math.abs(c.xyzA[0] - c.xyzB[0]);
+    double minSizeB = Math.abs(c.xyzA[2] - c.xyzB[2]);
     if(minSize < minSizeB){
       minSize = minSizeB;
     }
@@ -77,16 +77,16 @@ public class QuadTree{
     return next;
   }
   
-  private QuadNode descendAndSearch(QuadNode node, long x, long z){
+  private QuadNode descendAndSearch(QuadNode node, double d, double f){
     QuadNode next = node;
     while(next != null){
       node = next;
       long half = node.size >> 1;
       int i = 0;
-      if(x > (node.x + half)){
+      if(d > (node.x + half)){
         i++;
       }
-      if(z > (node.z + half)){
+      if(f > (node.z + half)){
         i +=2;
       }
       next = node.quads[i];
@@ -94,22 +94,22 @@ public class QuadTree{
     return node;
   }
   
-  private QuadNode ascendFirstSearch(QuadNode node, long x, long z){
-    while(node != null && (node.x > x || node.z > z ||
-          (node.x + node.size) < x || (node.z + node.size) < z)){
+  private QuadNode ascendFirstSearch(QuadNode node, double d, double f){
+    while(node != null && (node.x > d || node.z > f ||
+          (node.x + node.size) < d || (node.z + node.size) < f)){
       node = node.parent;
     }
     if(node == null){
       return null;
     }
-    return descendAndSearch(node, x, z);
+    return descendAndSearch(node, d, f);
   }
   
-  private ArrayList<PrimitiveCuboid> getMatchingCuboids(QuadNode target, long x, long y, long z){
+  private ArrayList<PrimitiveCuboid> getMatchingCuboids(QuadNode target, double d, double e, double f){
     ArrayList<PrimitiveCuboid> matches = new ArrayList<PrimitiveCuboid>();
     while(target != null){
       for(PrimitiveCuboid potential : target.cuboids){
-        if(potential.includesPoint(x, y, z)){
+        if(potential.includesPoint(d, e, f)){
           matches.add(potential);
         }
       }
@@ -123,12 +123,12 @@ public class QuadTree{
     return getMatchingCuboids(node,x,y,z);
   }
   
-  public BookmarkedResult relatedSearch(QuadNode bookmark, long x, long y, long z){
+  public BookmarkedResult relatedSearch(QuadNode bookmark, double d, double e, double f){
     if(bookmark == null){
       bookmark = root;
     }
-    QuadNode node = ascendFirstSearch(bookmark, x, z);
-    return new BookmarkedResult(node, getMatchingCuboids(node,x,y,z));
+    QuadNode node = ascendFirstSearch(bookmark, d, f);
+    return new BookmarkedResult(node, getMatchingCuboids(node,d,e,f));
   }
   
   /**
@@ -173,16 +173,16 @@ public class QuadTree{
    */
   private ArrayList<PrimitiveCuboid> generateShards(QuadNode node, PrimitiveCuboid c){
     ArrayList<PrimitiveCuboid> shards = new ArrayList<PrimitiveCuboid>(4);
-    long top = node.z+node.size;
-    long right = node.x+node.size;
-    long tmp;
+    double top = node.z+node.size;
+    double right = node.x+node.size;
+    double tmp;
     if(top < c.xyzB[2]){
       if(right < c.xyzB[0]){
         tmp = right+1;
       }else{
         tmp = c.xyzB[0];
       }
-      shards.add(new PrimitiveCuboid(c.xyzA[0], 0, top+1, tmp, 0, c.xyzB[2]));
+      shards.add(new PrimitiveCuboid(c.xyzA[0], 0.0, top+1, tmp, 0.0, c.xyzB[2]));
     }
     if(right < c.xyzB[0]){
       if(top < c.xyzB[2]){

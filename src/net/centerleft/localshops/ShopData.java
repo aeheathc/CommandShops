@@ -321,9 +321,9 @@ public class ShopData {
         }
     }
     
-    public static long[] convertStringArraytoLongArray(String[] sarray) {
+    public static double[] convertStringArraytoDoubleArray(String[] sarray) {
         if (sarray != null) {
-            long longArray[] = new long[sarray.length];
+            double longArray[] = new double[sarray.length];
             for (int i = 0; i < sarray.length; i++) {
                 longArray[i] = Long.parseLong(sarray[i]);
             }
@@ -349,12 +349,12 @@ public class ShopData {
         double minBalance = Double.parseDouble((props.getProperty("min-balance", "0.0")));
 
         // Location - locationB=-88, 50, -127
-        long[] locationA;
-        long[] locationB;
+        double[] locationA;
+        double[] locationB;
         String world;
         try {
-            locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
-            locationB = convertStringArraytoLongArray(props.getProperty("locationB").split(", "));
+            locationA = convertStringArraytoDoubleArray(props.getProperty("locationA").split(", "));
+            locationB = convertStringArraytoDoubleArray(props.getProperty("locationB").split(", "));
             world = props.getProperty("world", "world1");
         } catch (Exception e) {
             if(isolateBrokenShopFile(file)) {
@@ -508,11 +508,10 @@ public class ShopData {
 
     public boolean deleteShop(Shop shop) {
         String shortUuid = shop.getShortUuidString();
-        long[] xyzA = shop.getLocation();
+        ShopLocation loc = shop.getLocationCenter();
         BookmarkedResult res = new BookmarkedResult();
 
-        res = LocalShops.cuboidTree.relatedSearch(res.bookmark, xyzA[0],
-                xyzA[1], xyzA[2]);
+        res = LocalShops.cuboidTree.relatedSearch(res.bookmark, loc.getX(), loc.getY(), loc.getZ());
 
         // get the shop's tree node and delete it
         for (PrimitiveCuboid shopLocation : res.results) {

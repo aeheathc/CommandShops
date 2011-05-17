@@ -24,8 +24,8 @@ public class PlayerData {
     protected BookmarkedResult bookmark = new BookmarkedResult();
     protected String playerName = null;
     protected boolean isSelecting = false;
-    private long xyzA[] = null;
-    private long xyzB[] = null;
+    private double xyzA[] = null;
+    private double xyzB[] = null;
     protected String size = "";
     
     // Logging
@@ -37,19 +37,19 @@ public class PlayerData {
         this.playerName = playerName;
     }
 
-    public long[] getPositionA() {
+    public double[] getPositionA() {
         return xyzA;
     }
 
-    public long[] getPositionB() {
+    public double[] getPositionB() {
         return xyzB;
     }
 
-    public void setPositionA(long[] xyz) {
+    public void setPositionA(double[] xyz) {
         xyzA = xyz.clone();
     }
 
-    public void setPositionB(long[] xyz) {
+    public void setPositionB(double[] xyz) {
         xyzB = xyz.clone();
     }
 
@@ -62,9 +62,9 @@ public class PlayerData {
             return false;
         }
 
-        long width1 = Math.abs(xyzA[0] - xyzB[0]) + 1;
-        long height = Math.abs(xyzA[1] - xyzB[1]) + 1;
-        long width2 = Math.abs(xyzA[2] - xyzB[2]) + 1;
+        double width1 = Math.abs(xyzA[0] - xyzB[0]) + 1;
+        double height = Math.abs(xyzA[1] - xyzB[1]) + 1;
+        double width2 = Math.abs(xyzA[2] - xyzB[2]) + 1;
 
         size = "" + width1 + "x" + height + "x" + width2;
 

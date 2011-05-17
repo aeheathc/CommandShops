@@ -1,7 +1,7 @@
 package net.centerleft.localshops;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import cuboidLocale.PrimitiveCuboid;
 
-public class Shop {
+public class Shop implements Comparator<Shop> {
     // Attributes
     private UUID uuid = null;
     private String world = null;
@@ -84,6 +84,22 @@ public class Shop {
 
     public ShopLocation getLocationB() {
         return locationB;
+    }
+    
+    public ShopLocation getLocationCenter() {
+        double[] xyz = new double[3];
+        double[] xyzA = locationA.toArray();
+        double[] xyzB = locationA.toArray();
+
+        for (int i = 0; i < 3; i++) {
+            if (xyzA[i] < xyzB[i]) {
+                xyz[i] = xyzA[i] + (Math.abs(xyzA[i] - xyzB[i])) / 2;
+            } else {
+                xyz[i] = xyzA[i] - (Math.abs(xyzA[i] - xyzB[i])) / 2;
+            }
+        }
+
+        return new ShopLocation(xyz);
     }
 
     public void setOwner(String owner) {
@@ -243,23 +259,6 @@ public class Shop {
         inventory.remove(itemName);
     }
 
-    // Why are we trying to find the center of the shop???
-    public long[] getLocation() {
-        long[] xyz = new long[3];
-        long[] xyzA = locationA.toArray();
-        long[] xyzB = locationA.toArray();
-
-        for (int i = 0; i < 3; i++) {
-            if (xyzA[i] < xyzB[i]) {
-                xyz[i] = xyzA[i] + (Math.abs(xyzA[i] - xyzB[i])) / 2;
-            } else {
-                xyz[i] = xyzA[i] - (Math.abs(xyzA[i] - xyzB[i])) / 2;
-            }
-        }
-
-        return xyz;
-    }
-
     public int itemMaxStock(String itemName) {
         return inventory.get(itemName).maxStock;
     }
@@ -312,5 +311,10 @@ public class Shop {
             ItemInfo info = item.getInfo();
             log.info(String.format("   %6d:%-2d %-6.2f %-3d %-6.2f %-3d %-3d %-3d", info.typeId, info.subTypeId, item.getBuyPrice(), item.getBuySize(), item.getSellPrice(), item.getSellSize(), item.getStock(), item.getMaxStock()));
         }
+    }
+    
+    @Override
+    public int compare(Shop o1, Shop o2) {
+        return o1.getUuid().compareTo(o2.uuid);
     }
 }

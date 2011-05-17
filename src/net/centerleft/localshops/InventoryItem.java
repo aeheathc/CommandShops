@@ -4,9 +4,9 @@ public class InventoryItem {
 
     private ItemInfo info;
     private int buySize;
-    private double buyPrice;
+    private double buyPrice = -1;
     private int sellSize;
-    private double sellPrice;
+    private double sellPrice = -1;
     private int stock;
     public int maxStock;
 

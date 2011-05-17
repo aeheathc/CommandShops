@@ -14,9 +14,9 @@ public class QuadNode{
    */
   QuadNode[] quads = new QuadNode[4];
   
-  QuadNode(long x, long z, long size, QuadNode parent){
-    this.x = x;
-    this.z = z;
+  QuadNode(double xyzA, double xyzA2, long size, QuadNode parent){
+    this.x = xyzA;
+    this.z = xyzA2;
     this.size = size;
     this.parent = parent;
     if(parent == null){
@@ -37,8 +37,8 @@ public class QuadNode{
   //Length of a side, always a power of two
   long size;
   //Indexed by least x and least z
-  long x; //Traditional X in 2d
-  long z; //What would be Y but this is minecraft
+  double x; //Traditional X in 2d
+  double z; //What would be Y but this is minecraft
   
   //We only hold the cuboids that fit completely inside of us.
   //Cuboids are always held in their minimal bounding node
