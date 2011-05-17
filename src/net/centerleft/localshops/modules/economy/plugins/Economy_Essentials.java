@@ -1,7 +1,9 @@
-package net.centerleft.localshops.modules.economy;
+package net.centerleft.localshops.modules.economy.plugins;
 
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
+import net.centerleft.localshops.modules.economy.Economy;
+import net.centerleft.localshops.modules.economy.EconomyResponse;
 
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
@@ -36,7 +38,7 @@ public class Economy_Essentials implements Economy {
             Plugin essentials = plugin.getServer().getPluginManager().getPlugin("Essentials");
             if (essentials != null && essentials.isEnabled()) {
                 ess = (Essentials) essentials;
-                log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
+                log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
     }    
@@ -186,7 +188,7 @@ public class Economy_Essentials implements Economy {
 
                 if (essentials != null && essentials.isEnabled()) {
                     economy.ess = (Essentials) essentials;
-                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
+                    log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }
@@ -195,7 +197,7 @@ public class Economy_Essentials implements Economy {
             if (economy.ess != null) {
                 if (event.getPlugin().getDescription().getName().equals("Essentials")) {
                     economy.ess = null;
-                    log.info(String.format("[%s] %s un-hooked.", plugin.getDescription().getName(), economy.name));
+                    log.info(String.format("[%s][Economy] %s unhooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }

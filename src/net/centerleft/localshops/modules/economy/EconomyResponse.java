@@ -2,7 +2,7 @@ package net.centerleft.localshops.modules.economy;
 
 public class EconomyResponse {
 
-    static enum ResponseType {
+    public static enum ResponseType {
         SUCCESS(1),
         FAILURE(2),
         NOT_IMPLEMENTED(3);

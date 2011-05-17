@@ -125,7 +125,11 @@ public class LocalShops extends JavaPlugin {
         }
         
         econManager = new EconomyManager(this);
-        econManager.loadEconomies();
+        if(!econManager.loadEconomies()) {
+            // No valid economies, display error message and disables
+            log.warning(String.format("[%s] FATAL:  No economic plugins found, please refer to the documentation.", pdfFile.getName()));
+            getPluginLoader().disablePlugin(this);
+        }
         
     }
 

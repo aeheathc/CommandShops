@@ -1,7 +1,9 @@
-package net.centerleft.localshops.modules.economy;
+package net.centerleft.localshops.modules.economy.plugins;
 
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
+import net.centerleft.localshops.modules.economy.Economy;
+import net.centerleft.localshops.modules.economy.EconomyResponse;
 
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
@@ -11,17 +13,18 @@ import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-import com.nijiko.coelho.iConomy.iConomy;
-import com.nijiko.coelho.iConomy.system.Account;
+import com.iConomy.iConomy;
+import com.iConomy.system.Account;
+import com.iConomy.system.Holdings;
 
-public class Economy_iConomy4 implements Economy {
-    private String name = "iConomy 4";
+public class Economy_iConomy5 implements Economy {
+    private String name = "iConomy 5";
     private LocalShops plugin = null;
     private PluginManager pluginManager = null;
     protected iConomy economy = null;
     private EconomyServerListener economyServerListener = null;
     
-    public Economy_iConomy4(LocalShops plugin) {
+    public Economy_iConomy5(LocalShops plugin) {
         this.plugin = plugin;
         this.pluginManager = this.plugin.getServer().getPluginManager();
 
@@ -33,13 +36,13 @@ public class Economy_iConomy4 implements Economy {
         // Load Plugin in case it was loaded before
         if(economy == null) {
             Plugin ec = plugin.getServer().getPluginManager().getPlugin("iConomy");
-            if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("com.nijiko.coelho.iConomy.iConomy.class")) {
+            if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("com.iConomy.iConomy")) {
                 economy = (iConomy) ec;
-                log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), name));
+                log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), name));
             }
         }
     }
-
+    
     @Override
     public boolean isEnabled() {
         if(economy == null) {
@@ -53,18 +56,9 @@ public class Economy_iConomy4 implements Economy {
     public String getName() {
         return name;
     }
-
-    @Override
-    public String format(double amount) {
-        return iConomy.getBank().format(amount);
-    }
     
-    public String getMoneyNamePlural() {
-        return iConomy.getBank().getCurrency() + "s";
-    }
-
-    public String getMoneyNameSingular() {
-        return iConomy.getBank().getCurrency();
+    private double getAccountBalance(String playerName) {
+        return iConomy.getAccount(playerName).getHoldings().balance();
     }
 
     @Override
@@ -78,15 +72,6 @@ public class Economy_iConomy4 implements Economy {
         
         return new EconomyResponse(balance, balance, type, errorMessage);
     }
-    
-    private double getAccountBalance(String playerName) {
-        Account account = iConomy.getBank().getAccount(playerName);
-        if (account == null) {
-            iConomy.getBank().addAccount(playerName);
-            account = iConomy.getBank().getAccount(playerName);
-        }
-        return account.getBalance();
-    }
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
@@ -94,33 +79,19 @@ public class Economy_iConomy4 implements Economy {
         EconomyResponse.ResponseType type;
         String errorMessage = null;
         
-        if(amount < 0) {
-            errorMessage = "Cannot withdraw negative funds";
-            type = EconomyResponse.ResponseType.FAILURE;
-            amount = 0;
+        Account account = iConomy.getAccount(playerName);
+        Holdings holdings = account.getHoldings();
+        if (holdings.hasEnough(amount)) {
+            holdings.subtract(amount);
             balance = getAccountBalance(playerName);
-            
-            return new EconomyResponse(amount, balance, type, errorMessage);
-        }
-        balance = getAccountBalance(playerName);
-        if(balance >= amount) {
-            Account account = iConomy.getBank().getAccount(playerName);
-            if(account == null) {
-                return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Could not find account");
-            }
-            account.subtract(amount);
-            
             type = EconomyResponse.ResponseType.SUCCESS;
-            balance = getAccountBalance(playerName);
-            
-            return new EconomyResponse(amount, balance, type, errorMessage);
+            return new EconomyResponse(balance, balance, type, errorMessage);
         } else {
-            errorMessage = "Error withdrawing funds";
-            type = EconomyResponse.ResponseType.FAILURE;
             amount = 0;
             balance = getAccountBalance(playerName);
-            
-            return new EconomyResponse(amount, balance, type, errorMessage);
+            type = EconomyResponse.ResponseType.FAILURE;
+            errorMessage = "Insufficient funds";
+            return new EconomyResponse(balance, balance, type, errorMessage);
         }
     }
 
@@ -130,21 +101,9 @@ public class Economy_iConomy4 implements Economy {
         EconomyResponse.ResponseType type;
         String errorMessage = null;
         
-        if(amount < 0) {
-            errorMessage = "Cannot deposit negative funds";
-            type = EconomyResponse.ResponseType.FAILURE;
-            amount = 0;
-            balance = getAccountBalance(playerName);
-            
-            return new EconomyResponse(amount, balance, type, errorMessage);
-        }
-        
-        Account account = iConomy.getBank().getAccount(playerName);
-        if(account == null) {
-            iConomy.getBank().addAccount(playerName);
-            account = iConomy.getBank().getAccount(playerName);
-        }
-        account.add(amount);
+        Account account = iConomy.getAccount(playerName);
+        Holdings holdings = account.getHoldings();
+        holdings.add(amount);
         balance = getAccountBalance(playerName);
         type = EconomyResponse.ResponseType.SUCCESS;
         
@@ -164,19 +123,19 @@ public class Economy_iConomy4 implements Economy {
     }
     
     private class EconomyServerListener extends ServerListener {
-        Economy_iConomy4 economy = null;
+        Economy_iConomy5 economy = null;
         
-        public EconomyServerListener(Economy_iConomy4 economy) {
+        public EconomyServerListener(Economy_iConomy5 economy) {
             this.economy = economy;
         }
         
         public void onPluginEnable(PluginEnableEvent event) {
             if (economy.economy == null) {
-                Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
+                Plugin ec = plugin.getServer().getPluginManager().getPlugin("iConomy");
 
-                if (iConomy != null && iConomy.isEnabled() && iConomy.getClass().getName().equals("com.nijiko.coelho.iConomy.iConomy")) {
-                    economy.economy = (iConomy) iConomy;
-                    log.info(String.format("[%s] %s hooked.", plugin.getDescription().getName(), economy.name));
+                if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("com.iConomy.iConomy")) {
+                    economy.economy = (iConomy) ec;
+                    log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }
@@ -185,9 +144,14 @@ public class Economy_iConomy4 implements Economy {
             if (economy.economy != null) {
                 if (event.getPlugin().getDescription().getName().equals("iConomy")) {
                     economy.economy = null;
-                    log.info(String.format("[%s] %s un-hooked.", plugin.getDescription().getName(), economy.name));
+                    log.info(String.format("[%s][Economy] %s unhooked.", plugin.getDescription().getName(), economy.name));
                 }
             }
         }
+    }
+
+    @Override
+    public String format(double amount) {
+        return iConomy.format(amount);
     }
 }
