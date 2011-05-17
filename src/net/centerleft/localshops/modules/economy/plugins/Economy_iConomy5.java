@@ -1,6 +1,5 @@
 package net.centerleft.localshops.modules.economy.plugins;
 
-import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
 import net.centerleft.localshops.modules.economy.Economy;
 import net.centerleft.localshops.modules.economy.EconomyResponse;
@@ -19,12 +18,12 @@ import com.iConomy.system.Holdings;
 
 public class Economy_iConomy5 implements Economy {
     private String name = "iConomy 5";
-    private LocalShops plugin = null;
+    private Plugin plugin = null;
     private PluginManager pluginManager = null;
     protected iConomy economy = null;
     private EconomyServerListener economyServerListener = null;
     
-    public Economy_iConomy5(LocalShops plugin) {
+    public Economy_iConomy5(Plugin plugin) {
         this.plugin = plugin;
         this.pluginManager = this.plugin.getServer().getPluginManager();
 

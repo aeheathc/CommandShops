@@ -1,6 +1,5 @@
 package net.centerleft.localshops.modules.economy.plugins;
 
-import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
 import net.centerleft.localshops.modules.economy.Economy;
 import net.centerleft.localshops.modules.economy.EconomyResponse;
@@ -19,12 +18,12 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 
 public class Economy_Essentials implements Economy {
     private String name = "Essentials Economy";
-    private LocalShops plugin = null;
+    private Plugin plugin = null;
     private PluginManager pluginManager = null;
     private Essentials ess = null;
     private EconomyServerListener economyServerListener = null;
     
-    public Economy_Essentials(LocalShops plugin) {
+    public Economy_Essentials(Plugin plugin) {
         this.plugin = plugin;
         pluginManager = this.plugin.getServer().getPluginManager();
 

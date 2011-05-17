@@ -4,21 +4,19 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
-import net.centerleft.localshops.modules.economy.plugins.Economy_BOSE;
-import net.centerleft.localshops.modules.economy.plugins.Economy_Essentials;
-import net.centerleft.localshops.modules.economy.plugins.Economy_iConomy4;
-import net.centerleft.localshops.modules.economy.plugins.Economy_iConomy5;
+import net.centerleft.localshops.modules.economy.plugins.*;
+
+import org.bukkit.plugin.Plugin;
 
 public class EconomyManager {
     
-    private LocalShops plugin = null;
+    private Plugin plugin = null;
     private TreeMap<Integer,Economy> econs = new TreeMap<Integer,Economy>();
     private Economy activeEconomy = null;
     private static final Logger log = Logger.getLogger("Minecraft");
 
-    public EconomyManager(LocalShops plugin) {
+    public EconomyManager(Plugin plugin) {
         this.plugin = plugin;
     }
     

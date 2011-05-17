@@ -1,6 +1,5 @@
 package net.centerleft.localshops.modules.economy.plugins;
 
-import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
 import net.centerleft.localshops.modules.economy.Economy;
 import net.centerleft.localshops.modules.economy.EconomyResponse;
@@ -17,12 +16,12 @@ import cosine.boseconomy.BOSEconomy;
 
 public class Economy_BOSE implements Economy {
     private String name = "BOSEconomy";
-    private LocalShops plugin = null;
+    private Plugin plugin = null;
     private PluginManager pluginManager = null;
     private BOSEconomy economy = null;
     private EconomyServerListener economyServerListener = null;
 
-    public Economy_BOSE(LocalShops plugin) {
+    public Economy_BOSE(Plugin plugin) {
         this.plugin = plugin;
         pluginManager = this.plugin.getServer().getPluginManager();
 
