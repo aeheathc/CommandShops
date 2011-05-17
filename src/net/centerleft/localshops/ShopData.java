@@ -344,9 +344,21 @@ public class ShopData {
         double minBalance = Double.parseDouble((props.getProperty("min-balance", "0.0")));
 
         // Location - locationB=-88, 50, -127
-        long[] locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
-        long[] locationB = convertStringArraytoLongArray(props.getProperty("locationB").split(", "));
-        String world = props.getProperty("world", "world1");
+        long[] locationA;
+        long[] locationB;
+        String world;
+        try {
+            locationA = convertStringArraytoLongArray(props.getProperty("locationA").split(", "));
+            locationB = convertStringArraytoLongArray(props.getProperty("locationB").split(", "));
+            world = props.getProperty("world", "world1");
+        } catch (Exception e) {
+            if(isolateBrokenShopFile(file)) {
+                log.warning(String.format("[%s] Shop File \"%s\" has bad Location Data, Moving to \"plugins/LocalShops/broken-shops/\"", plugin.pdfFile.getName(), file.toString()));
+            } else {
+                log.warning(String.format("[%s] Shop File \"%s\" has bad Location Data, Error moving to \"plugins/LocalShops/broken-shops/\"", plugin.pdfFile.getName(), file.toString()));
+            }
+            return null;
+        }
 
         // People
         String owner = props.getProperty("owner", "");
