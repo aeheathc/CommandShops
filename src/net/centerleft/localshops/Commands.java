@@ -5,7 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -237,29 +240,44 @@ public class Commands {
                     foundShops.put(shop.getUuid(), distance);
                 }
                 
-                if(foundShops.size() > 0) {
-                    sender.sendMessage(ChatColor.DARK_AQUA + "Found " + ChatColor.WHITE + foundShops.size() + ChatColor.DARK_AQUA + " shop(s) having " + ChatColor.WHITE + found.name);
-                    sender.sendMessage(String.format(ChatColor.GRAY + "%-20s %-9s %-9s %s", "Shop", "Buy", "Sell", "Distance"));
-                    Iterator<UUID> it = foundShops.keySet().iterator();
-                    while(it.hasNext()) {
-                        UUID uuid = it.next();
-                        double distance = foundShops.get(uuid);
+                @SuppressWarnings("unchecked")
+                SortedSet<Entry<UUID,Double>> entries = new TreeSet<Entry<UUID,Double>>(new EntryValueComparator());
+                entries.addAll(foundShops.entrySet());
+                
+                if(entries.size() > 0) {
+                    int count = 0;
+                    sender.sendMessage(ChatColor.DARK_AQUA + "Showing " + ChatColor.WHITE + "4" + ChatColor.DARK_AQUA + " of " + ChatColor.WHITE + foundShops.size() + ChatColor.DARK_AQUA + " shop(s) having " + ChatColor.WHITE + found.name);
+                    for(Entry<UUID,Double> entry : entries) {
+                        UUID uuid = entry.getKey();
+                        double distance = entry.getValue();
                         Shop shop = plugin.shopData.getShop(uuid);
                         InventoryItem item = shop.getItem(found.name);
+                        
+                        if(item.getBuyPrice() < 1 && item.getSellPrice() < 1) {
+                            continue;
+                        }
+                        
                         String buyPrice;
-                        if(item.getBuyPrice() < 1) {
+                        if(item.getBuyPrice() < 1 && item.getBuySize() > 0) {
                             buyPrice = "--";
                         } else {
-                            buyPrice = String.format("%.2f", item.getBuyPrice());
+                            buyPrice = String.format("%.2f", (item.getBuyPrice() / item.getBuySize()));
                         }
                         
                         String sellPrice;
-                        if(item.getSellPrice() < 1) {
+                        if(item.getSellPrice() < 1 && item.getSellSize() > 0) {
                             sellPrice = "--";
                         } else {
-                            sellPrice = String.format("%.2f", item.getSellPrice());
+                            sellPrice = String.format("%.2f", (item.getSellPrice() / item.getSellSize()));
                         }
-                        sender.sendMessage(String.format("%-20s "+ChatColor.GOLD+"%-9s "+ChatColor.GREEN+"%-9s "+ChatColor.WHITE+"%-2.0fm", shop.getName(), sellPrice, buyPrice, distance));
+                        sender.sendMessage(String.format(ChatColor.WHITE + "%s: " + ChatColor.GOLD+"selling for %s, " + ChatColor.GREEN + "buying for %s", shop.getName(), sellPrice, buyPrice));
+                        sender.sendMessage(String.format(ChatColor.WHITE + "  " + ChatColor.DARK_AQUA + "Currently " + ChatColor.WHITE + "%-2.0fm" + ChatColor.DARK_AQUA + " away with ID: " + ChatColor.WHITE + "%s", distance, shop.getShortUuidString()));
+                        
+                        count++;
+                        
+                        if(count == 4) {
+                            break;
+                        }
                     }
                 } else {
                     sender.sendMessage(ChatColor.DARK_AQUA + "No shops were found having " + ChatColor.WHITE + found.name);
