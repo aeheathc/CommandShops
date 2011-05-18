@@ -41,7 +41,7 @@ public class CommandShopFind extends Command {
         Player player = (Player) sender;
 
         // search
-        Pattern pattern = Pattern.compile("(?i)search$");
+        Pattern pattern = Pattern.compile("(?i)find$");
         Matcher matcher = pattern.matcher(command);
         if (matcher.find()) {
             ItemStack itemStack = player.getItemInHand();
@@ -58,12 +58,12 @@ public class CommandShopFind extends Command {
                 sender.sendMessage("Could not find an item.");
                 return true;
             }
-            return shopSearch(player, found);
+            return shopFind(player, found);
         }
 
         // search int
         matcher.reset();
-        pattern = Pattern.compile("(?i)search\\s+(\\d+)$");
+        pattern = Pattern.compile("(?i)find\\s+(\\d+)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -72,12 +72,12 @@ public class CommandShopFind extends Command {
                 sender.sendMessage("Could not find an item.");
                 return true;
             }
-            return shopSearch(player, found);
+            return shopFind(player, found);
         }
 
         // search int:int
         matcher.reset();
-        pattern = Pattern.compile("(?i)search\\s+(\\d+):(\\d+)$");
+        pattern = Pattern.compile("(?i)find\\s+(\\d+):(\\d+)$");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             int id = Integer.parseInt(matcher.group(1));
@@ -87,12 +87,12 @@ public class CommandShopFind extends Command {
                 sender.sendMessage("Could not find an item.");
                 return true;
             }
-            return shopSearch(player, found);
+            return shopFind(player, found);
         }
 
         // search name
         matcher.reset();
-        pattern = Pattern.compile("(?i)search\\s+(.*)");
+        pattern = Pattern.compile("(?i)find\\s+(.*)");
         matcher = pattern.matcher(command);
         if (matcher.find()) {
             String name = matcher.group(1);
@@ -101,16 +101,16 @@ public class CommandShopFind extends Command {
                 sender.sendMessage(String.format("No item was not found matching \"%s\"", name));
                 return true;
             } else {
-                return shopSearch(player, found);
+                return shopFind(player, found);
             }
         }
 
         // Show sell help
-        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " search [itemname] " + ChatColor.DARK_AQUA + "- Find shops that buy or sell this item.");
+        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " find [itemname] " + ChatColor.DARK_AQUA + "- Find shops that buy or sell this item.");
         return true;
     }
 
-    private boolean shopSearch(Player player, ItemInfo found) {
+    private boolean shopFind(Player player, ItemInfo found) {
         String playerWorld = player.getWorld().getName();
         ShopLocation playerLoc = new ShopLocation(player.getLocation());
 
