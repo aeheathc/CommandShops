@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import net.centerleft.localshops.commands.Commands;
+import net.centerleft.localshops.commands.ShopCommandExecutor;
 import net.centerleft.localshops.modules.economy.EconomyManager;
 import net.centerleft.localshops.modules.permission.PermissionManager;
 
@@ -73,6 +74,9 @@ public class LocalShops extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
         // TODO: add PLAYER_JOIN, PLAYER_QUIT, PLAYER_KICK events
+        
+        // Register Commands
+        getCommand("shop").setExecutor(new ShopCommandExecutor(this));
 
         // setup the file IO
         folderDir = new File(folderPath);
@@ -136,85 +140,6 @@ public class LocalShops extends JavaPlugin {
         
         // update the console that we've stopped
         log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is disabled!"));
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        Commands commands = null;
-        String type = null;
-        String user = "CONSOLE";
-        if(sender instanceof Player) {
-            user = ((Player)sender).getName();
-        }
-        
-        if (commandLabel.equalsIgnoreCase("buy")) {
-            commands = new Commands(this, commandLabel, sender, "buy " + Search.join(args, " "));
-            type = "buy";
-        } else if (commandLabel.equalsIgnoreCase("sell")) {
-            commands = new Commands(this, commandLabel, sender, "sell " + Search.join(args, " "));
-            type = "sell";
-        } else {
-            commands = new Commands(this, commandLabel, sender, args);
-            if(args.length > 0) {
-                type = args[0];
-            } else {
-                return commands.shopHelp();
-            }
-        }
-        
-        log.info(String.format("[%s] %s issued: %s", pdfFile.getName(), user, commands.getCommand()));
-
-        String commandName = command.getName().toLowerCase();
-
-        if (commandName.equalsIgnoreCase("lshop") || commandLabel.equalsIgnoreCase("buy") || commandLabel.equalsIgnoreCase("sell")) {
-            if (type.equalsIgnoreCase("search")) {
-                return commands.shopSearch();
-            } else if (type.equalsIgnoreCase("debug")) {
-                return  commands.shopDebug();
-            } else if (type.equalsIgnoreCase("create")) {
-                commands.shopCreate();
-                for (Player player : this.getServer().getOnlinePlayers()) {
-                    playerListener.checkPlayerPosition(player);
-                }
-                return true;
-            } else if (type.equalsIgnoreCase("destroy")) {
-                commands.shopDestroy();
-                for (Player player : this.getServer().getOnlinePlayers()) {
-                    playerListener.checkPlayerPosition(player);
-                }
-                return true;
-            } else if (type.equalsIgnoreCase("move")) {
-                commands.shopMove();
-                for (Player player : this.getServer().getOnlinePlayers()) {
-                    playerListener.checkPlayerPosition(player);
-                }
-                return true;
-            } else if (type.equalsIgnoreCase("browse") || type.equalsIgnoreCase("bro")) {
-                return commands.shopBrowse();
-            } else if (type.equalsIgnoreCase("sell")) {
-                return commands.shopSell();
-            } else if (type.equalsIgnoreCase("add")) {
-                return commands.shopAdd();
-            } else if (type.equalsIgnoreCase("remove")) {
-                return commands.shopRemove();
-            } else if (type.equalsIgnoreCase("buy")) {
-                return commands.shopBuy();
-            } else if (type.equalsIgnoreCase("set")) {
-                return commands.shopSet();
-            } else if (type.equalsIgnoreCase("select")) {
-                return commands.shopSelect();
-            } else if (type.equalsIgnoreCase("list")) {
-                return commands.shopList();
-            } else if (type.equalsIgnoreCase("info")) {
-                return commands.shopInfo();
-            } else if (type.equalsIgnoreCase("version")) {
-                sender.sendMessage(String.format("LocalShops Version %s", pdfFile.getVersion()));
-                return true;
-            } else {
-                return commands.shopHelp();
-            }
-        }
-        return false;
     }
 
     private void loadProperties(PropertyHandler properties) {

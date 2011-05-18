@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import net.centerleft.localshops.Config;
 import net.centerleft.localshops.EntryValueComparator;
 import net.centerleft.localshops.InventoryItem;
