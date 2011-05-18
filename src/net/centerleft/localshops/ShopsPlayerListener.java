@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -166,6 +167,7 @@ public class ShopsPlayerListener extends PlayerListener {
         res = LocalShops.getCuboidTree().relatedSearch(res.bookmark, x, y, z);
 
         // check to see if we've entered any shops
+        @SuppressWarnings("unchecked")
         ArrayList<PrimitiveCuboid> cuboids = (ArrayList<PrimitiveCuboid>) res.results.clone();
         for (PrimitiveCuboid cuboid : cuboids) {
 
