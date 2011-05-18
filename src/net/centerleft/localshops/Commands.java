@@ -239,9 +239,7 @@ public class Commands {
                 
                 if(foundShops.size() > 0) {
                     sender.sendMessage(ChatColor.DARK_AQUA + "Found " + ChatColor.WHITE + foundShops.size() + ChatColor.DARK_AQUA + " shop(s) having " + ChatColor.WHITE + found.name);
-                    String header = String.format(ChatColor.GRAY + "%-20s %-9s %-9s %s", "Shop", "Buy", "Sell", "Distance");
-                    log.info(header);
-                    sender.sendMessage(header);
+                    sender.sendMessage(String.format(ChatColor.GRAY + "%-20s %-9s %-9s %s", "Shop", "Buy", "Sell", "Distance"));
                     Iterator<UUID> it = foundShops.keySet().iterator();
                     while(it.hasNext()) {
                         UUID uuid = it.next();
@@ -261,9 +259,7 @@ public class Commands {
                         } else {
                             sellPrice = String.format("%.2f", item.getSellPrice());
                         }
-                        String output = String.format("%-20s "+ChatColor.GOLD+"%-9s "+ChatColor.GREEN+"%-9s "+ChatColor.WHITE+"%-2.0fm", shop.getName(), sellPrice, buyPrice, distance);
-                        log.info(output);
-                        sender.sendMessage(output);
+                        sender.sendMessage(String.format("%-20s "+ChatColor.GOLD+"%-9s "+ChatColor.GREEN+"%-9s "+ChatColor.WHITE+"%-2.0fm", shop.getName(), sellPrice, buyPrice, distance));
                     }
                 } else {
                     sender.sendMessage(ChatColor.DARK_AQUA + "No shops were found having " + ChatColor.WHITE + found.name);
