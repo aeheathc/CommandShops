@@ -1069,7 +1069,7 @@ public class Commands {
             }
 
             // sell all (player only command)
-            Pattern pattern = Pattern.compile("(?i)sell\\s+all");
+            Pattern pattern = Pattern.compile("(?i)sell\\s+all$");
             Matcher matcher = pattern.matcher(command);
             if (matcher.find()) {
                 ItemStack itemStack = player.getItemInHand();
@@ -1078,7 +1078,7 @@ public class Commands {
                     return true;
                 }
                 ItemInfo item = null;
-                int amount = itemStack.getAmount();
+                int amount = countItemsInInventory(player.getInventory(), itemStack);
                 if(LocalShops.itemList.isDurable(itemStack)) {
                     item = Search.itemById(itemStack.getTypeId());
                     if (calcDurabilityPercentage(itemStack) > Config.ITEM_MAX_DAMAGE && Config.ITEM_MAX_DAMAGE != 0) {
