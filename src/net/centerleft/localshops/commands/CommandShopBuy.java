@@ -375,11 +375,17 @@ public class CommandShopBuy extends Command {
                 int bundlesCanAford = (int) Math.floor(playerBalance / itemPrice);
                 totalCost = bundlesCanAford * itemPrice;
                 amount = bundlesCanAford * invItem.getSellSize();
-                player.sendMessage(ChatColor.DARK_AQUA + "You could only afford " + ChatColor.WHITE + amount);
+                
+                if(bundlesCanAford == 0) {
+                    player.sendMessage(ChatColor.DARK_AQUA + "You cannot afford any of " + ChatColor.WHITE + item.name);
+                    return true;
+                } else {
+                    player.sendMessage(ChatColor.DARK_AQUA + "You could only afford " + ChatColor.WHITE + amount + ChatColor.DARK_AQUA + " of " + ChatColor.WHITE + item.name);
+                }
 
                 if (!pData.payPlayer(player.getName(), shop.getOwner(), totalCost)) {
                     player.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "Unexpected money problem: could not complete sale.");
-                    return false;
+                    return true;
                 }
             }
         }
