@@ -33,10 +33,11 @@ public class CommandShopHelp extends Command {
         if (canUseCommand(CommandTypes.DESTROY)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " destroy" + ChatColor.DARK_AQUA + " - Destroy the shop you're in.");
         }
+        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " find [itemname]" + ChatColor.DARK_AQUA + " - Find closest shops by item name.");
         if (canUseCommand(CommandTypes.MOVE)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " move [ShopID]" + ChatColor.DARK_AQUA + " - Move a shop to your location.");
         }
-        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " search" + ChatColor.DARK_AQUA + " - Search for an item name.");
+        sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " search [itemname]" + ChatColor.DARK_AQUA + " - Search for an item by name.");
         if (canUseCommand(CommandTypes.SELECT)) {
             sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel + " select" + ChatColor.DARK_AQUA + " - Select two corners for custom shop size.");
         }
