@@ -20,10 +20,10 @@ public class PlayerData {
     private LocalShops plugin = null;
 
     // Attributes
-    protected List<UUID> shopList = Collections.synchronizedList(new ArrayList<UUID>());
+    public List<UUID> shopList = Collections.synchronizedList(new ArrayList<UUID>());
     protected BookmarkedResult bookmark = new BookmarkedResult();
-    protected String playerName = null;
-    protected boolean isSelecting = false;
+    public String playerName = null;
+    private boolean isSelecting = false;
     private double xyzA[] = null;
     private double xyzB[] = null;
     protected String size = "";
@@ -106,7 +106,7 @@ public class PlayerData {
     }
 
     public boolean payPlayer(String playerName, double cost) {
-        EconomyResponse depositResp = plugin.econManager.depositPlayer(playerName, cost);
+        EconomyResponse depositResp = plugin.getEconManager().depositPlayer(playerName, cost);
         if(depositResp.transactionSuccess()) {
             return true;
         } else {
@@ -115,31 +115,31 @@ public class PlayerData {
     }
 
     public boolean payPlayer(String playerFrom, String playerTo, double cost) {       
-        EconomyResponse balanceFromResp = plugin.econManager.getBalance(playerFrom);
-        EconomyResponse balanceToResp = plugin.econManager.getBalance(playerTo);
+        EconomyResponse balanceFromResp = plugin.getEconManager().getBalance(playerFrom);
+        EconomyResponse balanceToResp = plugin.getEconManager().getBalance(playerTo);
         
         log.info("PlayerFrom: " + playerFrom + " balanceFrom: " + balanceFromResp.amount + " PlayerTo: " + playerTo + " balanceTo: " + balanceToResp.amount + " Cost: " + cost);
         
-        EconomyResponse withdrawResp = plugin.econManager.withdrawPlayer(playerFrom, cost);
+        EconomyResponse withdrawResp = plugin.getEconManager().withdrawPlayer(playerFrom, cost);
         if(!withdrawResp.transactionSuccess()) {
             log.info("Failed to withdraw");
             return false;
         }
         
-        EconomyResponse depositResp = plugin.econManager.depositPlayer(playerTo, cost);
+        EconomyResponse depositResp = plugin.getEconManager().depositPlayer(playerTo, cost);
         if(!depositResp.transactionSuccess()) {
             log.info("Failed to deposit");
             // Return money to shop owner
-            EconomyResponse returnResp = plugin.econManager.depositPlayer(playerFrom, cost);
+            EconomyResponse returnResp = plugin.getEconManager().depositPlayer(playerFrom, cost);
             if(!returnResp.transactionSuccess()) {
-                log.warning(String.format("[%s] ERROR:  Payment failed and could not return funds to original state!  %s may need %s!", plugin.pdfFile.getName(), playerName, plugin.econManager.format(cost)));
+                log.warning(String.format("[%s] ERROR:  Payment failed and could not return funds to original state!  %s may need %s!", plugin.pdfFile.getName(), playerName, plugin.getEconManager().format(cost)));
             }
             return false;
         }
         
         if (withdrawResp.transactionSuccess() && depositResp.transactionSuccess()) {
-            plugin.shopData.logPayment(playerFrom, "payment", withdrawResp.amount, balanceFromResp.amount, withdrawResp.balance);
-            plugin.shopData.logPayment(playerTo, "payment", depositResp.amount, balanceToResp.amount, depositResp.balance);
+            plugin.getShopData().logPayment(playerFrom, "payment", withdrawResp.amount, balanceFromResp.amount, withdrawResp.balance);
+            plugin.getShopData().logPayment(playerTo, "payment", depositResp.amount, balanceToResp.amount, depositResp.balance);
             return true;
         } else {
             return false;
@@ -147,19 +147,19 @@ public class PlayerData {
     }
 
     public double getBalance(String playerName) {
-        EconomyResponse balanceResp = plugin.econManager.getBalance(playerName);
+        EconomyResponse balanceResp = plugin.getEconManager().getBalance(playerName);
         return balanceResp.amount;
     }
 
     public boolean chargePlayer(String playerName, double chargeAmount) {
-        EconomyResponse balanceResp = plugin.econManager.getBalance(playerName);
+        EconomyResponse balanceResp = plugin.getEconManager().getBalance(playerName);
         if(!balanceResp.transactionSuccess()) {
             return false;
         }
         
-        EconomyResponse withdrawResp = plugin.econManager.withdrawPlayer(playerName, chargeAmount);
+        EconomyResponse withdrawResp = plugin.getEconManager().withdrawPlayer(playerName, chargeAmount);
         if(withdrawResp.transactionSuccess()) {
-            plugin.shopData.logPayment(playerName, "payment", withdrawResp.amount, balanceResp.balance, withdrawResp.balance);
+            plugin.getShopData().logPayment(playerName, "payment", withdrawResp.amount, balanceResp.balance, withdrawResp.balance);
             return true;
         } else {
             return false;
@@ -172,6 +172,14 @@ public class PlayerData {
         } else {
             return null;
         }
+    }
+
+    public void setSelecting(boolean isSelecting) {
+        this.isSelecting = isSelecting;
+    }
+
+    public boolean isSelecting() {
+        return isSelecting;
     }
 
 }

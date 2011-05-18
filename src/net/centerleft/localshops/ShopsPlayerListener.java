@@ -40,25 +40,25 @@ public class ShopsPlayerListener extends PlayerListener {
 
         Player player = event.getPlayer();
         String playerName = player.getName();
-        if (!plugin.playerData.containsKey(playerName)) {
-            plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
+        if (!plugin.getPlayerData().containsKey(playerName)) {
+            plugin.getPlayerData().put(playerName, new PlayerData(plugin, playerName));
         }
 
         // If our user is select & is not holding an item, selection time
-        if (plugin.playerData.get(playerName).isSelecting && player.getItemInHand().getType() == Material.AIR) {
+        if (plugin.getPlayerData().get(playerName).isSelecting() && player.getItemInHand().getType() == Material.AIR) {
             double x, y, z;
             Location loc = event.getClickedBlock().getLocation();
             x = loc.getBlockX();
             y = loc.getBlockY();
             z = loc.getBlockZ();
             
-            PlayerData pData = plugin.playerData.get(playerName);
+            PlayerData pData = plugin.getPlayerData().get(playerName);
             
             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 double[] xyz = { x, y, z };
                 pData.setPositionA(xyz);
                 if(pData.checkSize()) {
-                    player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                    player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.getPlayerData().get(playerName).getSizeString());
                 } else {
                     player.sendMessage(ChatColor.DARK_AQUA + "First Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
                 }
@@ -72,7 +72,7 @@ public class ShopsPlayerListener extends PlayerListener {
                 double[] xyz = { x, y, z };
                 pData.setPositionB(xyz);
                 if(pData.checkSize()) {
-                    player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.playerData.get(playerName).getSizeString());
+                    player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z + ChatColor.DARK_AQUA + " size " + ChatColor.LIGHT_PURPLE + plugin.getPlayerData().get(playerName).getSizeString());
                 } else {
                     player.sendMessage(ChatColor.DARK_AQUA + "Second Position " + ChatColor.LIGHT_PURPLE + x + " " + y + " " + z);
                 }
@@ -91,8 +91,8 @@ public class ShopsPlayerListener extends PlayerListener {
         Player player = event.getPlayer();
         String playerName = player.getName();
         
-        if (!plugin.playerData.containsKey(playerName)) {
-            plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
+        if (!plugin.getPlayerData().containsKey(playerName)) {
+            plugin.getPlayerData().put(playerName, new PlayerData(plugin, playerName));
         }
 
         long x, y, z;
@@ -109,8 +109,8 @@ public class ShopsPlayerListener extends PlayerListener {
         Player player = event.getPlayer();
         String playerName = player.getName();
 
-        if (!plugin.playerData.containsKey(playerName)) {
-            plugin.playerData.put(playerName, new PlayerData(plugin, playerName));
+        if (!plugin.getPlayerData().containsKey(playerName)) {
+            plugin.getPlayerData().put(playerName, new PlayerData(plugin, playerName));
         }
 
         long x, y, z;
@@ -142,9 +142,9 @@ public class ShopsPlayerListener extends PlayerListener {
     }
 
     public void checkPlayerPosition(Player player, long x, long y, long z) {
-        PlayerData pData = plugin.playerData.get(player.getName());
+        PlayerData pData = plugin.getPlayerData().get(player.getName());
         BookmarkedResult res = pData.bookmark;
-        res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
+        res = LocalShops.getCuboidTree().relatedSearch(res.bookmark, x, y, z);
 
         // check to see if we've entered any shops
         ArrayList<PrimitiveCuboid> cuboids = (ArrayList<PrimitiveCuboid>) res.results.clone();
@@ -157,7 +157,7 @@ public class ShopsPlayerListener extends PlayerListener {
             if (!cuboid.world.equalsIgnoreCase(player.getWorld().getName()))
                 continue;
 
-            Shop shop = plugin.shopData.getShop(cuboid.uuid);
+            Shop shop = plugin.getShopData().getShop(cuboid.uuid);
             if(shop == null) {
                 // shop no longer exists...remove from cuboid
                 res.results.remove(cuboid);
@@ -193,13 +193,13 @@ public class ShopsPlayerListener extends PlayerListener {
 
     private void notifyPlayerLeftShop(Player player, UUID shopUuid) {
         // TODO Add formatting
-        Shop shop = plugin.shopData.getShop(shopUuid);
+        Shop shop = plugin.getShopData().getShop(shopUuid);
         player.sendMessage(ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA + "] You have left the shop " + ChatColor.WHITE + shop.getName());
     }
 
     private void notifyPlayerEnterShop(Player player, UUID shopUuid) {
         // TODO Add formatting
-        Shop shop = plugin.shopData.getShop(shopUuid);
+        Shop shop = plugin.getShopData().getShop(shopUuid);
         player.sendMessage(ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA
                 + "] You have entered the shop " + ChatColor.WHITE + shop.getName());
 

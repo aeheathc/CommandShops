@@ -8,33 +8,33 @@ import java.util.UUID;
 public class Config {
 
     // Shop Size settings
-    protected static long SHOP_SIZE_DEF_WIDTH = 5;
-    protected static long SHOP_SIZE_DEF_HEIGHT = 3;
-    protected static long SHOP_SIZE_MAX_WIDTH = 30;
-    protected static long SHOP_SIZE_MAX_HEIGHT = 10;
+    public static long SHOP_SIZE_DEF_WIDTH = 5;
+    public static long SHOP_SIZE_DEF_HEIGHT = 3;
+    public static long SHOP_SIZE_MAX_WIDTH = 30;
+    public static long SHOP_SIZE_MAX_HEIGHT = 10;
     
     // Shop Charge settings
-    protected static double SHOP_CHARGE_CREATE_COST = 100;
-    protected static double SHOP_CHARGE_MOVE_COST = 10;
-    protected static boolean SHOP_CHARGE_CREATE = true;
-    protected static boolean SHOP_CHARGE_MOVE = true;
+    public static double SHOP_CHARGE_CREATE_COST = 100;
+    public static double SHOP_CHARGE_MOVE_COST = 10;
+    public static boolean SHOP_CHARGE_CREATE = true;
+    public static boolean SHOP_CHARGE_MOVE = true;
     
     // Search Settings
-    protected static int SEARCH_MAX_DISTANCE = 150;
+    public static int SEARCH_MAX_DISTANCE = 150;
     
     // Server Settings
-    protected static boolean SRV_LOG_TRANSACTIONS = true;
-    protected static boolean SRV_DEBUG = false;
-    protected static UUID SRV_UUID = null;
-    protected static boolean SRV_REPORT = true;
+    public static boolean SRV_LOG_TRANSACTIONS = true;
+    public static boolean SRV_DEBUG = false;
+    public static UUID SRV_UUID = null;
+    public static boolean SRV_REPORT = true;
     
     // Player Settings
-    protected static int PLAYER_MAX_SHOPS = -1;        // Anything < 0 = unlimited player shops.
+    public static int PLAYER_MAX_SHOPS = -1;        // Anything < 0 = unlimited player shops.
     
     // Item Settings
-    protected static int ITEM_MAX_DAMAGE = 35;
+    public static int ITEM_MAX_DAMAGE = 35;
     
     // UUID settings
-    protected static int UUID_MIN_LENGTH = 1;
+    public static int UUID_MIN_LENGTH = 1;
     protected static List<String> UUID_LIST = Collections.synchronizedList(new ArrayList<String>());
 }

@@ -104,7 +104,7 @@ public class ShopData {
             log.info(String.format("[%s] %s.%s", plugin.pdfFile.getName(), "ShopData", "loadShops(File shopsDir)"));
         }
 
-        LocalShops.cuboidTree = new QuadTree();
+        LocalShops.setCuboidTree(new QuadTree());
 
         File[] shopsList = shopsDir.listFiles();
         for (File file : shopsList) {
@@ -132,8 +132,8 @@ public class ShopData {
                 if(Config.SRV_DEBUG) {
                     log.info(String.format("[%s] Loaded %s", plugin.pdfFile.getName(), shop.toString()));
                 }
-                LocalShops.cuboidTree.insert(shop.getCuboid());
-                plugin.shopData.addShop(shop);
+                LocalShops.getCuboidTree().insert(shop.getCuboid());
+                plugin.getShopData().addShop(shop);
             } else {
                 log.warning(String.format("[%s] Failed to load Shop file: \"%s\"", plugin.pdfFile.getName(), file.getName()));
             }
@@ -511,7 +511,7 @@ public class ShopData {
         ShopLocation loc = shop.getLocationCenter();
         BookmarkedResult res = new BookmarkedResult();
 
-        res = LocalShops.cuboidTree.relatedSearch(res.bookmark, loc.getX(), loc.getY(), loc.getZ());
+        res = LocalShops.getCuboidTree().relatedSearch(res.bookmark, loc.getX(), loc.getY(), loc.getZ());
 
         // get the shop's tree node and delete it
         for (PrimitiveCuboid shopLocation : res.results) {
@@ -524,7 +524,7 @@ public class ShopData {
             if (!shopLocation.world.equalsIgnoreCase(shop.getWorld())) {
                 continue;
             }
-            LocalShops.cuboidTree.delete(shopLocation);
+            LocalShops.getCuboidTree().delete(shopLocation);
 
         }
 
@@ -559,7 +559,7 @@ public class ShopData {
         for (long x = xyzA[0]; x <= xyzB[0]; x++) {
             for (long z = xyzA[2]; z <= xyzB[2]; z++) {
                 for (long y = xyzA[1]; y <= xyzB[1]; y++) {
-                    res = LocalShops.cuboidTree.relatedSearch(res.bookmark, x, y, z);
+                    res = LocalShops.getCuboidTree().relatedSearch(res.bookmark, x, y, z);
                     if (shopOverlaps(shop, res))
                         return false;
                 }

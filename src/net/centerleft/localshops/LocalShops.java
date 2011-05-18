@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import net.centerleft.localshops.commands.Commands;
 import net.centerleft.localshops.modules.economy.EconomyManager;
 import net.centerleft.localshops.modules.permission.PermissionManager;
 
@@ -31,12 +32,12 @@ import cuboidLocale.QuadTree;
  */
 public class LocalShops extends JavaPlugin {
     // Listeners & Objects
-    protected ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
-    protected ShopData shopData = new ShopData(this);
-    protected PluginDescriptionFile pdfFile = null;
+    public ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
+    private ShopData shopData = new ShopData(this);
+    public PluginDescriptionFile pdfFile = null;
     protected ReportThread reportThread = null;
-    protected EconomyManager econManager = null;
-    protected PermissionManager permManager = null;
+    private EconomyManager econManager = null;
+    private PermissionManager permManager = null;
 
     // Logging
     private final Logger log = Logger.getLogger("Minecraft");
@@ -45,7 +46,7 @@ public class LocalShops extends JavaPlugin {
     public static final String CHAT_PREFIX = ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Shop" + ChatColor.DARK_AQUA + "] ";
 
     // TBD
-    static QuadTree cuboidTree = new QuadTree();
+    private static QuadTree cuboidTree = new QuadTree();
     static String folderPath = "plugins/LocalShops/";
     static File folderDir;
     static String shopsPath = "shops/";
@@ -54,16 +55,16 @@ public class LocalShops extends JavaPlugin {
 
     static PropertyHandler properties;
 
-    static ItemData itemList = new ItemData();
-    protected Map<String, PlayerData> playerData; // synchronized player hash
+    private static ItemData itemList = new ItemData();
+    private Map<String, PlayerData> playerData; // synchronized player hash
 
     public void onEnable() {
         pdfFile = getDescription();
-        playerData = Collections.synchronizedMap(new HashMap<String, PlayerData>());
+        setPlayerData(Collections.synchronizedMap(new HashMap<String, PlayerData>()));
 
         // add all the online users to the data trees
         for (Player player : this.getServer().getOnlinePlayers()) {
-            playerData.put(player.getName(), new PlayerData(this, player.getName()));
+            getPlayerData().put(player.getName(), new PlayerData(this, player.getName()));
         }
 
         // Register our events
@@ -86,10 +87,10 @@ public class LocalShops extends JavaPlugin {
 
         foundWorlds = getServer().getWorlds();
         // read the shops into memory
-        shopData.loadShops(shopsDir);
+        getShopData().loadShops(shopsDir);
 
         // update the console that we've started
-        log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with " + shopData.getNumShops() + " shop(s)"));
+        log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with " + getShopData().getNumShops() + " shop(s)"));
         log.info(String.format("[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is enabled: " + Config.SRV_UUID.toString()));
 
         // check which shops players are inside
@@ -103,15 +104,15 @@ public class LocalShops extends JavaPlugin {
             reportThread.start();
         }
         
-        econManager = new EconomyManager(this);
-        if(!econManager.loadEconomies()) {
+        setEconManager(new EconomyManager(this));
+        if(!getEconManager().loadEconomies()) {
             // No valid economies, display error message and disables
             log.warning(String.format("[%s] FATAL: No economic plugins found, please refer to the documentation.", pdfFile.getName()));
             getPluginLoader().disablePlugin(this);
         }
         
-        permManager = new PermissionManager(this);
-        if(!permManager.load()) {
+        setPermManager(new PermissionManager(this));
+        if(!getPermManager().load()) {
             // no valid permissions, display error message and disables
             log.warning(String.format("[%s] FATAL: No permission plugins found, please refer to the documentation.", pdfFile.getName()));
             getPluginLoader().disablePlugin(this);
@@ -120,7 +121,7 @@ public class LocalShops extends JavaPlugin {
 
     public void onDisable() {
         // Save all shops
-        shopData.saveAllShops();
+        getShopData().saveAllShops();
         
         // Stop Reporting thread
         if(Config.SRV_REPORT && reportThread != null && reportThread.isAlive()) {
@@ -303,5 +304,53 @@ public class LocalShops extends JavaPlugin {
         } else {
             properties.setInt("search-max-distance", Config.SEARCH_MAX_DISTANCE);
         }
+    }
+
+    public void setShopData(ShopData shopData) {
+        this.shopData = shopData;
+    }
+
+    public ShopData getShopData() {
+        return shopData;
+    }
+
+    public void setPlayerData(Map<String, PlayerData> playerData) {
+        this.playerData = playerData;
+    }
+
+    public Map<String, PlayerData> getPlayerData() {
+        return playerData;
+    }
+
+    public static void setItemList(ItemData itemList) {
+        LocalShops.itemList = itemList;
+    }
+
+    public static ItemData getItemList() {
+        return itemList;
+    }
+
+    public static void setCuboidTree(QuadTree cuboidTree) {
+        LocalShops.cuboidTree = cuboidTree;
+    }
+
+    public static QuadTree getCuboidTree() {
+        return cuboidTree;
+    }
+
+    public void setEconManager(EconomyManager econManager) {
+        this.econManager = econManager;
+    }
+
+    public EconomyManager getEconManager() {
+        return econManager;
+    }
+
+    public void setPermManager(PermissionManager permManager) {
+        this.permManager = permManager;
+    }
+
+    public PermissionManager getPermManager() {
+        return permManager;
     }
 }
