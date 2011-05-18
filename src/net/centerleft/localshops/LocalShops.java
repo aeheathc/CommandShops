@@ -297,5 +297,11 @@ public class LocalShops extends JavaPlugin {
         } else {
             properties.setBoolean("debug", Config.SRV_DEBUG);
         }
+        
+        if(properties.keyExists("search-max-distance")) {
+            Config.SEARCH_MAX_DISTANCE = properties.getInt("search-max-distance");
+        } else {
+            properties.setInt("search-max-distance", Config.SEARCH_MAX_DISTANCE);
+        }
     }
 }

@@ -19,6 +19,9 @@ public class Config {
     protected static boolean SHOP_CHARGE_CREATE = true;
     protected static boolean SHOP_CHARGE_MOVE = true;
     
+    // Search Settings
+    protected static int SEARCH_MAX_DISTANCE = 150;
+    
     // Server Settings
     protected static boolean SRV_LOG_TRANSACTIONS = true;
     protected static boolean SRV_DEBUG = false;
