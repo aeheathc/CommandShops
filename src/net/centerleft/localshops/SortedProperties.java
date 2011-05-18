@@ -6,6 +6,9 @@ import java.util.Properties;
 import java.util.Vector;
 
 public class SortedProperties extends Properties {
+    private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Enumeration keys() {
        Enumeration keysEnum = super.keys();
        Vector<String> keyList = new Vector<String>();
