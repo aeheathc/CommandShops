@@ -70,7 +70,8 @@ public class LocalShops extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
-        // TODO: add PLAYER_JOIN, PLAYER_QUIT, PLAYER_KICK events
+        pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_KICK, playerListener, Priority.Monitor, this);
         
         // Register Commands
         getCommand("shop").setExecutor(new ShopCommandExecutor(this));

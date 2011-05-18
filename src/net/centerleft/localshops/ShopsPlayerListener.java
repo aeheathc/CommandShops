@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
@@ -102,6 +103,24 @@ public class ShopsPlayerListener extends PlayerListener {
         z = (long) xyz.getBlockZ();
 
         checkPlayerPosition(player, x, y, z);        
+    }
+    
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        String playerName = player.getName();
+        
+        if (!plugin.getPlayerData().containsKey(playerName)) {
+            plugin.getPlayerData().remove(playerName);
+        }
+    }
+    
+    public void onPlayerKick(PlayerKickEvent event) {
+        Player player = event.getPlayer();
+        String playerName = player.getName();
+        
+        if (!plugin.getPlayerData().containsKey(playerName)) {
+            plugin.getPlayerData().remove(playerName);
+        }
     }
 
     @Override
