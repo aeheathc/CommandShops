@@ -21,81 +21,83 @@ public class ShopCommandExecutor implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        Commands commands = null;
         String type = null;
         String user = "CONSOLE";
         if (sender instanceof Player) {
             user = ((Player) sender).getName();
         }
-
+        
+        String cmdString = null;
         if (commandLabel.equalsIgnoreCase("buy")) {
-            commands = new Commands(plugin, commandLabel, sender, "buy " + Search.join(args, " "));
+            cmdString = "buy " + Search.join(args, " ");
             type = "buy";
         } else if (commandLabel.equalsIgnoreCase("sell")) {
-            commands = new Commands(plugin, commandLabel, sender, "sell " + Search.join(args, " "));
+            cmdString = "sell " + Search.join(args, " ");
             type = "sell";
         } else {
-            commands = new Commands(plugin, commandLabel, sender, args);
             if (args.length > 0) {
+                cmdString = Search.join(args, " ");
                 type = args[0];
             } else {
-                return commands.shopHelp();
+                return (new CommandShopHelp(plugin, commandLabel, sender, args)).process();
             }
         }
 
-        log.info(String.format("[%s] %s issued: %s", plugin.getDescription().getName(), user, commands.getCommand()));
-
         String commandName = command.getName().toLowerCase();
+        
+        net.centerleft.localshops.commands.Command cmd = null;
+        boolean checkPlayerPos = false;
 
         if (commandName.equalsIgnoreCase("lshop") || commandLabel.equalsIgnoreCase("buy") || commandLabel.equalsIgnoreCase("sell")) {
             if (type.equalsIgnoreCase("search")) {
-                return commands.shopSearch();
+                cmd = new CommandShopSearch(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("find")) {
+                cmd = new CommandShopFind(plugin, commandLabel, sender, cmdString);
             } else if (type.equalsIgnoreCase("debug")) {
-                return commands.shopDebug();
+                cmd = new CommandShopDebug(plugin, commandLabel, sender, cmdString);
             } else if (type.equalsIgnoreCase("create")) {
-                commands.shopCreate();
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    plugin.playerListener.checkPlayerPosition(player);
-                }
-                return true;
+                cmd = new CommandShopCreate(plugin, commandLabel, sender, cmdString);
+                checkPlayerPos = true;
             } else if (type.equalsIgnoreCase("destroy")) {
-                commands.shopDestroy();
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    plugin.playerListener.checkPlayerPosition(player);
-                }
-                return true;
+                cmd = new CommandShopDestroy(plugin, commandLabel, sender, cmdString);
+                checkPlayerPos = true;
             } else if (type.equalsIgnoreCase("move")) {
-                commands.shopMove();
+                cmd = new CommandShopMove(plugin, commandLabel, sender, cmdString);
+                checkPlayerPos = true;
+            } else if (type.equalsIgnoreCase("browse") || type.equalsIgnoreCase("bro")) {
+                cmd = new CommandShopBrowse(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("sell")) {
+                cmd = new CommandShopSell(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("add")) {
+                cmd = new CommandShopAdd(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("remove")) {
+                cmd = new CommandShopRemove(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("buy")) {
+                cmd = new CommandShopBuy(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("set")) {
+                cmd = new CommandShopSet(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("select")) {
+                cmd = new CommandShopSelect(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("list")) {
+                cmd = new CommandShopList(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("info")) {
+                cmd = new CommandShopInfo(plugin, commandLabel, sender, cmdString);
+            } else if (type.equalsIgnoreCase("version")) {
+                cmd = new CommandShopVersion(plugin, commandLabel, sender, cmdString);
+            } else {
+                cmd = new CommandShopHelp(plugin, commandLabel, sender, cmdString);
+            }
+            
+            log.info(String.format("[%s] %s issued: %s", plugin.getDescription().getName(), user, cmd.getCommand()));
+            boolean cVal = cmd.process();
+            if(cVal && checkPlayerPos) {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     plugin.playerListener.checkPlayerPosition(player);
                 }
-                return true;
-            } else if (type.equalsIgnoreCase("browse") || type.equalsIgnoreCase("bro")) {
-                return commands.shopBrowse();
-            } else if (type.equalsIgnoreCase("sell")) {
-                return commands.shopSell();
-            } else if (type.equalsIgnoreCase("add")) {
-                return commands.shopAdd();
-            } else if (type.equalsIgnoreCase("remove")) {
-                return commands.shopRemove();
-            } else if (type.equalsIgnoreCase("buy")) {
-                return commands.shopBuy();
-            } else if (type.equalsIgnoreCase("set")) {
-                return commands.shopSet();
-            } else if (type.equalsIgnoreCase("select")) {
-                return commands.shopSelect();
-            } else if (type.equalsIgnoreCase("list")) {
-                return commands.shopList();
-            } else if (type.equalsIgnoreCase("info")) {
-                return commands.shopInfo();
-            } else if (type.equalsIgnoreCase("version")) {
-                sender.sendMessage(String.format("LocalShops Version %s", plugin.getDescription().getVersion()));
-                return true;
-            } else {
-                return commands.shopHelp();
             }
+            
+            return cVal;
         }
         return false;
     }
-
 }

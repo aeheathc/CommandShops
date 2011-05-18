@@ -8,15 +8,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import net.centerleft.localshops.commands.Commands;
 import net.centerleft.localshops.commands.ShopCommandExecutor;
 import net.centerleft.localshops.modules.economy.EconomyManager;
 import net.centerleft.localshops.modules.permission.PermissionManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
