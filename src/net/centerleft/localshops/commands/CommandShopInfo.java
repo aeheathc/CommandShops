@@ -80,6 +80,12 @@ public class CommandShopInfo extends Command {
             } else {
                 sender.sendMessage(String.format("  Owned & Created by %s with %d managers.", shop.getCreator(), managerCount));
             }
+        } else {
+            if(managerCount == 0) {
+                sender.sendMessage(String.format("  Owned by %s, created by %s with no managers.", shop.getOwner(), shop.getCreator()));
+            } else {
+                sender.sendMessage(String.format("  Owned by %s created by %s with %d managers.", shop.getOwner(), shop.getCreator(), managerCount));
+            }            
         }
         if(managerCount > 0) {
             sender.sendMessage(String.format("  Managed by %s", Search.join(shop.getManagers(), " ")));
