@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import net.centerleft.localshops.commands.ShopCommandExecutor;
 import net.centerleft.localshops.modules.economy.EconomyManager;
 import net.centerleft.localshops.modules.permission.PermissionManager;
+import net.centerleft.localshops.threads.NotificationThread;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -34,6 +35,7 @@ public class LocalShops extends JavaPlugin {
     private ShopData shopData = new ShopData(this);
     public PluginDescriptionFile pdfFile = null;
     protected ReportThread reportThread = null;
+    protected NotificationThread notificationThread = null;
     private EconomyManager econManager = null;
     private PermissionManager permManager = null;
 
@@ -67,8 +69,8 @@ public class LocalShops extends JavaPlugin {
 
         // Register our events
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_KICK, playerListener, Priority.Monitor, this);
@@ -106,6 +108,12 @@ public class LocalShops extends JavaPlugin {
             reportThread.start();
         }
         
+        // Start Notification thread
+        if (Config.SHOP_NOTIFICATION) {
+            notificationThread = new NotificationThread(this);
+            notificationThread.start();
+        }
+        
         setEconManager(new EconomyManager(this));
         if(!getEconManager().loadEconomies()) {
             // No valid economies, display error message and disables
@@ -133,6 +141,17 @@ public class LocalShops extends JavaPlugin {
             } catch (InterruptedException e) {
                 // hmm, thread didn't die
                 log.warning(String.format("[%s] %s", pdfFile.getName(), "ReportThread did not exit"));
+            }
+        }
+        
+        // Stop notification thread
+        if(Config.SHOP_NOTIFICATION && notificationThread != null && notificationThread.isAlive()) {
+            try {
+                notificationThread.setRun(false);
+                notificationThread.join(2000);
+            } catch (InterruptedException e) {
+                // hmm, thread didn't die
+                log.warning(String.format("[%s] %s", pdfFile.getName(), "NotificationThread did not exit"));
             }
         }
         
@@ -226,6 +245,18 @@ public class LocalShops extends JavaPlugin {
             Config.SEARCH_MAX_DISTANCE = properties.getInt("search-max-distance");
         } else {
             properties.setInt("search-max-distance", Config.SEARCH_MAX_DISTANCE);
+        }
+        
+        if(properties.keyExists("shop-notification")) {
+            Config.SHOP_NOTIFICATION = properties.getBoolean("shop-notification");
+        } else {
+            properties.setBoolean("shop-notification", Config.SHOP_NOTIFICATION);
+        }
+        
+        if(properties.keyExists("shop-notification-timer")) {
+            Config.SHOP_NOTIFICATION_TIMER = properties.getInt("shop-notification-timer");
+        } else {
+            properties.setInt("shop-notification-timer", Config.SHOP_NOTIFICATION_TIMER);
         }
     }
 

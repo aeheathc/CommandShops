@@ -25,6 +25,8 @@ public class Shop implements Comparator<Shop> {
     private HashMap<String, InventoryItem> inventory = new HashMap<String, InventoryItem>();
     private PrimitiveCuboid cuboid = null;
     private double minBalance = 0;
+    private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+    private boolean notification = true;
     
     // Logging
     private static final Logger log = Logger.getLogger("Minecraft");    
@@ -164,6 +166,14 @@ public class Shop implements Comparator<Shop> {
     public void setMinBalance(double newBalance) {
         this.minBalance = newBalance;
     }
+    
+    public void setNotification(boolean setting) {
+        this.notification = setting;
+    }
+    
+    public boolean getNotification() {
+        return notification;
+    }
 
     public boolean addItem(int itemNumber, short itemData, double buyPrice, int buyStackSize, double sellPrice, int sellStackSize, int stock, int maxStock) {
         // TODO add maxStock to item object
@@ -265,6 +275,22 @@ public class Shop implements Comparator<Shop> {
 
     public void setItemMaxStock(String itemName, int maxStock) {
         inventory.get(itemName).maxStock = maxStock;
+    }
+    
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+    
+    public void removeTransaction(Transaction trans) {
+        transactions.remove(trans);
+    }
+    
+    public void addTransaction(Transaction trans) {
+        transactions.add(trans);
+    }
+    
+    public void clearTransactions() {
+        transactions.clear();
     }
 
     public PrimitiveCuboid getCuboid() {

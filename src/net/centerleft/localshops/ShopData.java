@@ -347,6 +347,7 @@ public class ShopData {
         boolean unlimitedMoney = Boolean.parseBoolean(props.getProperty("unlimited-money", "false"));
         boolean unlimitedStock = Boolean.parseBoolean(props.getProperty("unlimited-stock", "false"));
         double minBalance = Double.parseDouble((props.getProperty("min-balance", "0.0")));
+        boolean notification = Boolean.parseBoolean(props.getProperty("notification", "true"));
 
         // Location - locationB=-88, 50, -127
         double[] locationA;
@@ -380,6 +381,7 @@ public class ShopData {
         shop.setOwner(owner);
         shop.setManagers(managers);
         shop.setCreator(creator);
+        shop.setNotification(notification);
         
         // Make sure minimum balance isn't negative
         if (minBalance < 0) {
@@ -472,6 +474,7 @@ public class ShopData {
         props.setProperty("unlimited-money", String.valueOf(shop.isUnlimitedMoney()));
         props.setProperty("unlimited-stock", String.valueOf(shop.isUnlimitedStock()));
         props.setProperty("min-balance", String.valueOf(shop.getMinBalance()));
+        props.setProperty("notification", String.valueOf(shop.getNotification()));
 
         // Location
         props.setProperty("locationA", shop.getLocationA().toString());

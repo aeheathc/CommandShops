@@ -48,6 +48,8 @@ public class CommandShopSet extends Command {
             return shopSetManager();
         } else if (command.matches("(?i)set\\s+minbalance.*")) {
             return shopSetMinBalance();
+        } else if (command.matches("(?i)set\\s+notification.*")) {
+            return shopSetNotification();
         } else if (command.matches("(?i)set\\s+owner.*")) {
             return shopSetOwner();
         } else if (command.matches("(?i)set\\s+name.*")) {
@@ -630,9 +632,49 @@ public class CommandShopSet extends Command {
         return true;
     }
     
+    private boolean shopSetNotification() {
+        Shop shop = null;
+        
+        // Get current shop
+        if(sender instanceof Player) {
+            // Get player & data
+            Player player = (Player) sender;
+            PlayerData pData = plugin.getPlayerData().get(player.getName());
+            
+            // Get current shop
+            UUID shopUuid = pData.getCurrentShop();
+            if(shopUuid != null) {
+                shop = plugin.getShopData().getShop(shopUuid);
+            }
+            if(shop == null) {
+                sender.sendMessage("You are not in a shop!");
+                return true;
+            }
+            
+            // Check if Player can Modify
+            if (!shop.getOwner().equalsIgnoreCase(player.getName())) {
+                sender.sendMessage(LocalShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You must be the shop owner to set this.");
+                sender.sendMessage(ChatColor.DARK_AQUA + " The current shop owner is " + ChatColor.WHITE + shop.getOwner());
+                return true;
+            }
+        } else {
+            sender.sendMessage("Console is not implemented yet.");
+            return true;
+        }
+
+        // set notification
+        shop.setNotification(!shop.getNotification());
+        
+        // Save Shop
+        plugin.getShopData().saveShop(shop);
+        
+        // Output
+        sender.sendMessage(String.format(ChatColor.DARK_AQUA + "Notices for " + ChatColor.WHITE + "%s" + ChatColor.DARK_AQUA + " are now " + ChatColor.WHITE + "%s", shop.getName(), shop.getNotification() ? "on" : "off"));
+        return true;
+    }
+    
     private boolean shopSetMinBalance() {
         Shop shop = null;
-        boolean reset = false;
 
         // Get current shop
         if (sender instanceof Player) {

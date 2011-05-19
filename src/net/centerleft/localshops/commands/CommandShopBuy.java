@@ -10,6 +10,7 @@ import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.PlayerData;
 import net.centerleft.localshops.Search;
 import net.centerleft.localshops.Shop;
+import net.centerleft.localshops.Transaction;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -406,6 +407,7 @@ public class CommandShopBuy extends Command {
             startStock = 0;
         }
         plugin.getShopData().logItems(player.getName(), shop.getName(), "buy-item", item.name, amount, startStock, stock);
+        shop.addTransaction(new Transaction(Transaction.Type.Sell, player.getName(), item.name, amount, totalCost));
 
         givePlayerItem(item.toStack(), amount);
         plugin.getShopData().saveShop(shop);

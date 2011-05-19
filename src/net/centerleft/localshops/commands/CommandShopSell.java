@@ -14,6 +14,8 @@ import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.PlayerData;
 import net.centerleft.localshops.Search;
 import net.centerleft.localshops.Shop;
+import net.centerleft.localshops.Transaction;
+import net.centerleft.localshops.Transaction.Type;
 import net.centerleft.localshops.comparator.InventoryItemSortByName;
 
 import org.bukkit.ChatColor;
@@ -358,9 +360,11 @@ public class CommandShopSell extends Command {
         // log the transaction
         int itemInv = invItem.getStock();
         int startInv = itemInv - amount;
-        if (startInv < 0)
+        if (startInv < 0) {
             startInv = 0;
+        }
         plugin.getShopData().logItems(player.getName(), shop.getName(), "sell-item", item.name, amount, startInv, itemInv);
+        shop.addTransaction(new Transaction(Transaction.Type.Buy, player.getName(), item.name, amount, totalCost));
 
         removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
         plugin.getShopData().saveShop(shop);
