@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import net.centerleft.localshops.Config;
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.Shop;
-import net.centerleft.localshops.ShopSortByName;
+import net.centerleft.localshops.comparator.ShopSortByName;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

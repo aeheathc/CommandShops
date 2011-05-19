@@ -13,7 +13,7 @@ import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.PlayerData;
 import net.centerleft.localshops.Search;
 import net.centerleft.localshops.Shop;
-import net.centerleft.localshops.ShopSortByName;
+import net.centerleft.localshops.comparator.ShopSortByName;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

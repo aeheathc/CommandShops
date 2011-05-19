@@ -8,10 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.centerleft.localshops.InventoryItem;
-import net.centerleft.localshops.InventoryItemShortByName;
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.PlayerData;
 import net.centerleft.localshops.Shop;
+import net.centerleft.localshops.comparator.InventoryItemSortByName;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -129,7 +129,7 @@ public class CommandShopBrowse extends Command {
     private void printInventory(Shop shop, String buySellorList, int pageNumber) {
         String inShopName = shop.getName();
         List<InventoryItem> items = shop.getItems();
-        Collections.sort(items, new InventoryItemShortByName());
+        Collections.sort(items, new InventoryItemSortByName());
 
         boolean buy = buySellorList.equalsIgnoreCase("buy");
         boolean sell = buySellorList.equalsIgnoreCase("sell");

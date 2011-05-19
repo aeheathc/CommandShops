@@ -9,12 +9,12 @@ import java.util.regex.Pattern;
 
 import net.centerleft.localshops.Config;
 import net.centerleft.localshops.InventoryItem;
-import net.centerleft.localshops.InventoryItemShortByName;
 import net.centerleft.localshops.ItemInfo;
 import net.centerleft.localshops.LocalShops;
 import net.centerleft.localshops.PlayerData;
 import net.centerleft.localshops.Search;
 import net.centerleft.localshops.Shop;
+import net.centerleft.localshops.comparator.InventoryItemSortByName;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
