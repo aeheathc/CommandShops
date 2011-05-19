@@ -1,8 +1,10 @@
-package net.centerleft.localshops;
+package net.centerleft.localshops.comparator;
 
 import java.util.Comparator;
 
-public class InventoryItemShortByName implements Comparator<InventoryItem> {
+import net.centerleft.localshops.InventoryItem;
+
+public class InventoryItemSortByName implements Comparator<InventoryItem> {
 
     @Override
     public int compare(InventoryItem o1, InventoryItem o2) {

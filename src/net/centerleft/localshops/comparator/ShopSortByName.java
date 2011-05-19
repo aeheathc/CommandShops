@@ -1,6 +1,8 @@
-package net.centerleft.localshops;
+package net.centerleft.localshops.comparator;
 
 import java.util.Comparator;
+
+import net.centerleft.localshops.Shop;
 
 public class ShopSortByName implements Comparator<Shop> {
 

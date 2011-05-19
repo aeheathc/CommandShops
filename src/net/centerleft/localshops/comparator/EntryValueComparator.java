@@ -1,4 +1,4 @@
-package net.centerleft.localshops;
+package net.centerleft.localshops.comparator;
 
 import java.util.Comparator;
 import java.util.Map;
