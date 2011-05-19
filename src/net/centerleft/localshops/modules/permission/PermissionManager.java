@@ -74,7 +74,6 @@ public class PermissionManager {
     
     public boolean hasPermission(Player player, String permission) {
         boolean rVal = getPermission().hasPermission(player, permission);
-        log.info(String.format("[%s] Player %s %s %s", plugin.getDescription().getName(), player.getName(), rVal ? "has" : "doesn't have", permission));
         return rVal;
     }
 
