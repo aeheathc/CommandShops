@@ -18,8 +18,9 @@ public class Config {
     public static double SHOP_CHARGE_MOVE_COST = 10;
     public static boolean SHOP_CHARGE_CREATE = true;
     public static boolean SHOP_CHARGE_MOVE = true;
-    public static boolean SHOP_NOTIFICATION = true;
-    public static int SHOP_NOTIFICATION_TIMER = 300;
+    public static boolean SHOP_TRANSACTION_NOTICE = true;
+    public static int SHOP_TRANSACTION_NOTICE_TIMER = 300;
+    public static int SHOP_TRANSACTION_MAX_SIZE = 100;
     
     // Search Settings
     public static int SEARCH_MAX_DISTANCE = 150;

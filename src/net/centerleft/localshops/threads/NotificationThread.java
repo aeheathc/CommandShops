@@ -3,6 +3,7 @@ package net.centerleft.localshops.threads;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 import net.centerleft.localshops.Config;
@@ -12,8 +13,6 @@ import net.centerleft.localshops.Transaction;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import com.iConomy.system.Transactions;
 
 public class NotificationThread extends Thread {
     
@@ -30,7 +29,7 @@ public class NotificationThread extends Thread {
     }
 
     public void run() {
-        log.info(String.format("Starting NotificationThread with Timer of %d seconds", Config.SHOP_NOTIFICATION_TIMER));
+        log.info(String.format("[%s] Starting NotificationThread with Timer of %d seconds", plugin.getDescription().getName(), Config.SHOP_TRANSACTION_NOTICE_TIMER));
         
         while(true) {
             List<Shop> shops = plugin.getShopData().getAllShops();
@@ -40,7 +39,7 @@ public class NotificationThread extends Thread {
                     continue;
                 }
                 
-                List<Transaction> transactions = shop.getTransactions();
+                Queue<Transaction> transactions = shop.getTransactions();
                 if(transactions.size() == 0) {
                     continue;
                 }
@@ -159,7 +158,7 @@ public class NotificationThread extends Thread {
             }
             
             try {
-                for(int i = 0; i < Config.SHOP_NOTIFICATION_TIMER; i++) {
+                for(int i = 0; i < Config.SHOP_TRANSACTION_NOTICE_TIMER; i++) {
                     if(!run) {
                         break;
                     }

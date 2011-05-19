@@ -109,7 +109,7 @@ public class LocalShops extends JavaPlugin {
         }
         
         // Start Notification thread
-        if (Config.SHOP_NOTIFICATION) {
+        if (Config.SHOP_TRANSACTION_NOTICE) {
             notificationThread = new NotificationThread(this);
             notificationThread.start();
         }
@@ -145,7 +145,7 @@ public class LocalShops extends JavaPlugin {
         }
         
         // Stop notification thread
-        if(Config.SHOP_NOTIFICATION && notificationThread != null && notificationThread.isAlive()) {
+        if(Config.SHOP_TRANSACTION_NOTICE && notificationThread != null && notificationThread.isAlive()) {
             try {
                 notificationThread.setRun(false);
                 notificationThread.join(2000);
@@ -247,16 +247,22 @@ public class LocalShops extends JavaPlugin {
             properties.setInt("search-max-distance", Config.SEARCH_MAX_DISTANCE);
         }
         
-        if(properties.keyExists("shop-notification")) {
-            Config.SHOP_NOTIFICATION = properties.getBoolean("shop-notification");
+        if(properties.keyExists("shop-transaction-notice")) {
+            Config.SHOP_TRANSACTION_NOTICE = properties.getBoolean("shop-notification");
         } else {
-            properties.setBoolean("shop-notification", Config.SHOP_NOTIFICATION);
+            properties.setBoolean("shop-notification", Config.SHOP_TRANSACTION_NOTICE);
         }
         
-        if(properties.keyExists("shop-notification-timer")) {
-            Config.SHOP_NOTIFICATION_TIMER = properties.getInt("shop-notification-timer");
+        if(properties.keyExists("shop-transactin-notice-timer")) {
+            Config.SHOP_TRANSACTION_NOTICE_TIMER = properties.getInt("shop-notification-timer");
         } else {
-            properties.setInt("shop-notification-timer", Config.SHOP_NOTIFICATION_TIMER);
+            properties.setInt("shop-notification-timer", Config.SHOP_TRANSACTION_NOTICE_TIMER);
+        }
+        
+        if(properties.keyExists("shop-transaction-max-size")) {
+            Config.SHOP_TRANSACTION_MAX_SIZE = properties.getInt("shop-transaction-max-size");
+        } else {
+            properties.setInt("shop-transaction-max-size", Config.SHOP_TRANSACTION_MAX_SIZE);
         }
     }
 

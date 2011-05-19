@@ -5,7 +5,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Logger;
 
 import cuboidLocale.PrimitiveCuboid;
@@ -25,7 +27,7 @@ public class Shop implements Comparator<Shop> {
     private HashMap<String, InventoryItem> inventory = new HashMap<String, InventoryItem>();
     private PrimitiveCuboid cuboid = null;
     private double minBalance = 0;
-    private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+    private ArrayBlockingQueue<Transaction> transactions;
     private boolean notification = true;
     
     // Logging
@@ -33,6 +35,7 @@ public class Shop implements Comparator<Shop> {
 
     public Shop(UUID uuid) {
         this.uuid = uuid;
+        transactions = new ArrayBlockingQueue<Transaction>(Config.SHOP_TRANSACTION_MAX_SIZE);
     }
 
     public UUID getUuid() {
@@ -277,7 +280,7 @@ public class Shop implements Comparator<Shop> {
         inventory.get(itemName).maxStock = maxStock;
     }
     
-    public List<Transaction> getTransactions() {
+    public Queue<Transaction> getTransactions() {
         return transactions;
     }
     
@@ -286,7 +289,12 @@ public class Shop implements Comparator<Shop> {
     }
     
     public void addTransaction(Transaction trans) {
-        transactions.add(trans);
+        if(transactions.remainingCapacity() >= 1) {
+            transactions.add(trans);
+        } else {
+            transactions.remove();
+            transactions.add(trans);
+        }
     }
     
     public void clearTransactions() {
