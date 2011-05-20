@@ -1,3 +1,24 @@
+Version 3.1.0
+    * Out of Beta!
+    * Features
+       - Permissions updated, is not mandatory 
+          - Will only restrict admin commands to ops without Permissions
+       - Sorting of /shop browse and /shop list
+       - New command: /shop find
+          - Used to find nearby shops that sell an item
+       - Transaction notification for shop owners
+    * Bug Fixes
+       - Economy sanity checks
+       - /shop select Message clarify usage (bare hands)
+       - Sanity checks on corrupt shop files
+       - /shop sell all now sells all items instead of a single stack
+       - Refactored Commands (now each in their own class)
+       - Remove players from memory on PLAYER_KICK and PLAYER_QUIT events
+       - Notification for insufficient funds
+       - Owner & creator information is now shown in /shop info for all situations
+       - Match criteria updated
+          - Wool, Cactus Green, Cactus, Glowstone Dust
+
 Version 3.0.3 Beta
     * Fixed money exploit
     * Fix typo on selling or buying 0 items
