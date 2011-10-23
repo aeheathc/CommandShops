@@ -15,7 +15,7 @@
 		<delete failonerror="false">
 			<fileset dir="bin" includes="**/*" />
 		</delete>
-		<delete file="LocalShops.jar" />
+		<delete file="CommandShops.jar" />
 		<mkdir dir="bin"/>
 	</target>
   
@@ -27,7 +27,7 @@
   
   <target name="compress" description="Compression target">
   		<echo>Compressing</echo>
-        <jar jarfile="LocalShops.jar" basedir="bin" includes="net/**/*, cuboidLocale/**/*, plugin.yml" />
+        <jar jarfile="CommandShops.jar" basedir="bin" includes="net/**/*, cuboidLocale/**/*, plugin.yml" />
     	<delete dir="bin" />
   </target>
 </project>

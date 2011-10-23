@@ -1,7 +1,7 @@
-name: LocalShops
-main: net.centerleft.localshops.LocalShops
-version: 3.1.0
-author: Cereal, Jonbas
+name: CommandShops
+main: com.aehdev.commandshops.CommandShops
+version: 3.5.0
+author: Zolcos
 description: >
              A localized shop plugin for use with Bukkit economies.
              Users can create and manage their own shops.
@@ -11,3 +11,54 @@ commands:
     usage: |
            /<command> - displays command help
     aliases: [shop, buy, sell]
+permissions:
+    commandshops.user.*:
+        description: Users can buy and sell to shops but not make or manage them.
+        children:
+            commandshops.user.buy: true
+            commandshops.user.sell: true
+            commandshops.user.browse: true
+    commandshops.user.buy:
+        description: Allows buying from shops.
+    commandshops.user.sell:
+        description: Allows selling to shops.
+    commandshops.user.browse:
+        description: Allows browsing of shops.
+    commandshops.manager.*:
+        description: Owners and Managers can create, move or destroy shops and manage shops (using the set commands)
+        default: true
+        children:
+            commandshops.manager.add: true
+            commandshops.manager.create: true
+            commandshops.manager.destroy: true
+            commandshops.manager.move: true
+            commandshops.manager.remove: true
+            commandshops.manager.select: true
+            commandshops.manager.set: true
+            commandshops.manager.set.owner: true
+            commandshops.user.*: true
+    commandshops.manager.add:
+        description: Allows adding items to shops under player's management.
+    commandshops.manager.create:
+        description: Allows creation of shops.
+    commandshops.manager.destroy:
+        description: Allows destruction of shops under player's management.
+    commandshops.manager.move:
+        description: Allows relocation of shops under player's management.
+    commandshops.manager.remove:
+        description: Allows removal of items from shops.
+    commandshops.manager.select:
+        description: Allows selection of custom areas for shop creation.
+    commandshops.manager.set:
+        description: Allows setting of shop parameters such as pricing in shops under player's management.
+    commandshops.manager.set.owner:
+        description: Allows assignment of ownership of shops under player's management.
+    commandshops.admin:
+        description: Allows administrative access to override manager permissions.
+        children:
+            commandshops.manager.*: true
+        default: op
+    commandshops.free.create:
+        description: Removes the cost associated with creating a shop.
+    commandshops.free.move:
+        description: Removes the cost associated with moving a shop.

@@ -6,3 +6,4 @@
 /src/lib
 /src/LocalShops.jar
 .externalToolBuilders
+/target
