@@ -68,7 +68,7 @@ public class RegisterListener extends ServerListener
 	public void onPluginEnable(PluginEnableEvent event)
 	{
 		// Check to see if we need a payment method
-		if(!Methods.hasMethod())
+		if(event.getPlugin().getClass().getName().equals("Register") && !Methods.hasMethod())
 		{
 			if(Methods.setMethod(plugin.getServer().getPluginManager()))
 			{
