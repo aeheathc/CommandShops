@@ -1,40 +1,94 @@
 package com.aehdev.commandshops.modules.economy;
 
-public class EconomyResponse {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EconomyResponse.
+ */
+public class EconomyResponse
+{
 
-    public static enum ResponseType {
-        SUCCESS(1),
-        FAILURE(2),
-        NOT_IMPLEMENTED(3);
-        
-        private int id;
-        ResponseType(int id) {
-            this.id = id;
-        }
-        
-        int getId() {
-            return id;
-        }
-    }
-    
-    public final double amount;
-    public final double balance;
-    public final ResponseType type;
-    public final String errorMessage;
-    
-    public EconomyResponse(double amount, double balance, ResponseType type, String errorMessage) {
-        this.amount = amount;
-        this.balance = balance;
-        this.type = type;
-        this.errorMessage = errorMessage;
-    }
-    
-    public boolean transactionSuccess() {
-        switch (type) {
-        case SUCCESS:
-            return true;
-        default:
-            return false;
-        }
-    }
+	/**
+	 * The Enum ResponseType.
+	 */
+	public static enum ResponseType
+	{
+
+		/** The SUCCESS. */
+		SUCCESS(1),
+
+		/** The FAILURE. */
+		FAILURE(2),
+
+		/** The NO t_ implemented. */
+		NOT_IMPLEMENTED(3);
+
+		/** The id. */
+		private int id;
+
+		/**
+		 * Instantiates a new response type.
+		 * @param id
+		 * the id
+		 */
+		ResponseType(int id)
+		{
+			this.id = id;
+		}
+
+		/**
+		 * Gets the id.
+		 * @return the id
+		 */
+		int getId()
+		{
+			return id;
+		}
+	}
+
+	/** The amount. */
+	public final double amount;
+
+	/** The balance. */
+	public final double balance;
+
+	/** The type. */
+	public final ResponseType type;
+
+	/** The error message. */
+	public final String errorMessage;
+
+	/**
+	 * Instantiates a new economy response.
+	 * @param amount
+	 * the amount
+	 * @param balance
+	 * the balance
+	 * @param type
+	 * the type
+	 * @param errorMessage
+	 * the error message
+	 */
+	public EconomyResponse(double amount, double balance, ResponseType type,
+			String errorMessage)
+	{
+		this.amount = amount;
+		this.balance = balance;
+		this.type = type;
+		this.errorMessage = errorMessage;
+	}
+
+	/**
+	 * Transaction success.
+	 * @return true, if successful
+	 */
+	public boolean transactionSuccess()
+	{
+		switch(type)
+		{
+			case SUCCESS:
+			return true;
+			default:
+			return false;
+		}
+	}
 }

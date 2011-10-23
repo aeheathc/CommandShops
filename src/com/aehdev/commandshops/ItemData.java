@@ -12,308 +12,441 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-public class ItemData {
-    private ArrayList<String> itemName;
-    private ArrayList<Integer> itemNumber;
-    private ArrayList<itemDataType> itemData;
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ItemData.
+ */
+public class ItemData
+{
 
-    public ItemData() {
-        itemName = new ArrayList<String>();
-        itemNumber = new ArrayList<Integer>();
-        itemData = new ArrayList<itemDataType>();
-    }
+	/** The item name. */
+	private ArrayList<String> itemName;
 
-    public void addItem(String name, int blockNumber) {
-        if (!itemName.contains(name)) {
-            itemName.add(name);
-            itemNumber.add(blockNumber);
-            itemDataType tmp = new itemDataType();
-            itemData.add(tmp);
-        }
+	/** The item number. */
+	private ArrayList<Integer> itemNumber;
 
-    }
+	/** The item data. */
+	private ArrayList<itemDataType> itemData;
 
-    public void addItem(String name, int blockNumber, int dataValue) {
-        if (!itemName.contains(name)) {
-            itemName.add(name);
-            itemNumber.add(blockNumber);
+	/**
+	 * Instantiates a new item data.
+	 */
+	public ItemData()
+	{
+		itemName = new ArrayList<String>();
+		itemNumber = new ArrayList<Integer>();
+		itemData = new ArrayList<itemDataType>();
+	}
 
-            itemDataType tmp = new itemDataType(dataValue);
-            itemData.add(tmp);
-        }
-    };
+	/**
+	 * Adds the item.
+	 * @param name
+	 * the name
+	 * @param blockNumber
+	 * the block number
+	 */
+	public void addItem(String name, int blockNumber)
+	{
+		if(!itemName.contains(name))
+		{
+			itemName.add(name);
+			itemNumber.add(blockNumber);
+			itemDataType tmp = new itemDataType();
+			itemData.add(tmp);
+		}
 
-    /**
-     * Tries to match item name passed in string. If sender is passed to
-     * function, will return message to sender if no matches are found or print
-     * list of matches if multiple are found.
-     * 
-     * @param sender
-     * @param name
-     * @return Will return null if no matches are found.
-     */
-    public int[] getItemInfo(CommandSender sender, String name) {
+	}
 
-        int index = itemName.indexOf(name);
-        if (index == -1) {
-            Pattern myPattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
-            Matcher myMatcher = myPattern.matcher("tmp");
+	/**
+	 * Adds the item.
+	 * @param name
+	 * the name
+	 * @param blockNumber
+	 * the block number
+	 * @param dataValue
+	 * the data value
+	 */
+	public void addItem(String name, int blockNumber, int dataValue)
+	{
+		if(!itemName.contains(name))
+		{
+			itemName.add(name);
+			itemNumber.add(blockNumber);
 
-            ArrayList<String> foundMatches = new ArrayList<String>();
-            foundMatches.clear();
+			itemDataType tmp = new itemDataType(dataValue);
+			itemData.add(tmp);
+		}
+	};
 
-            Iterator<String> itr = itemName.iterator();
-            while (itr.hasNext()) {
-                String thisItem = itr.next();
-                myMatcher.reset(thisItem);
-                if (myMatcher.find())
-                    foundMatches.add(thisItem);
-            }
+	/**
+	 * Tries to match item name passed in string. If sender is passed to
+	 * function, will return message to sender if no matches are found or print
+	 * list of matches if multiple are found.
+	 * @param sender
+	 * the sender
+	 * @param name
+	 * the name
+	 * @return Will return null if no matches are found.
+	 */
+	public int[] getItemInfo(CommandSender sender, String name)
+	{
 
-            if (foundMatches.size() == 1) {
-                index = itemName.indexOf(foundMatches.get(0));
-            } else {
-                if (sender != null) {
-                    if (foundMatches.size() > 1) {
-                        sender.sendMessage(name + ChatColor.DARK_AQUA + " matched multiple items:");
-                        for (String foundName : foundMatches) {
-                            sender.sendMessage("  " + foundName);
-                        }
-                    } else {
-                        sender.sendMessage(name + ChatColor.DARK_AQUA + " did not match any items.");
-                    }
-                }
-                return null;
-            }
-        }
-        int[] data = { itemNumber.get(index), itemData.get(index).dataValue };
-        return data;
-    }
+		int index = itemName.indexOf(name);
+		if(index == -1)
+		{
+			Pattern myPattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
+			Matcher myMatcher = myPattern.matcher("tmp");
 
-    /**
-     * Returns list of all itemNames that match the itemId supplied.
-     * 
-     * @param sender
-     * @param itemNumber
-     * @return Will return list of all found matches.
-     */
-    public ArrayList<String> getItemName(int itemId) {
-        ArrayList<String> foundNames = new ArrayList<String>();
+			ArrayList<String> foundMatches = new ArrayList<String>();
+			foundMatches.clear();
 
-        for (int i = 0; i < this.itemNumber.size(); i++) {
-            if (itemNumber.get(i) == itemId) {
-                foundNames.add(this.itemName.get(i));
-            }
-        }
+			Iterator<String> itr = itemName.iterator();
+			while(itr.hasNext())
+			{
+				String thisItem = itr.next();
+				myMatcher.reset(thisItem);
+				if(myMatcher.find()) foundMatches.add(thisItem);
+			}
 
-        return foundNames;
+			if(foundMatches.size() == 1)
+			{
+				index = itemName.indexOf(foundMatches.get(0));
+			}else
+			{
+				if(sender != null)
+				{
+					if(foundMatches.size() > 1)
+					{
+						sender.sendMessage(name + ChatColor.DARK_AQUA
+								+ " matched multiple items:");
+						for(String foundName: foundMatches)
+						{
+							sender.sendMessage("  " + foundName);
+						}
+					}else
+					{
+						sender.sendMessage(name + ChatColor.DARK_AQUA
+								+ " did not match any items.");
+					}
+				}
+				return null;
+			}
+		}
+		int[] data = {itemNumber.get(index), itemData.get(index).dataValue};
+		return data;
+	}
 
-    }
+	/**
+	 * Returns list of all itemNames that match the itemId supplied.
+	 * @param itemId
+	 * the item id
+	 * @return Will return list of all found matches.
+	 */
+	public ArrayList<String> getItemName(int itemId)
+	{
+		ArrayList<String> foundNames = new ArrayList<String>();
 
-    public String getItemName(int itemNumber, int itemData) {
+		for(int i = 0; i < this.itemNumber.size(); i++)
+		{
+			if(itemNumber.get(i) == itemId)
+			{
+				foundNames.add(this.itemName.get(i));
+			}
+		}
 
-        // check if type and data match, if they do, return that one
-        for (int i = 0; i < this.itemNumber.size(); i++) {
-            if (this.itemNumber.get(i) == itemNumber && this.itemData.get(i).dataValue == itemData) {
-                return this.itemName.get(i);
-            }
-        }
+		return foundNames;
 
-        // check if this is armor or an item
-        ArrayList<String> itemList = getItemName(itemNumber);
-        if (itemList.size() == 1) {
-            return itemList.get(0);
-        }
+	}
 
-        return null;
-    }
+	/**
+	 * Gets the item name.
+	 * @param itemNumber
+	 * the item number
+	 * @param itemData
+	 * the item data
+	 * @return the item name
+	 */
+	public String getItemName(int itemNumber, int itemData)
+	{
 
-    private class itemDataType {
-        public boolean hasData = false;
-        public int dataValue = 0;
+		// check if type and data match, if they do, return that one
+		for(int i = 0; i < this.itemNumber.size(); i++)
+		{
+			if(this.itemNumber.get(i) == itemNumber
+					&& this.itemData.get(i).dataValue == itemData){ return this.itemName
+					.get(i); }
+		}
 
-        public itemDataType(int dataValue) {
-            this.dataValue = dataValue;
-            this.hasData = true;
-        }
+		// check if this is armor or an item
+		ArrayList<String> itemList = getItemName(itemNumber);
+		if(itemList.size() == 1){ return itemList.get(0); }
 
-        public itemDataType() {
-            this.dataValue = 0;
-            this.hasData = false;
-        }
-    }
+		return null;
+	}
 
-    public ItemStack getItem(CommandSender sender, String arg0) {
+	/**
+	 * The Class itemDataType.
+	 */
+	private class itemDataType
+	{
 
-        int[] info = null;
-        ItemStack item = null;
+		/** The has data. */
+		public boolean hasData = false;
 
-        try {
-            ArrayList<String> list = getItemName(Integer.parseInt(arg0));
-            if (list.size() == 1) {
-                info = getItemInfo(sender, list.get(0));
-            } else {
-                if (sender != null) {
-                    if (list.size() > 1) {
-                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " matched multiple items:");
-                        for (String foundName : list) {
-                            sender.sendMessage("  " + foundName);
-                        }
-                    } else {
-                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " did not match any items.");
-                    }
-                }
-            }
+		/** The data value. */
+		public int dataValue = 0;
 
-        } catch (NumberFormatException ex) {
-            info = getItemInfo(sender, arg0);
-        }
+		/**
+		 * Instantiates a new item data type.
+		 * @param dataValue
+		 * the data value
+		 */
+		public itemDataType(int dataValue)
+		{
+			this.dataValue = dataValue;
+			this.hasData = true;
+		}
 
-        if (info != null) {
-            item = new ItemStack(info[0], 1);
-            MaterialData data = new MaterialData(info[1]);
-            item.setData(data);
-            // TODO this is a work around for bukkit glitch. Check if this still
-            // works.
-            item.setDurability((short) info[1]);
+		/**
+		 * Instantiates a new item data type.
+		 */
+		public itemDataType()
+		{
+			this.dataValue = 0;
+			this.hasData = false;
+		}
+	}
 
-            return item;
-        }
+	/**
+	 * Gets the item.
+	 * @param sender
+	 * the sender
+	 * @param arg0
+	 * the arg0
+	 * @return the item
+	 */
+	public ItemStack getItem(CommandSender sender, String arg0)
+	{
 
-        return null;
-    }
+		int[] info = null;
+		ItemStack item = null;
 
-    public ItemStack getShopItem(CommandSender sender, Shop shop, String arg0) {
+		try
+		{
+			ArrayList<String> list = getItemName(Integer.parseInt(arg0));
+			if(list.size() == 1)
+			{
+				info = getItemInfo(sender, list.get(0));
+			}else{
+				if(sender != null)
+				{
+					if(list.size() > 1)
+					{
+						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
+								+ " matched multiple items:");
+						for(String foundName: list)
+						{
+							sender.sendMessage("  " + foundName);
+						}
+					}else
+					{
+						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
+								+ " did not match any items.");
+					}
+				}
+			}
 
-        int[] info = null;
-        ItemStack item = null;
+		}catch(NumberFormatException ex)
+		{
+			info = getItemInfo(sender, arg0);
+		}
 
-        try {
-            ArrayList<String> list = getItemName(Integer.parseInt(arg0));
-            if (list.size() == 1) {
-                info = getItemInfo(sender, list.get(0));
-            } else {
-                if (sender != null) {
-                    if (list.size() > 1) {
-                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " matched multiple items:");
-                        for (String foundName : list) {
-                            sender.sendMessage("  " + foundName);
-                        }
-                    } else {
-                        sender.sendMessage(arg0 + ChatColor.DARK_AQUA + " did not match any items.");
-                    }
-                }
-            }
+		if(info != null)
+		{
+			item = new ItemStack(info[0], 1);
+			MaterialData data = new MaterialData(info[1]);
+			item.setData(data);
+			// TODO this is a work around for bukkit glitch. Check if this still
+			// works.
+			item.setDurability((short)info[1]);
 
-        } catch (NumberFormatException ex) {
-            info = getShopItemInfo(sender, shop, arg0);
-        }
+			return item;
+		}
 
-        if (info != null) {
-            item = new ItemStack(info[0], 1);
-            MaterialData data = new MaterialData(info[1]);
-            item.setData(data);
-            // TODO this is a work around for bukkit glitch. Check if this still
-            // works.
-            item.setDurability((short) info[1]);
+		return null;
+	}
 
-            return item;
-        }
+	/**
+	 * Gets the shop item.
+	 * @param sender
+	 * the sender
+	 * @param shop
+	 * the shop
+	 * @param arg0
+	 * the arg0
+	 * @return the shop item
+	 */
+	public ItemStack getShopItem(CommandSender sender, Shop shop, String arg0)
+	{
 
-        return null;
-    }
+		int[] info = null;
+		ItemStack item = null;
 
-    /**
-     * Tries to match item name passed in string based on the inventory of the
-     * shop. If sender is passed to function, will return message to sender if
-     * no matches are found or print list of matches if multiple are found.
-     * 
-     * @param sender
-     * @param shop
-     * @param name
-     * @return Will return null if no matches are found.
-     */
-    private int[] getShopItemInfo(CommandSender sender, Shop shop, String name) {
-        int index = itemName.indexOf(name);
-        if (index == -1) {
-            ArrayList<String> foundMatches = new ArrayList<String>();
-            foundMatches.clear();
+		try
+		{
+			ArrayList<String> list = getItemName(Integer.parseInt(arg0));
+			if(list.size() == 1)
+			{
+				info = getItemInfo(sender, list.get(0));
+			}else{
+				if(sender != null)
+				{
+					if(list.size() > 1)
+					{
+						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
+								+ " matched multiple items:");
+						for(String foundName: list)
+						{
+							sender.sendMessage("  " + foundName);
+						}
+					}else
+					{
+						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
+								+ " did not match any items.");
+					}
+				}
+			}
 
-            Collection<InventoryItem> items = shop.getItems();
-            for (InventoryItem item : items) {
-                if (item.getInfo().name.matches(name)) {
-                    foundMatches.add(item.getInfo().name);
-                }
-            }
+		}catch(NumberFormatException ex)
+		{
+			info = getShopItemInfo(sender, shop, arg0);
+		}
 
-            if (foundMatches.size() == 1) {
-                index = itemName.indexOf(foundMatches.get(0));
-            } else {
-                if (sender != null) {
-                    if (foundMatches.size() > 1) {
-                        sender.sendMessage(name + ChatColor.DARK_AQUA + " matched multiple items:");
-                        for (String foundName : foundMatches) {
-                            sender.sendMessage("  " + foundName);
-                        }
-                    } else {
-                        sender.sendMessage(name + ChatColor.DARK_AQUA + " did not match any items.");
-                    }
-                }
-                return null;
-            }
-        }
-        int[] data = { itemNumber.get(index), itemData.get(index).dataValue };
-        return data;
-    }
+		if(info != null)
+		{
+			item = new ItemStack(info[0], 1);
+			MaterialData data = new MaterialData(info[1]);
+			item.setData(data);
+			// TODO this is a work around for bukkit glitch. Check if this still
+			// works.
+			item.setDurability((short)info[1]);
 
-    public boolean isDurable(ItemStack item) {
-        Material itemType = item.getType();
-        if (itemType == Material.CHAINMAIL_BOOTS ||
-                itemType == Material.CHAINMAIL_CHESTPLATE ||
-                itemType == Material.CHAINMAIL_HELMET ||
-                itemType == Material.CHAINMAIL_LEGGINGS ||
-                itemType == Material.WOOD_AXE ||
-                itemType == Material.WOOD_HOE ||
-                itemType == Material.WOOD_PICKAXE ||
-                itemType == Material.WOOD_SPADE ||
-                itemType == Material.WOOD_SWORD ||
-                itemType == Material.STONE_AXE ||
-                itemType == Material.STONE_HOE ||
-                itemType == Material.STONE_PICKAXE ||
-                itemType == Material.STONE_SPADE ||
-                itemType == Material.STONE_SWORD ||
-                itemType == Material.IRON_AXE ||
-                itemType == Material.IRON_BOOTS ||
-                itemType == Material.IRON_CHESTPLATE ||
-                itemType == Material.IRON_HELMET ||
-                itemType == Material.IRON_HOE ||
-                itemType == Material.IRON_LEGGINGS ||
-                itemType == Material.IRON_PICKAXE ||
-                itemType == Material.IRON_SPADE ||
-                itemType == Material.IRON_SWORD ||
-                itemType == Material.GOLD_AXE ||
-                itemType == Material.GOLD_BOOTS ||
-                itemType == Material.GOLD_CHESTPLATE ||
-                itemType == Material.GOLD_HELMET ||
-                itemType == Material.GOLD_HOE ||
-                itemType == Material.GOLD_LEGGINGS ||
-                itemType == Material.GOLD_PICKAXE ||
-                itemType == Material.GOLD_SPADE ||
-                itemType == Material.GOLD_SWORD ||
-                itemType == Material.DIAMOND_AXE ||
-                itemType == Material.DIAMOND_BOOTS ||
-                itemType == Material.DIAMOND_CHESTPLATE ||
-                itemType == Material.DIAMOND_HELMET ||
-                itemType == Material.DIAMOND_HOE ||
-                itemType == Material.DIAMOND_LEGGINGS ||
-                itemType == Material.DIAMOND_PICKAXE ||
-                itemType == Material.DIAMOND_SPADE ||
-                itemType == Material.DIAMOND_SWORD ||
-                itemType == Material.SHEARS ||
-                itemType == Material.FLINT_AND_STEEL ||
-                itemType == Material.FISHING_ROD) {
-            return true;
-        }
-        return false;
-    }
+			return item;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Tries to match item name passed in string based on the inventory of the
+	 * shop. If sender is passed to function, will return message to sender if
+	 * no matches are found or print list of matches if multiple are found.
+	 * @param sender
+	 * the sender
+	 * @param shop
+	 * the shop
+	 * @param name
+	 * the name
+	 * @return Will return null if no matches are found.
+	 */
+	private int[] getShopItemInfo(CommandSender sender, Shop shop, String name)
+	{
+		int index = itemName.indexOf(name);
+		if(index == -1)
+		{
+			ArrayList<String> foundMatches = new ArrayList<String>();
+			foundMatches.clear();
+
+			Collection<InventoryItem> items = shop.getItems();
+			for(InventoryItem item: items)
+			{
+				if(item.getInfo().name.matches(name))
+				{
+					foundMatches.add(item.getInfo().name);
+				}
+			}
+
+			if(foundMatches.size() == 1)
+			{
+				index = itemName.indexOf(foundMatches.get(0));
+			}else
+			{
+				if(sender != null)
+				{
+					if(foundMatches.size() > 1)
+					{
+						sender.sendMessage(name + ChatColor.DARK_AQUA
+								+ " matched multiple items:");
+						for(String foundName: foundMatches)
+						{
+							sender.sendMessage("  " + foundName);
+						}
+					}else
+					{
+						sender.sendMessage(name + ChatColor.DARK_AQUA
+								+ " did not match any items.");
+					}
+				}
+				return null;
+			}
+		}
+		int[] data = {itemNumber.get(index), itemData.get(index).dataValue};
+		return data;
+	}
+
+	/**
+	 * Checks if is durable.
+	 * @param item
+	 * the item
+	 * @return true, if is durable
+	 */
+	public boolean isDurable(ItemStack item)
+	{
+		Material itemType = item.getType();
+		if(itemType == Material.CHAINMAIL_BOOTS
+				|| itemType == Material.CHAINMAIL_CHESTPLATE
+				|| itemType == Material.CHAINMAIL_HELMET
+				|| itemType == Material.CHAINMAIL_LEGGINGS
+				|| itemType == Material.WOOD_AXE
+				|| itemType == Material.WOOD_HOE
+				|| itemType == Material.WOOD_PICKAXE
+				|| itemType == Material.WOOD_SPADE
+				|| itemType == Material.WOOD_SWORD
+				|| itemType == Material.STONE_AXE
+				|| itemType == Material.STONE_HOE
+				|| itemType == Material.STONE_PICKAXE
+				|| itemType == Material.STONE_SPADE
+				|| itemType == Material.STONE_SWORD
+				|| itemType == Material.IRON_AXE
+				|| itemType == Material.IRON_BOOTS
+				|| itemType == Material.IRON_CHESTPLATE
+				|| itemType == Material.IRON_HELMET
+				|| itemType == Material.IRON_HOE
+				|| itemType == Material.IRON_LEGGINGS
+				|| itemType == Material.IRON_PICKAXE
+				|| itemType == Material.IRON_SPADE
+				|| itemType == Material.IRON_SWORD
+				|| itemType == Material.GOLD_AXE
+				|| itemType == Material.GOLD_BOOTS
+				|| itemType == Material.GOLD_CHESTPLATE
+				|| itemType == Material.GOLD_HELMET
+				|| itemType == Material.GOLD_HOE
+				|| itemType == Material.GOLD_LEGGINGS
+				|| itemType == Material.GOLD_PICKAXE
+				|| itemType == Material.GOLD_SPADE
+				|| itemType == Material.GOLD_SWORD
+				|| itemType == Material.DIAMOND_AXE
+				|| itemType == Material.DIAMOND_BOOTS
+				|| itemType == Material.DIAMOND_CHESTPLATE
+				|| itemType == Material.DIAMOND_HELMET
+				|| itemType == Material.DIAMOND_HOE
+				|| itemType == Material.DIAMOND_LEGGINGS
+				|| itemType == Material.DIAMOND_PICKAXE
+				|| itemType == Material.DIAMOND_SPADE
+				|| itemType == Material.DIAMOND_SWORD
+				|| itemType == Material.SHEARS
+				|| itemType == Material.FLINT_AND_STEEL
+				|| itemType == Material.FISHING_ROD){ return true; }
+		return false;
+	}
 }

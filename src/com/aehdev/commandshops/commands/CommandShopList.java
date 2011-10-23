@@ -14,58 +14,107 @@ import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.comparator.ShopSortByName;
 
-public class CommandShopList extends Command {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CommandShopList.
+ */
+public class CommandShopList extends Command
+{
 
-    public CommandShopList(CommandShops plugin, String commandLabel, CommandSender sender, String command) {
-        super(plugin, commandLabel, sender, command);
-    }
-    
-    public CommandShopList(CommandShops plugin, String commandLabel, CommandSender sender, String[] command) {
-        super(plugin, commandLabel, sender, command);
-    }
+	/**
+	 * Instantiates a new command shop list.
+	 * @param plugin
+	 * the plugin
+	 * @param commandLabel
+	 * the command label
+	 * @param sender
+	 * the sender
+	 * @param command
+	 * the command
+	 */
+	public CommandShopList(CommandShops plugin, String commandLabel,
+			CommandSender sender, String command)
+	{
+		super(plugin, commandLabel, sender, command);
+	}
 
-    public boolean process() {
-        int idWidth = Config.UUID_MIN_LENGTH + 1;
-        if(idWidth < 4) {
-            idWidth = 4;
-        }
+	/**
+	 * Instantiates a new command shop list.
+	 * @param plugin
+	 * the plugin
+	 * @param commandLabel
+	 * the command label
+	 * @param sender
+	 * the sender
+	 * @param command
+	 * the command
+	 */
+	public CommandShopList(CommandShops plugin, String commandLabel,
+			CommandSender sender, String[] command)
+	{
+		super(plugin, commandLabel, sender, command);
+	}
 
-        boolean showAll = false;
-        boolean isPlayer = false;
+	/* (non-Javadoc)
+	 * @see com.aehdev.commandshops.commands.Command#process() */
+	public boolean process()
+	{
+		int idWidth = Config.UUID_MIN_LENGTH + 1;
+		if(idWidth < 4)
+		{
+			idWidth = 4;
+		}
 
-        // list all
-        Pattern pattern = Pattern.compile("(?i)list\\s+all$");
-        Matcher matcher = pattern.matcher(command);
-        if (matcher.find()) {
-            showAll = true;
-        }        
+		boolean showAll = false;
+		boolean isPlayer = false;
 
-        if(sender instanceof Player) {
-            isPlayer = true;
-        }
+		// list all
+		Pattern pattern = Pattern.compile("(?i)list\\s+all$");
+		Matcher matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			showAll = true;
+		}
 
-        if(isPlayer) {
-            sender.sendMessage(String.format("%-"+idWidth+"s  %s", "Id", "Name"));
-        } else {
-            sender.sendMessage(String.format("%-"+idWidth+"s  %-25s %s", "Id", "Name", "Owner"));
-        }
-        
-        List<Shop> shops = plugin.getShopData().getAllShops();
-        Collections.sort(shops, new ShopSortByName());
-        
-        Iterator<Shop> it = shops.iterator();
-        while(it.hasNext()) {
-            Shop shop = it.next();
-            if(!showAll && isPlayer && !isShopController(shop)) {
-                continue;
-            }
-            
-            if(isPlayer) {
-                sender.sendMessage(String.format("%-"+idWidth+"s  %s", shop.getShortUuidString(), shop.getName()));
-            } else {
-                sender.sendMessage(String.format("%-"+idWidth+"s  %-25s %s", shop.getShortUuidString(), shop.getName(), shop.getOwner()));
-            }
-        }
-        return true;
-    }
+		if(sender instanceof Player)
+		{
+			isPlayer = true;
+		}
+
+		if(isPlayer)
+		{
+			sender.sendMessage(String.format("%-" + idWidth + "s  %s", "Id",
+					"Name"));
+		}else
+		{
+			sender.sendMessage(String.format("%-" + idWidth + "s  %-25s %s",
+					"Id", "Name", "Owner"));
+		}
+
+		List<Shop> shops = plugin.getShopData().getAllShops();
+		Collections.sort(shops, new ShopSortByName());
+
+		Iterator<Shop> it = shops.iterator();
+		while(it.hasNext())
+		{
+			Shop shop = it.next();
+			if(!showAll && isPlayer && !isShopController(shop))
+			{
+				continue;
+			}
+
+			if(isPlayer)
+			{
+				sender.sendMessage(String.format("%-" + idWidth + "s  %s",
+						shop.getShortUuidString(), shop.getName()));
+			}else
+			{
+				sender.sendMessage(String.format(
+						"%-" + idWidth + "s  %-25s %s",
+						shop.getShortUuidString(), shop.getName(),
+						shop.getOwner()));
+			}
+		}
+		return true;
+	}
 }

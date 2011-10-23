@@ -5,213 +5,419 @@ import com.aehdev.nijikokun.register.payment.Method;
 import cosine.boseconomy.BOSEconomy;
 import org.bukkit.plugin.Plugin;
 
+// TODO: Auto-generated Javadoc
 /**
- * BOSEconomy 6 Implementation of Method
- *
+ * BOSEconomy 6 Implementation of Method.
  * @author Nijikokun <nijikokun@shortmail.com> (@nijikokun)
  * @copyright (c) 2011
  * @license AOL license <http://aol.nexua.org>
  */
 @SuppressWarnings("deprecation")
-public class BOSE6 implements Method {
-    private BOSEconomy BOSEconomy;
+public class BOSE6 implements Method
+{
 
-    public BOSEconomy getPlugin() {
-        return this.BOSEconomy;
-    }
+	/** The BOS economy. */
+	private BOSEconomy BOSEconomy;
 
-    public String getName() {
-        return "BOSEconomy";
-    }
+	/* (non-Javadoc)
+	 * @see com.aehdev.nijikokun.register.payment.Method#getPlugin() */
+	public BOSEconomy getPlugin()
+	{
+		return this.BOSEconomy;
+	}
 
-    public String getVersion() {
-        return "0.6.2";
-    }
-    
-    public int fractionalDigits() {
-    	return 0;
-    }
+	/* (non-Javadoc)
+	 * @see com.aehdev.nijikokun.register.payment.Method#getName() */
+	public String getName()
+	{
+		return "BOSEconomy";
+	}
 
-    public String format(double amount) {
-        String currency = this.BOSEconomy.getMoneyNamePlural();
+	/* (non-Javadoc)
+	 * @see com.aehdev.nijikokun.register.payment.Method#getVersion() */
+	public String getVersion()
+	{
+		return "0.6.2";
+	}
 
-        if(amount == 1) 
-            currency = this.BOSEconomy.getMoneyName();
+	/* (non-Javadoc)
+	 * @see com.aehdev.nijikokun.register.payment.Method#fractionalDigits() */
+	public int fractionalDigits()
+	{
+		return 0;
+	}
 
-        return amount + " " + currency;
-    }
+	/* (non-Javadoc)
+	 * @see com.aehdev.nijikokun.register.payment.Method#format(double) */
+	public String format(double amount)
+	{
+		String currency = this.BOSEconomy.getMoneyNamePlural();
 
-    public boolean hasBanks() {
-        return true;
-    }
+		if(amount == 1) currency = this.BOSEconomy.getMoneyName();
 
-    public boolean hasBank(String bank) {
-        return this.BOSEconomy.bankExists(bank);
-    }
+		return amount + " " + currency;
+	}
 
-    public boolean hasAccount(String name) {
-        return this.BOSEconomy.playerRegistered(name, false);
-    }
+	/* (non-Javadoc)
+	 * @see com.aehdev.nijikokun.register.payment.Method#hasBanks() */
+	public boolean hasBanks()
+	{
+		return true;
+	}
 
-    public boolean hasBankAccount(String bank, String name) {
-        return this.BOSEconomy.isBankOwner(bank, name)
-            || this.BOSEconomy.isBankMember(bank, name);
-    }
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#hasBank(java.lang.String) */
+	public boolean hasBank(String bank)
+	{
+		return this.BOSEconomy.bankExists(bank);
+	}
 
-    public MethodAccount getAccount(String name) {
-        if(!hasAccount(name)) 
-            return null;
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#hasAccount(java.lang.String) */
+	public boolean hasAccount(String name)
+	{
+		return this.BOSEconomy.playerRegistered(name, false);
+	}
 
-        return new BOSEAccount(name, this.BOSEconomy);
-    }
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#hasBankAccount(java.lang
+	 * .String, java.lang.String) */
+	public boolean hasBankAccount(String bank, String name)
+	{
+		return this.BOSEconomy.isBankOwner(bank, name)
+				|| this.BOSEconomy.isBankMember(bank, name);
+	}
 
-    public MethodBankAccount getBankAccount(String bank, String name) {
-        if(!hasBankAccount(bank, name)) 
-            return null;
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#getAccount(java.lang.String) */
+	public MethodAccount getAccount(String name)
+	{
+		if(!hasAccount(name)) return null;
 
-        return new BOSEBankAccount(bank, BOSEconomy);
-    }
+		return new BOSEAccount(name, this.BOSEconomy);
+	}
 
-    public boolean isCompatible(Plugin plugin) {
-        return plugin.getDescription().getName().equalsIgnoreCase("boseconomy") 
-            && plugin instanceof BOSEconomy
-            && plugin.getDescription().getVersion().equals("0.6.2");
-    }
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#getBankAccount(java.lang
+	 * .String, java.lang.String) */
+	public MethodBankAccount getBankAccount(String bank, String name)
+	{
+		if(!hasBankAccount(bank, name)) return null;
 
-    public void setPlugin(Plugin plugin) {
-        BOSEconomy = (BOSEconomy) plugin;
-    }
+		return new BOSEBankAccount(bank, BOSEconomy);
+	}
 
-    public class BOSEAccount implements MethodAccount {
-        private final String name;
-        private final BOSEconomy BOSEconomy;
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#isCompatible(org.bukkit
+	 * .plugin.Plugin) */
+	public boolean isCompatible(Plugin plugin)
+	{
+		return plugin.getDescription().getName().equalsIgnoreCase("boseconomy")
+				&& plugin instanceof BOSEconomy
+				&& plugin.getDescription().getVersion().equals("0.6.2");
+	}
 
-        public BOSEAccount(String name, BOSEconomy bOSEconomy) {
-            this.name = name;
-            this.BOSEconomy = bOSEconomy;
-        }
+	/* (non-Javadoc)
+	 * @see
+	 * com.aehdev.nijikokun.register.payment.Method#setPlugin(org.bukkit.plugin
+	 * .Plugin) */
+	public void setPlugin(Plugin plugin)
+	{
+		BOSEconomy = (BOSEconomy)plugin;
+	}
 
-        public double balance() {
-            return (double) this.BOSEconomy.getPlayerMoney(this.name);
-        }
+	/**
+	 * The Class BOSEAccount.
+	 */
+	public class BOSEAccount implements MethodAccount
+	{
 
-        public boolean set(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            return this.BOSEconomy.setPlayerMoney(this.name, IntAmount, false);
-        }
+		/** The name. */
+		private final String name;
 
-        public boolean add(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            return this.BOSEconomy.addPlayerMoney(this.name, IntAmount, false);
-        }
+		/** The BOS economy. */
+		private final BOSEconomy BOSEconomy;
 
-        public boolean subtract(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setPlayerMoney(this.name, (balance - IntAmount), false);
-        }
+		/**
+		 * Instantiates a new bOSE account.
+		 * @param name
+		 * the name
+		 * @param bOSEconomy
+		 * the b os economy
+		 */
+		public BOSEAccount(String name, BOSEconomy bOSEconomy)
+		{
+			this.name = name;
+			this.BOSEconomy = bOSEconomy;
+		}
 
-        public boolean multiply(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setPlayerMoney(this.name, (balance * IntAmount), false);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#balance() */
+		public double balance()
+		{
+			return (double)this.BOSEconomy.getPlayerMoney(this.name);
+		}
 
-        public boolean divide(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setPlayerMoney(this.name, (balance / IntAmount), false);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#set(double
+		 * ) */
+		public boolean set(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			return this.BOSEconomy.setPlayerMoney(this.name, IntAmount, false);
+		}
 
-        public boolean hasEnough(double amount) {
-            return (this.balance() >= amount);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#add(double
+		 * ) */
+		public boolean add(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			return this.BOSEconomy.addPlayerMoney(this.name, IntAmount, false);
+		}
 
-        public boolean hasOver(double amount) {
-            return (this.balance() > amount);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#subtract
+		 * (double) */
+		public boolean subtract(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setPlayerMoney(this.name,
+					(balance - IntAmount), false);
+		}
 
-        public boolean hasUnder(double amount) {
-            return (this.balance() < amount);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#multiply
+		 * (double) */
+		public boolean multiply(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setPlayerMoney(this.name,
+					(balance * IntAmount), false);
+		}
 
-        public boolean isNegative() {
-            return (this.balance() < 0);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#divide
+		 * (double) */
+		public boolean divide(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setPlayerMoney(this.name,
+					(balance / IntAmount), false);
+		}
 
-        public boolean remove() {
-            return false;
-        }
-    }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#hasEnough
+		 * (double) */
+		public boolean hasEnough(double amount)
+		{
+			return (this.balance() >= amount);
+		}
 
-    public class BOSEBankAccount implements MethodBankAccount {
-        private final String bank;
-        private final BOSEconomy BOSEconomy;
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#hasOver
+		 * (double) */
+		public boolean hasOver(double amount)
+		{
+			return (this.balance() > amount);
+		}
 
-        public BOSEBankAccount(String bank, BOSEconomy bOSEconomy) {
-            this.bank = bank;
-            this.BOSEconomy = bOSEconomy;
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#hasUnder
+		 * (double) */
+		public boolean hasUnder(double amount)
+		{
+			return (this.balance() < amount);
+		}
 
-        public String getBankName() {
-            return this.bank;
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#isNegative
+		 * () */
+		public boolean isNegative()
+		{
+			return (this.balance() < 0);
+		}
 
-        public int getBankId() {
-            return -1;
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodAccount#remove() */
+		public boolean remove()
+		{
+			return false;
+		}
+	}
 
-        public double balance() {
-            return (double) this.BOSEconomy.getBankMoney(bank);
-        }
+	/**
+	 * The Class BOSEBankAccount.
+	 */
+	public class BOSEBankAccount implements MethodBankAccount
+	{
 
-        public boolean set(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            return this.BOSEconomy.setBankMoney(bank, IntAmount, true);
-        }
+		/** The bank. */
+		private final String bank;
 
-        public boolean add(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setBankMoney(bank, (balance + IntAmount), false);
-        }
+		/** The BOS economy. */
+		private final BOSEconomy BOSEconomy;
 
-        public boolean subtract(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setBankMoney(bank, (balance - IntAmount), false);
-        }
+		/**
+		 * Instantiates a new bOSE bank account.
+		 * @param bank
+		 * the bank
+		 * @param bOSEconomy
+		 * the b os economy
+		 */
+		public BOSEBankAccount(String bank, BOSEconomy bOSEconomy)
+		{
+			this.bank = bank;
+			this.BOSEconomy = bOSEconomy;
+		}
 
-        public boolean multiply(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setBankMoney(bank, (balance * IntAmount), false);
-        }
+		/* (non-Javadoc)
+		 * @see com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#
+		 * getBankName() */
+		public String getBankName()
+		{
+			return this.bank;
+		}
 
-        public boolean divide(double amount) {
-            int IntAmount = (int)Math.ceil(amount);
-            int balance = (int)this.balance();
-            return this.BOSEconomy.setBankMoney(bank, (balance / IntAmount), false);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#getBankId
+		 * () */
+		public int getBankId()
+		{
+			return -1;
+		}
 
-        public boolean hasEnough(double amount) {
-            return (this.balance() >= amount);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#balance
+		 * () */
+		public double balance()
+		{
+			return (double)this.BOSEconomy.getBankMoney(bank);
+		}
 
-        public boolean hasOver(double amount) {
-            return (this.balance() > amount);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#set
+		 * (double) */
+		public boolean set(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			return this.BOSEconomy.setBankMoney(bank, IntAmount, true);
+		}
 
-        public boolean hasUnder(double amount) {
-            return (this.balance() < amount);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#add
+		 * (double) */
+		public boolean add(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setBankMoney(bank, (balance + IntAmount),
+					false);
+		}
 
-        public boolean isNegative() {
-            return (this.balance() < 0);
-        }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#subtract
+		 * (double) */
+		public boolean subtract(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setBankMoney(bank, (balance - IntAmount),
+					false);
+		}
 
-        public boolean remove() {
-            return this.BOSEconomy.removeBank(bank);
-        }
-    }
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#multiply
+		 * (double) */
+		public boolean multiply(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setBankMoney(bank, (balance * IntAmount),
+					false);
+		}
+
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#divide
+		 * (double) */
+		public boolean divide(double amount)
+		{
+			int IntAmount = (int)Math.ceil(amount);
+			int balance = (int)this.balance();
+			return this.BOSEconomy.setBankMoney(bank, (balance / IntAmount),
+					false);
+		}
+
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#hasEnough
+		 * (double) */
+		public boolean hasEnough(double amount)
+		{
+			return (this.balance() >= amount);
+		}
+
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#hasOver
+		 * (double) */
+		public boolean hasOver(double amount)
+		{
+			return (this.balance() > amount);
+		}
+
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#hasUnder
+		 * (double) */
+		public boolean hasUnder(double amount)
+		{
+			return (this.balance() < amount);
+		}
+
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#isNegative
+		 * () */
+		public boolean isNegative()
+		{
+			return (this.balance() < 0);
+		}
+
+		/* (non-Javadoc)
+		 * @see
+		 * com.aehdev.nijikokun.register.payment.Method.MethodBankAccount#remove
+		 * () */
+		public boolean remove()
+		{
+			return this.BOSEconomy.removeBank(bank);
+		}
+	}
 }

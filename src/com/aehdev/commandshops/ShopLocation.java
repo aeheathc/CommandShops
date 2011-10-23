@@ -2,46 +2,102 @@ package com.aehdev.commandshops;
 
 import org.bukkit.Location;
 
-public class ShopLocation {
-    private double x = 0;
-    private double y = 0;
-    private double z = 0;
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ShopLocation.
+ */
+public class ShopLocation
+{
 
-    public ShopLocation(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+	/** The x. */
+	private double x = 0;
 
-    public ShopLocation(double[] xyz) {
-        this.x = xyz[0];
-        this.y = xyz[1];
-        this.z = xyz[2];
-    }
-    
-    public ShopLocation(Location loc) {
-        this.x = loc.getX();
-        this.y = loc.getY();
-        this.z = loc.getZ();
-    }
+	/** The y. */
+	private double y = 0;
 
-    public double getX() {
-        return x;
-    }
+	/** The z. */
+	private double z = 0;
 
-    public double getY() {
-        return y;
-    }
+	/**
+	 * Instantiates a new shop location.
+	 * @param x
+	 * the x
+	 * @param y
+	 * the y
+	 * @param z
+	 * the z
+	 */
+	public ShopLocation(double x, double y, double z)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
-    public double getZ() {
-        return z;
-    }
+	/**
+	 * Instantiates a new shop location.
+	 * @param xyz
+	 * the xyz
+	 */
+	public ShopLocation(double[] xyz)
+	{
+		this.x = xyz[0];
+		this.y = xyz[1];
+		this.z = xyz[2];
+	}
 
-    public double[] toArray() {
-        return new double[] { x, y, z };
-    }
+	/**
+	 * Instantiates a new shop location.
+	 * @param loc
+	 * the loc
+	 */
+	public ShopLocation(Location loc)
+	{
+		this.x = loc.getX();
+		this.y = loc.getY();
+		this.z = loc.getZ();
+	}
 
-    public String toString() {
-        return String.format("%.0f, %.0f, %.0f", x, y, z);
-    }
+	/**
+	 * Gets the x.
+	 * @return the x
+	 */
+	public double getX()
+	{
+		return x;
+	}
+
+	/**
+	 * Gets the y.
+	 * @return the y
+	 */
+	public double getY()
+	{
+		return y;
+	}
+
+	/**
+	 * Gets the z.
+	 * @return the z
+	 */
+	public double getZ()
+	{
+		return z;
+	}
+
+	/**
+	 * To array.
+	 * @return the double[]
+	 */
+	public double[] toArray()
+	{
+		return new double[]{x, y, z};
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString() */
+	public String toString()
+	{
+		return String.format("%.0f, %.0f, %.0f", x, y, z);
+	}
 }

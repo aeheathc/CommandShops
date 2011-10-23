@@ -1,0 +1,17 @@
+limits:
+    item-damage: 35      #Maximum damage% with which a shop will accept an item. Limit of 35 damage here means require at least 65% durability remaining. Needed because item damage is discarded when adding to stock.
+    find-distance: 150   #Block radius to include shops in "find" results.
+    shops-per-player: -1 #Maximum number of shops each player can have; Unlimited = -1
+fees:
+    create: 100.0        #Cost of creating a shop; 0 = free
+    move: 10.0           #Cost of moving a shop; 0 = free
+log:
+    enable: true         #Enable transaction logging.
+    limit: 100           #Maximum number of transactions saved in log per shop.
+    notify-interval: 300 #Number of seconds between transaction notifications; 0 = Disable notifications
+size:
+    max-height: 10       #Maximum custom shop height.
+    max-width: 30        #Maximum custom shop width (both horizontal dimensions).
+    default-height: 3    #Default shop height.
+    default-width: 5     #Default shop width (both horizontal dimensions). 
+debug: false             #Enable verbose debug output.

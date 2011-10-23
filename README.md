@@ -7,6 +7,17 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**3.5.1**
+- Moved to bukkit standard config file method; consolidated and categorized options. Now was the time to do it, before many people switch to this plugin.
+- Enforce legit item stack limits 
+- Fixed misleading errors
+- Fixed misleading comments and added javadoc for everything (10% done making it meaningful)
+- Minor performance improvements.
+- Removed UUID that was only used for reporting.
+- Removed lots of unused code
+- Fixed lazy limit indicator in "/shop find"
+- Tested with CB 1240
+
 **3.5**
 - Forked from LocalShops 3.1
 - Economy support migrated to Register
