@@ -76,32 +76,23 @@ public class CommandShopSet extends Command
 		if(command.matches("(?i)set\\s+sell.*"))
 		{
 			return shopSetSell();
-		}else if(command.matches("(?i)set\\s+buy.*"))
-		{
+		}else if(command.matches("(?i)set\\s+buy.*")){
 			return shopSetBuy();
-		}else if(command.matches("(?i)set\\s+max.*"))
-		{
+		}else if(command.matches("(?i)set\\s+max.*")){
 			return shopSetMax();
-		}else if(command.matches("(?i)set\\s+unlimited.*"))
-		{
+		}else if(command.matches("(?i)set\\s+unlimited.*")){
 			return shopSetUnlimited();
-		}else if(command.matches("(?i)set\\s+manager.*"))
-		{
+		}else if(command.matches("(?i)set\\s+manager.*")){
 			return shopSetManager();
-		}else if(command.matches("(?i)set\\s+minbalance.*"))
-		{
+		}else if(command.matches("(?i)set\\s+minbalance.*")){
 			return shopSetMinBalance();
-		}else if(command.matches("(?i)set\\s+notification.*"))
-		{
+		}else if(command.matches("(?i)set\\s+notification.*")){
 			return shopSetNotification();
-		}else if(command.matches("(?i)set\\s+owner.*"))
-		{
+		}else if(command.matches("(?i)set\\s+owner.*")){
 			return shopSetOwner();
-		}else if(command.matches("(?i)set\\s+name.*"))
-		{
+		}else if(command.matches("(?i)set\\s+name.*")){
 			return shopSetName();
-		}else
-		{
+		}else{
 			return shopSetHelp();
 		}
 	}
@@ -134,7 +125,7 @@ public class CommandShopSet extends Command
 			}
 
 			// Check if Player can Modify
-			if(!isShopController(shop))
+			if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
 			{
 				player.sendMessage(ChatColor.DARK_AQUA
 						+ "You must be the shop owner or a manager to set this.");
@@ -143,8 +134,7 @@ public class CommandShopSet extends Command
 						+ shop.getOwner());
 				return true;
 			}
-		}else
-		{
+		}else{
 			sender.sendMessage("Console is not implemented yet.");
 			return true;
 		}
@@ -269,7 +259,7 @@ public class CommandShopSet extends Command
 		// Warn about negative items
 		if(price < 0)
 		{
-			sender.sendMessage("[WARNING] This shop will loose money with negative values!");
+			sender.sendMessage("[WARNING] This shop will lose money with negative values!");
 		}
 
 		// Set new values
@@ -309,15 +299,14 @@ public class CommandShopSet extends Command
 		if(!shop.containsItem(item))
 		{
 			// nicely message user
-			sender.sendMessage(String.format("This shop does not carry %s!",
-					item.name));
+			sender.sendMessage(String.format("This shop does not carry %s!", item.name));
 			return true;
 		}
 
 		// Warn about negative items
 		if(price < 0)
 		{
-			sender.sendMessage("[WARNING] This shop will loose money with negative values!");
+			sender.sendMessage("[WARNING] This shop will lose money with negative values!");
 		}
 		if(size < 0)
 		{
@@ -369,7 +358,7 @@ public class CommandShopSet extends Command
 			}
 
 			// Check if Player can Modify
-			if(!isShopController(shop))
+			if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
 			{
 				player.sendMessage(ChatColor.DARK_AQUA
 						+ "You must be the shop owner or a manager to set this.");
@@ -409,7 +398,7 @@ public class CommandShopSet extends Command
 			int id = Integer.parseInt(matcher.group(1));
 			short type = Short.parseShort(matcher.group(2));
 			ItemInfo item = Search.itemById(id, type);
-			log.info(matcher.group(3));
+			log.info('[' + plugin.pdfFile.getName() + "] " + matcher.group(3));
 			double price = Double.parseDouble(matcher.group(3));
 			int size = Integer.parseInt(matcher.group(8));
 			return shopSetSell(shop, item, price, size);
@@ -607,7 +596,7 @@ public class CommandShopSet extends Command
 			}
 
 			// Check if Player can Modify
-			if(!isShopController(shop))
+			if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
 			{
 				player.sendMessage(ChatColor.DARK_AQUA
 						+ "You must be the shop owner or a manager to set this.");

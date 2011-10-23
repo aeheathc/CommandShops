@@ -7,6 +7,12 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**3.5.4**
+- Fixed bug where transactions would fail based on seller's balance
+- Improved error reporting
+- Gave admins more power to meddle with shops (to better fit the existing description)
+- Tested with CB 1317
+
 **3.5.3**
 - Added hard dependency on Register to alleviate dependency issues
 - Avoid calling Register stuff in inappropriate cases

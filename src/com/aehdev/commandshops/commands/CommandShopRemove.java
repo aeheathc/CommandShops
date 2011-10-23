@@ -91,7 +91,7 @@ public class CommandShopRemove extends Command
 			}
 
 			// Check if Player can Modify
-			if(!isShopController(shop))
+			if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
 			{
 				player.sendMessage(ChatColor.DARK_AQUA
 						+ "You must be the shop owner or a manager to set this.");

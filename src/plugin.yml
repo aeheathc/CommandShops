@@ -1,6 +1,6 @@
 name: CommandShops
 main: com.aehdev.commandshops.CommandShops
-version: 3.5.3
+version: 3.5.4
 author: Zolcos
 description: >
              A localized shop plugin for use with Bukkit economies.
@@ -55,7 +55,7 @@ permissions:
     commandshops.manager.set.owner:
         description: Allows assignment of ownership of shops under player's management.
     commandshops.admin:
-        description: Allows administrative access to override manager permissions.
+        description: Allows granting shops unlimited stock and money. Allows administrative access to override manager permissions.
         children:
             commandshops.manager.*: true
         default: op

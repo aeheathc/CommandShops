@@ -14,32 +14,30 @@ import cuboidLocale.BookmarkedResult;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PlayerData.
+ * Handles all player-specific data and actions.
  */
 public class PlayerData
 {
-	// Objects
-	/** The plugin. */
+	/** Reference to the main plugin object. */
 	private CommandShops plugin = null;
 
-	// Attributes
-	/** The shop list. */
+	/** List of shops the player is in. */
 	public List<UUID> shopList = Collections
 			.synchronizedList(new ArrayList<UUID>());
 
 	/** The bookmark. */
 	protected BookmarkedResult bookmark = new BookmarkedResult();
 
-	/** The player name. */
+	/** The player's name. */
 	public String playerName = null;
 
-	/** The is selecting. */
+	/** Whether the player is currently selecting a cuboid (/shop select). */
 	private boolean isSelecting = false;
 
-	/** The xyz a. */
+	/** First 3d point of current selection. */
 	private double xyzA[] = null;
 
-	/** The xyz b. */
+	/** Second 3d point of current selection. */
 	private double xyzB[] = null;
 
 	/** The size. */
@@ -124,13 +122,11 @@ public class PlayerData
 
 		size = "" + width1 + "x" + height + "x" + width2;
 
-		if(width1 > Config.MAX_WIDTH
-				|| width2 > Config.MAX_WIDTH
+		if(width1 > Config.MAX_WIDTH || width2 > Config.MAX_WIDTH
 				|| height > Config.MAX_HEIGHT)
 		{
 			return false;
-		}else
-		{
+		}else{
 			return true;
 		}
 	}
@@ -151,8 +147,7 @@ public class PlayerData
 		{
 			shopList.add(shop.getUuid());
 			return true;
-		}else
-		{
+		}else{
 			return false;
 		}
 	}
@@ -170,7 +165,7 @@ public class PlayerData
 
 		if(shopList.contains(shop.getUuid()))
 		{
-			if(shop.getWorld().equalsIgnoreCase(playerWorld)){ return true; }
+			if(shop.getWorld().equalsIgnoreCase(playerWorld)) return true;
 		}
 		return false;
 	}
@@ -220,13 +215,13 @@ public class PlayerData
 	}
 
 	/**
-	 * Pay player.
+	 * Process a payment between two players.
 	 * @param playerFrom
-	 * the player from
+	 * the payer
 	 * @param playerTo
-	 * the player to
+	 * the payee
 	 * @param cost
-	 * the cost
+	 * the amount of money
 	 * @return true, if successful
 	 */
 	public boolean payPlayer(String playerFrom, String playerTo, double cost)
@@ -236,15 +231,17 @@ public class PlayerData
 		EconomyResponse balanceToResp = plugin.getEconManager().getBalance(
 				playerTo);
 
-		log.info("PlayerFrom: " + playerFrom + " balanceFrom: "
-				+ balanceFromResp.amount + " PlayerTo: " + playerTo
-				+ " balanceTo: " + balanceToResp.amount + " Cost: " + cost);
+		log.info('[' + plugin.pdfFile.getName() + "] PlayerFrom: " + playerFrom
+				+ " balanceFrom: " + balanceFromResp.amount + " PlayerTo: "
+				+ playerTo + " balanceTo: " + balanceToResp.amount + " Cost: "
+				+ cost);
 
 		EconomyResponse withdrawResp = plugin.getEconManager().withdrawPlayer(
 				playerFrom, cost);
 		if(!withdrawResp.transactionSuccess())
 		{
-			log.info("Failed to withdraw");
+			log.info('[' + plugin.pdfFile.getName() + "] Failed to withdraw! "
+					+ withdrawResp);
 			return false;
 		}
 
@@ -252,8 +249,9 @@ public class PlayerData
 				playerTo, cost);
 		if(!depositResp.transactionSuccess())
 		{
-			log.info("Failed to deposit");
-			// Return money to shop owner
+			log.info('[' + plugin.pdfFile.getName() + "] Failed to deposit! "
+					+ depositResp);
+			// Return money to payer
 			EconomyResponse returnResp = plugin.getEconManager().depositPlayer(
 					playerFrom, cost);
 			if(!returnResp.transactionSuccess())
@@ -266,8 +264,7 @@ public class PlayerData
 			return false;
 		}
 
-		if(withdrawResp.transactionSuccess()
-				&& depositResp.transactionSuccess())
+		if(withdrawResp.transactionSuccess() && depositResp.transactionSuccess())
 		{
 			plugin.getShopData().logPayment(playerFrom, "payment",
 					withdrawResp.amount, balanceFromResp.amount,
@@ -276,8 +273,7 @@ public class PlayerData
 					depositResp.amount, balanceToResp.amount,
 					depositResp.balance);
 			return true;
-		}else
-		{
+		}else{
 			return false;
 		}
 	}
@@ -332,8 +328,7 @@ public class PlayerData
 		if(shopList.size() == 1)
 		{
 			return shopList.get(0);
-		}else
-		{
+		}else{
 			return null;
 		}
 	}

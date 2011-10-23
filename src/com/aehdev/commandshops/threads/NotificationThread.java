@@ -243,7 +243,6 @@ public class NotificationThread extends Thread
 						{
 							public void run()
 							{
-								log.info("test");
 								for(String message: messages)
 								{
 									player.sendMessage(message);

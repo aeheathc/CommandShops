@@ -76,14 +76,12 @@ public class EconomyManager
 		if(!Methods.hasMethod())
 		{
 			errorMessage = "Register has no economy";
-		}else
-		{
+		}else{
 			Method method = Methods.getMethod();
 			if(!method.hasAccount(playerName))
 			{
 				errorMessage = "Register couldn't find player";
-			}else
-			{
+			}else{
 				MethodAccount account = method.getAccount(playerName);
 				balance = account.balance();
 				type = EconomyResponse.ResponseType.SUCCESS;
@@ -109,28 +107,24 @@ public class EconomyManager
 		if(!Methods.hasMethod())
 		{
 			errorMessage = "Register has no economy";
-		}else
-		{
+		}else{
 			Method method = Methods.getMethod();
 			if(!method.hasAccount(playerName))
 			{
 				errorMessage = "Register couldn't find player";
-			}else
-			{
+			}else{
 				MethodAccount account = method.getAccount(playerName);
 				if(!account.hasEnough(amount))
 				{
 					balance = account.balance();
 					errorMessage = "Insufficient funds";
-				}else
-				{
+				}else{
 					boolean worked = account.subtract(amount);
 					balance = account.balance();
 					if(worked)
 					{
 						type = EconomyResponse.ResponseType.SUCCESS;
-					}else
-					{
+					}else{
 						errorMessage = "Register couldn't subtract amount.";
 					}
 				}
@@ -156,30 +150,20 @@ public class EconomyManager
 		if(!Methods.hasMethod())
 		{
 			errorMessage = "Register has no economy";
-		}else
-		{
+		}else{
 			Method method = Methods.getMethod();
 			if(!method.hasAccount(playerName))
 			{
 				errorMessage = "Register couldn't find player";
-			}else
-			{
+			}else{
 				MethodAccount account = method.getAccount(playerName);
-				if(!account.hasEnough(amount))
+				boolean worked = account.add(amount);
+				balance = account.balance();
+				if(worked)
 				{
-					balance = account.balance();
-					errorMessage = "Insufficient funds";
-				}else
-				{
-					boolean worked = account.add(amount);
-					balance = account.balance();
-					if(worked)
-					{
-						type = EconomyResponse.ResponseType.SUCCESS;
-					}else
-					{
-						errorMessage = "Register couldn't add amount.";
-					}
+					type = EconomyResponse.ResponseType.SUCCESS;
+				}else{
+					errorMessage = "Register couldn't add amount.";
 				}
 			}
 		}

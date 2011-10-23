@@ -425,8 +425,9 @@ public class CommandShopSell extends Command
 		{
 			if(!isShopController(shop))
 			{
-				log.info(String.format("From: %s, To: %s, Cost: %f",
-						shop.getOwner(), player.getName(), totalCost));
+				log.info(String.format("[%s] From: %s, To: %s, Cost: %f",
+						plugin.pdfFile.getName(), shop.getOwner(),
+						player.getName(), totalCost));
 				if(!pData.payPlayer(shop.getOwner(), player.getName(),
 						totalCost))
 				{

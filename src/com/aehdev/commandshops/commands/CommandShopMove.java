@@ -231,7 +231,8 @@ public class CommandShopMove extends Command
 				thisShop.setWorld(player.getWorld().getName());
 				thisShop.setLocations(new ShopLocation(xyzA), new ShopLocation(
 						xyzB));
-				log.info(thisShop.getUuid().toString());
+				log.info('[' + plugin.pdfFile.getName() + "] "
+						+ thisShop.getUuid().toString());
 				plugin.getShopData().deleteShop(thisShop);
 				plugin.getShopData().addShop(thisShop);
 				CommandShops.getCuboidTree().insert(tempShopCuboid);
@@ -246,15 +247,13 @@ public class CommandShopMove extends Command
 							+ ChatColor.WHITE + shopName + ChatColor.DARK_AQUA
 							+ " was moved successfully.");
 					return true;
-				}else
-				{
+				}else{
 					player.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA
 							+ "There was an error, could not move shop.");
 					return false;
 				}
-			}else
-			{
+			}else{
 				// insert the old cuboid back into the world
 				PrimitiveCuboid tempShopCuboid = new PrimitiveCuboid(xyzAold,
 						xyzBold);

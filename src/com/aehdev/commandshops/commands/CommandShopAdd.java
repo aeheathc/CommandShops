@@ -92,7 +92,7 @@ public class CommandShopAdd extends Command
 			}
 
 			// Check if Player can Modify
-			if(!isShopController(shop))
+			if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
 			{
 				player.sendMessage(ChatColor.DARK_AQUA
 						+ "You must be the shop owner or a manager to set this.");
@@ -379,8 +379,8 @@ public class CommandShopAdd extends Command
 			if(playerItemCount >= amount)
 			{
 				// Perform add
-				log.info(String
-						.format("Add %d of %s to %s", amount, item, shop));
+				log.info(String.format("[%s] Add %d of %s to %s",
+						plugin.pdfFile.getName(), amount, item, shop));
 			}else
 			{
 				// Nag player

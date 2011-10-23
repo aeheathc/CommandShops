@@ -487,16 +487,14 @@ public class CommandShopBuy extends Command
 							+ "You cannot afford any of " + ChatColor.WHITE
 							+ item.name);
 					return true;
-				}else
-				{
+				}else{
 					player.sendMessage(ChatColor.DARK_AQUA
 							+ "You could only afford " + ChatColor.WHITE
 							+ amount + ChatColor.DARK_AQUA + " of "
 							+ ChatColor.WHITE + item.name);
 				}
 
-				if(!pData.payPlayer(player.getName(), shop.getOwner(),
-						totalCost))
+				if(!pData.payPlayer(player.getName(), shop.getOwner(), totalCost))
 				{
 					player.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA
@@ -515,8 +513,7 @@ public class CommandShopBuy extends Command
 			player.sendMessage(ChatColor.DARK_AQUA + "You removed "
 					+ ChatColor.WHITE + amount + " " + item.name
 					+ ChatColor.DARK_AQUA + " from the shop");
-		}else
-		{
+		}else{
 			player.sendMessage(ChatColor.DARK_AQUA + "You purchased "
 					+ ChatColor.WHITE + amount + " " + item.name
 					+ ChatColor.DARK_AQUA + " for " + ChatColor.WHITE

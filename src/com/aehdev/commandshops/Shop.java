@@ -695,7 +695,7 @@ public class Shop implements Comparator<Shop>
 	public void log()
 	{
 		// Details
-		log.info("Shop Information");
+		log.info("[CommandShops] Shop Information");
 		log.info(String.format("   %-16s %s", "UUID:", uuid.toString()));
 		log.info(String.format("   %-16s %s", "Name:", name));
 		log.info(String.format("   %-16s %s", "Creator:", creator));

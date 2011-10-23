@@ -91,4 +91,11 @@ public class EconomyResponse
 			return false;
 		}
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "EconomyResponse[amount=" + amount + ",balance=" + balance
+				+ ",type=" + type + ",errorMessage=" + errorMessage + "]";
+	}
 }
