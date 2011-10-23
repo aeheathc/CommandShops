@@ -5,7 +5,8 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
-import com.aehdev.nijikokun.register.payment.Methods;
+
+import com.nijikokun.register.payment.Methods;
 
 // TODO: Auto-generated Javadoc
 /**

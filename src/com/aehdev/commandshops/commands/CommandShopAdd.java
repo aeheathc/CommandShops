@@ -451,7 +451,7 @@ public class CommandShopAdd extends Command
 					+ "\"/shop set sell " + item.name + " price bundle\""
 					+ ChatColor.DARK_AQUA + " to sell this item!");
 			sender.sendMessage(ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE
-					+ "\"/shop set  buy " + item.name + " price bundle\""
+					+ "\"/shop set buy " + item.name + " price bundle\""
 					+ ChatColor.DARK_AQUA + " to  buy this item!");
 		}
 

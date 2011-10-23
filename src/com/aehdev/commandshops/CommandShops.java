@@ -126,7 +126,13 @@ public class CommandShops extends JavaPlugin
 			notificationThread.start();
 		}
 
-		setEconManager(new EconomyManager(this));
+		try{
+			setEconManager(new EconomyManager(this));
+		}catch(NoClassDefFoundError e){
+			log.warning(String.format("[%s] FATAL: Register not found.", pdfFile.getName()));
+            getPluginLoader().disablePlugin(this);
+            return;
+		}
 		log.info(String
 				.format("[%s][Economy] Register activated. It should report 'Payment method found' soon.",
 						pdfFile.getName()));

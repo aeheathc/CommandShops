@@ -6,9 +6,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import com.aehdev.commandshops.RegisterListener;
-import com.aehdev.nijikokun.register.payment.Method;
-import com.aehdev.nijikokun.register.payment.Methods;
-import com.aehdev.nijikokun.register.payment.Method.MethodAccount;
+import com.nijikokun.register.payment.Method;
+import com.nijikokun.register.payment.Methods;
+import com.nijikokun.register.payment.Method.MethodAccount;
 
 // TODO: Auto-generated Javadoc
 /**

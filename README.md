@@ -7,6 +7,9 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**3.5.2**
+- Change Register support to connect to the separate Register plugin instead of it being embedded
+
 **3.5.1**
 - Moved to bukkit standard config file method; consolidated and categorized options. Now was the time to do it, before many people switch to this plugin.
 - Enforce legit item stack limits 
