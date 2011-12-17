@@ -1,5 +1,5 @@
 == Planned Features ==
-- remove bundles
+- Remove bundles.
 - Optional SQL backend to increase viable range of transaction logging, on-demand viewing, and facilitate web based analysis
 - Add auto-updating
 - Block faulty pricing (shop's buy price greater than sell etc)
@@ -12,10 +12,12 @@
 --- Surveyor service (self serve land exchange via shops)
 --- Sales tax feudal management
 - resolve TODOs
+- make /shop find with no item find any nearby shops
+- multi language support
 
 == Maybe Features ==
 - Price volatility
 - replace item matching code with 3rd party abbreviation engine
 - Some kind of penalty for adding damaged items, price reduction?
 - Web based shop management?
-- support enchanted items
+- Support enchanted items

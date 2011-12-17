@@ -13,6 +13,7 @@ import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.PlayerData;
 import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopLocation;
+import com.aehdev.commandshops.commands.Command.CommandTypes;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
@@ -101,7 +102,8 @@ public class CommandShopMove extends Command
 			}
 
 			// check if player has access
-			if(!thisShop.getOwner().equalsIgnoreCase(player.getName()))
+			if(!thisShop.getOwner().equalsIgnoreCase(player.getName())
+					&& !canUseCommand(CommandTypes.ADMIN))
 			{
 				player.sendMessage(CommandShops.CHAT_PREFIX
 						+ ChatColor.DARK_AQUA

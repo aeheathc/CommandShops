@@ -5,8 +5,14 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**3.6.1**
+
+* Admins can now move other players' shops
+* Updated command documentation
+* Fixed Readme formatting
 
 **3.6**
+
 * Tested with CB 1597
 * Switched to new Config class, as old became deprecated. No change for users.
 * Improved item search, Redstone Repeater in particular should be easier to work with
@@ -23,19 +29,23 @@ Changelog
 * "/shop search" with no params searches for item in hand
 
 **3.5.4**
+
 * Fixed bug where transactions would fail based on seller's balance
 * Improved error reporting
 * Gave admins more power to meddle with shops (to better fit the existing description)
 * Tested with CB 1317
 
 **3.5.3**
+
 * Added hard dependency on Register to alleviate dependency issues
 * Avoid calling Register stuff in inappropriate cases
 
 **3.5.2**
+
 * Change Register support to connect to the separate Register plugin instead of it being embedded
 
 **3.5.1**
+
 * Moved to bukkit standard config file method; consolidated and categorized options. Now was the time to do it, before many people switch to this plugin.
 * Enforce legit item stack limits 
 * Fixed misleading errors
@@ -47,6 +57,7 @@ Changelog
 * Tested with CB 1240
 
 **3.5**
+
 * Forked from LocalShops 3.1
 * Economy support migrated to Register
 * Updated (item list, item names, item stack limits) for 1.9, updated item search for conflicts
