@@ -18,13 +18,13 @@ public class Search
 		items.add(new ItemInfo("Grass",				new String[][] {{"gras"}},										2,	(short) 0, 64 ));
 		items.add(new ItemInfo("Dirt",				new String[][] {{"dirt"}},										3,	(short) 0, 64 ));
 		items.add(new ItemInfo("Cobblestone",		new String[][] {{"cobb","sto"},{"cobb"}},						4,	(short) 0, 64 ));
-		items.add(new ItemInfo("Wooden Plank",		new String[][] {{"wood"},{"wood","plank"}},						5,	(short) 0, 64 ));
+		items.add(new ItemInfo("Wooden Planks",		new String[][] {{"plank"}},										5,	(short) 0, 64 ));
 		items.add(new ItemInfo("Sapling",			new String[][] {{"sapling"}},									6,	(short) 0, 64 ));
 		items.add(new ItemInfo("Redwood Sapling",	new String[][] {{"sapling","red"}},								6,	(short) 1, 64 ));
 		items.add(new ItemInfo("Birch Sapling",		new String[][] {{"sapling","birch"}},							6,	(short) 2, 64 ));
 		items.add(new ItemInfo("Bedrock",			new String[][] {{"rock"}},										7,	(short) 0, 64 ));
-		items.add(new ItemInfo("Water",				new String[][] {{"water"}},										8,	(short) 0, 64 ));
-		items.add(new ItemInfo("Lava",				new String[][] {{"lava"}},										10, (short) 0, 64 ));
+		items.add(new ItemInfo("Water",				new String[][] {{"water"}},										9,	(short) 0, 64 ));
+		items.add(new ItemInfo("Lava",				new String[][] {{"lava"}},										11, (short) 0, 64 ));
 		items.add(new ItemInfo("Sand",				new String[][] {{"sand"}},										12, (short) 0, 64 ));
 		items.add(new ItemInfo("Gravel",			new String[][] {{"gravel"}},									13, (short) 0, 64 ));
 		items.add(new ItemInfo("Gold Ore",			new String[][] {{"ore","gold"}},								14, (short) 0, 64 ));
@@ -40,16 +40,16 @@ public class Search
 		items.add(new ItemInfo("Glass",				new String[][] {{"glas"}},										20, (short) 0, 64 ));
 		items.add(new ItemInfo("Lapis Lazuli Ore",	new String[][] {{"laz","ore"}},									21, (short) 0, 64 ));
 		items.add(new ItemInfo("Lapis Lazuli Block",new String[][] {{"laz","bl"}},									22, (short) 0, 64 ));
-		items.add(new ItemInfo("Dispenser",			new String[][] {{"dispen"}},									23, (short) 0, 64 ));
+		items.add(new ItemInfo("Dispenser",			new String[][] {{"dispen"},{"dis","pen"}},						23, (short) 0, 64 ));
 		items.add(new ItemInfo("Sandstone",			new String[][] {{"sand","st"}},									24, (short) 0, 64 ));
 		items.add(new ItemInfo("Note Block",		new String[][] {{"note"}},										25, (short) 0, 64 ));
 		items.add(new ItemInfo("Powered Rail",		new String[][] {{"rail","pow"},{"trac","pow"},{"boost"}},		27, (short) 0, 64 ));
 		items.add(new ItemInfo("Detector Rail",		new String[][] {{"rail","det"},{"trac","det"},{"detec"}},		28, (short) 0, 64 ));
-		items.add(new ItemInfo("Sticky Piston",		new String[][] {{"sticky"},{"sticky","pist"}},					29, (short) 0, 64 ));
+		items.add(new ItemInfo("Sticky Piston",		new String[][] {{"sticky"},{"sticky","pist"}},					29, (short) 7, 64 ));
 		items.add(new ItemInfo("Cobweb",			new String[][] {{"web"},{"cobweb"}},							30, (short) 0, 64 ));
 		items.add(new ItemInfo("Tall Grass",		new String[][] {{"tall","gras"}},								31, (short) 0, 64 ));
 		items.add(new ItemInfo("Dead Bush",			new String[][] {{"dead"},{"dead","bush"},{"dead","shrub"}},		32, (short) 0, 64 ));
-		items.add(new ItemInfo("Piston",			new String[][] {{"pist"}},										33, (short) 0, 64 ));
+		items.add(new ItemInfo("Piston",			new String[][] {{"pist"}},										33, (short) 7, 64 ));
 		items.add(new ItemInfo("White Wool",		new String[][] {{"wool","whit"},{"wool"}},						35, (short) 0, 64 ));
 		items.add(new ItemInfo("Orange Wool",		new String[][] {{"wool","ora"}},								35, (short) 1, 64 ));
 		items.add(new ItemInfo("Magenta Wool",		new String[][] {{"wool","mag"}},								35, (short) 2, 64 ));
@@ -118,7 +118,7 @@ public class Search
 		items.add(new ItemInfo("Pumpkin",			new String[][] {{"pump"}},										86, (short) 0, 64 ));
 		items.add(new ItemInfo("Netherrack",		new String[][] {{"netherr"}},									87, (short) 0, 64 ));
 		items.add(new ItemInfo("Soul Sand",			new String[][] {{"soul","sand"},{"soul"}},						88, (short) 0, 64 ));
-		items.add(new ItemInfo("Glowstone",			new String[][] {{"glow","stone"}},								89, (short) 0, 64 ));
+		items.add(new ItemInfo("Glowstone Block",	new String[][] {{"glow","stone"},{"glow","block"}},				89, (short) 0, 64 ));
 		items.add(new ItemInfo("Jack-O-Lantern",	new String[][] {{"jack"},{"lante"}},							91, (short) 0, 64 ));
 		items.add(new ItemInfo("Locked Chest",		new String[][] {{"lock","chest"}},								95, (short) 0, 64 ));
 		items.add(new ItemInfo("Trapdoor",			new String[][] {{"trap"},{"trap","door"},{"hatch"}},			96, (short) 0, 64 ));
@@ -128,6 +128,8 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Stone Brick",		new String[][] {{"ston","bric"}},								98, (short) 0, 64 ));
 		items.add(new ItemInfo("Mossy Stone Brick",	new String[][] {{"ston","bric","moss"}},						98, (short) 1, 64 ));
 		items.add(new ItemInfo("Cracked Stone Brick",new String[][]{{"ston","bric","cra"}},							98, (short) 2, 64 ));
+		items.add(new ItemInfo("Huge Brown Mushroom",new String[][]{{"huge","bro","mush"}},							99, (short) 0, 64 ));
+		items.add(new ItemInfo("Huge Red Mushroom",	new String[][] {{"huge","red","mush"}},							100,(short) 0, 64 ));
 		items.add(new ItemInfo("Iron Bars",			new String[][] {{"iron","bar"}},								101,(short) 0, 64 ));
 		items.add(new ItemInfo("Glass Pane",		new String[][] {{"glas","pan"}},								102,(short) 0, 64 ));
 		items.add(new ItemInfo("Melon",				new String[][] {{"melo"}},										103,(short) 0, 64 ));
@@ -142,6 +144,10 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Nether Brick",		new String[][] {{"bric","nether"}},								112,(short) 0, 64 ));
 		items.add(new ItemInfo("Nether Brick Fence",new String[][] {{"fen","bric","nether"}},						113,(short) 0, 64 ));
 		items.add(new ItemInfo("Nether Brick Stairs",new String[][]{{"stair","bric","nether"}},						114,(short) 0, 64 ));
+		items.add(new ItemInfo("Enchantment Table", new String[][] {{"encha"}},										116,(short) 0, 64 ));
+		items.add(new ItemInfo("End Portal Frame",	new String[][] {{"end","fra"}},									120,(short) 0, 64 ));
+		items.add(new ItemInfo("End Stone", 		new String[][] {{"end","sto"}},									121,(short) 0, 64 ));
+		items.add(new ItemInfo("Dragon Egg", 		new String[][] {{"drag"}},										122,(short) 0, 64 ));
 		
 		items.add(new ItemInfo("Iron Shovel",		new String[][] {{"shov","ir"}},									256, (short) 0, 1 ));
 		items.add(new ItemInfo("Iron Pickaxe",		new String[][] {{"pick","ir"},{"pick","axe","ir"}},				257, (short) 0, 1 ));
@@ -219,7 +225,7 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Minecart",			new String[][] {{"cart"}},										328, (short) 0, 1 ));
 		items.add(new ItemInfo("Saddle",			new String[][] {{"sadd"}},										329, (short) 0, 1 ));
 		items.add(new ItemInfo("Iron Door",			new String[][] {{"door","iron"}},								330, (short) 0, 1 ));
-		items.add(new ItemInfo("Redstone Dust",		new String[][] {{"red","ston","dust"},{"red","ston"},{"reds"}},	331, (short) 0, 64 ));
+		items.add(new ItemInfo("Redstone Dust",		new String[][] {{"red","ston"}},								331, (short) 0, 64));
 		items.add(new ItemInfo("Snowball",			new String[][] {{"snow","ball"}},								332, (short) 0, 16 ));
 		items.add(new ItemInfo("Boat",				new String[][] {{"boat"}},										333, (short) 0, 1 ));
 		items.add(new ItemInfo("Leather",			new String[][] {{"lea"}},										334, (short) 0, 64 ));
@@ -259,7 +265,7 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Sugar",				new String[][] {{"suga"}},										353, (short) 0, 64 ));
 		items.add(new ItemInfo("Cake",				new String[][] {{"cake"}},										354, (short) 0, 1 ));
 		items.add(new ItemInfo("Bed",				new String[][] {{"bed"}},										355, (short) 0, 1 ));
-		items.add(new ItemInfo("Redstone Repeater",	new String[][] {{"red","rep"}},									356, (short) 0, 64 ));
+		items.add(new ItemInfo("Redstone Repeater",	new String[][] {{"rep"},{"rep","red"},{"rep","ston","red"}},	356, (short) 0, 64 ));
 		items.add(new ItemInfo("Cookie",			new String[][] {{"cooki"}},										357, (short) 0, 64 ));
 		items.add(new ItemInfo("Map",				new String[][] {{"map"}},										358, (short) 0, 1 ));
 		items.add(new ItemInfo("Shears",			new String[][] {{"shear"}},										359, (short) 0, 1 ));
@@ -276,9 +282,79 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Ghast Tear",		new String[][] {{"ghast"},{"tear"}},							370, (short) 0, 64 ));
 		items.add(new ItemInfo("Gold Nugget",		new String[][] {{"nug"},{"gold","nug"}},						371, (short) 0, 64 ));
 		items.add(new ItemInfo("Nether Wart",		new String[][] {{"wart"},{"wart","nether"}},					372, (short) 0, 64 ));
+items.add(new ItemInfo("Water Bottle",					new String[][] {{"water","bot"}},							373, (short) 0, 64 ));
+items.add(new ItemInfo("Awkward Potion",				new String[][] {{"pot","awk"}},								373, (short) 16,64 ));
+items.add(new ItemInfo("Thick Potion",					new String[][] {{"pot","thi"}},								373, (short) 32,64 ));
+items.add(new ItemInfo("Mundane Potion (extended)",		new String[][] {{"pot","mun","ext"}},						373, (short) 64,64 ));
+items.add(new ItemInfo("Mundane Potion",				new String[][] {{"pot","mun"}},								373, (short)8192,64));
+items.add(new ItemInfo("Potion of Regeneration",		new String[][] {{"pot","regen"}},							373, (short)8193,64));
+items.add(new ItemInfo("Potion of Regeneration (extended)",new String[][]{{"pot","regen","ext"}},					373, (short)8257,64));
+items.add(new ItemInfo("Potion of Regeneration 2",		new String[][] {{"pot","regen","2"}},						373, (short)8225,64));
+items.add(new ItemInfo("Potion of Swiftness",			new String[][] {{"pot","swif"}},							373, (short)8194,64));
+items.add(new ItemInfo("Potion of Swiftness (extended)",new String[][] {{"pot","swif","ext"}},						373, (short)8258,64));
+items.add(new ItemInfo("Potion of Swiftness 2",			new String[][] {{"pot","swif","2"}},						373, (short)8226,64));
+items.add(new ItemInfo("Potion of Fire Resistance",		new String[][] {{"pot","fire","res"}},						373, (short)8195,64));
+items.add(new ItemInfo("Potion of Fire Resistance (extended)",new String[][]{{"pot","fire","res","ext"}},			373, (short)8259,64));
+items.add(new ItemInfo("Potion of Healing",				new String[][] {{"pot","heal"}},							373, (short)8197,64));
+items.add(new ItemInfo("Potion of Healing 2",			new String[][] {{"pot","heal","2"}},						373, (short)8229,64));
+items.add(new ItemInfo("Potion of Strength",			new String[][] {{"pot","stre"}},							373, (short)8201,64));
+items.add(new ItemInfo("Potion of Strength (extended)",	new String[][] {{"pot","stre","ext"}},						373, (short)8265,64));
+items.add(new ItemInfo("Potion of Strength 2",			new String[][] {{"pot","stre","2"}},						373, (short)8233,64));
+items.add(new ItemInfo("Potion of Poison",				new String[][] {{"pot","poi"}},								373, (short)8196,64));
+items.add(new ItemInfo("Potion of Poison (extended)",	new String[][] {{"pot","poi","ext"}},						373, (short)8260,64));
+items.add(new ItemInfo("Potion of Poison 2",			new String[][] {{"pot","poi","2"}},							373, (short)8228,64));
+items.add(new ItemInfo("Potion of Weakness",			new String[][] {{"pot","weak"}},							373, (short)8200,64));
+items.add(new ItemInfo("Potion of Weakness (extended)",	new String[][] {{"pot","weak","ext"}},						373, (short)8264,64));
+items.add(new ItemInfo("Potion of Slowness",			new String[][] {{"pot","slow"}},							373, (short)8202,64));
+items.add(new ItemInfo("Potion of Slowness (extended)",	new String[][] {{"pot","slow","ext"}},						373, (short)8266,64));
+items.add(new ItemInfo("Potion of Harming",				new String[][] {{"pot","har"}},								373, (short)8204,64));
+items.add(new ItemInfo("Potion of Harming 2",			new String[][] {{"pot","har","2"}},							373, (short)8236,64));
+items.add(new ItemInfo("Splash Mundane Potion",			new String[][] {{"pot","spl","mun"}},						373,(short)16384,64));
+items.add(new ItemInfo("Splash Potion of Regeneration",	new String[][] {{"pot","spl","regen"}},						373,(short)16385,64));
+items.add(new ItemInfo("Splash Potion of Regeneration (extended)",new String[][]{{"pot","spl","regen","ext"}},		373,(short)16449,64));
+items.add(new ItemInfo("Splash Potion of Regeneration 2",new String[][]{{"pot","spl","reg","2"}},					373,(short)16417,64));
+items.add(new ItemInfo("Splash Potion of Swiftness",	new String[][] {{"pot","spl","swif"}},						373,(short)16386,64));
+items.add(new ItemInfo("Splash Potion of Swiftness (extended)",new String[][]{{"pot","spl","swif","ext"}},			373,(short)16450,64));
+items.add(new ItemInfo("Splash Potion of Swiftness 2",	new String[][] {{"pot","spl","swif","2"}},					373,(short)16418,64));
+items.add(new ItemInfo("Splash Potion of Fire Resistance",new String[][]{{"pot","spl","fire"}},						373,(short)16387,64));
+items.add(new ItemInfo("Splash Potion of Fire Resistance (extended)",new String[][]{{"pot","spl","fire","ext"}},	373,(short)16451,64));
+items.add(new ItemInfo("Splash Potion of Healing",		new String[][] {{"pot","spl","heal"}},						373,(short)16389,64));
+items.add(new ItemInfo("Splash Potion of Healing 2",	new String[][] {{"pot","spl","heal","2"}},					373,(short)16421,64));
+items.add(new ItemInfo("Splash Potion of Strength",		new String[][] {{"pot","spl","stre"}},						373,(short)16393,64));
+items.add(new ItemInfo("Splash Potion of Strength (extended)",new String[][]{{"pot","spl","stre","ext"}},			373,(short)16457,64));
+items.add(new ItemInfo("Splash Potion of Strength 2",	new String[][] {{"pot","spl","stre","2"}},					373,(short)16425,64));
+items.add(new ItemInfo("Splash Potion of Poison",		new String[][] {{"pot","spl","poi"}},						373,(short)16388,64));
+items.add(new ItemInfo("Splash Potion of Poison (extended)",new String[][]{{"pot","spl","poi","ext"}},				373,(short)16452,64));
+items.add(new ItemInfo("Splash Potion of Poison 2",		new String[][] {{"pot","spl","poi","2"}},					373,(short)16420,64));
+items.add(new ItemInfo("Splash Potion of Weakness",		new String[][] {{"pot","spl","weak"}},						373,(short)16392,64));
+items.add(new ItemInfo("Splash Potion of Weakness (extended)",new String[][]{{"pot","spl","weak","ext"}},			373,(short)16456,64));
+items.add(new ItemInfo("Splash Potion of Slowness",		new String[][] {{"pot","spl","slow"}},						373,(short)16394,64));
+items.add(new ItemInfo("Splash Potion of Slowness (extended)",new String[][]{{"pot","spl","slow","ext"}},			373,(short)16458,64));
+items.add(new ItemInfo("Splash Potion of Harming",		new String[][] {{"pot","spl","har"}},						373,(short)16396,64));
+items.add(new ItemInfo("Splash Potion of Harming 2",	new String[][] {{"pot","spl","har","2"}},					373,(short)16428,64));
+		items.add(new ItemInfo("Glass Bottle",		new String[][] {{"glas","bottl"}},								374, (short) 0, 64 ));
+		items.add(new ItemInfo("Spider Eye",		new String[][] {{"spid","eye"}},								375, (short) 0, 64 ));
+		items.add(new ItemInfo("Fermented Spider Eye",new String[][]{{"ferme"}},									376, (short) 0, 64 ));
+		items.add(new ItemInfo("Blaze Powder",		new String[][] {{"blaz","pow"}},								377, (short) 0, 64 ));
+		items.add(new ItemInfo("Magma Cream",		new String[][] {{"mag","cream"}},								378, (short) 0, 64 ));
+		items.add(new ItemInfo("Brewing Stand",		new String[][] {{"brew"}},										379, (short) 0, 64 ));
+		items.add(new ItemInfo("Cauldron",			new String[][] {{"caul"}},										380, (short) 0, 64 ));
+		items.add(new ItemInfo("Eye of Ender",		new String[][] {{"eye","end"}},									381, (short) 0, 64 ));
+		items.add(new ItemInfo("Glistering Melon",	new String[][] {{"glist"}},										382, (short) 0, 64 ));
+		items.add(new ItemInfo("Spawner Egg",		new String[][] {{"spawn","egg"}},								383, (short) 0, 64 ));
 		
-		items.add(new ItemInfo("Gold Music Disc",	new String[][] {{"dis","gol"},{"rec","gol"}},					2256,(short) 0, 64 ));
-		items.add(new ItemInfo("Green Music Disc",	new String[][] {{"dis","gre"},{"rec","gre"}},					2257,(short) 0, 64 ));
+		
+		items.add(new ItemInfo("13 Disc",			new String[][] {{"dis","13"},{"dis","gol"}},					2256,(short) 0, 64 ));
+		items.add(new ItemInfo("Cat Disc",			new String[][] {{"dis","cat"},{"dis","gre"}},					2257,(short) 0, 64 ));
+		items.add(new ItemInfo("Blocks Disc",		new String[][] {{"dis","blo"},{"dis","ora"}},					2258,(short) 0, 64 ));
+		items.add(new ItemInfo("Chirp Disc",		new String[][] {{"dis","chi"},{"dis","red"}},					2259,(short) 0, 64 ));
+		items.add(new ItemInfo("Far Disc",			new String[][] {{"dis","far"},{"dis","lim"}},					2260,(short) 0, 64 ));
+		items.add(new ItemInfo("Mall Disc",			new String[][] {{"dis","mal"},{"dis","pur"}},					2261,(short) 0, 64 ));
+		items.add(new ItemInfo("Mellohi Disc",		new String[][] {{"dis","mel"},{"dis","vio"}},					2262,(short) 0, 64 ));
+		items.add(new ItemInfo("Stal Disc",			new String[][] {{"dis","sta"},{"dis","bla"}},					2263,(short) 0, 64 ));
+		items.add(new ItemInfo("Strad Disc",		new String[][] {{"dis","str"},{"dis","whi"}},					2264,(short) 0, 64 ));
+		items.add(new ItemInfo("Ward Disc",			new String[][] {{"dis","war"},{"dis","sea","gre"}},				2265,(short) 0, 64 ));
+		items.add(new ItemInfo("11 Disc",			new String[][] {{"dis","11"},{"dis","bro"}},					2266,(short) 0, 64 ));
 
 	}
 
@@ -446,9 +522,8 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 							matchedItemStrength = attributes.length;
 						}
 
-						// This criteria was a match, lets break out of this
-						// item...no point testing alternate criteria's
-						break;
+						//we used to break here upon finding a match, but not breaking
+						//lets us searech everything to find the BEST match
 					}
 				}
 			}

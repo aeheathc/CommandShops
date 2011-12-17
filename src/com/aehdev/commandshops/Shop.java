@@ -399,7 +399,6 @@ public class Shop implements Comparator<Shop>
 			int buyStackSize, double sellPrice, int sellStackSize, int stock,
 			int maxStock)
 	{
-		// TODO add maxStock to item object
 		ItemInfo item = Search.itemById(itemNumber, itemData);
 		if(item == null){ return false; }
 

@@ -85,8 +85,7 @@ public class CommandShopList extends Command
 		{
 			sender.sendMessage(String.format("%-" + idWidth + "s  %s", "Id",
 					"Name"));
-		}else
-		{
+		}else{
 			sender.sendMessage(String.format("%-" + idWidth + "s  %-25s %s",
 					"Id", "Name", "Owner"));
 		}

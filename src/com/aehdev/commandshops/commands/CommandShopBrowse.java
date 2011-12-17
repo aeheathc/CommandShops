@@ -230,7 +230,7 @@ public class CommandShopBrowse extends Command
 				+ (shop.isUnlimitedStock() ? "Inf." : item.getStock())
 				+ ChatColor.DARK_AQUA
 				+ "]"
-				+ (maxstock > 0 ? (" [" + ChatColor.WHITE + "Max Stock: "
+				+ ((maxstock > 0 && !shop.isUnlimitedStock()) ? (" [" + ChatColor.WHITE + "Max Stock: "
 						+ maxstock + ChatColor.DARK_AQUA + "]") : "");
 		sender.sendMessage(message);
 		message = ChatColor.GOLD

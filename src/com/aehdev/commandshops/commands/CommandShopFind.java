@@ -1,5 +1,6 @@
 package com.aehdev.commandshops.commands;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedSet;
@@ -142,7 +143,7 @@ public class CommandShopFind extends Command
 			if(found == null)
 			{
 				sender.sendMessage(String.format(
-						"No item was not found matching \"%s\"", name));
+						"No item was found matching \"%s\"", name));
 				return true;
 			}else
 			{
@@ -150,7 +151,7 @@ public class CommandShopFind extends Command
 			}
 		}
 
-		// Show sell help
+		// Show find help
 		sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel
 				+ " find [itemname] " + ChatColor.DARK_AQUA
 				+ "- Find shops that buy or sell this item.");
@@ -204,15 +205,11 @@ public class CommandShopFind extends Command
 				new EntryValueComparator());
 		entries.addAll(foundShops.entrySet());
 
+		boolean foundsome = true;
 		if(entries.size() > 0)
 		{
 			int count = 0;
-			int numShopsThatCarry = foundShops.size();
-			int numShopsToShow = Math.min(numShopsThatCarry, 4);
-			sender.sendMessage(ChatColor.DARK_AQUA + "Showing "
-					+ ChatColor.WHITE + numShopsToShow + ChatColor.DARK_AQUA + " of "
-					+ ChatColor.WHITE + numShopsThatCarry + ChatColor.DARK_AQUA
-					+ " shop(s) having " + ChatColor.WHITE + found.name);
+			LinkedList<String> message = new LinkedList<String>();
 			for(Entry<UUID,Double> entry: entries)
 			{
 				UUID uuid = entry.getKey();
@@ -225,8 +222,7 @@ public class CommandShopFind extends Command
 				if(item.getBuyPrice() <= 0 || item.getBuySize() <= 0)
 				{
 					sellPrice = "--";
-				}else
-				{
+				}else{
 					sellPrice = (stock == 0 ? ChatColor.RED : "")
 							+ plugin.getEconManager().format(
 									item.getBuyPrice() / item.getBuySize())
@@ -237,8 +233,7 @@ public class CommandShopFind extends Command
 				if(item.getSellPrice() <= 0 || item.getSellSize() <= 0)
 				{
 					buyPrice = "--";
-				}else
-				{
+				}else{
 					buyPrice = (maxstock > 0 && stock > maxstock ? ChatColor.RED
 							: "")
 							+ plugin.getEconManager().format(
@@ -251,24 +246,42 @@ public class CommandShopFind extends Command
 				{
 					continue;
 				}
-
-				sender.sendMessage(String.format(ChatColor.WHITE + "%s: "
+				count++;
+				if(count<=4)
+				{
+					message.add( String.format(ChatColor.WHITE + "%s: "
 						+ ChatColor.GOLD + "selling for %s, " + ChatColor.GREEN
 						+ "buying for %s", shop.getName(), sellPrice, buyPrice));
-				sender.sendMessage(String.format(ChatColor.WHITE + "  "
-						+ ChatColor.DARK_AQUA + "Currently " + ChatColor.WHITE
-						+ "%-2.0fm" + ChatColor.DARK_AQUA + " away with ID: "
-						+ ChatColor.WHITE + "%s", distance,
-						shop.getShortUuidString()));
-
-				count++;
-
-				if(count == 4)
-				{
-					break;
+					message.add(String.format(ChatColor.WHITE + "  "
+						+ ChatColor.DARK_AQUA + "Distance: " + ChatColor.WHITE
+						+ "%-2.0fm" + ChatColor.DARK_AQUA + " ID: "
+						+ ChatColor.WHITE + "%s" + ChatColor.DARK_AQUA
+						+ " Stock: " + ChatColor.WHITE
+						+ (shop.isUnlimitedStock() ? "Inf."
+								: ("%s" + ((maxstock > 0) ?
+										(ChatColor.DARK_AQUA + "/" + ChatColor.WHITE + "%s")
+										: ""))),
+						distance, shop.getShortUuidString(), stock, maxstock));
 				}
 			}
-		}else
+			if(count>0)
+			{
+				int numShopsThatCarry = count;
+				int numShopsToShow = Math.min(numShopsThatCarry, 4);
+				sender.sendMessage(ChatColor.DARK_AQUA + "Showing "
+						+ ChatColor.WHITE + numShopsToShow + ChatColor.DARK_AQUA + " of "
+						+ ChatColor.WHITE + numShopsThatCarry + ChatColor.DARK_AQUA
+						+ " shop(s) having " + ChatColor.WHITE + found.name);
+				for(String msg:message)
+					sender.sendMessage(msg);
+			}else{
+				foundsome = false;
+			}
+		}else{
+			foundsome = false;
+		}
+		
+		if(foundsome == false)
 		{
 			sender.sendMessage(ChatColor.DARK_AQUA
 					+ "No shops were found having " + ChatColor.WHITE

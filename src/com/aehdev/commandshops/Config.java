@@ -3,8 +3,7 @@ package com.aehdev.commandshops;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Stores global basic configuration for CommandShops.
@@ -13,9 +12,6 @@ import org.bukkit.util.config.Configuration;
  */
 public class Config
 {
-	/**main config object from Bukkit server */
-	public static Configuration CONFIG;
-	
 	// Shop Size settings
 	/** Default width of a shop created without specifying custom boundaries
 	 * (both horizontal dimensions). */
@@ -79,28 +75,28 @@ public class Config
 	 * Read the config file and load options when present, or write default
 	 * options when not present.
 	 * @param plugin
-	 * main plugin class reference so we can call its inherited method {@link getConfiguration}
+	 * main plugin class reference so we can call its inherited method {@link getConfig}
 	 */
 	public static void loadProperties(CommandShops plugin)
 	{
-		CONFIG = plugin.getConfiguration();
-		CONFIG.load();
-		
-		SHOP_COST =				CONFIG.getDouble(	"fees.create",			SHOP_COST);
-		MOVE_COST =				CONFIG.getDouble(	"fees.move",			MOVE_COST);
-		DEFAULT_WIDTH =			CONFIG.getInt(		"size.default-width",	DEFAULT_WIDTH);
-		DEFAULT_HEIGHT =		CONFIG.getInt(		"size.default-height",	DEFAULT_HEIGHT);
-		MAX_WIDTH =				CONFIG.getInt(		"size.max-width",		MAX_WIDTH);
-		MAX_HEIGHT =			CONFIG.getInt(		"size.max-height",		MAX_HEIGHT);
-		MAX_SHOPS_PER_PLAYER =	CONFIG.getInt(		"limits.shops-per-player",MAX_SHOPS_PER_PLAYER);
-		MAX_DAMAGE = Math.max(0,CONFIG.getInt(		"limits.item-damage",	MAX_DAMAGE));
-		FIND_MAX_DISTANCE =		CONFIG.getInt(		"limits.find-distance",	FIND_MAX_DISTANCE);
-		LOG_ENABLE =			CONFIG.getBoolean(	"log.enable",			LOG_ENABLE);
-		NOTIFY_INTERVAL =		CONFIG.getInt(		"log.notify-interval",	NOTIFY_INTERVAL);
-		LOG_LIMIT =				CONFIG.getInt(		"log.limit",			LOG_LIMIT);
-		DEBUG =					CONFIG.getBoolean(	"debug",				DEBUG);
+		FileConfiguration config = plugin.getConfig();
+		config.options().copyDefaults(true);
 
-		CONFIG.setProperty("limits.item-damage", MAX_DAMAGE);
-		CONFIG.save();
+		SHOP_COST =				config.getDouble(	"fees.create");
+		MOVE_COST =				config.getDouble(	"fees.move");
+		DEFAULT_WIDTH =			config.getInt(		"size.default-width");
+		DEFAULT_HEIGHT =		config.getInt(		"size.default-height");
+		MAX_WIDTH =				config.getInt(		"size.max-width");
+		MAX_HEIGHT =			config.getInt(		"size.max-height");
+		MAX_SHOPS_PER_PLAYER =	config.getInt(		"limits.shops-per-player");
+		MAX_DAMAGE = 			config.getInt(		"limits.item-damage");
+		FIND_MAX_DISTANCE =		config.getInt(		"limits.find-distance");
+		LOG_ENABLE =			config.getBoolean(	"log.enable");
+		NOTIFY_INTERVAL =		config.getInt(		"log.notify-interval");
+		LOG_LIMIT =				config.getInt(		"log.limit");
+		DEBUG =					config.getBoolean(	"debug");
+		//Logger log = Logger.getLogger("Minecraft");
+		//log.warning(""+SHOP_COST);
+		plugin.saveConfig();
 	}
 }

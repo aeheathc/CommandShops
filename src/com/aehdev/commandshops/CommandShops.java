@@ -133,9 +133,8 @@ public class CommandShops extends JavaPlugin
             getPluginLoader().disablePlugin(this);
             return;
 		}
-		log.info(String
-				.format("[%s][Economy] Register activated. It should report 'Payment method found' soon.",
-						pdfFile.getName()));
+		log.info(String.format("[%s][Economy] Register activated.",
+								pdfFile.getName()));
 	}
 
 	/* (non-Javadoc)

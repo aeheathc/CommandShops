@@ -1,0 +1,21 @@
+== Planned Features ==
+- remove bundles
+- Optional SQL backend to increase viable range of transaction logging, on-demand viewing, and facilitate web based analysis
+- Add auto-updating
+- Block faulty pricing (shop's buy price greater than sell etc)
+- Storage limitations (config,size,chests?)
+- stock variety limitations (upgrade web of similar items?)
+- sales tax
+- use vault instead of register if it will help
+- Optional Towny/WorldGuard/etc integration
+--- Only let you make shops in places you own 
+--- Surveyor service (self serve land exchange via shops)
+--- Sales tax feudal management
+- resolve TODOs
+
+== Maybe Features ==
+- Price volatility
+- replace item matching code with 3rd party abbreviation engine
+- Some kind of penalty for adding damaged items, price reduction?
+- Web based shop management?
+- support enchanted items

@@ -493,19 +493,9 @@ public abstract class Command
 	 */
 	protected static int calcDurabilityPercentage(ItemStack item)
 	{
-
 		// calc durability prcnt
-		short damage;
-		if(item.getType() == Material.IRON_SWORD)
-		{
-			damage = (short)((double)item.getDurability() / 250 * 100);
-		}else
-		{
-			damage = (short)((double)item.getDurability()
-					/ (double)item.getType().getMaxDurability() * 100);
-		}
-
-		return damage;
+		return (short)((double)item.getDurability()
+				/ (double)item.getType().getMaxDurability() * 100);
 	}
 
 	/**

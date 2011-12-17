@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.ItemInfo;
@@ -55,8 +57,34 @@ public class CommandShopSearch extends Command
 	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
-		Pattern pattern = Pattern.compile("(?i)search\\s+(.*)");
+		Player player = (Player)sender;
+		//search
+		Pattern pattern = Pattern.compile("(?i)search$");
 		Matcher matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			ItemStack itemStack = player.getItemInHand();
+			if(itemStack == null){ return true; }
+			ItemInfo found = null;
+			if(CommandShops.getItemList().isDurable(itemStack))
+			{
+				found = Search.itemById(itemStack.getTypeId());
+			}else{
+				found = Search.itemById(itemStack.getTypeId(),
+						itemStack.getDurability());
+			}
+			if(found == null)
+			{
+				sender.sendMessage("Could not find an item.");
+			}else{
+				sender.sendMessage(found.toString());
+			}
+			return true;
+		}
+		
+		// search itemname
+		pattern = Pattern.compile("(?i)search\\s+(.*)");
+		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
 			String name = matcher.group(1);
@@ -64,9 +92,8 @@ public class CommandShopSearch extends Command
 			if(found == null)
 			{
 				sender.sendMessage(String.format(
-						"No item was not found matching \"%s\"", name));
-			}else
-			{
+						"No item was found matching \"%s\"", name));
+			}else{
 				sender.sendMessage(found.toString());
 			}
 			return true;

@@ -127,8 +127,7 @@ public class CommandShopAdd extends Command
 								+ "%");
 						return true;
 					}
-				}else
-				{
+				}else{
 					item = Search.itemById(itemStack.getTypeId(),
 							itemStack.getDurability());
 				}
@@ -381,8 +380,7 @@ public class CommandShopAdd extends Command
 				// Perform add
 				log.info(String.format("[%s] Add %d of %s to %s",
 						plugin.pdfFile.getName(), amount, item, shop));
-			}else
-			{
+			}else{
 				// Nag player
 				sender.sendMessage(ChatColor.DARK_AQUA + "You only have "
 						+ ChatColor.WHITE + playerItemCount
@@ -425,7 +423,7 @@ public class CommandShopAdd extends Command
 		// Add item to shop if needed
 		if(!shop.containsItem(item))
 		{
-			shop.addItem(item.typeId, item.subTypeId, 0, 1, 0, 1, 0, 0);
+			shop.addItem(item.typeId, item.subTypeId, 0, 1, 0, 1, 0, 10);
 		}
 
 		// Check stock settings, add stock if necessary
@@ -434,8 +432,7 @@ public class CommandShopAdd extends Command
 			sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added "
 					+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA
 					+ " to the shop.");
-		}else
-		{
+		}else{
 			shop.addStock(item.name, amount);
 			sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added "
 					+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA
