@@ -5,6 +5,9 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**HEAD **
+* Fixed blaze rod detection
+
 **3.6.1**
 
 * Admins can now move other players' shops

@@ -13,8 +13,6 @@ import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.PlayerData;
 import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopLocation;
-import com.aehdev.commandshops.commands.Command.CommandTypes;
-
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 

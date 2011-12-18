@@ -38,8 +38,8 @@ public class Search
 		items.add(new ItemInfo("Birch Leaves",		new String[][] {{"lea","birch"}},								18, (short) 2, 64 ));
 		items.add(new ItemInfo("Sponge",			new String[][] {{"sponge"}},									19, (short) 0, 64 ));
 		items.add(new ItemInfo("Glass",				new String[][] {{"glas"}},										20, (short) 0, 64 ));
-		items.add(new ItemInfo("Lapis Lazuli Ore",	new String[][] {{"laz","ore"}},									21, (short) 0, 64 ));
-		items.add(new ItemInfo("Lapis Lazuli Block",new String[][] {{"laz","bl"}},									22, (short) 0, 64 ));
+		items.add(new ItemInfo("Lapis Lazuli Ore",	new String[][] {{"lapis","ore"}},									21, (short) 0, 64 ));
+		items.add(new ItemInfo("Lapis Lazuli Block",new String[][] {{"lapis","bl"}},									22, (short) 0, 64 ));
 		items.add(new ItemInfo("Dispenser",			new String[][] {{"dispen"},{"dis","pen"}},						23, (short) 0, 64 ));
 		items.add(new ItemInfo("Sandstone",			new String[][] {{"sand","st"}},									24, (short) 0, 64 ));
 		items.add(new ItemInfo("Note Block",		new String[][] {{"note"}},										25, (short) 0, 64 ));
@@ -249,7 +249,7 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Rose Red",			new String[][] {{"dye","red"},	{"rose","red"}},				351, (short) 1, 64 ));
 		items.add(new ItemInfo("Cactus Green",		new String[][] {{"dye","gree"},	{"cact","gree"}},				351, (short) 2, 64 ));
 		items.add(new ItemInfo("Cocoa Beans",		new String[][] {{"dye","bro"},	{"bean"},{"choco"},{"cocoa"}},	351, (short) 3, 64 ));
-		items.add(new ItemInfo("Lapis Lazuli",		new String[][] {{"dye","blu"},	{"lapi"}},						351, (short) 4, 64 ));
+		items.add(new ItemInfo("Lapis Lazuli",		new String[][] {{"dye","blu"},	{"lapis"}},						351, (short) 4, 64 ));
 		items.add(new ItemInfo("Purple Dye",		new String[][] {{"dye","pur"}},									351, (short) 5, 64 ));
 		items.add(new ItemInfo("Cyan Dye",			new String[][] {{"dye","cya"}},									351, (short) 6, 64 ));
 		items.add(new ItemInfo("Light Gray Dye",	new String[][] {{"dye","lig","gra"},{"dye","lig","grey"}},		351, (short) 7, 64 ));
