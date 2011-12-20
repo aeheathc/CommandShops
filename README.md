@@ -9,6 +9,7 @@ Changelog
 * Fixed blaze rod detection
 * Removed bundle system
 * Changed Register dependency to softdepend to get around long-standing Bukkit bug. Less correct but it works.
+* Block faulty pricing (shop's buy price greater than sell etc)
 
 **3.6.1**
 

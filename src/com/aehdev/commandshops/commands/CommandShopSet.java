@@ -190,13 +190,14 @@ public class CommandShopSet extends Command
 	}
 
 	/**
-	 * Shop set buy.
+	 * Set the buying price of an item.
+	 * "Buy" is from the shop's perspective.
 	 * @param shop
-	 * the shop
+	 * reference to the shop to modify
 	 * @param item
-	 * the item
+	 * identify the item type to buy
 	 * @param price
-	 * the price
+	 * price per item
 	 * @return true, if successful
 	 */
 	private boolean shopSetBuy(Shop shop, ItemInfo item, double price)
@@ -216,10 +217,16 @@ public class CommandShopSet extends Command
 			return true;
 		}
 
-		// Warn about negative items
+		// Warn about faulty pricing
 		if(price < 0)
 		{
-			sender.sendMessage("[WARNING] This shop will lose money with negative values!");
+			sender.sendMessage("Cannot set negative buy price!");
+			return true;
+		}
+		if(price > shop.getItem(item.name).getBuyPrice())
+		{
+			sender.sendMessage("Cannot set buy price greater than sell price!");
+			return true;
 		}
 
 		// Set new values
@@ -328,13 +335,14 @@ public class CommandShopSet extends Command
 	}
 
 	/**
-	 * Shop set sell.
+	 * Set the selling price of an item.
+	 * "Sell" is from the shop's perspective.
 	 * @param shop
-	 * the shop
+	 * reference to the shop to modify
 	 * @param item
-	 * the item
+	 * identify the item type to sell
 	 * @param price
-	 * the price
+	 * price per item
 	 * @return true, if successful
 	 */
 	private boolean shopSetSell(Shop shop, ItemInfo item, double price)
@@ -354,10 +362,16 @@ public class CommandShopSet extends Command
 			return true;
 		}
 
-		// Warn about negative items
+		// Warn about faulty pricing
 		if(price < 0)
 		{
-			sender.sendMessage("[WARNING] This shop will loose money with negative values!");
+			sender.sendMessage("Cannot set negative sell price!");
+			return true;
+		}
+		if(price < shop.getItem(item.name).getSellPrice())
+		{
+			sender.sendMessage("Cannot set sell price less than buy price!");
+			return true;
 		}
 
 		// Set new values

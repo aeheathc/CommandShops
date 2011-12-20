@@ -3,7 +3,6 @@
 - On-demand transaction log querying
 - Add mysql option to facilitate longer logs, web based log and market analysis, and web based shop management
 - Add auto-updating
-- Block faulty pricing (shop's buy price greater than sell etc)
 - Storage limitations (config,size,chests?)
 - stock variety limitations (upgrade web of similar items?)
 - sales tax
