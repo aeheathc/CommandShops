@@ -394,28 +394,8 @@ public class CommandShopSell extends Command
 		}
 
 		// calculate cost
-		int bundles = amount / invItem.getSellSize();
-
-		if(bundles == 0 && amount > 0)
-		{
-			player.sendMessage(ChatColor.DARK_AQUA
-					+ "The minimum number to sell is  " + ChatColor.WHITE
-					+ invItem.getSellSize());
-			return false;
-		}
-
 		double itemPrice = invItem.getSellPrice();
-		// recalculate # of items since may not fit cleanly into bundles
-		// notify player if there is a change
-		if(amount % invItem.getSellSize() != 0)
-		{
-			player.sendMessage(ChatColor.DARK_AQUA + "The bundle size is  "
-					+ ChatColor.WHITE + invItem.getSellSize()
-					+ ChatColor.DARK_AQUA + " order reduced to "
-					+ ChatColor.WHITE + bundles * invItem.getSellSize());
-		}
-		amount = bundles * invItem.getSellSize();
-		double totalCost = bundles * itemPrice;
+		double totalCost = amount * itemPrice;
 
 		// try to pay the player for order
 		if(shop.isUnlimitedMoney())
@@ -447,13 +427,13 @@ public class CommandShopSell extends Command
 					}
 					// Added Min Balance calculation for maximum items the shop
 					// can afford
-					int bundlesCanAford = (int)Math.floor(shopBalance
+					int amtCanAfford = (int)Math.floor(shopBalance
 							- shop.getMinBalance() / itemPrice);
-					totalCost = bundlesCanAford * itemPrice;
-					amount = bundlesCanAford * invItem.getSellSize();
+					totalCost = amtCanAfford * itemPrice;
+					amount = amtCanAfford;
 					player.sendMessage(ChatColor.DARK_AQUA + shop.getName()
 							+ " could only afford " + ChatColor.WHITE
-							+ bundlesCanAford + ChatColor.DARK_AQUA
+							+ amtCanAfford + ChatColor.DARK_AQUA
 							+ " bundles.");
 					if(!pData.payPlayer(shop.getOwner(), player.getName(),
 							totalCost))

@@ -423,7 +423,7 @@ public class CommandShopAdd extends Command
 		// Add item to shop if needed
 		if(!shop.containsItem(item))
 		{
-			shop.addItem(item.typeId, item.subTypeId, 0, 1, 0, 1, 0, 10);
+			shop.addItem(item.typeId, item.subTypeId, 0, 0, 0, 10);
 		}
 
 		// Check stock settings, add stock if necessary

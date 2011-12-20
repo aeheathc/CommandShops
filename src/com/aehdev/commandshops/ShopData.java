@@ -96,8 +96,7 @@ public class ShopData
 					- Config.UUID_MIN_LENGTH)))
 			{
 				calcShortUuidSize();
-			}else
-			{
+			}else{
 				Config.UUID_LIST.add(uuid.substring(uuid.length()
 						- Config.UUID_MIN_LENGTH));
 				break;
@@ -291,18 +290,14 @@ public class ShopData
 				if(cols[0].equalsIgnoreCase("world"))
 				{ // World
 					shop.setWorld(cols[1]);
-				}else if(cols[0].equalsIgnoreCase("owner"))
-				{ // Owner
+				}else if(cols[0].equalsIgnoreCase("owner")){ // Owner
 					shop.setOwner(cols[1]);
-				}else if(cols[0].equalsIgnoreCase("managers"))
-				{ // Managers
+				}else if(cols[0].equalsIgnoreCase("managers")){ // Managers
 					String[] managers = cols[1].split(",");
 					shop.setManagers(managers);
-				}else if(cols[0].equalsIgnoreCase("creator"))
-				{ // Creator
+				}else if(cols[0].equalsIgnoreCase("creator")){ // Creator
 					shop.setCreator(cols[1]);
-				}else if(cols[0].equalsIgnoreCase("position1"))
-				{ // Position
+				}else if(cols[0].equalsIgnoreCase("position1")){ // Position
 					// A
 					String[] xyzStr = cols[1].split(",");
 					try
@@ -313,16 +308,14 @@ public class ShopData
 
 						ShopLocation loc = new ShopLocation(x, y, z);
 						shop.setLocationA(loc);
-					}catch(NumberFormatException e)
-					{
+					}catch(NumberFormatException e){
 						if(isolateBrokenShopFile(file))
 						{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Location Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Location Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -330,8 +323,8 @@ public class ShopData
 						}
 						return null;
 					}
-				}else if(cols[0].equalsIgnoreCase("position2"))
-				{ // Position
+				}else if(cols[0].equalsIgnoreCase("position2")){
+					// Position
 					// B
 					String[] xyzStr = cols[1].split(",");
 					try
@@ -342,16 +335,14 @@ public class ShopData
 
 						ShopLocation loc = new ShopLocation(x, y, z);
 						shop.setLocationB(loc);
-					}catch(NumberFormatException e)
-					{
+					}catch(NumberFormatException e){
 						if(isolateBrokenShopFile(file))
 						{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Location Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Location Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -359,16 +350,16 @@ public class ShopData
 						}
 						return null;
 					}
-				}else if(cols[0].equalsIgnoreCase("unlimited-money"))
-				{ // Unlimited
+				}else if(cols[0].equalsIgnoreCase("unlimited-money")){
+					// Unlimited
 					// Money
 					shop.setUnlimitedMoney(Boolean.parseBoolean(cols[1]));
-				}else if(cols[0].equalsIgnoreCase("unlimited-stock"))
-				{ // Unlimited
+				}else if(cols[0].equalsIgnoreCase("unlimited-stock")){
+					// Unlimited
 					// Stock
 					shop.setUnlimitedStock(Boolean.parseBoolean(cols[1]));
-				}else if(cols[0].matches("\\d+:\\d+"))
-				{ // Items
+				}else if(cols[0].matches("\\d+:\\d+")){
+					// Items
 					String[] itemInfo = cols[0].split(":");
 					if(itemInfo.length < 2)
 					{
@@ -378,8 +369,7 @@ public class ShopData
 									.format("[%s] Shop File \"%s\" has bad Item Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Item Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -399,8 +389,7 @@ public class ShopData
 									.format("[%s] Shop File \"%s\" has bad Item Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Item Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -418,8 +407,7 @@ public class ShopData
 									.format("[%s] Shop File \"%s\" has bad Item Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Item Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -439,8 +427,7 @@ public class ShopData
 									.format("[%s] Shop File \"%s\" has bad Item Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Item Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -460,8 +447,7 @@ public class ShopData
 									.format("[%s] Shop File \"%s\" has bad Item Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString()));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Item Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -472,8 +458,10 @@ public class ShopData
 					int stock = Integer.parseInt(stockInfo[0]);
 					int maxStock = Integer.parseInt(stockInfo[1]);
 
-					if(!shop.addItem(itemId, damageMod, buyPrice, buySize,
-							sellPrice, sellSize, stock, maxStock))
+					double buyPricePerItem = Math.max(.01,((double)buyPrice)/((double)buySize));
+					double sellPricePerItem = Math.max(.01,((double)sellPrice)/((double)sellSize));
+					if(!shop.addItem(itemId, damageMod, buyPricePerItem,
+							sellPricePerItem, stock, maxStock))
 					{
 						if(isolateBrokenShopFile(file))
 						{
@@ -481,8 +469,7 @@ public class ShopData
 									.format("[%s] Shop File \"%s\" has bad Item Data (%d:%d), Moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
 											file.toString(), itemId, damageMod));
-						}else
-						{
+						}else{
 							log.warning(String
 									.format("[%s] Shop File \"%s\" has bad Item Data (%d:%d), Error moving to \"plugins/CommandShops/broken-shops/\"",
 											plugin.pdfFile.getName(),
@@ -490,8 +477,7 @@ public class ShopData
 						}
 						return null;
 					}
-				}else
-				{ // Not defined
+				}else{ // Not defined
 					log.info(String
 							.format("[%s] Shop File \"%s\" has undefined data, ignoring.",
 									plugin.pdfFile.getName(), file.toString()));
@@ -507,21 +493,18 @@ public class ShopData
 			{
 				file.delete();
 				return shop;
-			}else
-			{
+			}else{
 				return null;
 			}
 
-		}catch(IOException e)
-		{
+		}catch(IOException e){
 			if(isolateBrokenShopFile(file))
 			{
 				log.warning(String
 						.format("[%s] Shop File \"%s\" Exception: %s, Moving to \"plugins/CommandShops/broken-shops/\"",
 								plugin.pdfFile.getName(), file.toString(),
 								e.toString()));
-			}else
-			{
+			}else{
 				log.warning(String
 						.format("[%s] Shop File \"%s\" Exception: %s, Error moving to \"plugins/CommandShops/broken-shops/\"",
 								plugin.pdfFile.getName(), file.toString(),
@@ -565,8 +548,7 @@ public class ShopData
 		try
 		{
 			props.load(new FileInputStream(file));
-		}catch(IOException e)
-		{
+		}catch(IOException e){
 			log.warning(String.format("[%s] %s", plugin.pdfFile.getName(),
 					"IOException: " + e.getMessage()));
 			return null;
@@ -596,15 +578,13 @@ public class ShopData
 			locationB = convertStringArraytoDoubleArray(props.getProperty(
 					"locationB").split(", "));
 			world = props.getProperty("world", "world1");
-		}catch(Exception e)
-		{
+		}catch(Exception e){
 			if(isolateBrokenShopFile(file))
 			{
 				log.warning(String
 						.format("[%s] Shop File \"%s\" has bad Location Data, Moving to \"plugins/CommandShops/broken-shops/\"",
 								plugin.pdfFile.getName(), file.toString()));
-			}else
-			{
+			}else{
 				log.warning(String
 						.format("[%s] Shop File \"%s\" has bad Location Data, Error moving to \"plugins/CommandShops/broken-shops/\"",
 								plugin.pdfFile.getName(), file.toString()));
@@ -634,8 +614,7 @@ public class ShopData
 		if(minBalance < 0)
 		{
 			shop.setMinBalance(0);
-		}else
-		{
+		}else{
 			shop.setMinBalance(minBalance);
 		}
 
@@ -668,8 +647,8 @@ public class ShopData
 				int currStock = Integer.parseInt(stock[0]);
 				int maxStock = Integer.parseInt(stock[1]);
 
-				if(!shop.addItem(id, type, buyPrice, buyStackSize, sellPrice,
-						sellStackSize, currStock, maxStock))
+				if(!shop.addItem(id, type, Math.max(.01,buyPrice/buyStackSize),
+						Math.max(.01,sellPrice/sellStackSize), currStock, maxStock))
 				{
 					if(isolateBrokenShopFile(file))
 					{
@@ -677,8 +656,7 @@ public class ShopData
 								.format("[%s] Shop File \"%s\" has bad Item Data (%d:%d), Moving to \"plugins/CommandShops/broken-shops/\"",
 										plugin.pdfFile.getName(),
 										file.toString(), id, type));
-					}else
-					{
+					}else{
 						log.warning(String
 								.format("[%s] Shop File \"%s\" has bad Item Data (%d:%d), Error moving to \"plugins/CommandShops/broken-shops/\"",
 										plugin.pdfFile.getName(),
@@ -701,8 +679,7 @@ public class ShopData
 				log.warning(String
 						.format("[%s] Shop file %s has bad data!  Moving to \"plugins/CommandShops/broken-shops/\"",
 								plugin.pdfFile.getName(), file.getName()));
-			}else
-			{
+			}else{
 				log.warning(String
 						.format("[%s] Shop file %s has bad data!  Error moving to \"plugins/CommandShops/broken-shops/\"",
 								plugin.pdfFile.getName(), file.getName()));
@@ -726,8 +703,7 @@ public class ShopData
 		{
 			file.delete();
 			return true;
-		}else
-		{
+		}else{
 			return false;
 		}
 	}
@@ -788,15 +764,13 @@ public class ShopData
 		{
 			ItemInfo info = item.getInfo();
 			double buyPrice = item.getBuyPrice();
-			int buySize = item.getBuySize();
 			double sellPrice = item.getSellPrice();
-			int sellSize = item.getSellSize();
 			int stock = item.getStock();
 			int maxStock = item.getMaxStock();
 
 			props.setProperty(String.format("%d:%d", info.typeId,
 					info.subTypeId), String.format("%f:%d,%f:%d,%d:%d",
-					buyPrice, buySize, sellPrice, sellSize, stock, maxStock));
+					buyPrice, 1, sellPrice, 1, stock, maxStock));
 		}
 
 		String fileName = CommandShops.folderPath + CommandShops.shopsPath
@@ -805,8 +779,7 @@ public class ShopData
 		{
 			props.store(new FileOutputStream(fileName),
 					"CommandShops Config Version 2.0");
-		}catch(IOException e)
-		{
+		}catch(IOException e){
 			log.warning("IOException: " + e.getMessage());
 		}
 
@@ -992,8 +965,7 @@ public class ShopData
 			logFileOut.write(fileOutput.getBytes());
 			logFileOut.close();
 
-		}catch(IOException e1)
-		{
+		}catch(IOException e1){
 			System.out.println(plugin.pdfFile.getName()
 					+ ": Error - Could not write to file " + logFile.getName());
 			return false;

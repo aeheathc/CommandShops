@@ -409,10 +409,10 @@ public class CommandShopBuy extends Command
 			return false;
 		}
 
-		// if amount = 0, assume single stack size
+		// if amount = 0, assume single item
 		if(amount == 0)
 		{
-			amount = invItem.getBuySize();
+			amount = 1;
 		}
 
 		int totalAmount;
@@ -436,18 +436,12 @@ public class CommandShopBuy extends Command
 		}
 		if(amount > totalAmount)
 		{
-			amount = totalAmount - (totalAmount % invItem.getBuySize());
+			amount = totalAmount;
 			if(!shop.isUnlimitedStock())
 			{
 				player.sendMessage(ChatColor.DARK_AQUA + "The shop has "
 						+ ChatColor.WHITE + totalAmount + " " + item.name);
 			}
-		}else if(amount % invItem.getBuySize() != 0){
-			amount = amount - (amount % invItem.getBuySize());
-			player.sendMessage(ChatColor.DARK_AQUA + "The bundle size is  "
-					+ ChatColor.WHITE + invItem.getBuySize()
-					+ ChatColor.DARK_AQUA + " order reduced to "
-					+ ChatColor.WHITE + amount);
 		}
 
 		// check how many items the user has room for
@@ -456,17 +450,15 @@ public class CommandShopBuy extends Command
 		// Calculate the amount the player can store
 		if(amount > freeSpots)
 		{
-			amount = freeSpots - (freeSpots % invItem.getBuySize());
+			amount = freeSpots;
 			player.sendMessage(ChatColor.DARK_AQUA + "You only have room for "
 					+ ChatColor.WHITE + amount);
 		}
 
 		// calculate cost
-		int bundles = amount / invItem.getBuySize();
 		double itemPrice = invItem.getBuyPrice();
 		// recalculate # of items since may not fit cleanly into bundles
-		amount = bundles * invItem.getBuySize();
-		double totalCost = bundles * itemPrice;
+		double totalCost = amount * itemPrice;
 
 		// try to pay the shop owner
 		if(!isShopController(shop))
@@ -476,12 +468,12 @@ public class CommandShopBuy extends Command
 				// player doesn't have enough money
 				// get player's balance and calculate how many it can buy
 				double playerBalance = pData.getBalance(player.getName());
-				int bundlesCanAford = (int)Math
+				int amtCanAfford = (int)Math
 						.floor(playerBalance / itemPrice);
-				totalCost = bundlesCanAford * itemPrice;
-				amount = bundlesCanAford * invItem.getSellSize();
+				totalCost = amtCanAfford * itemPrice;
+				amount = amtCanAfford;
 
-				if(bundlesCanAford == 0)
+				if(amtCanAfford == 0)
 				{
 					player.sendMessage(ChatColor.DARK_AQUA
 							+ "You cannot afford any of " + ChatColor.WHITE

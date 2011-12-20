@@ -169,7 +169,7 @@ public class CommandShopInfo extends Command
 			if(i.getBuyPrice() > 0)
 			{
 				sellCount++;
-				worth += (i.getStock() / i.getBuySize()) * i.getBuyPrice();
+				worth += i.getStock() * i.getBuyPrice();
 			}
 
 			if(i.getSellPrice() > 0)

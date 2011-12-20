@@ -10,14 +10,8 @@ public class InventoryItem
 	/** The info. */
 	private ItemInfo info;
 
-	/** The buy size. */
-	private int buySize = 0;
-
 	/** The buy price. */
 	private double buyPrice = 0;
-
-	/** The sell size. */
-	private int sellSize = 0;
 
 	/** The sell price. */
 	private double sellPrice = 0;
@@ -34,9 +28,7 @@ public class InventoryItem
 	public InventoryItem()
 	{
 		info = null;
-		buySize = 1;
 		buyPrice = 0;
-		sellSize = 1;
 		sellPrice = 0;
 		stock = 0;
 		maxStock = 0;
@@ -50,9 +42,7 @@ public class InventoryItem
 	public InventoryItem(ItemInfo info)
 	{
 		this.info = info;
-		buySize = 1;
 		buyPrice = 0;
-		sellSize = 1;
 		sellPrice = 0;
 		stock = 0;
 	}
@@ -74,13 +64,11 @@ public class InventoryItem
 	 * @param maxStock
 	 * the max stock
 	 */
-	public InventoryItem(ItemInfo info, int buySize, double buyPrice,
-			int sellSize, double sellPrice, int stock, int maxStock)
+	public InventoryItem(ItemInfo info, double buyPrice,
+			double sellPrice, int stock, int maxStock)
 	{
 		this.info = info;
-		this.buySize = buySize;
 		this.buyPrice = buyPrice;
-		this.sellSize = sellSize;
 		this.sellPrice = sellPrice;
 		this.stock = stock;
 		this.maxStock = maxStock;
@@ -102,11 +90,9 @@ public class InventoryItem
 	 * @param sellSize
 	 * the sell size
 	 */
-	public void setSell(double sellPrice, int sellSize)
+	public void setSell(double sellPrice)
 	{
 		this.sellPrice = sellPrice;
-		this.sellSize = sellSize;
-
 	}
 
 	/**
@@ -116,10 +102,9 @@ public class InventoryItem
 	 * @param buySize
 	 * the buy size
 	 */
-	public void setBuy(double buyPrice, int buySize)
+	public void setBuy(double buyPrice)
 	{
 		this.buyPrice = buyPrice;
-		this.buySize = buySize;
 	}
 
 	/**
@@ -192,45 +177,7 @@ public class InventoryItem
 	{
 		return sellPrice;
 	}
-
-	/**
-	 * Sets the sell size.
-	 * @param size
-	 * the new sell size
-	 */
-	public void setSellSize(int size)
-	{
-		sellSize = size;
-	}
-
-	/**
-	 * Gets the sell size.
-	 * @return the sell size
-	 */
-	public int getSellSize()
-	{
-		return sellSize;
-	}
-
-	/**
-	 * Sets the buy size.
-	 * @param size
-	 * the new buy size
-	 */
-	public void setBuySize(int size)
-	{
-		buySize = size;
-	}
-
-	/**
-	 * Gets the buy size.
-	 * @return the buy size
-	 */
-	public int getBuySize()
-	{
-		return buySize;
-	}
-
+	
 	/**
 	 * Sets the buy price.
 	 * @param price

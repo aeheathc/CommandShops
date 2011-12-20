@@ -396,16 +396,15 @@ public class Shop implements Comparator<Shop>
 	 * @return true, if successful
 	 */
 	public boolean addItem(int itemNumber, short itemData, double buyPrice,
-			int buyStackSize, double sellPrice, int sellStackSize, int stock,
-			int maxStock)
+			double sellPrice, int stock, int maxStock)
 	{
 		ItemInfo item = Search.itemById(itemNumber, itemData);
 		if(item == null){ return false; }
 
 		InventoryItem thisItem = new InventoryItem(item);
 
-		thisItem.setBuy(buyPrice, buyStackSize);
-		thisItem.setSell(sellPrice, sellStackSize);
+		thisItem.setBuy(buyPrice);
+		thisItem.setSell(sellPrice);
 
 		thisItem.setStock(stock);
 
@@ -547,18 +546,6 @@ public class Shop implements Comparator<Shop>
 	}
 
 	/**
-	 * Sets the item buy amount.
-	 * @param itemName
-	 * the item name
-	 * @param buySize
-	 * the buy size
-	 */
-	public void setItemBuyAmount(String itemName, int buySize)
-	{
-		inventory.get(itemName).setBuySize(buySize);
-	}
-
-	/**
 	 * Sets the item sell price.
 	 * @param itemName
 	 * the item name
@@ -568,18 +555,6 @@ public class Shop implements Comparator<Shop>
 	public void setItemSellPrice(String itemName, double price)
 	{
 		inventory.get(itemName).setSellPrice(price);
-	}
-
-	/**
-	 * Sets the item sell amount.
-	 * @param itemName
-	 * the item name
-	 * @param sellSize
-	 * the sell size
-	 */
-	public void setItemSellAmount(String itemName, int sellSize)
-	{
-		inventory.get(itemName).setSellSize(sellSize);
 	}
 
 	/**
@@ -723,10 +698,9 @@ public class Shop implements Comparator<Shop>
 			InventoryItem item = it.next();
 			ItemInfo info = item.getInfo();
 			log.info(String.format(
-					"   %6d:%-2d %-6.2f %-3d %-6.2f %-3d %-3d %-3d",
+					"   %6d:%-2d %-6.2f %-6.2f %-3d %-3d",
 					info.typeId, info.subTypeId, item.getBuyPrice(),
-					item.getBuySize(), item.getSellPrice(), item.getSellSize(),
-					item.getStock(), item.getMaxStock()));
+					item.getSellPrice(), item.getStock(), item.getMaxStock()));
 		}
 	}
 

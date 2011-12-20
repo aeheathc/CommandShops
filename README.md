@@ -7,6 +7,8 @@ Changelog
 -------------------
 **HEAD **
 * Fixed blaze rod detection
+* Removed bundle system
+* Changed Register dependency to softdepend to get around long-standing Bukkit bug. Less correct but it works.
 
 **3.6.1**
 

@@ -194,10 +194,9 @@ public class CommandShopBrowse extends Command
 		}
 
 		int stock = item.getStock(), maxstock = item.getMaxStock();
-		int sellbundle = item.getBuySize(), buybundle = item.getSellSize();
 
 		String sellPrice;
-		if(item.getBuyPrice() <= 0 || item.getBuySize() <= 0)
+		if(item.getBuyPrice() <= 0)
 		{
 			sellPrice = "--";
 		}else
@@ -208,7 +207,7 @@ public class CommandShopBrowse extends Command
 		}
 
 		String buyPrice;
-		if(item.getSellPrice() <= 0 || item.getSellSize() <= 0)
+		if(item.getSellPrice() <= 0)
 		{
 			buyPrice = "--";
 		}else
@@ -240,9 +239,7 @@ public class CommandShopBrowse extends Command
 				+ ChatColor.WHITE
 				+ sellPrice
 				+ ChatColor.DARK_AQUA
-				+ "]"
-				+ (sellbundle > 1 ? (" [" + ChatColor.WHITE + "Bundle: "
-						+ sellbundle + ChatColor.DARK_AQUA + "]") : "");
+				+ "]";
 		sender.sendMessage(message);
 		message = ChatColor.GREEN
 				+ "Buying: "
@@ -251,9 +248,7 @@ public class CommandShopBrowse extends Command
 				+ ChatColor.WHITE
 				+ buyPrice
 				+ ChatColor.DARK_AQUA
-				+ "]"
-				+ (buybundle > 1 ? (" [" + ChatColor.WHITE + "Bundle: "
-						+ buybundle + ChatColor.DARK_AQUA + "]") : "");
+				+ "]";
 		sender.sendMessage(message);
 	}
 
@@ -304,15 +299,8 @@ public class CommandShopBrowse extends Command
 				subMessage += ChatColor.DARK_AQUA + " [" + ChatColor.WHITE
 						+ plugin.getEconManager().format(price)
 						+ ChatColor.DARK_AQUA + "]";
-				// get stack size
-				int stack = 0;
-				if(buy)
-				{
-					stack = item.getBuySize();
-				}
 				if(sell)
 				{
-					stack = item.getSellSize();
 					int stock = item.getStock();
 					maxStock = item.getMaxStock();
 
@@ -320,11 +308,6 @@ public class CommandShopBrowse extends Command
 					{
 						continue;
 					}
-				}
-				if(stack > 1)
-				{
-					subMessage += ChatColor.DARK_AQUA + " [" + ChatColor.WHITE
-							+ "Bundle: " + stack + ChatColor.DARK_AQUA + "]";
 				}
 			}
 

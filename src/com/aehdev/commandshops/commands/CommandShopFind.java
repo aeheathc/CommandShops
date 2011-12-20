@@ -219,25 +219,23 @@ public class CommandShopFind extends Command
 				int stock = item.getStock(), maxstock = item.getMaxStock();
 
 				String sellPrice;
-				if(item.getBuyPrice() <= 0 || item.getBuySize() <= 0)
+				if(item.getBuyPrice() <= 0)
 				{
 					sellPrice = "--";
 				}else{
 					sellPrice = (stock == 0 ? ChatColor.RED : "")
-							+ plugin.getEconManager().format(
-									item.getBuyPrice() / item.getBuySize())
+							+ plugin.getEconManager().format(item.getBuyPrice())
 							+ (stock == 0 ? (ChatColor.GOLD) : "");
 				}
 
 				String buyPrice;
-				if(item.getSellPrice() <= 0 || item.getSellSize() <= 0)
+				if(item.getSellPrice() <= 0)
 				{
 					buyPrice = "--";
 				}else{
 					buyPrice = (maxstock > 0 && stock > maxstock ? ChatColor.RED
 							: "")
-							+ plugin.getEconManager().format(
-									item.getSellPrice() / item.getSellSize())
+							+ plugin.getEconManager().format(item.getSellPrice())
 							+ (maxstock > 0 && stock > maxstock ? (ChatColor.GREEN)
 									: "");
 				}
