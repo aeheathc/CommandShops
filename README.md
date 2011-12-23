@@ -10,6 +10,7 @@ Changelog
 * Removed bundle system
 * Changed Register dependency to softdepend to get around long-standing Bukkit bug. Less correct but it works.
 * Block faulty pricing (shop's buy price greater than sell etc)
+* Added support for commonly spawned alternate non-legit versions of potions (as "Bootleg") so people stop complaining that "potions don't work!!111" when they find they can't add their normally-unobtainable potion.
 
 **3.6.1**
 

@@ -1,5 +1,6 @@
 == Planned Features ==
 - Eliminate arcane file formats for shops and transactions, store everything in sqlite file
+- Log everything - including shop management actions, not just transactions
 - On-demand transaction log querying
 - Add mysql option to facilitate longer logs, web based log and market analysis, and web based shop management
 - Add auto-updating
@@ -11,7 +12,8 @@
 --- Only let you make shops in places you own 
 --- Surveyor service (self serve land exchange via shops)
 --- Sales tax feudal management
-- resolve TODOs
+--- Show region name in /shop info
+- resolve TODOs and complete Javadoc comments
 - make /shop find with no item find any nearby shops
 - multi language support
 - stop letting shops with unlimited money collect revenue -- it duplicates money
