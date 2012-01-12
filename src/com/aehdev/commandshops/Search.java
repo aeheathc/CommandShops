@@ -38,8 +38,8 @@ public class Search
 		items.add(new ItemInfo("Birch Leaves",		new String[][] {{"lea","birch"}},								18, (short) 2, 64 ));
 		items.add(new ItemInfo("Sponge",			new String[][] {{"sponge"}},									19, (short) 0, 64 ));
 		items.add(new ItemInfo("Glass",				new String[][] {{"glas"}},										20, (short) 0, 64 ));
-		items.add(new ItemInfo("Lapis Lazuli Ore",	new String[][] {{"lapis","ore"}},									21, (short) 0, 64 ));
-		items.add(new ItemInfo("Lapis Lazuli Block",new String[][] {{"lapis","bl"}},									22, (short) 0, 64 ));
+		items.add(new ItemInfo("Lapis Lazuli Ore",	new String[][] {{"lapis","ore"}},								21, (short) 0, 64 ));
+		items.add(new ItemInfo("Lapis Lazuli Block",new String[][] {{"lapis","bl"}},								22, (short) 0, 64 ));
 		items.add(new ItemInfo("Dispenser",			new String[][] {{"dispen"},{"dis","pen"}},						23, (short) 0, 64 ));
 		items.add(new ItemInfo("Sandstone",			new String[][] {{"sand","st"}},									24, (short) 0, 64 ));
 		items.add(new ItemInfo("Note Block",		new String[][] {{"note"}},										25, (short) 0, 64 ));
@@ -269,9 +269,9 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Cookie",			new String[][] {{"cooki"}},										357, (short) 0, 64 ));
 		items.add(new ItemInfo("Map",				new String[][] {{"map"}},										358, (short) 0, 1 ));
 		items.add(new ItemInfo("Shears",			new String[][] {{"shear"}},										359, (short) 0, 1 ));
-		items.add(new ItemInfo("Melon Slice",		new String[][] {{"melon","sli"}},								360, (short) 0, 64 ));
+		items.add(new ItemInfo("Melon Slice",		new String[][] {{"melo","sli"}},								360, (short) 0, 64 ));
 		items.add(new ItemInfo("Pumpkin Seeds",		new String[][] {{"pump","seed"}},								361, (short) 0, 64 ));
-		items.add(new ItemInfo("Melon Seeds",		new String[][] {{"melon","seed"}},								362, (short) 0, 64 ));
+		items.add(new ItemInfo("Melon Seeds",		new String[][] {{"melo","seed"}},								362, (short) 0, 64 ));
 		items.add(new ItemInfo("Raw Beef",			new String[][] {{"beef","raw"},{"beef"}},						363, (short) 0, 64 ));
 		items.add(new ItemInfo("Steak",				new String[][] {{"beef","cook"},{"steak"}},						364, (short) 0, 64 ));
 		items.add(new ItemInfo("Raw Chicken",		new String[][] {{"chicken","raw"},{"chicken"}},					365, (short) 0, 64 ));
@@ -348,14 +348,14 @@ items.add(new ItemInfo("Splash Potion of Slowness (extended)",new String[][]{{"p
 items.add(new ItemInfo("Splash Potion of Harming",		new String[][] {{"pot","spl","har"}},						373,(short)16396,64));
 items.add(new ItemInfo("Splash Potion of Harming 2",	new String[][] {{"pot","spl","har","2"}},					373,(short)16428,64));
 		items.add(new ItemInfo("Glass Bottle",		new String[][] {{"glas","bottl"}},								374, (short) 0, 64 ));
-		items.add(new ItemInfo("Spider Eye",		new String[][] {{"spid","eye"}},								375, (short) 0, 64 ));
-		items.add(new ItemInfo("Fermented Spider Eye",new String[][]{{"ferme"}},									376, (short) 0, 64 ));
+		items.add(new ItemInfo("Spider Eye",		new String[][] {{"spid"}},										375, (short) 0, 64 ));
+		items.add(new ItemInfo("Fermented Spider Eye",new String[][]{{"ferm"},{"ferm","eye"},{"ferm","spid"}},		376, (short) 0, 64 ));
 		items.add(new ItemInfo("Blaze Powder",		new String[][] {{"blaz","pow"}},								377, (short) 0, 64 ));
 		items.add(new ItemInfo("Magma Cream",		new String[][] {{"mag","cream"}},								378, (short) 0, 64 ));
 		items.add(new ItemInfo("Brewing Stand",		new String[][] {{"brew"}},										379, (short) 0, 64 ));
 		items.add(new ItemInfo("Cauldron",			new String[][] {{"caul"}},										380, (short) 0, 64 ));
 		items.add(new ItemInfo("Eye of Ender",		new String[][] {{"eye","end"}},									381, (short) 0, 64 ));
-		items.add(new ItemInfo("Glistering Melon",	new String[][] {{"glist"}},										382, (short) 0, 64 ));
+		items.add(new ItemInfo("Glistering Melon",	new String[][] {{"glist"},{"glist","melo"}},					382, (short) 0, 64 ));
 		items.add(new ItemInfo("Spawner Egg",		new String[][] {{"spawn","egg"}},								383, (short) 0, 64 ));
 		
 		

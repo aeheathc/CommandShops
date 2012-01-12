@@ -401,8 +401,7 @@ public class CommandShopSell extends Command
 		if(shop.isUnlimitedMoney())
 		{
 			pData.payPlayer(player.getName(), totalCost);
-		}else
-		{
+		}else{
 			if(!isShopController(shop))
 			{
 				log.info(String.format("[%s] From: %s, To: %s, Cost: %f",

@@ -463,7 +463,14 @@ public class CommandShopBuy extends Command
 		// try to pay the shop owner
 		if(!isShopController(shop))
 		{
-			if(!pData.payPlayer(player.getName(), shop.getOwner(), totalCost))
+			boolean couldPay;
+			if(shop.isUnlimitedMoney())
+			{
+				couldPay = pData.chargePlayer(player.getName(), totalCost);
+			}else{
+				couldPay = pData.payPlayer(player.getName(), shop.getOwner(), totalCost);
+			}
+			if(!couldPay)
 			{
 				// player doesn't have enough money
 				// get player's balance and calculate how many it can buy
@@ -486,7 +493,14 @@ public class CommandShopBuy extends Command
 							+ ChatColor.WHITE + item.name);
 				}
 
-				if(!pData.payPlayer(player.getName(), shop.getOwner(), totalCost))
+				if(shop.isUnlimitedMoney())
+				{
+					couldPay = pData.chargePlayer(player.getName(), totalCost);
+				}else{
+					couldPay = pData.payPlayer(player.getName(), shop.getOwner(), totalCost);
+				}
+				
+				if(!couldPay)
 				{
 					player.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA

@@ -5,12 +5,13 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
-**HEAD **
-* Fixed blaze rod detection
+**3.6.2 **
+* Fixed search for blaze rod, glistering melon, fermented spider eye
 * Removed bundle system
 * Changed Register dependency to softdepend to get around long-standing Bukkit bug. Less correct but it works.
 * Block faulty pricing (shop's buy price greater than sell etc)
 * Added support for commonly spawned alternate non-legit versions of potions (as "Bootleg") so people stop complaining that "potions don't work!!111" when they find they can't add their normally-unobtainable potion.
+* stop letting shops with unlimited money collect revenue because it duplicated money
 
 **3.6.1**
 
