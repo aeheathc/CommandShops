@@ -1,6 +1,6 @@
 name: CommandShops
 main: com.aehdev.commandshops.CommandShops
-version: 3.6.2
+version: 3.6.2d
 author: Zolcos
 description: >
              A localized shop plugin for use with Bukkit economies.
@@ -15,6 +15,7 @@ commands:
 permissions:
     commandshops.user.*:
         description: Users can buy and sell to shops but not make or manage them.
+        default: true
         children:
             commandshops.user.buy: true
             commandshops.user.sell: true

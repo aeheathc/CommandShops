@@ -19,8 +19,9 @@
 - XP market
 - Support for non-uniform item states in storage, to preserve damage and enchantments, and allow shop owners to set price scaling factors.
 - Make transaction code check balance instead of interpreting failed transfers as lack of funds
-
+- Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items 
+- Fix redwood/jungle leaf detection
+- Remove references to bundles in documentation and in-game help
 == Maybe Features ==
 - Price volatility
 - replace item matching code with 3rd party abbreviation engine
-- Some kind of penalty for adding damaged items, price reduction?

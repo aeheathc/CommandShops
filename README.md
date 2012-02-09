@@ -5,7 +5,12 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
-**3.6.2 **
+**HEAD**
+
+* Gave commandshops.user.* by default
+
+**3.6.2**
+
 * Fixed search for blaze rod, glistering melon, fermented spider eye
 * Removed bundle system
 * Changed Register dependency to softdepend to get around long-standing Bukkit bug. Less correct but it works.
