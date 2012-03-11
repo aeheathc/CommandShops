@@ -1,35 +1,36 @@
 package com.aehdev.commandshops.commands;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.UUID;
-
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
-import com.aehdev.commandshops.InventoryItem;
-import com.aehdev.commandshops.PlayerData;
+import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
+import com.aehdev.commandshops.ShopLocation;
 
-// TODO: Auto-generated Javadoc
+import cuboidLocale.BookmarkedResult;
+import cuboidLocale.PrimitiveCuboid;
+
 /**
- * The Class CommandShopDestroy.
+ * Command for destroying shops.
  */
 public class CommandShopDestroy extends Command
 {
 
 	/**
-	 * Instantiates a new command shop destroy.
+	 * Creates a new Destroy order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
-	 * the command label
+	 * the actual main command name
 	 * @param sender
-	 * the sender
+	 *  the sender of the command
 	 * @param command
-	 * the command
+	 * the whole argument string
 	 */
 	public CommandShopDestroy(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -38,24 +39,8 @@ public class CommandShopDestroy extends Command
 	}
 
 	/**
-	 * Instantiates a new command shop destroy.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Parse their Destroy command and attempt to delete a shop.
 	 */
-	public CommandShopDestroy(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
 		if(!(sender instanceof Player) || !canUseCommand(CommandTypes.DESTROY))
@@ -65,68 +50,67 @@ public class CommandShopDestroy extends Command
 			return false;
 		}
 
-		/* Available formats: /lshop destroy */
-
 		Player player = (Player)sender;
 		String playerName = player.getName();
+		long shop = Shop.getCurrentShop(player);
 
-		// get the shop the player is currently in
-		if(plugin.getPlayerData().get(playerName).shopList.size() == 1)
+		if(shop >= 0)
 		{
-			UUID shopUuid = plugin.getPlayerData().get(playerName).shopList
-					.get(0);
-			Shop shop = plugin.getShopData().getShop(shopUuid);
-
-			if(!shop.getOwner().equalsIgnoreCase(player.getName())
-					&& !canUseCommand(CommandTypes.ADMIN))
-			{
-				player.sendMessage(ChatColor.DARK_AQUA
-						+ "You must be the shop owner to destroy it.");
+			//Get info about shop and item
+			String shopName = "";
+			String owner = "";
+			try{
+				ResultSet resShop = CommandShops.db.query("SELECT name,owner FROM shops WHERE id="+shop+" LIMIT 1");
+				resShop.next();
+				shopName = resShop.getString("name");
+				owner = resShop.getString("owner");
+				resShop.close();
+				if(!owner.equals(playerName) && !canUseCommand(CommandTypes.ADMIN))
+				{
+					player.sendMessage(ChatColor.DARK_AQUA + "You must be the shop owner to destroy it.");
+					return false;
+				}
+				String itemQuery = String.format("SELECT itemid,itemdamage,stock FROM shop_items WHERE shop=%d", shop);
+				ResultSet resItem = CommandShops.db.query(itemQuery);
+				while(resItem.next())
+				{
+					int itemid = resItem.getInt("itemid");
+					short dam = resItem.getShort("itemdamage");
+					int stock = (int)Math.floor(resItem.getDouble("stock"));
+					givePlayerItem(Search.itemById(itemid, dam).toStack(),stock);
+				}
+				resItem.close();
+				CommandShops.db.query(String.format("DELETE FROM shops WHERE id=%d LIMIT 1",shop));
+				//remove cuboid
+				ShopLocation xyz = new ShopLocation(player.getLocation().getBlockX(),player.getLocation().getBlockY(),player.getLocation().getBlockZ());
+				BookmarkedResult res = new BookmarkedResult();
+				res = CommandShops.getCuboidTree().relatedSearch(res.bookmark,
+						xyz.getX(), xyz.getY(), xyz.getZ());
+				for(PrimitiveCuboid shopLocation: res.results)
+				{
+					if(shopLocation.id == -1) continue;
+					if(!shopLocation.world.equalsIgnoreCase(player.getWorld().getName())) continue;
+					CommandShops.getCuboidTree().delete(shopLocation);
+				}
+				//log
+				player.sendMessage(ChatColor.DARK_AQUA + "Destroyed " + ChatColor.WHITE + shopName + ".");
+				log.info(String.format("[%s] Shop %d (%s) destroyed by %s",
+						CommandShops.pdfFile.getName(), shop, shopName, playerName));
+				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+				String logQuery = String.format("INSERT INTO log" 
+					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
+					+"(	'%s',		'%s',					%d,		'destroy',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
+					,	now,		db.escape(playerName),	shop,																		"Shop name: "+db.escape(shopName));
+				CommandShops.db.query(logQuery);
+			}catch(Exception e){
+				log.warning(String.format("[%s] Couldn't finish shop destruction: %s", CommandShops.pdfFile.getName(), e));
+				sender.sendMessage(ChatColor.DARK_AQUA + "Destroy canceled: DB error.");
 				return false;
 			}
-
-			Iterator<PlayerData> it = plugin.getPlayerData().values()
-					.iterator();
-			while(it.hasNext())
-			{
-				PlayerData p = it.next();
-				if(p.shopList.contains(shop.getUuid()))
-				{
-					Player thisPlayer = plugin.getServer().getPlayer(
-							p.playerName);
-					p.removePlayerFromShop(thisPlayer, shop.getUuid());
-					thisPlayer.sendMessage(CommandShops.CHAT_PREFIX
-							+ ChatColor.WHITE + shop.getName()
-							+ ChatColor.DARK_AQUA + " has been destroyed");
-				}
-			}
-
-			Collection<InventoryItem> shopItems = shop.getItems();
-
-			if(plugin.getShopData().deleteShop(shop))
-			{
-				// return items to player (if a player)
-				if(sender instanceof Player)
-				{
-					for(InventoryItem item: shopItems)
-					{
-						givePlayerItem(item.getInfo().toStack(),
-								item.getStock());
-					}
-				}
-			}else
-			{
-				// error message :(
-				sender.sendMessage("Could not return shop inventory!");
-			}
-
-		}else
-		{
-			player.sendMessage(ChatColor.DARK_AQUA
-					+ "You must be inside a shop to use /" + commandLabel
-					+ " destroy");
+		}else{
+			player.sendMessage(ChatColor.DARK_AQUA + "You must be inside a shop to destroy it.");
+			return false;
 		}
-
 		return true;
 	}
 

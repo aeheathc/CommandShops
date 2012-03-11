@@ -1,17 +1,16 @@
 name: CommandShops
 main: com.aehdev.commandshops.CommandShops
-version: 3.6.2d
+version: 4.0.0-R1
 author: Zolcos
 description: >
              A localized shop plugin for use with Bukkit economies.
              Users can create and manage their own shops.
-softdepend: [Register]
+depend: [Vault]
 commands:
-  lshop:
+  shop:
     description: Command for managing shops 
     usage: |
            /<command> - displays command help
-    aliases: [shop, buy, sell]
 permissions:
     commandshops.user.*:
         description: Users can buy and sell to shops but not make or manage them.
@@ -35,7 +34,6 @@ permissions:
             commandshops.manager.destroy: true
             commandshops.manager.move: true
             commandshops.manager.remove: true
-            commandshops.manager.select: true
             commandshops.manager.set: true
             commandshops.manager.set.owner: true
             commandshops.user.*: true

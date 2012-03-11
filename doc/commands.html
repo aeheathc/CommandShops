@@ -31,12 +31,13 @@
 <li>/shop <b>find [item name|id]</b><ul>
 <li>Finds nearby shops that either buy or sell the item sorted by distance with the cost per item and stock/max.</li>
 </ul></li>
-<li>/shop <b>search [item name|id]</b><ul>
+<li>/shop <b>search &lt;item name|id&gt;</b>
+  <ul>
 <li>Does a test-search showing the results of trying to match your input to an item</li>
 <li>Shows the text match criteria for the item selected</li>
 </ul></li>
 <li>/shop <b>list</b><ul>
-<li>Lists all shops in the current world that the player owns, along with their unique IDs and names.<br>
+<li>Lists all shops that the player controls (owns or manages), along with their unique IDs and names.<br>
 </li>
 </ul></li>
 <li>/shop <b>move [id]</b><ul>
@@ -51,50 +52,52 @@
 <li>Destroys the shop the player is currently standing inside. The owner of the shop will receive anything that was left in stock, inventory space permitting.<br>
 </li>
 </ul></li>
-<li>/shop <b>add &lt;item name&gt;</b><ul>
-<li>Used without an item name on the end, adds the stack of items that the player is currently holding.<br>
-                                    <br>
-                                    If an item name is specified, that item will be added to the shop, with a stock of 0.<br>
+<li>/shop <b>add &lt;item name&gt; &lt;amount&gt;</b>
+  <ul>
+<li>Used without an item name, adds the stack of items that the player is currently holding.<br>
 </li>
 </ul></li>
 
-<li>/shop <b>remove &lt;item name&gt;</b><ul>
-<li>Used without an item name, removes the item that the player is currently holding from the shop, and returns all remaining stock to the owner.<br>
-                                    <br>
-                                    If an item name is specified, it works in the same way, but for the specified item instead of the held item.<br>
-                                    <br>
-                                    In order to remove a certain amount of items from a shop (and not stop the shop from stocking the item), the player must use the <b>buy</b> command. Owners and managers of a shop are not charged for removing items in this manner.<br>
+<li>/shop <b>remove &lt;item name&gt;</b>
+  <ul>
+<li>Used without an item name, removes all stock of the item that the player is currently holding from the shop.<br>
 
 </li>
 </ul></li>
-<li>/shop <b>buy [item name] &lt;amount&gt;<br>
-                                    /buy [item name] &lt;amount&gt;</b><ul>
-<li>Purchases a specified item from a shop. If the player uses ‘all’ in place of an amount, the shop will attempt to fill the player’s inventory with the specified item, money (and item stock) permitting.<br>
+<li>/shop <b>buy &lt;item name&gt; &lt;amount&gt;<br>
+</b>
+<ul>
+<li>Purchases a specified item from a shop. If the player uses ‘all’ in place of an amount, the shop will attempt to fill the player’s inventory with the specified item, money (and item stock) permitting.</li>
+<li>It's free to 'buy' items from a shop you own.<br>
 </li>
-</ul></li>
+</ul>
+</li>
 <li>/shop <b>sell &lt;item name&gt; &lt;amount&gt;<br>
-
-                                    /sell &lt;item name&gt; &lt;amount&gt;</b><ul>
+</b>
+<ul>
 <li>Used without an item name and amount defined, sells the stack of items the player is currently holding.<br>
                                     <br>
-                                    With an item name defined, a specific item (a single item) is sold to the shop. If the player uses ‘all’ in place of an amount, all instances of that item in his inventory will be sold.<br>
+                                    With an item name defined, a specific item (a single item) is sold to the shop. If the player uses ‘all’ in place of an amount, all instances of that item in his inventory will be sold.</li>
+<li>Selling to a shop you own doesn't move any money.<br>
 </li>
-</ul></li>
+</ul>
+</li>
 <li>/shop <b>set</b><ul>
 
 <li>Help page - displays a list of <b>set</b> commands.<br>
 </li>
 </ul></li>
-<li>/shop <b>set buy [item name] [price] &lt;bundle size&gt;</b><ul>
-<li>Used to set the price and bundle size of items that the shop will be able to <i>buy or purchased</i> from customers.<br>
+<li>/shop <b>set buy [item name] &lt;price&gt;</b><ul>
+<li>Used to set the price of items that the shop will be able to <i>buy or purchased</i> from customers.<br>
+Omit the price to stop buying the item.
                                     <br>
 
                                     Both this command and the <b>set sell</b> command below are set from the perspective of the shop, not the customer; in contrast the <b>buy</b> and <b>sell</b> commands are always from the perspective of the customer.<br>
 </li>
 </ul></li>
-<li>/shop <b>set sell [item name] [price] &lt;bundle size&gt;</b><ul>
+<li>/shop <b>set sell [item name] &lt;price&gt;</b><ul>
 
-<li>Sets the price and bundle size of items that can be <i>sold</i> to the customer.<br>
+<li>Sets the price of items that can be <i>sold</i> to the customer.<br>Omit the price to stop sell the item.
 </li>
 </ul></li>
 <li>/shop <b>set manager +/-[player name]<br>
@@ -114,6 +117,9 @@
 <li>/shop <b>set notification</b><ul>
 
 <li>Toggles if the shop owner is to receive periodic transaction notifications via chat.</li>
+</ul></li>
+<li>/shop <b>set name [newname]</b><ul>
+<li>Change the name of the shop.</li>
 </ul></li>
 <li>/shop <b>set owner [player name]</b><ul>
 <li>Changes the shop owner to another player.<br>

@@ -1,6 +1,6 @@
 package com.aehdev.commandshops.commands;
 
-import java.util.Iterator;
+import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -13,15 +13,13 @@ import org.bukkit.inventory.PlayerInventory;
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.ItemInfo;
-import com.aehdev.commandshops.PlayerData;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
-import com.aehdev.commandshops.ShopLocation;
+import com.aehdev.lib.PatPeter.SQLibrary.DatabaseHandler;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a CommandShops command. That is, each object is a sub-command of
  * /shop. For example, "/shop buy"
@@ -30,85 +28,79 @@ public abstract class Command
 {
 	/** Reference to the main plugin object. */
 	protected CommandShops plugin = null;
+	
+	/** Reference to database handler */
+	protected DatabaseHandler db = CommandShops.db;
 
-	/** The command label. */
+	/** The command name that the user typed (might be an alias). */
 	protected String commandLabel = null;
 
 	/** The sender/origin of the command. We will almost always need this to be
 	 * a player, especially for commands that aren't read-only. */
 	protected CommandSender sender = null;
 
-	/** The command. */
+	/** The actual backend command being executed. */
 	protected String command = null;
 
-	/** The DECIMA l_ regex. */
+	/** Matches valid numbers. */
 	protected static String DECIMAL_REGEX = "(\\d+\\.\\d+)|(\\d+\\.)|(\\.\\d+)|(\\d+)";
 
 	/** The logging object with which we write to the server log. */
 	protected static final Logger log = Logger.getLogger("Minecraft");
 
 	/**
-	 * The Enum CommandTypes.
+	 * Groups commands by the permission needed to execute them.
 	 */
 	public static enum CommandTypes
 	{
 
-		/** The ADMIN. */
-		ADMIN(0, new String[]{"commandshops.admin"}),
+		/** Includes all other types as well as admin-only actions. */
+		ADMIN(0, "commandshops.admin"),
 
-		/** The ADD. */
-		ADD(1, new String[]{"commandshops.manager.add"}),
+		/** Adding items to shops. */
+		ADD(1, "commandshops.manager.add"),
 
-		/** The BUY. */
-		BUY(2, new String[]{"commandshops.user.buy"}),
+		/** Buying from shops */
+		BUY(2, "commandshops.user.buy"),
 
-		/** The CREATE. */
-		CREATE(3, new String[]{"commandshops.manager.create"}),
+		/** Creation of new shops. */
+		CREATE(3, "commandshops.manager.create"),
 
-		/** The CREAT e_ free. */
-		CREATE_FREE(4, new String[]{"commandshops.free.create"}),
+		/** Bypass the fee for creating new shops. */
+		CREATE_FREE(4, "commandshops.free.create"),
 
-		/** The DESTROY. */
-		DESTROY(5, new String[]{"commandshops.manager.destroy"}),
+		/** Delete shops. */
+		DESTROY(5, "commandshops.manager.destroy"),
 
-		/** The HELP. */
-		HELP(6, new String[]{}),
+		/** Browsing contents of shops. */
+		BROWSE(6, "commandshops.user.browse"),
 
-		/** The BROWSE. */
-		BROWSE(7, new String[]{"commandshops.user.browse"}),
+		/** Relocating existing shops. */
+		MOVE(7, "commandshops.manager.move"),
 
-		/** The MOVE. */
-		MOVE(8, new String[]{"commandshops.manager.move"}),
+		/** Bypass the fee for moving shops. */
+		MOVE_FREE(8, "commandshops.free.move"),
 
-		/** The MOV e_ free. */
-		MOVE_FREE(9, new String[]{"commandshops.free.move"}),
+		/** Taking items out of shops. */
+		REMOVE(9, "commandshops.manager.remove"),
 
-		/** The REMOVE. */
-		REMOVE(10, new String[]{"commandshops.manager.remove"}),
+		/** Selling to shops. */
+		SELL(10, "commandshops.user.sell"),
 
-		/** The SEARCH. */
-		SEARCH(11, new String[]{}),
+		/** Changing the owner of shops currently under one's authority. */
+		SET_OWNER(11,"commandshops.manager.set.owner"),
 
-		/** The SELECT. */
-		SELECT(12, new String[]{"commandshops.manager.select"}),
+		/** Set shop parameters like prices. */
+		SET(12, "commandshops.manager.set");
 
-		/** The SELL. */
-		SELL(13, new String[]{"commandshops.user.sell"}),
-
-		/** The SE t_ owner. */
-		SET_OWNER(14, new String[]{"commandshops.manager.set.owner"}),
-
-		/** The SET. */
-		SET(15, new String[]{"commandshops.manager.set"});
-
-		/** The id. */
+		/** Identifies this CommandType. */
 		int id = -1;
 
-		/** The permissions. */
-		String[] permissions = null;
+		/** List of all permissions needed to use a certain type of command. */
+		String permission = null;
 
 		/**
-		 * Instantiates a new command types.
+		 * Define a command type.
 		 * @param id
 		 * the id
 		 */
@@ -118,47 +110,29 @@ public abstract class Command
 		}
 
 		/**
-		 * Instantiates a new command types.
+		 * Define a command type.
 		 * @param id
 		 * the id
-		 * @param permissions
-		 * the permissions
+		 * @param permission
+		 * Permission needed for this command type.
 		 */
-		CommandTypes(int id, String[] permissions)
+		CommandTypes(int id, String permission)
 		{
 			this(id);
-			this.permissions = permissions;
-		}
-
-		/**
-		 * Gets the id.
-		 * @return the id
-		 */
-		public int getId()
-		{
-			return id;
-		}
-
-		/**
-		 * Gets the permissions.
-		 * @return the permissions
-		 */
-		public String[] getPermissions()
-		{
-			return permissions;
+			this.permission = permission;
 		}
 	}
 
 	/**
-	 * Instantiates a new command.
+	 * Define a new command.
 	 * @param plugin
-	 * the plugin
+	 * Reference back to main plugin object.
 	 * @param commandLabel
-	 * the command label
+	 * Alias typed by user for this command.
 	 * @param sender
-	 * the sender
+	 * Who sent the command. Should be a player, but might be console.
 	 * @param command
-	 * the command
+	 * Name of command being run.
 	 */
 	public Command(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -170,15 +144,15 @@ public abstract class Command
 	}
 
 	/**
-	 * Instantiates a new command.
+	 * Define a new command.
 	 * @param plugin
-	 * the plugin
+	 * Reference back to main plugin object.
 	 * @param commandLabel
-	 * the command label
+	 * Alias typed by user for this command.
 	 * @param sender
-	 * the sender
+	 * Who sent the command. Should be a player, but might be console.
 	 * @param args
-	 * the args
+	 * Arguments passed to the command.
 	 */
 	public Command(CommandShops plugin, String commandLabel,
 			CommandSender sender, String[] args)
@@ -187,7 +161,7 @@ public abstract class Command
 	}
 
 	/**
-	 * Gets the command.
+	 * Gets the name of the command represented by this object.
 	 * @return the command
 	 */
 	public String getCommand()
@@ -196,67 +170,64 @@ public abstract class Command
 	}
 
 	/**
-	 * Process.
+	 * Run the command.
 	 * @return true, if successful
 	 */
-	public boolean process()
-	{
-		// Does nothing and needs to be overloaded by subclasses
-		return false;
-	}
+	public abstract boolean process();
 
 	/**
-	 * Can use command.
+	 * Determine if the sender of this command has permissions for commands of a given type.
 	 * @param type
-	 * the type
-	 * @return true, if successful
+	 * Command type being checked for.
+	 * @return true if the sender can access the given command type
 	 */
 	protected boolean canUseCommand(CommandTypes type)
 	{
 		if(sender instanceof Player)
 		{
 			Player player = (Player)sender;
-
-			// check if admin first
-			for(String permission: CommandTypes.ADMIN.getPermissions())
-			{
-				if(player.hasPermission(permission)){ return true; }
-			}
-
-			// fail back to provided permissions second
-			for(String permission: type.getPermissions())
-			{
-				if(!player.hasPermission(permission)){ return false; }
-			}
-			return true;
-		}else
-		{
+			if(player.hasPermission(CommandTypes.ADMIN.permission) || player.hasPermission(type.permission))
+				return true;
+			return false;
+		}else{
 			return true;
 		}
 	}
 
 	/**
-	 * Can create shop.
+	 * Check if the given player has permission to create shops.
 	 * @param playerName
-	 * the player name
-	 * @return true, if successful
+	 * Name of the player in question.
+	 * @return true if the given player has permission to create shops.
 	 */
 	protected boolean canCreateShop(String playerName)
 	{
 		if(canUseCommand(CommandTypes.ADMIN))
 		{
 			return true;
-		}else if((plugin.getShopData().numOwnedShops(playerName) < Config.MAX_SHOPS_PER_PLAYER || Config.MAX_SHOPS_PER_PLAYER < 0)
-				&& canUseCommand(CommandTypes.CREATE)){ return true; }
-
+		}else if(canUseCommand(CommandTypes.CREATE)){
+			int owned = 0;
+			try{
+				ResultSet rsTotal = CommandShops.db.query("SELECT COUNT(*) FROM shops WHERE owner='" + playerName + "'");
+				rsTotal.next();
+				owned = rsTotal.getInt(1);
+				rsTotal.close();
+			}catch(Exception e){
+				log.warning(String.format("[%s] - DB lost trying to check owned shop total.", CommandShops.pdfFile.getName()));
+				return false;
+			}
+			
+			if(owned <= Config.MAX_SHOPS_PER_PLAYER || Config.MAX_SHOPS_PER_PLAYER < 0)
+				return true;
+		}
 		return false;
 	}
 
 	/**
-	 * Can modify shop.
+	 * Check if this command's sender has access to modify a given shop.
 	 * @param shop
-	 * the shop
-	 * @return true, if successful
+	 * the shop they are attempting to modify
+	 * @return true if this command's sender has access to modify the given shop.
 	 */
 	protected boolean canModifyShop(Shop shop)
 	{
@@ -270,25 +241,24 @@ public abstract class Command
 			// If admin, true
 			if(canUseCommand(CommandTypes.ADMIN)){ return true; }
 			return false;
-		}else
-		{
+		}else{
 			// Console, true
 			return true;
 		}
 	}
 
 	/**
-	 * Shop position ok.
+	 * Check if a theoretical shop position would be acceptable.
+	 * To meet this criteria, it must not overlap any existing shops.
 	 * @param xyzA
-	 * the xyz a
+	 * First of 2 points defining the cuboid
 	 * @param xyzB
-	 * the xyz b
+	 * Second of 2 points defining the cuboid
 	 * @param worldName
-	 * the world name
-	 * @return true, if successful
+	 * The world to check in
+	 * @return true if the position is fine
 	 */
-	protected boolean shopPositionOk(double[] xyzA, double[] xyzB,
-			String worldName)
+	protected boolean shopPositionOk(double[] xyzA, double[] xyzB, String worldName)
 	{
 		BookmarkedResult res = new BookmarkedResult();
 
@@ -321,12 +291,13 @@ public abstract class Command
 	}
 
 	/**
-	 * Shop overlaps.
+	 * Check if a list of numerically-overlapping shops are actually in the same world
+	 * as the one we were checking against.
 	 * @param res
-	 * the res
+	 * the set of shops found by the numeric overlap algorithm
 	 * @param worldName
-	 * the world name
-	 * @return true, if successful
+	 * name of the world to check in
+	 * @return true if the overlap is real
 	 */
 	protected boolean shopOverlaps(BookmarkedResult res, String worldName)
 	{
@@ -334,17 +305,13 @@ public abstract class Command
 		{
 			for(PrimitiveCuboid cuboid: res.results)
 			{
-				if(cuboid.uuid != null)
+				if(cuboid.world.equalsIgnoreCase(worldName))
 				{
-					if(cuboid.world.equalsIgnoreCase(worldName))
-					{
-						Shop shop = plugin.getShopData().getShop(cuboid.uuid);
-						sender.sendMessage(CommandShops.CHAT_PREFIX
-								+ ChatColor.DARK_AQUA
-								+ "Could not create shop, it overlaps with "
-								+ ChatColor.WHITE + shop.getName());
-						return true;
-					}
+					sender.sendMessage(CommandShops.CHAT_PREFIX
+							+ ChatColor.DARK_AQUA
+							+ "Could not create shop, it overlaps with shop "
+							+ ChatColor.WHITE + cuboid.id);
+					return true;
 				}
 			}
 		}
@@ -352,11 +319,11 @@ public abstract class Command
 	}
 
 	/**
-	 * Give player item.
+	 * Give some amount of an item to a player.
 	 * @param item
-	 * the item
+	 * the item type
 	 * @param amount
-	 * the amount
+	 * how many
 	 */
 	protected void givePlayerItem(ItemStack item, int amount)
 	{
@@ -379,8 +346,7 @@ public abstract class Command
 					{
 						amount -= remainder;
 						thisStack.setAmount(maxStackSize);
-					}else
-					{
+					}else{
 						thisStack.setAmount(maxStackSize - remainder + amount);
 						amount = 0;
 					}
@@ -426,43 +392,41 @@ public abstract class Command
 	}
 
 	/**
-	 * Returns true if the player is in the shop manager list or is the shop
-	 * owner.
+	 * Returns true if the sender is the owner or a manager of a given shop.
 	 * @param shop
-	 * the shop
-	 * @return true, if is shop controller
-	 * @return
+	 * the shop to check against
+	 * @return true, if the sender can control the shop
 	 */
-	protected boolean isShopController(Shop shop)
+	protected boolean isShopController(long shop)
 	{
-		if(sender instanceof Player)
-		{
-			Player player = (Player)sender;
-			if(shop.getOwner().equalsIgnoreCase(player.getName())) return true;
-			if(shop.getManagers() != null)
-			{
-				for(String manager: shop.getManagers())
-				{
-					if(player.getName().equalsIgnoreCase(manager)){ return true; }
-				}
-			}
-			return false;
-		}else
-		{
-			return true;
+		if(!(sender instanceof Player)) return false;
+		Player player = (Player)sender;
+		try{
+			String ownQuery = String.format("SELECT id FROM shops WHERE id=%d AND owner='%s' LIMIT 1",shop,db.escape(player.getName()));
+			ResultSet resOwn = CommandShops.db.query(ownQuery);
+			boolean owner = resOwn.next();
+			resOwn.close();
+			if(owner) return true;
+			String manQuery = String.format("SELECT shop FROM managers WHERE shop=%d AND manager='%s' LIMIT 1",shop,db.escape(player.getName()));
+			ResultSet resMan = CommandShops.db.query(manQuery);
+			boolean manager = resMan.next();
+			resMan.close();
+			if(manager) return true;
+		}catch(Exception e){
+			log.warning(String.format("[%s] - Problem reading shop controllers: "+e, CommandShops.pdfFile.getName()));
 		}
+		return false;
 	}
 
 	/**
-	 * Count items in inventory.
+	 * Get how many of a certain item is in a player's inventory.
 	 * @param inventory
-	 * the inventory
+	 * player's inventory
 	 * @param item
-	 * the item
-	 * @return the int
+	 * item type to count
+	 * @return the total
 	 */
-	protected int countItemsInInventory(PlayerInventory inventory,
-			ItemStack item)
+	protected int countItemsInInventory(PlayerInventory inventory, ItemStack item)
 	{
 		int totalAmount = 0;
 		boolean isDurable = CommandShops.getItemList().isDurable(item);
@@ -475,8 +439,7 @@ public abstract class Command
 				int damage = calcDurabilityPercentage(thisStack);
 				if(damage > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0) continue;
-			}else
-			{
+			}else{
 				if(thisStack.getDurability() != item.getDurability()) continue;
 			}
 			totalAmount += thisStack.getAmount();
@@ -486,10 +449,10 @@ public abstract class Command
 	}
 
 	/**
-	 * Calc durability percentage.
+	 * Compute the durability percentage of an item based on it's current and max. 
 	 * @param item
-	 * the item
-	 * @return the int
+	 * the item to inspect
+	 * @return the item's durability as a percentage
 	 */
 	protected static int calcDurabilityPercentage(ItemStack item)
 	{
@@ -499,17 +462,17 @@ public abstract class Command
 	}
 
 	/**
-	 * Removes the items from inventory.
+	 * Take items from a player.
 	 * @param inventory
-	 * the inventory
+	 * player's inventory
 	 * @param item
-	 * the item
+	 * item type to take
 	 * @param amount
-	 * the amount
-	 * @return the int
+	 * how many of the item to take
+	 * @return remaining number of items that should have been taken but were not
+	 * because the player ran out. Will be zero on success. 
 	 */
-	protected int removeItemsFromInventory(PlayerInventory inventory,
-			ItemStack item, int amount)
+	protected int removeItemsFromInventory(PlayerInventory inventory, ItemStack item, int amount)
 	{
 
 		boolean isDurable = CommandShops.getItemList().isDurable(item);
@@ -524,8 +487,7 @@ public abstract class Command
 				int damage = calcDurabilityPercentage(thisStack);
 				if(damage > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0) continue;
-			}else
-			{
+			}else{
 				if(thisStack.getDurability() != item.getDurability()) continue;
 			}
 
@@ -534,8 +496,7 @@ public abstract class Command
 			{
 				amount -= foundAmount;
 				inventory.setItem(i, null);
-			}else
-			{
+			}else{
 				thisStack.setAmount(foundAmount - amount);
 				inventory.setItem(i, thisStack);
 				amount = 0;
@@ -547,12 +508,12 @@ public abstract class Command
 	}
 
 	/**
-	 * Count available space for item in inventory.
+	 * Figure out how many of a particular item type the player has space for.
 	 * @param inventory
-	 * the inventory
+	 * player's inventory
 	 * @param item
-	 * the item
-	 * @return the int
+	 * item type
+	 * @return how many
 	 */
 	protected int countAvailableSpaceForItemInInventory(PlayerInventory inventory, ItemInfo item)
 	{
@@ -572,56 +533,5 @@ public abstract class Command
 		}
 
 		return count;
-	}
-
-	/**
-	 * Notify players.
-	 * @param shop
-	 * the shop
-	 * @param messages
-	 * the messages
-	 * @return true, if successful
-	 */
-	protected boolean notifyPlayers(Shop shop, String[] messages)
-	{
-		Iterator<PlayerData> it = plugin.getPlayerData().values().iterator();
-		while(it.hasNext())
-		{
-			PlayerData p = it.next();
-			if(p.shopList.contains(shop.getUuid()))
-			{
-				Player thisPlayer = plugin.getServer().getPlayer(p.playerName);
-				for(String message: messages)
-				{
-					thisPlayer.sendMessage(message);
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Calculate distance.
-	 * @param from
-	 * the from
-	 * @param to
-	 * the to
-	 * @return the double
-	 */
-	protected double calculateDistance(ShopLocation from, ShopLocation to)
-	{
-		double x1 = from.getX();
-		double x2 = to.getX();
-
-		double y1 = from.getY();
-		double y2 = to.getY();
-
-		double z1 = from.getZ();
-		double z2 = to.getZ();
-
-		double distance = Math.sqrt(Math.pow((x1 - x2), 2)
-				+ Math.pow((y1 - y2), 2) + Math.pow((z1 - z2), 2));
-
-		return distance;
 	}
 }

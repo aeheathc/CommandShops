@@ -12,23 +12,22 @@ import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CommandShopSearch.
+ * Command that queries the text-matching mechanism for item names.
  */
 public class CommandShopSearch extends Command
 {
 
 	/**
-	 * Instantiates a new command shop search.
+	 * Create a Search order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
-	 * the command label
+	 * command name/alias
 	 * @param sender
-	 * the sender
+	 * who sent the command
 	 * @param command
-	 * the command
+	 * command string with arguments
 	 */
 	public CommandShopSearch(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -37,32 +36,24 @@ public class CommandShopSearch extends Command
 	}
 
 	/**
-	 * Instantiates a new command shop search.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Execute the search.
 	 */
-	public CommandShopSearch(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
-		Player player = (Player)sender;
-		//search
+		Player player = null;
+		if(sender instanceof Player) player = (Player)sender;
+		
+		//> /shop search
+		// query item in hand
 		Pattern pattern = Pattern.compile("(?i)search$");
 		Matcher matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
+			if(player == null)
+			{
+				sender.sendMessage("You need an item in hand to search without specifying an item.");
+				return false;
+			}
 			ItemStack itemStack = player.getItemInHand();
 			if(itemStack == null){ return true; }
 			ItemInfo found = null;
@@ -75,14 +66,15 @@ public class CommandShopSearch extends Command
 			}
 			if(found == null)
 			{
-				sender.sendMessage("Could not find an item.");
+				sender.sendMessage("Could not find an item for "+itemStack.getTypeId()+":"+itemStack.getDurability());
 			}else{
 				sender.sendMessage(found.toString());
 			}
 			return true;
 		}
 		
-		// search itemname
+		//> /shop search [itemname]
+		// query item with given name
 		pattern = Pattern.compile("(?i)search\\s+(.*)");
 		matcher = pattern.matcher(command);
 		if(matcher.find())

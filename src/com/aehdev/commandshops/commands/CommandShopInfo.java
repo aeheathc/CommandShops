@@ -1,7 +1,6 @@
 package com.aehdev.commandshops.commands;
 
-import java.util.Iterator;
-import java.util.UUID;
+import java.sql.ResultSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,28 +9,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
-import com.aehdev.commandshops.InventoryItem;
-import com.aehdev.commandshops.PlayerData;
-import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CommandShopInfo.
+ * Command that shows detailed information about a single shop.
  */
 public class CommandShopInfo extends Command
 {
 
 	/**
-	 * Instantiates a new command shop info.
+	 * Create a new info order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main plugin object
 	 * @param commandLabel
-	 * the command label
+	 * command name/alias
 	 * @param sender
-	 * the sender
+	 * who sent the command
 	 * @param command
-	 * the command
+	 * command string with arguments
 	 */
 	public CommandShopInfo(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -40,160 +35,174 @@ public class CommandShopInfo extends Command
 	}
 
 	/**
-	 * Instantiates a new command shop info.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Execute info order -- show the shop's information.
 	 */
-	public CommandShopInfo(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
-		Shop shop = null;
-
-		// Get current shop
-		if(sender instanceof Player)
+		long shop = -1;
+		
+		//> /shop info
+		// Get info about the shop the player is currently standing in
+		Pattern pattern = Pattern.compile("(?i)info$");
+		Matcher matcher = pattern.matcher(command);
+		if(matcher.find())
 		{
-			// Get player & data
-			Player player = (Player)sender;
-			PlayerData pData = plugin.getPlayerData().get(player.getName());
-
-			// info (player only command)
-			Pattern pattern = Pattern.compile("(?i)info$");
-			Matcher matcher = pattern.matcher(command);
-			if(matcher.find())
+			if(sender instanceof Player) shop = Shop.getCurrentShop((Player)sender);
+			if(shop == -1)
 			{
-				// Get Current Shop
-				UUID shopUuid = pData.getCurrentShop();
-				if(shopUuid != null)
-				{
-					shop = plugin.getShopData().getShop(shopUuid);
-				}
-				if(shop == null)
-				{
-					sender.sendMessage("You are not in a shop!");
-					return false;
-				}
+				sender.sendMessage("You are not in a shop!");
+				return false;
 			}
-
-			// info id
-			matcher.reset();
-			pattern = Pattern.compile("(?i)info\\s+(.*)$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				String input = matcher.group(1);
-				shop = plugin.getShopData().getShop(input);
-				if(shop == null)
-				{
-					sender.sendMessage("Could not find shop with ID " + input);
-					return false;
-				}
-			}
-
-		}else
+		}
+		//> /shop info id
+		// Get info about a shop with the specified ID (works in console)
+		matcher.reset();
+		pattern = Pattern.compile("(?i)info\\s+(\\d+)$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
 		{
-			sender.sendMessage("Console is not implemented yet.");
+			try{
+				shop = Integer.parseInt(matcher.group(1));
+			}catch(NumberFormatException e){
+				sender.sendMessage("Bad shop ID");
+				return false;
+			}
+		}
+
+		String[] msg = new String[6];
+		try{
+			String infoQuery = String.format("SELECT `name`,`owner`,`creator`,x,y,z,x2,y2,z2,`world`,minbalance,unlimitedMoney,unlimitedStock FROM shops WHERE id=%d LIMIT 1", shop);
+			ResultSet resInfo = CommandShops.db.query(infoQuery);
+			if(!resInfo.next())
+			{
+				resInfo.close();
+				sender.sendMessage(ChatColor.DARK_AQUA + "No shop found with ID " + ChatColor.WHITE + shop);
+				return false;
+			}
+			String shopname = resInfo.getString("name");
+			String owner = resInfo.getString("owner");
+			String creator = resInfo.getString("creator");
+			int x = resInfo.getInt("x");
+			int y = resInfo.getInt("y");
+			int z = resInfo.getInt("z");
+			int x2 = resInfo.getInt("x2");
+			int y2 = resInfo.getInt("y2");
+			int z2 = resInfo.getInt("z2");
+			String world = resInfo.getString("world");
+			String minbalance = plugin.econ.format(resInfo.getDouble("minbalance"));
+			boolean unlimitedMoney = resInfo.getInt("unlimitedMoney") == 1;
+			boolean unlimitedStock = resInfo.getInt("unlimitedStock") == 1;
+			resInfo.close();
+			ResultSet resMan = CommandShops.db.query("SELECT manager FROM managers WHERE shop=" + shop);
+			StringBuffer manstr = new StringBuffer();
+			int mantotal = 0;
+			while(resMan.next())
+			{
+				++mantotal;
+				manstr.append(ChatColor.WHITE);
+				manstr.append(resMan.getString("manager"));
+				manstr.append(ChatColor.DARK_AQUA);
+				manstr.append(',');
+			}
+			String managers = manstr.toString();
+			if(managers.length() > 0) managers = managers.substring(0, managers.length()-1);
+			resMan.close();
+			ResultSet resBuy = CommandShops.db.query("SELECT COUNT(*) FROM shop_items WHERE buy IS NOT NULL AND shop="+shop);
+			resBuy.next();
+			int buy = resBuy.getInt(1);
+			resBuy.close();
+			ResultSet resSell = CommandShops.db.query("SELECT COUNT(*) FROM shop_items WHERE sell IS NOT NULL AND shop="+shop);
+			resSell.next();
+			int sell = resSell.getInt(1);
+			resSell.close();
+			StringBuffer output = new StringBuffer();
+			output.append(ChatColor.DARK_AQUA);
+			output.append("Info for shop ");
+			output.append(ChatColor.WHITE);
+			output.append(shop);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(":");
+			output.append(ChatColor.WHITE);
+			output.append(shopname);
+			msg[0] = output.toString();
+			output = new StringBuffer();
+			output.append(ChatColor.DARK_AQUA);
+			output.append("Owner:");
+			output.append(ChatColor.WHITE);
+			output.append(owner);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(" Creator:");
+			output.append(ChatColor.WHITE);
+			output.append(creator);
+			msg[1] = output.toString();
+			output = new StringBuffer();
+			output.append(ChatColor.WHITE);
+			output.append(mantotal);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(" Managers:");
+			output.append(ChatColor.WHITE);
+			output.append(managers);
+			msg[2] = output.toString();
+			output = new StringBuffer();
+			output.append(ChatColor.DARK_AQUA);
+			output.append("World:");
+			output.append(ChatColor.WHITE);
+			output.append(world);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(" Location:");
+			output.append(ChatColor.WHITE);
+			output.append(x);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(",");
+			output.append(ChatColor.WHITE);
+			output.append(y);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(",");
+			output.append(ChatColor.WHITE);
+			output.append(z);
+			output.append(ChatColor.DARK_AQUA);
+			output.append("x");
+			output.append(ChatColor.WHITE);
+			output.append(x2);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(",");
+			output.append(ChatColor.WHITE);
+			output.append(y2);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(",");
+			output.append(ChatColor.WHITE);
+			output.append(z2);
+			msg[3] = output.toString();
+			output = new StringBuffer();
+			output.append(ChatColor.DARK_AQUA);
+			output.append("MinBalance:");
+			output.append(ChatColor.WHITE);
+			output.append(minbalance);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(" UnlimitedStock:");
+			output.append(ChatColor.WHITE);
+			output.append(unlimitedStock ? "yes": "no");
+			output.append(ChatColor.DARK_AQUA);
+			output.append(" UnlimitedMoney:");
+			output.append(ChatColor.WHITE);
+			output.append(unlimitedMoney ? "yes": "no");
+			msg[4] = output.toString();
+			output = new StringBuffer();
+			output.append(ChatColor.DARK_AQUA);
+			output.append("ItemsBuying:");
+			output.append(ChatColor.WHITE);
+			output.append(buy);
+			output.append(ChatColor.DARK_AQUA);
+			output.append(" ItemsSelling:");
+			output.append(ChatColor.WHITE);
+			output.append(sell);
+			msg[5] = output.toString();
+		}catch(Exception e){
+			sender.sendMessage("Info req cancelled due to DB error.");
+			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			return false;
 		}
-
-		int managerCount = shop.getManagers().size();
-
-		sender.sendMessage(String.format(ChatColor.DARK_AQUA
-				+ "Shop Info about " + ChatColor.WHITE + "\"%s\""
-				+ ChatColor.DARK_AQUA + " ID: " + ChatColor.WHITE + "%s",
-				shop.getName(), shop.getShortUuidString()));
-		if(shop.getCreator().equalsIgnoreCase(shop.getOwner()))
-		{
-			if(managerCount == 0)
-			{
-				sender.sendMessage(String.format(
-						"  Owned & Created by %s with no managers.",
-						shop.getCreator()));
-			}else
-			{
-				sender.sendMessage(String.format(
-						"  Owned & Created by %s with %d managers.",
-						shop.getCreator(), managerCount));
-			}
-		}else
-		{
-			if(managerCount == 0)
-			{
-				sender.sendMessage(String.format(
-						"  Owned by %s, created by %s with no managers.",
-						shop.getOwner(), shop.getCreator()));
-			}else
-			{
-				sender.sendMessage(String.format(
-						"  Owned by %s created by %s with %d managers.",
-						shop.getOwner(), shop.getCreator(), managerCount));
-			}
-		}
-		if(managerCount > 0)
-		{
-			sender.sendMessage(String.format("  Managed by %s",
-					Search.join(shop.getManagers(), " ")));
-		}
-
-		if(command.matches("info\\s+full"))
-		{
-			sender.sendMessage(String.format("  Full Id: %s", shop.getUuid()
-					.toString()));
-		}
-
-		sender.sendMessage(String.format("  Located at %s x %s in \"%s\"", shop
-				.getLocationA().toString(), shop.getLocationB().toString(),
-				shop.getWorld()));
-
-		// Calculate values
-		int sellCount = 0;
-		int buyCount = 0;
-		int worth = 0;
-
-		Iterator<InventoryItem> it = shop.getItems().iterator();
-		while(it.hasNext())
-		{
-			InventoryItem i = it.next();
-			if(i.getBuyPrice() > 0)
-			{
-				sellCount++;
-				worth += i.getStock() * i.getBuyPrice();
-			}
-
-			if(i.getSellPrice() > 0)
-			{
-				buyCount++;
-			}
-		}
-
-		// Selling %d items & buying %d items
-		sender.sendMessage(String.format(
-				"  Selling %d items & buying %d items", sellCount, buyCount));
-
-		// Shop stock is worth %d coins
-		sender.sendMessage(String.format("  Inventory worth %s", plugin
-				.getEconManager().format(worth)));
-
-		if(shop.isUnlimitedMoney() || shop.isUnlimitedStock())
-		{
-			sender.sendMessage(String.format(
-					"  Shop %s unlimited money and %s unlimited stock.",
-					shop.isUnlimitedMoney() ? "has" : "doesn't have",
-					shop.isUnlimitedStock() ? "has" : "doesn't have"));
-		}
-
+		sender.sendMessage(msg);
 		return true;
 	}
 }

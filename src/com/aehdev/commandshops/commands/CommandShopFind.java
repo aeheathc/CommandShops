@@ -1,46 +1,38 @@
 package com.aehdev.commandshops.commands;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.sql.ResultSet;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
-import com.aehdev.commandshops.InventoryItem;
 import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
-import com.aehdev.commandshops.Shop;
-import com.aehdev.commandshops.ShopLocation;
-import com.aehdev.commandshops.comparator.EntryValueComparator;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CommandShopFind.
+ * This command lets you search for shops that have a certain item
+ * while comparing prices.
  */
 public class CommandShopFind extends Command
 {
 
 	/**
-	 * Instantiates a new command shop find.
+	 * Create a new Find order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
-	 * the command label
+	 * the actual main command name
 	 * @param sender
-	 * the sender
+	 * the sender of the command
 	 * @param command
-	 * the command
+	 * the whole argument string
 	 */
 	public CommandShopFind(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -49,34 +41,20 @@ public class CommandShopFind extends Command
 	}
 
 	/**
-	 * Instantiates a new command shop find.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Run the Find command.
 	 */
-	public CommandShopFind(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
 		if(!(sender instanceof Player))
 		{
-			sender.sendMessage("Console is not implemented");
+			sender.sendMessage("You need an in game location to find shops near you.");
+			return false;
 		}
 
 		Player player = (Player)sender;
 
-		// search
+		//> /shop find
+		// Compare prices on item in hand.
 		Pattern pattern = Pattern.compile("(?i)find$");
 		Matcher matcher = pattern.matcher(command);
 		if(matcher.find())
@@ -99,7 +77,8 @@ public class CommandShopFind extends Command
 			return shopFind(player, found);
 		}
 
-		// search int
+		//> /shop find int
+		// compare prices on item with the specified id
 		matcher.reset();
 		pattern = Pattern.compile("(?i)find\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -115,7 +94,8 @@ public class CommandShopFind extends Command
 			return shopFind(player, found);
 		}
 
-		// search int:int
+		//> /shop find int:int
+		// compare prices on item with the specified id and damage
 		matcher.reset();
 		pattern = Pattern.compile("(?i)find\\s+(\\d+):(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -132,7 +112,8 @@ public class CommandShopFind extends Command
 			return shopFind(player, found);
 		}
 
-		// search name
+		//> /shop find name
+		// compare prices on item with the specified name
 		matcher.reset();
 		pattern = Pattern.compile("(?i)find\\s+(.*)");
 		matcher = pattern.matcher(command);
@@ -159,133 +140,95 @@ public class CommandShopFind extends Command
 	}
 
 	/**
-	 * Shop find.
+	 * Show price comparison and stock info for shops near you of the specified item
 	 * @param player
-	 * the player
+	 * player who typed the command
 	 * @param found
-	 * the found
+	 * the item definition to look for
 	 * @return true, if successful
 	 */
 	private boolean shopFind(Player player, ItemInfo found)
 	{
 		String playerWorld = player.getWorld().getName();
-		ShopLocation playerLoc = new ShopLocation(player.getLocation());
-
-		TreeMap<UUID,Double> foundShops = new TreeMap<UUID,Double>();
-		List<Shop> shops = plugin.getShopData().getAllShops();
-		for(Shop shop: shops)
-		{
-			// Check that its the current world
-			if(!playerWorld.equals(shop.getWorld()))
+		Location loc = player.getLocation();
+		int x=loc.getBlockX(), y=loc.getBlockY(), z=loc.getBlockZ();
+		String distCalc = String.format("(abs(((x+x2)/2)- %d)*abs(((x+x2)/2)- %d)+abs(((y+y2)/2)- %d)*abs(((y+y2)/2)- %d)+abs(((z+z2)/2)- %d)*abs(((z+z2)/2)- %d))"
+							,x,x,y,y,z,z);
+		Vector<String> msg = new Vector<String>(11);
+		msg.add("");
+		final int limitsquared = (int)Math.pow(Config.FIND_MAX_DISTANCE, 2);
+		try{
+			//get 5 closest shops carrying that item
+			String countQuery = String.format("SELECT COUNT(*),%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND distance<=%d"
+					,distCalc, playerWorld, found.typeId,found.subTypeId, limitsquared);
+			ResultSet resCount = CommandShops.db.query(countQuery);
+			resCount.next();
+			int total = resCount.getInt(1);
+			resCount.close();
+			
+			String findQuery = String.format("SELECT shops.id AS shopid,shops.`name` AS shopname,shops.unlimitedStock AS unlimitedStock,stock,maxstock,buy,sell,%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND distance<=%d ORDER BY distance ASC LIMIT 5"
+					,distCalc, playerWorld, found.typeId, found.subTypeId, limitsquared);
+			ResultSet resFind = CommandShops.db.query(findQuery);
+			int shops=0;
+			while(resFind.next())
 			{
-				continue;
+				int shopid = resFind.getInt("shopid");
+				String shopname = resFind.getString("shopname");
+				boolean unlimitedStock = resFind.getInt("unlimitedStock") == 1;
+				int stock = (int)Math.floor(resFind.getDouble("stock"));
+				int maxstock = resFind.getInt("maxstock");
+				String buy = plugin.econ.format(resFind.getDouble("buy"));
+				if(resFind.wasNull()) buy = "--";
+				String sell = plugin.econ.format(resFind.getDouble("sell"));
+				if(resFind.wasNull()) sell = "--";
+				int distance = (int)Math.floor(Math.sqrt(resFind.getDouble("distance")));
+						
+				String stockstr = ChatColor.WHITE + (unlimitedStock ? "Inf." :
+				(stock + "" + ChatColor.DARK_AQUA + "/" + ChatColor.WHITE + maxstock));
+				
+				StringBuffer output = new StringBuffer(60);
+				output.append(ChatColor.WHITE);
+				output.append(shopname);
+				output.append(ChatColor.DARK_AQUA);
+				output.append(": ");
+				output.append(ChatColor.GOLD);
+				output.append(" selling@");
+				if(stock<1 && !unlimitedStock) output.append(ChatColor.RED);
+				output.append(sell);
+				output.append(ChatColor.GREEN);
+				output.append(" buying@");
+				if(stock>=maxstock) output.append(ChatColor.RED);
+				output.append(buy);
+				msg.add(output.toString());
+				++shops;
+				output = new StringBuffer(60);
+				output.append(ChatColor.DARK_AQUA);
+				output.append("Dist:");
+				output.append(ChatColor.WHITE);
+				output.append(distance);
+				output.append("m ");
+				output.append(ChatColor.DARK_AQUA);
+				output.append("ID:");
+				output.append(ChatColor.WHITE);
+				output.append(shopid);
+				output.append(ChatColor.DARK_AQUA);
+				output.append(" Stock:");
+				output.append(stockstr);
+				msg.add(output.toString());
 			}
-
-			// Determine distance, if too far away ignore
-			double distance = calculateDistance(playerLoc,
-					shop.getLocationCenter());
-			if(Config.FIND_MAX_DISTANCE > 0
-					&& distance > Config.FIND_MAX_DISTANCE)
-			{
-				continue;
-			}
-
-			// Check shop has item & is either buying or selling it
-			if(!shop.containsItem(found))
-			{
-				continue;
-			}
-
-			// This shop is valid, add to list
-			foundShops.put(shop.getUuid(), distance);
-		}
-
-		@SuppressWarnings("unchecked")
-		SortedSet<Entry<UUID,Double>> entries = new TreeSet<Entry<UUID,Double>>(
-				new EntryValueComparator());
-		entries.addAll(foundShops.entrySet());
-
-		boolean foundsome = true;
-		if(entries.size() > 0)
-		{
-			int count = 0;
-			LinkedList<String> message = new LinkedList<String>();
-			for(Entry<UUID,Double> entry: entries)
-			{
-				UUID uuid = entry.getKey();
-				double distance = entry.getValue();
-				Shop shop = plugin.getShopData().getShop(uuid);
-				InventoryItem item = shop.getItem(found.name);
-				int stock = item.getStock(), maxstock = item.getMaxStock();
-
-				String sellPrice;
-				if(item.getBuyPrice() <= 0)
-				{
-					sellPrice = "--";
-				}else{
-					sellPrice = (stock == 0 ? ChatColor.RED : "")
-							+ plugin.getEconManager().format(item.getBuyPrice())
-							+ (stock == 0 ? (ChatColor.GOLD) : "");
-				}
-
-				String buyPrice;
-				if(item.getSellPrice() <= 0)
-				{
-					buyPrice = "--";
-				}else{
-					buyPrice = (maxstock > 0 && stock > maxstock ? ChatColor.RED
-							: "")
-							+ plugin.getEconManager().format(item.getSellPrice())
-							+ (maxstock > 0 && stock > maxstock ? (ChatColor.GREEN)
-									: "");
-				}
-
-				if(buyPrice.equals("--") && sellPrice.equals("--"))
-				{
-					continue;
-				}
-				count++;
-				if(count<=4)
-				{
-					message.add( String.format(ChatColor.WHITE + "%s: "
-						+ ChatColor.GOLD + "selling for %s, " + ChatColor.GREEN
-						+ "buying for %s", shop.getName(), sellPrice, buyPrice));
-					message.add(String.format(ChatColor.WHITE + "  "
-						+ ChatColor.DARK_AQUA + "Distance: " + ChatColor.WHITE
-						+ "%-2.0fm" + ChatColor.DARK_AQUA + " ID: "
-						+ ChatColor.WHITE + "%s" + ChatColor.DARK_AQUA
-						+ " Stock: " + ChatColor.WHITE
-						+ (shop.isUnlimitedStock() ? "Inf."
-								: ("%s" + ((maxstock > 0) ?
-										(ChatColor.DARK_AQUA + "/" + ChatColor.WHITE + "%s")
-										: ""))),
-						distance, shop.getShortUuidString(), stock, maxstock));
-				}
-			}
-			if(count>0)
-			{
-				int numShopsThatCarry = count;
-				int numShopsToShow = Math.min(numShopsThatCarry, 4);
-				sender.sendMessage(ChatColor.DARK_AQUA + "Showing "
-						+ ChatColor.WHITE + numShopsToShow + ChatColor.DARK_AQUA + " of "
-						+ ChatColor.WHITE + numShopsThatCarry + ChatColor.DARK_AQUA
-						+ " shop(s) having " + ChatColor.WHITE + found.name);
-				for(String msg:message)
-					sender.sendMessage(msg);
-			}else{
-				foundsome = false;
-			}
-		}else{
-			foundsome = false;
+			resFind.close();
+			String[] outmsg = {""};
+			outmsg = msg.toArray(outmsg);
+			outmsg[0] = ChatColor.DARK_AQUA + "Showing " + ChatColor.WHITE + shops + ChatColor.DARK_AQUA
+					+ " of " + ChatColor.WHITE + total + ChatColor.DARK_AQUA + " shops having "
+					+ ChatColor.WHITE + found.name;
+			player.sendMessage(outmsg);
+		}catch(Exception e){
+			log.warning(String.format("[%s] Couldn't get item info: %s", CommandShops.pdfFile.getName(), e));
+			sender.sendMessage(ChatColor.DARK_AQUA + "Find cancelled due to DB error.");
+			return true;
 		}
 		
-		if(foundsome == false)
-		{
-			sender.sendMessage(ChatColor.DARK_AQUA
-					+ "No shops were found having " + ChatColor.WHITE
-					+ found.name);
-		}
-
 		return true;
 	}
 

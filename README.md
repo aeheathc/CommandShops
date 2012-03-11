@@ -5,9 +5,24 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
-**HEAD**
+**4.0**
 
+* Tested with CB 1.2.3-R0.2
+* Updated for new event system
 * Gave commandshops.user.* by default
+* Made "select" ability implicitly granted by permissions for commands it is used with instead of separately
+* Removed aliasing; now only command is "/shop"
+* Switched to Vault for econ support
+* Fixed many places where economy failure was interpreted as insufficient funds instead of actually checking the balance
+* Remove references to bundles in documentation and in-game help
+* Switched to SQL (both sqlite for convenience and mysql for power) using "PatPeter.SQLibrary" which may give us support for other DBs in the future.
+* Remove concept of an item being "added" to a shop. Shops now independently have or not have an amount, buy price, and sell price for any item. You can now set buy and sell prices to 0. Set prices to NULL by running the set command with no number.
+* Removed player data tracking system. Should improve performance. This unfortunately has removed player enter/exit messages. You can replicate this functionality with WorldGuard. Future work in this direction will likely be automatic WorldGuard integration.
+* Commands now always check what shop you're in, so no more having to move around after warping to register that you're in a shop.  
+* Fixed bad help and error messages
+* Even more compact and informative output
+* Log everything - including shop management actions, not just transactions
+* All permanent, non-thirdparty code now has full Javadoc coverage and no TODOs
 
 **3.6.2**
 

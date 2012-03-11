@@ -1,7 +1,5 @@
 package cuboidLocale;
 
-import java.util.UUID;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class PrimitiveCuboid.
@@ -9,8 +7,8 @@ import java.util.UUID;
 public class PrimitiveCuboid
 {
 
-	/** The uuid. */
-	public UUID uuid = null;
+	/** The id. */
+	public long id = -1;
 
 	/** The world. */
 	public String world = null;

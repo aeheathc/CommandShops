@@ -1,6 +1,8 @@
 package com.aehdev.commandshops.commands;
 
-import java.util.UUID;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,239 +14,149 @@ import org.bukkit.inventory.ItemStack;
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.ItemInfo;
-import com.aehdev.commandshops.PlayerData;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CommandShopAdd.
+ * Command that allows shop owners/managers to put items in their shop. 
  */
 public class CommandShopAdd extends Command
 {
 
 	/**
-	 * Instantiates a new command shop add.
+	 * Creates an Add order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main plugin object
 	 * @param commandLabel
-	 * the command label
+	 * command alias typed by sender
 	 * @param sender
 	 * the sender
 	 * @param command
-	 * the command
+	 * input command and arguments
 	 */
-	public CommandShopAdd(CommandShops plugin, String commandLabel,
-			CommandSender sender, String command)
+	public CommandShopAdd(CommandShops plugin, String commandLabel, CommandSender sender, String command)
 	{
 		super(plugin, commandLabel, sender, command);
 	}
 
 	/**
-	 * Instantiates a new command shop add.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Run this Add command.
+	 * @return true on success
 	 */
-	public CommandShopAdd(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
-		Shop shop = null;
-
-		// Get current shop
-		if(sender instanceof Player)
+		if(!(sender instanceof Player))
 		{
-			// Get player & data
-			Player player = (Player)sender;
-			PlayerData pData = plugin.getPlayerData().get(player.getName());
-
-			// Get Current Shop
-			UUID shopUuid = pData.getCurrentShop();
-			if(shopUuid != null)
-			{
-				shop = plugin.getShopData().getShop(shopUuid);
-			}
-			if(shop == null)
-			{
-				sender.sendMessage("You are not in a shop!");
-				return false;
-			}
-
-			// Check Permissions
-			if(!canUseCommand(CommandTypes.ADD))
-			{
-				sender.sendMessage(CommandShops.CHAT_PREFIX
-						+ ChatColor.DARK_AQUA
-						+ "You don't have permission to use this command");
-				return false;
-			}
-
-			// Check if Player can Modify
-			if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
-			{
-				player.sendMessage(ChatColor.DARK_AQUA
-						+ "You must be the shop owner or a manager to set this.");
-				player.sendMessage(ChatColor.DARK_AQUA
-						+ "The current shop owner is " + ChatColor.WHITE
-						+ shop.getOwner());
-				return true;
-			}
-
-			// add (player only command)
-			Pattern pattern = Pattern.compile("(?i)add$");
-			Matcher matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				ItemStack itemStack = player.getItemInHand();
-				if(itemStack == null){ return false; }
-				ItemInfo item = null;
-				int amount = itemStack.getAmount();
-				if(CommandShops.getItemList().isDurable(itemStack))
-				{
-					item = Search.itemById(itemStack.getTypeId());
-					if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
-							&& Config.MAX_DAMAGE != 0)
-					{
-						sender.sendMessage(ChatColor.DARK_AQUA + "Your "
-								+ ChatColor.WHITE + item.name
-								+ ChatColor.DARK_AQUA
-								+ " is too damaged to add to stock!");
-						sender.sendMessage(ChatColor.DARK_AQUA
-								+ "Items must be damanged less than "
-								+ ChatColor.WHITE + Config.MAX_DAMAGE
-								+ "%");
-						return true;
-					}
-				}else{
-					item = Search.itemById(itemStack.getTypeId(),
-							itemStack.getDurability());
-				}
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return false;
-				}
-				return shopAdd(shop, item, amount);
-			}
-
-			// add all (player only command)
-			matcher.reset();
-			pattern = Pattern.compile("(?i)add\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				ItemStack itemStack = player.getItemInHand();
-				if(itemStack == null){ return false; }
-				ItemInfo item = null;
-				if(CommandShops.getItemList().isDurable(itemStack))
-				{
-					item = Search.itemById(itemStack.getTypeId());
-					if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
-							&& Config.MAX_DAMAGE != 0)
-					{
-						sender.sendMessage(ChatColor.DARK_AQUA + "Your "
-								+ ChatColor.WHITE + item.name
-								+ ChatColor.DARK_AQUA
-								+ " is too damaged to add to stock!");
-						sender.sendMessage(ChatColor.DARK_AQUA
-								+ "Items must be damanged less than "
-								+ ChatColor.WHITE + Config.MAX_DAMAGE
-								+ "%");
-						return true;
-					}
-				}else
-				{
-					item = Search.itemById(itemStack.getTypeId(),
-							itemStack.getDurability());
-				}
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return false;
-				}
-				int amount = countItemsInInventory(player.getInventory(),
-						itemStack);
-				return shopAdd(shop, item, amount);
-			}
-
-			// add int all
-			matcher.reset();
-			pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				int id = Integer.parseInt(matcher.group(1));
-				ItemInfo item = Search.itemById(id);
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return false;
-				}
-				int count = countItemsInInventory(player.getInventory(),
-						item.toStack());
-				return shopAdd(shop, item, count);
-			}
-
-			// add int:int all
-			matcher.reset();
-			pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				int id = Integer.parseInt(matcher.group(1));
-				short type = Short.parseShort(matcher.group(2));
-				ItemInfo item = Search.itemById(id, type);
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return false;
-				}
-				int count = countItemsInInventory(player.getInventory(),
-						item.toStack());
-				return shopAdd(shop, item, count);
-			}
-
-			// shop add name, ... all
-			matcher.reset();
-			pattern = Pattern.compile("(?i)add\\s+(.*)\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				String itemName = matcher.group(1);
-				ItemInfo item = Search.itemByName(itemName);
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return false;
-				}
-				int count = countItemsInInventory(player.getInventory(),
-						item.toStack());
-				return shopAdd(shop, item, count);
-			}
-
-		}else
-		{
-			sender.sendMessage("Console is not implemented yet.");
+			sender.sendMessage("Console can't add items because it doesn't have an inventory and is unable to be in a shop.");
 			return false;
 		}
-
-		// Command matching
-
-		// add int
-		Pattern pattern = Pattern.compile("(?i)add\\s+(\\d+)$");
+		Player player = (Player)sender;
+		long shop = Shop.getCurrentShop(player);
+		if(shop == -1)
+		{
+			sender.sendMessage("You are not in a shop!");
+			return false;
+		}
+		
+		// Check Permissions
+		if(!canUseCommand(CommandTypes.ADD))
+		{
+			sender.sendMessage(CommandShops.CHAT_PREFIX
+					+ ChatColor.DARK_AQUA
+					+ "You don't have permission to use this command");
+			return false;
+		}
+		
+		// Check if Player can Modify
+		if(!isShopController(shop) && !canUseCommand(CommandTypes.ADMIN))
+		{
+			player.sendMessage(ChatColor.DARK_AQUA
+					+ "You must be the owner, a manager, or an admin to stock a shop.");
+			return false;
+		}
+		
+		//> /shop add
+		// Add the currently held item stack.
+		Pattern pattern = Pattern.compile("(?i)add$");
 		Matcher matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			ItemStack itemStack = player.getItemInHand();
+			if(itemStack == null){ return false; }
+			ItemInfo item = null;
+			int amount = itemStack.getAmount();
+			if(CommandShops.getItemList().isDurable(itemStack))
+			{
+				item = Search.itemById(itemStack.getTypeId());
+				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
+						&& Config.MAX_DAMAGE != 0)
+				{
+					sender.sendMessage(ChatColor.DARK_AQUA + "Your "
+							+ ChatColor.WHITE + item.name
+							+ ChatColor.DARK_AQUA
+							+ " is too damaged to add to stock!");
+					sender.sendMessage(ChatColor.DARK_AQUA
+							+ "Items must be damanged less than "
+							+ ChatColor.WHITE + Config.MAX_DAMAGE
+							+ "%");
+					return true;
+				}
+			}else{
+				item = Search.itemById(itemStack.getTypeId(),
+						itemStack.getDurability());
+			}
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return false;
+			}
+			return shopAdd(shop, item, amount);
+		}
+		
+		//> /shop add all
+		// Add all items that are the same as what is currently held
+		matcher.reset();
+		pattern = Pattern.compile("(?i)add\\s+all$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			ItemStack itemStack = player.getItemInHand();
+			if(itemStack == null){ return false; }
+			ItemInfo item = null;
+			if(CommandShops.getItemList().isDurable(itemStack))
+			{
+				item = Search.itemById(itemStack.getTypeId());
+				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
+						&& Config.MAX_DAMAGE != 0)
+				{
+					sender.sendMessage(ChatColor.DARK_AQUA + "Your "
+							+ ChatColor.WHITE + item.name
+							+ ChatColor.DARK_AQUA
+							+ " is too damaged to add to stock!");
+					sender.sendMessage(ChatColor.DARK_AQUA
+							+ "Items must be damanged less than "
+							+ ChatColor.WHITE + Config.MAX_DAMAGE
+							+ "%");
+					return true;
+				}
+			}else{
+				item = Search.itemById(itemStack.getTypeId(),
+						itemStack.getDurability());
+			}
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return false;
+			}
+			int amount = countItemsInInventory(player.getInventory(), itemStack);
+			return shopAdd(shop, item, amount);
+		}
+		
+		//> /shop add (id) all
+		// Add all items with the specified ID and 0 damage
+		matcher.reset();
+		pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+all$");
+		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
 			int id = Integer.parseInt(matcher.group(1));
@@ -254,10 +166,68 @@ public class CommandShopAdd extends Command
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			return shopAdd(shop, item, 0);
+			int count = countItemsInInventory(player.getInventory(),
+					item.toStack());
+			return shopAdd(shop, item, count);
+		}
+		
+		//> /shop add (id):(dam) all
+		// add all items with the specified ID and damage
+		matcher.reset();
+		pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+all$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			int id = Integer.parseInt(matcher.group(1));
+			short type = Short.parseShort(matcher.group(2));
+			ItemInfo item = Search.itemById(id, type);
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return false;
+			}
+			int count = countItemsInInventory(player.getInventory(),
+					item.toStack());
+			return shopAdd(shop, item, count);
+		}
+		
+		//> /shop add (name), ... all
+		// add all items with the specified name
+		matcher.reset();
+		pattern = Pattern.compile("(?i)add\\s+(.*)\\s+all$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			String itemName = matcher.group(1);
+			ItemInfo item = Search.itemByName(itemName);
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return false;
+			}
+			int count = countItemsInInventory(player.getInventory(),
+					item.toStack());
+			return shopAdd(shop, item, count);
 		}
 
-		// add int int
+		//> /shop add (id)
+		// add 1 item with the specified ID
+		pattern = Pattern.compile("(?i)add\\s+(\\d+)$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			int id = Integer.parseInt(matcher.group(1));
+			ItemInfo item = Search.itemById(id);
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return false;
+			}
+			return shopAdd(shop, item, 1);
+		}
+
+		//> /shop add (id) (amt)
+		// Add specified amount of items with specified ID
 		matcher.reset();
 		pattern = Pattern.compile("(?i)add\\s+(\\d+)\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -274,7 +244,8 @@ public class CommandShopAdd extends Command
 			return shopAdd(shop, item, count);
 		}
 
-		// add int:int
+		//> /shop add (id):(dam)
+		// Add 1 item with specified ID and specified damage
 		matcher.reset();
 		pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -288,10 +259,11 @@ public class CommandShopAdd extends Command
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			return shopAdd(shop, item, 0);
+			return shopAdd(shop, item, 1);
 		}
 
-		// add int:int int
+		//> /shop add (id):(dam) (amt)
+		// Add specified amount of items with specified id and damage
 		matcher.reset();
 		pattern = Pattern.compile("(?i)add\\s+(\\d+):(\\d+)\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -309,7 +281,8 @@ public class CommandShopAdd extends Command
 			return shopAdd(shop, item, count);
 		}
 
-		// shop add name, ... int
+		//> /shop add (name), ... (amt)
+		// Add specified amount of items with specified name
 		matcher.reset();
 		pattern = Pattern.compile("(?i)add\\s+(.*)\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -326,7 +299,8 @@ public class CommandShopAdd extends Command
 			return shopAdd(shop, item, count);
 		}
 
-		// shop add name, ...
+		//> /shop add (name), ...
+		// Add 1 item with specified name
 		matcher.reset();
 		pattern = Pattern.compile("(?i)add\\s+(.*)$");
 		matcher = pattern.matcher(command);
@@ -339,139 +313,150 @@ public class CommandShopAdd extends Command
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			return shopAdd(shop, item, 0);
+			return shopAdd(shop, item, 1);
 		}
 
-		// Show buy help
+		// Show add help
 		sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel
-				+ " buy [itemname] [number] " + ChatColor.DARK_AQUA
-				+ "- Buy this item.");
+				+ " add [itemname] [number] " + ChatColor.DARK_AQUA
+				+ "- Add this item from your inventory to the shop.");
 		return true;
 	}
 
 	/**
-	 * Shop add.
+	 * Stock some amount of an item into the shop from the player's inventory.
 	 * @param shop
-	 * the shop
+	 * the shop recieving the item(s)
 	 * @param item
-	 * the item
+	 * the item type
 	 * @param amount
-	 * the amount
+	 * how many
 	 * @return true, if successful
 	 */
-	private boolean shopAdd(Shop shop, ItemInfo item, int amount)
+	private boolean shopAdd(long shop, ItemInfo item, int amount)
 	{
-		Player player = null;
+		Player player = (Player)sender;
+		String playerName = player.getName();
 
-		// Assign in sender is a Player
-		if(sender instanceof Player)
+		if(!(sender instanceof Player))
 		{
-			player = (Player)sender;
+			sender.sendMessage("You need an inventory to add items to a shop");
+			return false;
 		}
 
-		// Calculate number of items player has
-		if(player != null)
-		{
-			int playerItemCount = countItemsInInventory(player.getInventory(),
-					item.toStack());
-			// Validate Count
-			if(playerItemCount >= amount)
+		//Validate amount
+		if(amount<0) return false;
+		if(amount==0) return true;
+		
+		//Get basic info about shop
+		boolean shopUnlimitedStock = false;
+		String shopName = "";
+		long itemStock = 0, stockId = -1;
+		boolean itemNew = false;
+		try{
+			ResultSet resShop = CommandShops.db.query("SELECT name,unlimitedStock FROM shops WHERE id="+shop+" LIMIT 1");
+			resShop.next();
+			shopUnlimitedStock = resShop.getInt("unlimitedStock") == 1;
+			shopName = resShop.getString("name");
+			resShop.close();
+			String itemQuery = String.format("SELECT id,stock,buy,sell FROM shop_items WHERE "
+					+ "	shop=%d AND itemid=%d AND	itemdamage=%d",
+						shop,		item.typeId,	item.subTypeId);
+			ResultSet resItem = CommandShops.db.query(itemQuery);
+			if(resItem.next())
 			{
-				// Perform add
-				log.info(String.format("[%s] Add %d of %s to %s",
-						plugin.pdfFile.getName(), amount, item, shop));
+				stockId = resItem.getLong("id");
+				itemStock = resItem.getLong("stock");
+				resItem.getDouble("buy");	boolean hasBuy = !resItem.wasNull();
+				resItem.getDouble("sell");	boolean hasSell= !resItem.wasNull();
+				if(!hasBuy && !hasSell) itemNew = true;
 			}else{
-				// Nag player
-				sender.sendMessage(ChatColor.DARK_AQUA + "You only have "
-						+ ChatColor.WHITE + playerItemCount
-						+ ChatColor.DARK_AQUA
-						+ " in your inventory that can be added.");
-				// amount = playerItemCount;
-				return false;
+				String insertQuery = String.format("INSERT INTO shop_items"
+						+ "(shop,	itemid,		itemdamage,		stock,	maxstock,	buy,	sell) VALUES"
+						+ "(%d,		%d,			%d,				0,		10,			NULL,	NULL)"
+						,	shop,	item.typeId,item.subTypeId);
+						
+				CommandShops.db.query(insertQuery);
+				itemStock = 0;
+				itemNew = true;
+				String stockQuery = String.format("SELECT MAX(id) FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d"
+												, shop, item.typeId, item.subTypeId);
+				ResultSet resStock = db.query(stockQuery);
+				resStock.next();
+				stockId = resStock.getLong(1);
+				resStock.close();
 			}
-
-			// If ALL (amount == -1), set amount to the count the player has
-			if(amount == -1)
-			{
-				amount = playerItemCount;
-			}
+			resItem.close();
+		}catch(Exception e){
+			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			sender.sendMessage(ChatColor.DARK_AQUA + "Add cancelled due to DB error.");
+			return false;
 		}
-
-		// If shop contains item
-		if(shop.containsItem(item))
+		
+		// Calculate number of items player has
+		int playerItemCount = countItemsInInventory(player.getInventory(), item.toStack());
+		// Validate Count
+		if(playerItemCount < amount)
 		{
-			// Check if stock is unlimited
-			if(shop.isUnlimitedStock())
-			{
-				// nicely message user
-				sender.sendMessage(String.format(
-						"%s has unlimited stock and already carries %s!",
-						shop.getName(), item.name));
-				return true;
-			}
-
-			// Check if amount to be added is 0 (no point adding 0)
-			if(amount == 0)
-			{
-				// nicely message user
-				sender.sendMessage(String.format("%s already carries %s!",
-						shop.getName(), item.name));
-				return true;
-			}
+			// Nag player
+			sender.sendMessage(ChatColor.DARK_AQUA + "You only have "
+					+ ChatColor.WHITE + playerItemCount
+					+ ChatColor.DARK_AQUA
+					+ " in your inventory that can be added.");
+			return false;
 		}
 
-		// Add item to shop if needed
-		if(!shop.containsItem(item))
+		if(shopUnlimitedStock)
 		{
-			shop.addItem(item.typeId, item.subTypeId, 0, 0, 0, 10);
+			sender.sendMessage(String.format(
+					"%s has unlimited stock, no need to stock it!",
+					shopName, item.name));
+			return false;
 		}
 
-		// Check stock settings, add stock if necessary
-		if(shop.isUnlimitedStock())
-		{
-			sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added "
-					+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA
-					+ " to the shop.");
-		}else{
-			shop.addStock(item.name, amount);
-			sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added "
-					+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA
-					+ " to the shop. Stock is now " + ChatColor.WHITE
-					+ shop.getItem(item.name).getStock());
+		long newStock = itemStock + amount;
+		try{
+			String addQuery = String.format("UPDATE shop_items SET stock=stock+%d WHERE id=%d", amount, stockId);
+			CommandShops.db.query(addQuery);
+		}catch(Exception e){
+			log.warning(String.format("[%s] Couldn't add item to shop: %s", CommandShops.pdfFile.getName(), e));
+			sender.sendMessage(ChatColor.DARK_AQUA + "Add cancelled due to DB error.");
+			return false;
 		}
+		
+		removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added "
+				+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA
+				+ " to the shop. Stock is now " + ChatColor.WHITE
+				+ newStock);
 
-		if(amount == 0)
+		if(itemNew)
 		{
 			sender.sendMessage(ChatColor.DARK_AQUA + item.name
 					+ " is almost ready to be purchased or sold!");
 			sender.sendMessage(ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE
-					+ "\"/shop set sell " + item.name + " price bundle\""
+					+ "\"/shop set sell " + item.name + " price\""
 					+ ChatColor.DARK_AQUA + " to sell this item!");
 			sender.sendMessage(ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE
-					+ "\"/shop set buy " + item.name + " price bundle\""
+					+ "\"/shop set buy " + item.name + " price\""
 					+ ChatColor.DARK_AQUA + " to  buy this item!");
 		}
 
 		// log the transaction
-		if(player != null)
-		{
-			int itemInv = shop.getItem(item.name).getStock();
-			int startInv = itemInv - amount;
-			if(startInv < 0)
-			{
-				startInv = 0;
-			}
-			plugin.getShopData().logItems(player.getName(), shop.getName(),
-					"add-item", item.name, amount, startInv, itemInv);
-
-			// take items from player only if shop doesn't have unlim stock
-			if(!shop.isUnlimitedStock())
-			{
-				removeItemsFromInventory(player.getInventory(), item.toStack(),
-						amount);
-			}
+		log.info(String.format("[%s] Add %d of %s to %s by %s",
+				CommandShops.pdfFile.getName(), amount, item.name, shop, playerName));
+		try{
+			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+			String logQuery = String.format("INSERT INTO log" 
+				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
+				+"(	'%s',		'%s',					%d,		'add',		%d,			%d,				%d,			NULL,	NULL,		NULL)"
+				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount);
+			CommandShops.db.query(logQuery);
+		}catch(Exception e){
+			log.warning(String.format("[%s] Couldn't log transaction: %s",
+					CommandShops.pdfFile.getName(), e));
 		}
-		plugin.getShopData().saveShop(shop);
 		return true;
 	}
 }

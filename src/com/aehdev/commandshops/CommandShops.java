@@ -1,47 +1,47 @@
 package com.aehdev.commandshops;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.aehdev.commandshops.commands.ShopCommandExecutor;
-import com.aehdev.commandshops.modules.economy.EconomyManager;
-import com.aehdev.commandshops.threads.NotificationThread;
 
 import cuboidLocale.QuadTree;
+import net.milkbowl.vault.economy.Economy;
+import com.aehdev.lib.PatPeter.SQLibrary.DatabaseHandler;
+import com.aehdev.lib.PatPeter.SQLibrary.MySQL;
+import com.aehdev.lib.PatPeter.SQLibrary.SQLite;
 
-//TODO: Auto-generated Javadoc
+import com.aehdev.commandshops.commands.ShopCommandExecutor;
+import com.aehdev.commandshops.threads.NotificationThread;
+
 /**
  * The main Bukkit plugin class for CommandShops.
  */
 public class CommandShops extends JavaPlugin
 {
-	// Listeners & Objects
-	/** Our class extending PlayerListener that handles player interaction */
-	public ShopsPlayerListener playerListener = new ShopsPlayerListener(this);
+	/** Our class implementing Listener that handles player interaction */
+	public ShopsPlayerListener playerListener = new ShopsPlayerListener();
 
 	/** Single object that holds all data for everyone's shops */
-	private ShopData shopData = new ShopData(this);
+	private ShopData shopData = new ShopData();
 
 	/** General plugin info that comes directly from the private
 	 * {@link JavaPlugin#description} in the parent. Effectively all we're
 	 * doing here is converting it to public. */
-	public PluginDescriptionFile pdfFile = null;
+	public static PluginDescriptionFile pdfFile = null;
 
 	/** Thread that notifies managers of transactions. */
 	protected NotificationThread notificationThread = null;
 
 	/** Abstracts supported economies. */
-	private EconomyManager econManager = null;
+	public Economy econ = null;
+	
+	/** Abstracts supported databases. */
+	public static DatabaseHandler db = null;
 
 	/** Main logger with which we write to the server log. */
 	private final Logger log = Logger.getLogger("Minecraft");
@@ -59,64 +59,64 @@ public class CommandShops extends JavaPlugin
 	/** Folder within {@link folderPath} that contains the shop files. */
 	static String shopsPath = "shops/";
 
-	/** The item list. */
+	/** Database of item data. */
 	private static ItemData itemList = new ItemData();
 
-	/** The player data. */
-	private Map<String,PlayerData> playerData; // synchronized player hash
-
-	/* (non-Javadoc)
-	 * @see org.bukkit.plugin.Plugin#onEnable() */
+	/**
+	 * Setup method for when this plugin is enabled by Bukkit
+	 */
 	public void onEnable()
 	{
-		pdfFile = getDescription();
-		setPlayerData(Collections
-				.synchronizedMap(new HashMap<String,PlayerData>()));
-
-		// add all the online users to the data trees
-		for(Player player: this.getServer().getOnlinePlayers())
-		{
-			getPlayerData().put(player.getName(),
-					new PlayerData(this, player.getName()));
-		}
-
+		pdfFile = getDescription();	//cache plugin info
+		Config.loadProperties(this);//Get the configuration via Bukkit's builtin method
+		
+        if(!setupEconomy())
+        {
+            log.severe(String.format("[%s] - Shutting down: Vault not found!", pdfFile.getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        
+        //Connect to database, do any necessary setup
+        if(Config.STORAGE_SYSTEM.equalsIgnoreCase("sqlite"))
+        {
+        	db = new SQLite(log, "CommandShops","commandshops",folderPath);
+        	if(!setupDB()) return;
+        }else if(Config.STORAGE_SYSTEM.equalsIgnoreCase("mysql")){
+        	db = new MySQL(log, "CommandShops", Config.DB_HOST, ""+Config.DB_PORT,
+        			Config.DB_NAME, Config.DB_USER, Config.DB_PASS);
+        	if(!setupDB()) return;
+        }else{
+            log.severe(String.format("[%s] - Shutting down: Unrecognized storage system.", pdfFile.getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        
+		// read old shopfile format and dump into database
+		(new File(folderPath)).mkdir();
+		File shopsDir = new File(folderPath + shopsPath);
+		shopsDir.mkdir();
+		shopData.loadShops(shopsDir);
+        
 		// Register our events
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener,
-				Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener,
-				Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener,
-				Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener,
-				Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_KICK, playerListener,
-				Priority.Monitor, this);
+		getServer().getPluginManager().registerEvents(playerListener, this);
 
 		// Register Commands
 		getCommand("shop").setExecutor(new ShopCommandExecutor(this));
 
-		// setup the file IO
-		(new File(folderPath)).mkdir();
-
-		File shopsDir = new File(folderPath + shopsPath);
-		shopsDir.mkdir();
-
-		Config.loadProperties(this);		
-
-		// read the shops into memory
-		getShopData().loadShops(shopsDir);
-
 		// update the console that we've started
-		log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with "
-				+ getShopData().getNumShops() + " shop(s)"));
-		log.info(String.format("[%s] %s", pdfFile.getName(),
-				"Version " + pdfFile.getVersion() + " is enabled: "));
-
-		// check which shops players are inside
-		for(Player player: this.getServer().getOnlinePlayers())
-		{
-			playerListener.checkPlayerPosition(player);
+		try{
+			ResultSet shoptot = db.query("SELECT COUNT(*) FROM shops"); shoptot.next();
+			long totalShops = shoptot.getLong(1);
+			shoptot.close();
+			log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with "
+					+ totalShops + " shop(s)"));
+			log.info(String.format("[%s] %s", pdfFile.getName(),
+					"Version " + pdfFile.getVersion() + " is enabled: "));
+		}catch(Exception e){
+            log.severe(String.format("[%s] - Shutting down: Can't select from DB.", pdfFile.getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
 		}
 
 		// Start Notification thread
@@ -125,25 +125,15 @@ public class CommandShops extends JavaPlugin
 			notificationThread = new NotificationThread(this);
 			notificationThread.start();
 		}
-
-		try{
-			setEconManager(new EconomyManager(this));
-		}catch(NoClassDefFoundError e){
-			log.warning(String.format("[%s] FATAL: Register not found.", pdfFile.getName()));
-            getPluginLoader().disablePlugin(this);
-            return;
-		}
-		log.info(String.format("[%s][Economy] Register activated.",
-								pdfFile.getName()));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bukkit.plugin.Plugin#onDisable() */
+	/**
+	 * Shut down the plugin.
+	 * Called by Bukkit when the server is shutting down, plugins are being reloaded,
+	 * or we voluntarily shutdown due to errors. 
+	 */
 	public void onDisable()
 	{
-		// Save all shops
-		getShopData().saveAllShops();
-
 		// Stop notification thread
 		if((Config.NOTIFY_INTERVAL > 0) && notificationThread != null
 				&& notificationThread.isAlive())
@@ -164,42 +154,8 @@ public class CommandShops extends JavaPlugin
 				+ pdfFile.getVersion() + " is disabled!"));
 	}
 
-
-
 	/**
-	 * Sets the shop data.
-	 * @param shopData
-	 * the new shop data
-	 */
-	public void setShopData(ShopData shopData)
-	{
-		this.shopData = shopData;
-	}
-
-	/**
-	 * Gets the shop data.
-	 * @return the shop data
-	 */
-	public ShopData getShopData() {return shopData;}
-
-	/**
-	 * Sets the player data.
-	 * @param playerData
-	 * the player data
-	 */
-	public void setPlayerData(Map<String,PlayerData> playerData)
-	{
-		this.playerData = playerData;
-	}
-
-	/**
-	 * Gets the player data.
-	 * @return the player data
-	 */
-	public Map<String,PlayerData> getPlayerData() {return playerData;}
-
-	/**
-	 * Sets the item list.
+	 * Saves the item database.
 	 * @param itemList
 	 * the new item list
 	 */
@@ -209,13 +165,13 @@ public class CommandShops extends JavaPlugin
 	}
 
 	/**
-	 * Gets the item list.
+	 * Gets the item database.
 	 * @return the item list
 	 */
 	public static ItemData getItemList() {return itemList;}
 
 	/**
-	 * Sets the cuboid tree.
+	 * Sets the structure of shop coords.
 	 * @param cuboidTree
 	 * the new cuboid tree
 	 */
@@ -225,24 +181,71 @@ public class CommandShops extends JavaPlugin
 	}
 
 	/**
-	 * Gets the cuboid tree.
+	 * Gets the structure of shop coords.
 	 * @return the cuboid tree
 	 */
 	public static QuadTree getCuboidTree() {return cuboidTree;}
-
+	
 	/**
-	 * Sets the econ manager.
-	 * @param econManager
-	 * the new econ manager
+	 * Attach to Vault's Economy support
+	 * @return true on success
 	 */
-	public void setEconManager(EconomyManager econManager)
-	{
-		this.econManager = econManager;
-	}
+    private boolean setupEconomy()
+    {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) return false;
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+    
+    /**
+     * Ensure that the database contains the right schema.
+     * @param autoinc_underscore Whether the selected DB type needs "AUTO_INCREMENT" instead of "AUTOINCREMENT"
+     * @return true on success
+     */
+    private boolean setupDB()
+    {
+    	String tables,indexes;
+    	if(db instanceof com.aehdev.lib.PatPeter.SQLibrary.SQLite)
+    	{
+    		tables = "CREATE TABLE IF NOT EXISTS `shops` (`id` INTEGER  PRIMARY KEY AUTOINCREMENT NOT NULL,`name` TEXT  NOT NULL,`owner` TEXT  NOT NULL,`creator` TEXT  NOT NULL,`x` INTEGER  NOT NULL,`y` INTEGER  NOT NULL,`z` INTEGER  NOT NULL,`x2` INTEGER  NOT NULL,`y2` INTEGER  NOT NULL,`z2` INTEGER  NOT NULL,`world` TEXT  NOT NULL,`minbalance` REAL DEFAULT '0' NOT NULL,`unlimitedMoney` INTEGER DEFAULT '0' NOT NULL,`unlimitedStock` INTEGER DEFAULT '0' NOT NULL,`notify` INTEGER DEFAULT '1' NOT NULL,`service_repair` INTEGER DEFAULT '1' NOT NULL,`service_disenchant` INTEGER DEFAULT '1' NOT NULL);CREATE TABLE IF NOT EXISTS `shop_items` (`id` INTEGER  PRIMARY KEY AUTOINCREMENT NOT NULL,`shop` INTEGER  NOT NULL,`itemid` INTEGER  NOT NULL,`itemdamage` INTEGER  NOT NULL,`stock` REAL DEFAULT '0' NOT NULL,`maxstock` INTEGER DEFAULT '10' NOT NULL,`buy` REAL  NULL,`sell` REAL  NULL,FOREIGN KEY(shop) REFERENCES shops(id));CREATE TABLE IF NOT EXISTS `managers` (`shop` INTEGER NOT NULL, `manager` TEXT NOT NULL, FOREIGN KEY(shop) REFERENCES shops(id));CREATE TABLE IF NOT EXISTS `log` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `datetime` TEXT NOT NULL, `user` TEXT NOT NULL, `shop` INTEGER NOT NULL, `action` TEXT NOT NULL, `itemid` INTEGER, `itemdamage` INTEGER, `amount` INTEGER, `cost` REAL, `total` REAL, `comment` TEXT,FOREIGN KEY(shop) REFERENCES shops(id));";
+    		indexes = "CREATE INDEX `IDX_LOG_DATETIME` ON `log`(`datetime`  ASC);CREATE INDEX `IDX_LOG_SHOP` ON `log`(`shop`  ASC);CREATE INDEX `IDX_LOG_ACTION` ON `log`(`action`  ASC);CREATE INDEX `IDX_MANAGERS_MANAGER` ON `managers`(`manager`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_SHOP` ON `shop_items`(`shop`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMID` ON `shop_items`(`itemid`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMDAMAGE` ON `shop_items`(`itemdamage`  ASC);CREATE INDEX `IDX_SHOPS_X` ON `shops`(`x`  ASC);CREATE INDEX `IDX_SHOPS_Y` ON `shops`(`y`  ASC);CREATE INDEX `IDX_SHOPS_Z` ON `shops`(`z`  ASC);CREATE INDEX `IDX_SHOPS_X2` ON `shops`(`x2`  ASC);CREATE INDEX `IDX_SHOPS_Y2` ON `shops`(`y2`  ASC);CREATE INDEX `IDX_SHOPS_Z2` ON `shops`(`z2`  ASC);CREATE INDEX `IDX_SHOPS_OWNER` ON `shops`(`owner`  ASC);CREATE INDEX `IDX_SHOPS_WORLD` ON `shops`(`world`  ASC);CREATE UNIQUE INDEX IDX_MANAGERS_ ON managers(manager,shop);CREATE UNIQUE INDEX IDX_SHOP_ITEMS_ ON shop_items(shop,itemid,itemdamage);";
+    	}else{ //mysql
+    		tables = "CREATE TABLE IF NOT EXISTS `shops` (`id` INTEGER  PRIMARY KEY AUTO_INCREMENT NOT NULL,`name` TEXT  NOT NULL,`owner` TEXT  NOT NULL,`creator` TEXT  NOT NULL,`x` INTEGER  NOT NULL,`y` INTEGER  NOT NULL,`z` INTEGER  NOT NULL,`x2` INTEGER  NOT NULL,`y2` INTEGER  NOT NULL,`z2` INTEGER  NOT NULL,`world` TEXT  NOT NULL,`minbalance` REAL DEFAULT '0' NOT NULL,`unlimitedMoney` INTEGER DEFAULT '0' NOT NULL,`unlimitedStock` INTEGER DEFAULT '0' NOT NULL,`notify` INTEGER DEFAULT '1' NOT NULL,`service_repair` INTEGER DEFAULT '1' NOT NULL,`service_disenchant` INTEGER DEFAULT '1' NOT NULL);CREATE TABLE IF NOT EXISTS `shop_items` (`id` INTEGER  PRIMARY KEY AUTO_INCREMENT NOT NULL,`shop` INTEGER  NOT NULL,`itemid` INTEGER  NOT NULL,`itemdamage` INTEGER  NOT NULL,`stock` REAL DEFAULT '0' NOT NULL,`maxstock` INTEGER DEFAULT '10' NOT NULL,`buy` REAL  NULL,`sell` REAL  NULL,FOREIGN KEY(shop) REFERENCES shops(id));CREATE TABLE IF NOT EXISTS `managers` (`shop` INTEGER NOT NULL, `manager` VARCHAR(255) NOT NULL, FOREIGN KEY(shop) REFERENCES shops(id));CREATE TABLE IF NOT EXISTS `log` (`id` INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, `datetime` TEXT NOT NULL, `user` TEXT NOT NULL, `shop` INTEGER NOT NULL, `action` TEXT NOT NULL, `itemid` INTEGER, `itemdamage` INTEGER, `amount` INTEGER, `cost` REAL, `total` REAL, `comment` TEXT,FOREIGN KEY(shop) REFERENCES shops(id));";
+    		indexes = "CREATE INDEX `IDX_LOG_DATETIME` ON `log`(`datetime`(22)  ASC);CREATE INDEX `IDX_LOG_SHOP` ON `log`(`shop`  ASC);CREATE INDEX `IDX_LOG_ACTION` ON `log`(`action`(22)  ASC);CREATE INDEX `IDX_MANAGERS_MANAGER` ON `managers`(`manager`(22)  ASC);CREATE INDEX `IDX_SHOP_ITEMS_SHOP` ON `shop_items`(`shop`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMID` ON `shop_items`(`itemid`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMDAMAGE` ON `shop_items`(`itemdamage`  ASC);CREATE INDEX `IDX_SHOPS_X` ON `shops`(`x`  ASC);CREATE INDEX `IDX_SHOPS_Y` ON `shops`(`y`  ASC);CREATE INDEX `IDX_SHOPS_Z` ON `shops`(`z`  ASC);CREATE INDEX `IDX_SHOPS_X2` ON `shops`(`x2`  ASC);CREATE INDEX `IDX_SHOPS_Y2` ON `shops`(`y2`  ASC);CREATE INDEX `IDX_SHOPS_Z2` ON `shops`(`z2`  ASC);CREATE INDEX `IDX_SHOPS_OWNER` ON `shops`(`owner`(22)  ASC);CREATE INDEX `IDX_SHOPS_WORLD` ON `shops`(`world`(22)  ASC);CREATE UNIQUE INDEX IDX_MANAGERS_ ON managers(manager,shop);CREATE UNIQUE INDEX IDX_SHOP_ITEMS_ ON shop_items(shop,itemid,itemdamage);";
+    	}
 
-	/**
-	 * Gets the econ manager.
-	 * @return the econ manager
-	 */
-	public EconomyManager getEconManager() {return econManager;}
+    	try{
+    		for(String query : tables.split(";")) db.query(query);
+    	}catch(Exception e){
+    		log.severe(String.format("[%s] [SQLibrary] - %s", pdfFile.getName(),e));
+            log.severe(String.format("[%s] - Shutting down: Problem checking schema.", pdfFile.getName()));
+            getServer().getPluginManager().disablePlugin(this);
+    		return false;
+    	}
+    	/* Index creation queries are expected to cause errors if the indexes already exist because
+    	 * MySQL does not support "CREATE INDEX IF NOT EXISTS" 
+    	 */
+    	for(String query : indexes.split(";")) try{db.query(query,true);}catch(Exception e){}
+    	
+    	//trim log
+    	try{
+    		ResultSet reslog = db.query("SELECT COUNT(*) FROM log");
+    		reslog.next();
+    		long count = reslog.getLong(1);
+    		reslog.close();
+    		if(count>Config.LOG_LIMIT)
+    		{
+    			ResultSet resPivot = db.query("SELECT `datetime` FROM log ORDER BY `datetime` DESC LIMIT " + Config.LOG_LIMIT + ",1");
+    			String pivot = resPivot.getString("datetime");
+    			resPivot.close();
+    			db.query("DELETE FROM log WHERE `datetime`<'" + pivot + "'");
+    		}
+    	}catch(Exception e){
+    		log.warning(String.format("[%s] - Couldn't trim log. Beware of ballooning log table. %s", pdfFile.getName(), e));
+    	}
+    	
+    	return true;
+    }
 }

@@ -1,27 +1,21 @@
 == Planned Features ==
-- Eliminate arcane file formats for shops and transactions, store everything in sqlite file
-- Log everything - including shop management actions, not just transactions
 - On-demand transaction log querying
-- Add mysql option to facilitate longer logs, web based log and market analysis, and web based shop management
 - Add auto-updating
 - Storage limitations (config,size,chests?)
 - stock variety limitations (upgrade web of similar items?)
 - sales tax. (Make shop fees go to the same collector as the sales tax?)
-- use vault instead of register if it will help
 - Optional Towny/WorldGuard/etc integration
 --- Only let you make shops in places you own 
 --- Surveyor service (self serve land exchange via shops)
 --- Sales tax feudal management
 --- Show region name in /shop info
-- resolve TODOs and complete Javadoc comments
 - make /shop find with no item find any nearby shops
 - multi language support
 - XP market
-- Support for non-uniform item states in storage, to preserve damage and enchantments, and allow shop owners to set price scaling factors.
-- Make transaction code check balance instead of interpreting failed transfers as lack of funds
+- Repair and disenchant
 - Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items 
 - Fix redwood/jungle leaf detection
-- Remove references to bundles in documentation and in-game help
+- Dump cuboid thing and determine shop overlap via sql
 == Maybe Features ==
 - Price volatility
 - replace item matching code with 3rd party abbreviation engine

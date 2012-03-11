@@ -8,35 +8,40 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
+import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.Search;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ShopCommandExecutor.
+ * Engine for parsing and running all commands accepted by the plugin.
  */
 public class ShopCommandExecutor implements CommandExecutor
 {
 
-	/** The plugin. */
+	/** reference to the main commandshops plugin object */
 	private final CommandShops plugin;
 
-	/** The log. */
+	/** Master logger */
 	private final Logger log = Logger.getLogger("Minecraft");
 
 	/**
-	 * Instantiates a new shop command executor.
+	 * Start accepting commands.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main commandshops plugin object
 	 */
 	public ShopCommandExecutor(CommandShops plugin)
 	{
 		this.plugin = plugin;
 	}
 
-	/* (non-Javadoc)
-	 * @see
-	 * org.bukkit.command.CommandExecutor#onCommand(org.bukkit.command.CommandSender
-	 * , org.bukkit.command.Command, java.lang.String, java.lang.String[]) */
+    /**
+     * Process players' commands which are sent here by Bukkit.
+     * 
+     * @param sender who sent the command, hopefully a player
+     * @param command the command name
+     * @param commandLabel actual command alias that was used
+     * @param args arguments to the command
+     * @return true on success
+     */
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args)
@@ -70,28 +75,20 @@ public class ShopCommandExecutor implements CommandExecutor
 		String commandName = command.getName().toLowerCase();
 		
 		com.aehdev.commandshops.commands.Command cmd = null;
-		boolean checkPlayerPos = false;
 
-		if(commandName.equalsIgnoreCase("lshop")
-				|| commandLabel.equalsIgnoreCase("buy")
-				|| commandLabel.equalsIgnoreCase("sell"))
+		if(commandName.equalsIgnoreCase("shop"))
 		{
 			if(type.equalsIgnoreCase("search"))
 			{
 				cmd = new CommandShopSearch(plugin, commandLabel, sender, cmdString);
 			}else if(type.equalsIgnoreCase("find")){
 				cmd = new CommandShopFind(plugin, commandLabel, sender, cmdString);
-			}else if(type.equalsIgnoreCase("debug")){
-				cmd = new CommandShopDebug(plugin, commandLabel, sender, cmdString);
 			}else if(type.equalsIgnoreCase("create")){
 				cmd = new CommandShopCreate(plugin, commandLabel, sender, cmdString);
-				checkPlayerPos = true;
 			}else if(type.equalsIgnoreCase("destroy")){
 				cmd = new CommandShopDestroy(plugin, commandLabel, sender, cmdString);
-				checkPlayerPos = true;
 			}else if(type.equalsIgnoreCase("move")){
 				cmd = new CommandShopMove(plugin, commandLabel, sender, cmdString);
-				checkPlayerPos = true;
 			}else if(type.equalsIgnoreCase("browse") || type.equalsIgnoreCase("bro")){
 				cmd = new CommandShopBrowse(plugin, commandLabel, sender, cmdString);
 			}else if(type.equalsIgnoreCase("sell")){
@@ -116,18 +113,11 @@ public class ShopCommandExecutor implements CommandExecutor
 				cmd = new CommandShopHelp(plugin, commandLabel, sender, cmdString);
 			}
 
-			log.info(String.format("[%s] %s issued: %s",
-					plugin.getDescription().getName(), user, cmd.getCommand()));
-			boolean cVal = cmd.process();
-			if(cVal && checkPlayerPos)
-			{
-				for(Player player: plugin.getServer().getOnlinePlayers())
-				{
-					plugin.playerListener.checkPlayerPosition(player);
-				}
-			}
+			if(Config.DEBUG)
+				log.info(String.format("[%s] %s issued: %s", plugin.getDescription().getName(), user, cmd.getCommand()));
 
-			return cVal;
+			cmd.process();
+			return true;
 		}
 		return false;
 	}

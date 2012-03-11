@@ -1,16 +1,15 @@
 package com.aehdev.commandshops;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Logger;
 
-import cuboidLocale.PrimitiveCuboid;
+import org.bukkit.entity.Player;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -52,14 +51,8 @@ public class Shop implements Comparator<Shop>
 	/** The inventory. */
 	private HashMap<String,InventoryItem> inventory = new HashMap<String,InventoryItem>();
 
-	/** The cuboid. */
-	private PrimitiveCuboid cuboid = null;
-
 	/** The min balance. */
 	private double minBalance = 0;
-
-	/** The transactions. */
-	private ArrayBlockingQueue<Transaction> transactions;
 
 	/** The notification. */
 	private boolean notification = true;
@@ -76,8 +69,6 @@ public class Shop implements Comparator<Shop>
 	public Shop(UUID uuid)
 	{
 		this.uuid = uuid;
-		transactions = new ArrayBlockingQueue<Transaction>(
-				Config.LOG_LIMIT);
 	}
 
 	/**
@@ -159,7 +150,7 @@ public class Shop implements Comparator<Shop>
 	 * @param z
 	 * the z
 	 */
-	public void setLocationA(long x, long y, long z)
+	public void setLocationA(int x, int y, int z)
 	{
 		locationA = new ShopLocation(x, y, z);
 	}
@@ -183,7 +174,7 @@ public class Shop implements Comparator<Shop>
 	 * @param z
 	 * the z
 	 */
-	public void setLocationB(long x, long y, long z)
+	public void setLocationB(int x, int y, int z)
 	{
 		locationB = new ShopLocation(x, y, z);
 	}
@@ -295,46 +286,6 @@ public class Shop implements Comparator<Shop>
 	public void setUnlimitedMoney(boolean b)
 	{
 		unlimitedMoney = b;
-	}
-
-	/**
-	 * Gets the item.
-	 * @param item
-	 * the item
-	 * @return the item
-	 */
-	public InventoryItem getItem(String item)
-	{
-		return inventory.get(item);
-	}
-
-	/**
-	 * Contains item.
-	 * @param item
-	 * the item
-	 * @return true, if successful
-	 */
-	public boolean containsItem(ItemInfo item)
-	{
-		Iterator<InventoryItem> it = inventory.values().iterator();
-		while(it.hasNext())
-		{
-			InventoryItem invItem = it.next();
-			ItemInfo invItemInfo = invItem.getInfo();
-			if(invItemInfo.typeId == item.typeId
-					&& invItemInfo.subTypeId == item.subTypeId){ return true; }
-		}
-		return false;
-	}
-
-	/**
-	 * Gets the short uuid string.
-	 * @return the short uuid string
-	 */
-	public String getShortUuidString()
-	{
-		String sUuid = uuid.toString();
-		return sUuid.substring(sUuid.length() - Config.UUID_MIN_LENGTH);
 	}
 
 	/**
@@ -590,70 +541,6 @@ public class Shop implements Comparator<Shop>
 		inventory.get(itemName).maxStock = maxStock;
 	}
 
-	/**
-	 * Gets the transactions.
-	 * @return the transactions
-	 */
-	public Queue<Transaction> getTransactions()
-	{
-		return transactions;
-	}
-
-	/**
-	 * Removes the transaction.
-	 * @param trans
-	 * the trans
-	 */
-	public void removeTransaction(Transaction trans)
-	{
-		transactions.remove(trans);
-	}
-
-	/**
-	 * Adds the transaction.
-	 * @param trans
-	 * the trans
-	 */
-	public void addTransaction(Transaction trans)
-	{
-		if(transactions.remainingCapacity() >= 1)
-		{
-			transactions.add(trans);
-		}else
-		{
-			transactions.remove();
-			transactions.add(trans);
-		}
-	}
-
-	/**
-	 * Clear transactions.
-	 */
-	public void clearTransactions()
-	{
-		transactions.clear();
-	}
-
-	/**
-	 * Gets the cuboid.
-	 * @return the cuboid
-	 */
-	public PrimitiveCuboid getCuboid()
-	{
-		// If no cuboid, create it
-		if(cuboid == null)
-		{
-			// Check if either locaiton is null and return appropriately
-			if(locationA == null || locationB == null){ return null; }
-			cuboid = new PrimitiveCuboid(getLocationA().toArray(),
-					getLocationB().toArray());
-			cuboid.uuid = uuid;
-			cuboid.world = world;
-		}
-
-		return cuboid;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString() */
 	public String toString()
@@ -710,5 +597,40 @@ public class Shop implements Comparator<Shop>
 	public int compare(Shop o1, Shop o2)
 	{
 		return o1.getUuid().compareTo(o2.uuid);
+	}
+	
+	/**
+	 * Gets the ID of the shop a given player is standing in.
+	 * @param player the player
+	 * @return the ID of the shop containing the player, or -1 if the player is not in a shop.
+	 */
+	public static long getCurrentShop(Player player)
+	{
+		return getCurrentShop(	player.getLocation().getBlockX(),
+								player.getLocation().getBlockY(),
+								player.getLocation().getBlockZ());
+	}
+	
+	/**
+	 * Gets the ID of the shop a given point is in.
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return the ID of the shop containing the point, or -1 if the point is not in a shop.
+	 */
+	public static long getCurrentShop(int x, int y, int z)
+	{
+		String locQuery = String.format("SELECT id FROM shops WHERE x<=%d AND x2>=%d AND y<=%d AND y2 >=%d AND z<=%d AND z2>=%d LIMIT 1",x,x,y,y,z,z);
+		long id = -1;
+		try{
+			ResultSet resId = CommandShops.db.query(locQuery);
+			if(!resId.next()) return -1;
+			id = resId.getLong("id");
+			resId.close();
+		}catch(Exception e){
+			log.warning(String.format("[%s] - Couldn't detect shop: "+e, CommandShops.pdfFile.getName()));
+		}
+		return id;
 	}
 }

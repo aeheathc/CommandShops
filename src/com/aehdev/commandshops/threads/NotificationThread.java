@@ -1,39 +1,47 @@
 package com.aehdev.commandshops.threads;
 
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Queue;
+import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
-import com.aehdev.commandshops.Shop;
-import com.aehdev.commandshops.Transaction;
+import com.aehdev.commandshops.Search;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class NotificationThread.
+ * This thread periodically shows a transaction digest to players who need to know.
  */
 public class NotificationThread extends Thread
 {
-
-	/** The plugin. */
+	/** Reference back to the main plugin object. */
 	private CommandShops plugin;
 
-	/** The run. */
+	/** Current state. */
 	private boolean run = true;
 
-	/** The log. */
+	/** Master logger. */
 	protected final Logger log = Logger.getLogger("Minecraft");
+	
+	/** Stores the last time each player was updated about shops. */
+	private HashMap<String,String> updates = new HashMap<String,String>();
+	
+	/** date formatter object this thread will use a lot */
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	/** Keep track of when the thread began so we don't show old messages */
+	private final String startDate = sdf.format(new Date());
 
 	/**
-	 * Instantiates a new notification thread.
+	 * Creates the thread.
 	 * @param plugin
-	 * the plugin
+	 * Reference back to the main plugin object
 	 */
 	public NotificationThread(CommandShops plugin)
 	{
@@ -41,17 +49,20 @@ public class NotificationThread extends Thread
 	}
 
 	/**
-	 * Sets the run.
+	 * Sets the current state and forces the thread to recognize it.
 	 * @param run
-	 * the new run
+	 * whether or not the new state should be running
 	 */
 	public void setRun(boolean run)
 	{
 		this.run = run;
+		synchronized(this){notify();}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Thread#run() */
+	/**
+	 * Starts the thread. 
+	 * @see java.lang.Thread#run()
+	 */
 	public void run()
 	{
 		log.info(String.format(
@@ -61,217 +72,71 @@ public class NotificationThread extends Thread
 
 		while(true)
 		{
-			List<Shop> shops = plugin.getShopData().getAllShops();
-			for(final Shop shop: shops)
+			long start = System.currentTimeMillis();
+			Player[] online = Bukkit.getOnlinePlayers();
+			for(Player player : online)
 			{
-				if(!shop.getNotification())
+				String name = player.getName();
+				String lastUpdate = updates.get(name);
+				if(lastUpdate == null)
 				{
-					shop.clearTransactions();
-					continue;
+					lastUpdate = new String(startDate);
+					updates.put(name, lastUpdate);
 				}
-
-				Queue<Transaction> transactions = shop.getTransactions();
-				if(transactions.size() == 0)
-				{
-					continue;
+				try{
+					String logQuery = "SELECT name,action,amount,itemid,itemdamage,user,total FROM log LEFT JOIN shops ON log.shop=shops.id WHERE owner='"
+									+ name + "' AND (action='buy' OR action='sell') AND datetime>'"
+									+ lastUpdate + "' AND notify=1";
+					ResultSet resLog = CommandShops.db.query(logQuery);
+					Vector<String> msg = new Vector<String>(5);
+					while(resLog.next())
+					{
+						StringBuffer output = new StringBuffer(60);
+						output.append(ChatColor.WHITE);
+						output.append(resLog.getString("name"));
+						output.append(ChatColor.DARK_AQUA);
+						output.append(": ");
+						if(resLog.getString("action").equals("buy"))
+						{
+							output.append(ChatColor.GREEN);
+							output.append("bought ");
+						}else{
+							output.append(ChatColor.GOLD);
+							output.append("sold ");
+						}
+						output.append(ChatColor.WHITE);
+						output.append(resLog.getInt("amount"));
+						output.append(" ");
+						output.append(Search.itemById(resLog.getInt("itemid"), (short)resLog.getInt("itemdamage")).name);
+						output.append(ChatColor.DARK_AQUA);
+						output.append(" via ");
+						output.append(ChatColor.WHITE);
+						output.append(resLog.getString("user"));
+						output.append(ChatColor.DARK_AQUA);
+						output.append(" @");
+						output.append(ChatColor.WHITE);
+						output.append(plugin.econ.format(resLog.getInt("total")));
+						msg.add(output.toString());
+					}
+					resLog.close();
+					String[] example = new String[1];
+					example[0] = "";
+					player.sendMessage(msg.toArray(example));
+				}catch(Exception e){
+					log.warning(String.format("[%s] Couldn't get transaction log: %s",
+							CommandShops.pdfFile.getName(), e));
+					break;
 				}
-
-				final Player player = plugin.getServer().getPlayer(
-						shop.getOwner());
-				if(player == null || !player.isOnline())
-				{
-					continue;
-				}
-
-				final ArrayList<String> messages = new ArrayList<String>();
-
-				if(transactions.size() <= 4)
-				{
-					// List the last 4 transactions...
-					messages.add(String.format(ChatColor.WHITE + "%d "
-							+ ChatColor.DARK_AQUA + "transactions for "
-							+ ChatColor.WHITE + "%s", transactions.size(),
-							shop.getName()));
-					for(Transaction trans: transactions)
-					{
-						switch(trans.type)
-						{
-							case Buy:
-							messages.add(String.format(ChatColor.WHITE
-									+ "   %s " + ChatColor.GOLD + "sold "
-									+ ChatColor.WHITE + "%d %s"
-									+ ChatColor.DARK_AQUA + " for "
-									+ ChatColor.WHITE + "%s", trans.playerName,
-									trans.quantity, trans.itemName, plugin
-											.getEconManager()
-											.format(trans.cost)));
-							break;
-							case Sell:
-							messages.add(String.format(ChatColor.WHITE
-									+ "   %s " + ChatColor.GREEN + "purchased "
-									+ ChatColor.WHITE + "%d %s"
-									+ ChatColor.DARK_AQUA + " for "
-									+ ChatColor.WHITE + " %s",
-									trans.playerName, trans.quantity,
-									trans.itemName, plugin.getEconManager()
-											.format(trans.cost)));
-							break;
-
-							default:
-							// ruh roh lets ignore it
-						}
-					}
-				}else
-				{
-					// Summarize the transactions
-					double buyCostTotal = 0;
-					HashMap<String,Double> itemBuyCost = new HashMap<String,Double>();
-					HashMap<String,Integer> itemBuyQuantity = new HashMap<String,Integer>();
-
-					double sellCostTotal = 0;
-					HashMap<String,Double> itemSellCost = new HashMap<String,Double>();
-					HashMap<String,Integer> itemSellQuantity = new HashMap<String,Integer>();
-
-					ArrayList<String> players = new ArrayList<String>();
-
-					for(Transaction trans: transactions)
-					{
-						if(trans.type == Transaction.Type.Sell)
-						{
-							if(itemSellCost.containsKey(trans.itemName))
-							{
-								itemSellCost.put(trans.itemName,
-										itemSellCost.get(trans.itemName)
-												+ trans.cost);
-							}else
-							{
-								itemSellCost.put(trans.itemName, trans.cost);
-							}
-
-							if(itemSellQuantity.containsKey(trans.itemName))
-							{
-								itemSellQuantity.put(trans.itemName,
-										itemSellQuantity.get(trans.itemName)
-												+ trans.quantity);
-							}else
-							{
-								itemSellQuantity.put(trans.itemName,
-										trans.quantity);
-							}
-
-							if(!players.contains(trans.playerName))
-							{
-								players.add(trans.playerName);
-							}
-
-							buyCostTotal += trans.cost;
-
-						}else if(trans.type == Transaction.Type.Buy)
-						{
-							if(itemBuyCost.containsKey(trans.itemName))
-							{
-								itemBuyCost.put(trans.itemName,
-										itemBuyCost.get(trans.itemName)
-												+ trans.cost);
-							}else
-							{
-								itemBuyCost.put(trans.itemName, trans.cost);
-							}
-
-							if(itemBuyQuantity.containsKey(trans.itemName))
-							{
-								itemBuyQuantity.put(trans.itemName,
-										itemBuyQuantity.get(trans.itemName)
-												+ trans.quantity);
-							}else
-							{
-								itemBuyQuantity.put(trans.itemName,
-										trans.quantity);
-							}
-
-							if(!players.contains(trans.playerName))
-							{
-								players.add(trans.playerName);
-							}
-
-							sellCostTotal += trans.cost;
-						}
-					}
-
-					// Create messages :D
-					messages.add(String.format(ChatColor.WHITE + "%d "
-							+ ChatColor.DARK_AQUA + "transactions for "
-							+ ChatColor.WHITE + "%s", transactions.size(),
-							shop.getName()));
-					messages.add(String.format(ChatColor.WHITE + "Totals: "
-							+ ChatColor.GREEN + "Gained %s, " + ChatColor.GOLD
-							+ "Lost %s",
-							plugin.getEconManager().format(buyCostTotal),
-							plugin.getEconManager().format(sellCostTotal)));
-					String g = "";
-					for(String item: itemSellCost.keySet())
-					{
-						if(g.equals(""))
-						{
-							g += ChatColor.GREEN + item;
-						}else
-						{
-							g += " " + item;
-						}
-					}
-					String l = "";
-					for(String item: itemBuyCost.keySet())
-					{
-						if(l.equals(""))
-						{
-							l += ChatColor.GOLD + item;
-						}else
-						{
-							l += " " + item;
-						}
-					}
-
-					messages.add(String.format(ChatColor.WHITE + "   Sold: %s",
-							g));
-					messages.add(String.format(ChatColor.WHITE
-							+ "   Bought: %s", l));
-				}
-
-				// Register task to send messages ;)
-				plugin.getServer().getScheduler()
-						.scheduleAsyncDelayedTask(plugin, new Runnable()
-						{
-							public void run()
-							{
-								for(String message: messages)
-								{
-									player.sendMessage(message);
-								}
-
-								shop.clearTransactions();
-							}
-						});
+				lastUpdate = sdf.format(new Date());
 			}
-
-			try
+			
+			// wait the configured amount of time before updates, but stop waiting if the thread is told to stop
+			if(!run) break;
+			while((System.currentTimeMillis()-start)/1000 < Config.NOTIFY_INTERVAL)
 			{
-				for(int i = 0; i < Config.NOTIFY_INTERVAL; i++)
-				{
-					if(!run)
-					{
-						break;
-					}
-					Thread.sleep(1000);
-				}
-			}catch(InterruptedException e)
-			{
-				// Ignore it...really its just not important
-				return;
-			}
-
-			if(!run)
-			{
-				break;
+				long millisToWait = (Config.NOTIFY_INTERVAL * 1000) - (System.currentTimeMillis()-start); 
+				try{synchronized(this){wait(millisToWait);}}catch(InterruptedException e){}
+				if(!run) break;
 			}
 		}
 	}

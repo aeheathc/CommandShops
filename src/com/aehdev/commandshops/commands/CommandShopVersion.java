@@ -4,23 +4,22 @@ import org.bukkit.command.CommandSender;
 
 import com.aehdev.commandshops.CommandShops;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CommandShopVersion.
+ * Command that queries the plugin version info.
  */
 public class CommandShopVersion extends Command
 {
 
 	/**
-	 * Instantiates a new command shop version.
+	 * Create a version order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
-	 * the command label
+	 * command name/alias
 	 * @param sender
-	 * the sender
+	 * who sent the command
 	 * @param command
-	 * the command
+	 * command string with arguments
 	 */
 	public CommandShopVersion(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -29,28 +28,11 @@ public class CommandShopVersion extends Command
 	}
 
 	/**
-	 * Instantiates a new command shop version.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Run version command; display the version info to the sender.
 	 */
-	public CommandShopVersion(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
-		sender.sendMessage(String.format("CommandShops Version %s", plugin
-				.getDescription().getVersion()));
+		sender.sendMessage(String.format("CommandShops Version %s", plugin.getDescription().getVersion()));
 		return true;
 	}
 }

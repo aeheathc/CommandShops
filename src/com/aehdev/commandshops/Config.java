@@ -1,8 +1,5 @@
 package com.aehdev.commandshops;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -38,17 +35,14 @@ public class Config
 
 	/** Maximum number of transactions that a shop will store for notification
 	 * purposes. Limited by default to prevent infinite memory usage. */
-	public static int LOG_LIMIT = 100;
+	public static int LOG_LIMIT = 500;
 
 	// Search Settings
 	/** Maximum number of meters away from a player to include in /shop find
 	 * results. */
-	public static int FIND_MAX_DISTANCE = 150;
+	public static int FIND_MAX_DISTANCE = 1500;
 
 	// Server Settings
-	/** Indicates whether transactions will be logged. */
-	public static boolean LOG_ENABLE = true;
-
 	/** When true, log verbose debugging information to console. */
 	public static boolean DEBUG = false;
 
@@ -63,13 +57,24 @@ public class Config
 	 * 'health' of the item is remaining). */
 	public static int MAX_DAMAGE = 35;
 
-	// UUID settings
-	/** Minimum length of shop UUID. */
-	public static int UUID_MIN_LENGTH = 1;
-
-	/** List of all shop UUIDs. */
-	protected static List<String> UUID_LIST =
-						Collections.synchronizedList(new ArrayList<String>());
+	// Storage settings
+	/** Which RDBMS to use */
+	public static String STORAGE_SYSTEM = "sqlite";
+	
+	/** Where the database server is located */
+	public static String DB_HOST = "localhost";
+	
+	/** Port number that the database server is listening on */
+	public static int DB_PORT = 3306;
+	
+	/** Username to connect to the database server */
+	public static String DB_USER = "minecraft";
+	
+	/** Password to connect to the database server */
+	public static String DB_PASS = "password";
+	
+	/** Name of the database containing CommandShops data */
+	public static String DB_NAME = "commandshops";
 	
 	/**
 	 * Read the config file and load options when present, or write default
@@ -91,12 +96,16 @@ public class Config
 		MAX_SHOPS_PER_PLAYER =	config.getInt(		"limits.shops-per-player");
 		MAX_DAMAGE = 			config.getInt(		"limits.item-damage");
 		FIND_MAX_DISTANCE =		config.getInt(		"limits.find-distance");
-		LOG_ENABLE =			config.getBoolean(	"log.enable");
 		NOTIFY_INTERVAL =		config.getInt(		"log.notify-interval");
 		LOG_LIMIT =				config.getInt(		"log.limit");
 		DEBUG =					config.getBoolean(	"debug");
-		//Logger log = Logger.getLogger("Minecraft");
-		//log.warning(""+SHOP_COST);
+		STORAGE_SYSTEM = 		config.getString(	"storage.system");
+		DB_HOST = 				config.getString(	"storage.connect.host");
+		DB_PORT = 				config.getInt(		"storage.connect.port");
+		DB_USER = 				config.getString(	"storage.connect.user");
+		DB_PASS = 				config.getString(	"storage.connect.pass");
+		DB_NAME = 				config.getString(	"storage.connect.db");
+		
 		plugin.saveConfig();
 	}
 }

@@ -5,25 +5,25 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
-import com.aehdev.commandshops.PlayerData;
+import com.aehdev.commandshops.Selection;
+import com.aehdev.commandshops.ShopsPlayerListener;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CommandShopSelect.
+ * Command that lets the player make a cuboid selection that will later define shop boundaries
  */
 public class CommandShopSelect extends Command
 {
 
 	/**
-	 * Instantiates a new command shop select.
+	 * Create a Selection order.
 	 * @param plugin
-	 * the plugin
+	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
-	 * the command label
+	 * command name/alias
 	 * @param sender
-	 * the sender
+	 * who sent the command
 	 * @param command
-	 * the command
+	 * command string with arguments
 	 */
 	public CommandShopSelect(CommandShops plugin, String commandLabel,
 			CommandSender sender, String command)
@@ -32,24 +32,8 @@ public class CommandShopSelect extends Command
 	}
 
 	/**
-	 * Instantiates a new command shop select.
-	 * @param plugin
-	 * the plugin
-	 * @param commandLabel
-	 * the command label
-	 * @param sender
-	 * the sender
-	 * @param command
-	 * the command
+	 * Run select command; start selection mode for the player.
 	 */
-	public CommandShopSelect(CommandShops plugin, String commandLabel,
-			CommandSender sender, String[] command)
-	{
-		super(plugin, commandLabel, sender, command);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aehdev.commandshops.commands.Command#process() */
 	public boolean process()
 	{
 		if(!(sender instanceof Player))
@@ -59,44 +43,32 @@ public class CommandShopSelect extends Command
 			return false;
 		}
 
-		if(canUseCommand(CommandTypes.SELECT))
+		if(!canUseCommand(CommandTypes.CREATE) && !canUseCommand(CommandTypes.MOVE))
 		{
-
-			Player player = (Player)sender;
-
-			String playerName = player.getName();
-			if(!plugin.getPlayerData().containsKey(playerName))
-			{
-				plugin.getPlayerData().put(playerName,
-						new PlayerData(plugin, playerName));
-			}
-			plugin.getPlayerData()
-					.get(playerName)
-					.setSelecting(
-							!plugin.getPlayerData().get(playerName)
-									.isSelecting());
-
-			if(plugin.getPlayerData().get(playerName).isSelecting())
-			{
-				sender.sendMessage(ChatColor.WHITE + "Shop selection enabled."
-						+ ChatColor.DARK_AQUA + " Use " + ChatColor.WHITE
-						+ "bare hands " + ChatColor.DARK_AQUA + "to select!");
-				sender.sendMessage(ChatColor.DARK_AQUA
-						+ "Left click to select the bottom corner for a shop");
-				sender.sendMessage(ChatColor.DARK_AQUA
-						+ "Right click to select the far upper corner for the shop");
-			}else
-			{
-				sender.sendMessage(ChatColor.DARK_AQUA + "Selection disabled");
-				plugin.getPlayerData().put(playerName,
-						new PlayerData(plugin, playerName));
-			}
-			return true;
-		}else
-		{
-			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA
-					+ "You don't have permission to use this command");
-			return true;
+			sender.sendMessage(ChatColor.DARK_AQUA
+					+ "You don't have permission for any feature that would use a selection.");
+			return false;
 		}
+		Player player = (Player)sender;
+		String playerName = player.getName();
+		String world = player.getWorld().getName();
+		
+		if(!ShopsPlayerListener.selectingPlayers.containsKey(playerName))
+		{
+			Selection sel = new Selection();
+			sel.world = world;
+			ShopsPlayerListener.selectingPlayers.put(playerName, sel);
+			sender.sendMessage(ChatColor.WHITE + "Shop selection enabled."
+					+ ChatColor.DARK_AQUA + " Use " + ChatColor.WHITE
+					+ "bare hands " + ChatColor.DARK_AQUA + "to select!");
+			sender.sendMessage(ChatColor.DARK_AQUA
+					+ "Left click to select the bottom corner for a shop");
+			sender.sendMessage(ChatColor.DARK_AQUA
+					+ "Right click to select the far upper corner for the shop");
+		}else{
+			ShopsPlayerListener.selectingPlayers.remove(playerName);
+			sender.sendMessage(ChatColor.DARK_AQUA + "Selection disabled");
+		}
+		return true;
 	}
 }

@@ -1,17 +1,24 @@
 limits:
-    item-damage: 35      #Maximum damage% with which a shop will accept an item. Limit of 35 damage here means require at least 65% durability remaining. Needed because item damage is discarded when adding to stock.
-    find-distance: 150   #Block radius to include shops in "find" results.
-    shops-per-player: -1 #Maximum number of shops each player can have; Unlimited = -1
+    item-damage: 35         #Maximum damage% with which a shop will accept an item. Limit of 35 damage here means require at least 65% durability remaining. Needed because item damage is discarded when adding to stock.
+    find-distance: 1500     #Block radius to include shops in "find" results. 0 = Unlimited
+    shops-per-player: -1    #Maximum number of shops each player can have; Unlimited = -1
 fees:
-    create: 100.0        #Cost of creating a shop; 0 = free
-    move: 10.0           #Cost of moving a shop; 0 = free
+    create: 100.0           #Cost of creating a shop; 0 = free
+    move: 10.0              #Cost of moving a shop; 0 = free
 log:
-    enable: true         #Enable transaction logging.
-    limit: 100           #Maximum number of transactions saved in log per shop.
-    notify-interval: 300 #Number of seconds between transaction notifications; 0 = Disable notifications
+    limit: 500              #Maximum number of transactions saved in log per shop.
+    notify-interval: 300    #Number of seconds between transaction notifications; 0 = Disable notifications
 size:
-    max-height: 10       #Maximum custom shop height.
-    max-width: 30        #Maximum custom shop width (both horizontal dimensions).
-    default-height: 3    #Default shop height.
-    default-width: 5     #Default shop width (both horizontal dimensions). 
-debug: false             #Enable verbose debug output.
+    max-height: 10          #Maximum custom shop height.
+    max-width: 30           #Maximum custom shop width (both horizontal dimensions).
+    default-height: 3       #Default shop height.
+    default-width: 5        #Default shop width (both horizontal dimensions).
+storage:
+    system: sqlite          #Can be sqlite (file) or mysql (server)
+    connect:                #These params only needed if system = mysql
+        host: localhost     #Where the database server is located
+        port: 3306          #Port number that the database server is listening on
+        user: minecraft     #Username to connect to the database server
+        pass: password      #Password to connect to the database server
+        db: commandshops    #Name of the database containing CommandShops data
+debug: false                #Enable verbose debug output.

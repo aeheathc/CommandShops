@@ -1,6 +1,8 @@
 package com.aehdev.commandshops.commands;
 
-import java.util.UUID;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,23 +12,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.aehdev.commandshops.CommandShops;
-import com.aehdev.commandshops.InventoryItem;
 import com.aehdev.commandshops.ItemInfo;
-import com.aehdev.commandshops.PlayerData;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
-import com.aehdev.commandshops.Transaction;
 
-// TODO: Auto-generated Javadoc
 /**
- * Handles the "/shop buy" command.
+ * Command for buying items from a shop!
  */
 public class CommandShopBuy extends Command
 {
 
 	/**
-	 * New instance requires information about the command issued and a
-	 * reference to the main plugin object.
+	 * Create a new Buy order.
 	 * @param plugin
 	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
@@ -47,197 +44,81 @@ public class CommandShopBuy extends Command
 	 * {@link #shopBuy}, first checking that:
 	 * <ul><li>we can understand their command</li><li>they're in a shop</li>
 	 * <li>they are a player and have permission</li></ul>
+	 * @return true on success
 	 */
 	@Override
 	public boolean process()
 	{
-		Shop shop = null;
-
-		// Get current shop
-		if(sender instanceof Player)
+		if(!(sender instanceof Player))
 		{
-			// Get player & data
-			Player player = (Player)sender;
-			PlayerData pData = plugin.getPlayerData().get(player.getName());
-
-			// Get Current Shop
-			UUID shopUuid = pData.getCurrentShop();
-			if(shopUuid != null)
-			{
-				shop = plugin.getShopData().getShop(shopUuid);
-			}
-			if(shop == null)
-			{
-				sender.sendMessage("You are not in a shop!");
-				return true;
-			}
-
-			// Check Permissions
-			if(!canUseCommand(CommandTypes.SELL))
-			{
-				sender.sendMessage(CommandShops.CHAT_PREFIX
-						+ ChatColor.DARK_AQUA
-						+ "You don't have permission to use this command");
-				return true;
-			}
-
-			// buy (player only command)
-			Pattern pattern = Pattern.compile("(?i)buy$");
-			Matcher matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				ItemStack itemStack = player.getItemInHand();
-				if(itemStack == null){ return false; }
-				ItemInfo item = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return true;
-				}
-				return shopBuy(shop, item, 0);
-			}
-
-			// buy all (player only command)
-			matcher.reset();
-			pattern = Pattern.compile("(?i)buy\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				ItemStack itemStack = player.getItemInHand();
-				if(itemStack == null)
-				{
-					sender.sendMessage("You must be holding an item, or specify an item.");
-					return true;
-				}
-				ItemInfo item = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return true;
-				}
-				int count;
-				if(shop.isUnlimitedStock())
-				{
-					// fill the player's inventory
-					count = countAvailableSpaceForItemInInventory(
-							player.getInventory(), item);
-				}else{
-					// use shop stock
-					count = shop.getItem(item.name).getStock();
-				}
-
-				return shopBuy(shop, item, count);
-			}
-
-			// buy int all
-			matcher.reset();
-			pattern = Pattern.compile("(?i)buy\\s+(\\d+)\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				int id = Integer.parseInt(matcher.group(1));
-				ItemInfo item = Search.itemById(id);
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return true;
-				}
-				int count;
-				if(shop.isUnlimitedStock())
-				{
-					// get player avail space
-					count = countAvailableSpaceForItemInInventory(
-							player.getInventory(), item);
-				}else{
-					// use shop stock
-					count = shop.getItem(item.name).getStock();
-				}
-				if(count < 1)
-				{
-					sender.sendMessage("You must buy at least one " + item.name
-							+ "!");
-					return true;
-				}
-				return shopBuy(shop, item, count);
-			}
-
-			// buy int:int all
-			matcher.reset();
-			pattern = Pattern.compile("(?i)buy\\s+(\\d+):(\\d+)\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				int id = Integer.parseInt(matcher.group(1));
-				short type = Short.parseShort(matcher.group(2));
-				ItemInfo item = Search.itemById(id, type);
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return true;
-				}
-				int count;
-				if(shop.isUnlimitedStock())
-				{
-					// get player avail space
-					count = countAvailableSpaceForItemInInventory(
-							player.getInventory(), item);
-				}else{
-					// use shop stock
-					count = shop.getItem(item.name).getStock();
-				}
-				if(count < 1)
-				{
-					sender.sendMessage("You must buy at least one " + item.name
-							+ "!");
-					return true;
-				}
-				return shopBuy(shop, item, count);
-			}
-
-			// buy name, ... all
-			matcher.reset();
-			pattern = Pattern.compile("(?i)buy\\s+(.*)\\s+all$");
-			matcher = pattern.matcher(command);
-			if(matcher.find())
-			{
-				String itemName = matcher.group(1);
-				ItemInfo item = Search.itemByName(itemName);
-				if(item == null)
-				{
-					sender.sendMessage("Could not find an item.");
-					return true;
-				}
-				int count;
-				if(shop.isUnlimitedStock())
-				{
-					// get player avail space
-					count = countAvailableSpaceForItemInInventory(
-							player.getInventory(), item);
-				}else{
-					// use shop stock
-					count = shop.getItem(item.name).getStock();
-				}
-				if(count < 1)
-				{
-					sender.sendMessage("You must buy at least one " + item.name
-							+ "!");
-					return true;
-				}
-				return shopBuy(shop, item, count);
-			}
-
-		}else{
-			sender.sendMessage("Shops only serve players, sorry.");
-			return true;
+			sender.sendMessage("You can only buy things if you have an inventory to put them in.");
+			return false;
 		}
-
-		// Command matching
-
-		// buy int
-		Pattern pattern = Pattern.compile("(?i)buy\\s+(\\d+)$");
+		
+		Player player = (Player)sender;
+		long shop = Shop.getCurrentShop(player);
+		if(shop == -1)
+		{
+			sender.sendMessage("You are not in a shop!");
+			return false;
+		}
+		
+		// Check Permissions
+		if(!canUseCommand(CommandTypes.SELL))
+		{
+			sender.sendMessage(CommandShops.CHAT_PREFIX
+					+ ChatColor.DARK_AQUA
+					+ "You don't have permission to use this command");
+			return false;
+		}
+		
+		//> /shop buy
+		// buy 1 of the same item you are holding
+		Pattern pattern = Pattern.compile("(?i)buy$");
 		Matcher matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			ItemStack itemStack = player.getItemInHand();
+			if(itemStack == null){ return false; }
+			ItemInfo item = Search.itemById(itemStack.getTypeId(),
+					itemStack.getDurability());
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return true;
+			}
+			return shopBuy(shop, item, 1);
+		}
+		
+		//> /shop buy all
+		// buy as much as you can of the item you are holding
+		matcher.reset();
+		pattern = Pattern.compile("(?i)buy\\s+all$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			ItemStack itemStack = player.getItemInHand();
+			if(itemStack == null)
+			{
+				sender.sendMessage("You must be holding an item, or specify an item.");
+				return true;
+			}
+			ItemInfo item = Search.itemById(itemStack.getTypeId(),
+					itemStack.getDurability());
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return true;
+			}
+			int count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+			return shopBuy(shop, item, count);
+		}
+		
+		//> /shop buy int all
+		// buy as much as you can of the item with specified id
+		matcher.reset();
+		pattern = Pattern.compile("(?i)buy\\s+(\\d+)\\s+all$");
+		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
 			int id = Integer.parseInt(matcher.group(1));
@@ -247,10 +128,65 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			return shopBuy(shop, item, 0);
+			int count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+			return shopBuy(shop, item, count);
+		}
+		
+		//> /shop buy int:int all
+		// buy as much as you can of the item with specified id and damage
+		matcher.reset();
+		pattern = Pattern.compile("(?i)buy\\s+(\\d+):(\\d+)\\s+all$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			int id = Integer.parseInt(matcher.group(1));
+			short type = Short.parseShort(matcher.group(2));
+			ItemInfo item = Search.itemById(id, type);
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return true;
+			}
+			int count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+			return shopBuy(shop, item, count);
+		}
+		
+		//> /shop buy name, ... all
+		// buy as much as you can of the item with the specified name
+		matcher.reset();
+		pattern = Pattern.compile("(?i)buy\\s+(.*)\\s+all$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			String itemName = matcher.group(1);
+			ItemInfo item = Search.itemByName(itemName);
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return true;
+			}
+			int count = countAvailableSpaceForItemInInventory(player.getInventory(), item);
+			return shopBuy(shop, item, count);
 		}
 
-		// buy int int
+		//> /shop buy int
+		// buy 1 of the item with the specified id
+		pattern = Pattern.compile("(?i)buy\\s+(\\d+)$");
+		matcher = pattern.matcher(command);
+		if(matcher.find())
+		{
+			int id = Integer.parseInt(matcher.group(1));
+			ItemInfo item = Search.itemById(id);
+			if(item == null)
+			{
+				sender.sendMessage("Could not find an item.");
+				return true;
+			}
+			return shopBuy(shop, item, 1);
+		}
+
+		//> /shop buy int int
+		// buy a specified amount of an item with the specified id
 		matcher.reset();
 		pattern = Pattern.compile("(?i)buy\\s+(\\d+)\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -264,16 +200,11 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			if(count < 1)
-			{
-				sender.sendMessage("You must buy at least one " + item.name
-						+ "!");
-				return true;
-			}
 			return shopBuy(shop, item, count);
 		}
 
-		// buy int:int
+		//> /shop buy int:int
+		// buy 1 of the item with the specified id and damage
 		matcher.reset();
 		pattern = Pattern.compile("(?i)buy\\s+(\\d+):(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -287,10 +218,11 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			return shopBuy(shop, item, 0);
+			return shopBuy(shop, item, 1);
 		}
 
-		// buy int:int int
+		//> /shop buy int:int int
+		// buy a specified anount of the item with the specified id and damage
 		matcher.reset();
 		pattern = Pattern.compile("(?i)buy\\s+(\\d+):(\\d+)\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -305,16 +237,11 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			if(count < 1)
-			{
-				sender.sendMessage("You must buy at least one " + item.name
-						+ "!");
-				return true;
-			}
 			return shopBuy(shop, item, count);
 		}
 
-		// buy name, ... int
+		//> /shop buy name, ... int
+		// buy a specified amount of the item with the specified name
 		matcher.reset();
 		pattern = Pattern.compile("(?i)buy\\s+(.*)\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
@@ -328,16 +255,11 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			if(count < 1)
-			{
-				sender.sendMessage("You must buy at least one " + item.name
-						+ "!");
-				return true;
-			}
 			return shopBuy(shop, item, count);
 		}
 
-		// buy name, ...
+		//> /shop buy name, ...
+		// buy 1 of the item with the specified name
 		matcher.reset();
 		pattern = Pattern.compile("(?i)buy\\s+(.*)$");
 		matcher = pattern.matcher(command);
@@ -350,10 +272,10 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			return shopBuy(shop, item, 0);
+			return shopBuy(shop, item, 1);
 		}
 
-		// Show sell help
+		// Show buy help
 		sender.sendMessage(ChatColor.WHITE + "   /" + commandLabel
 				+ " buy [itemname] [number] " + ChatColor.DARK_AQUA
 				+ "- Buy an item.");
@@ -365,155 +287,171 @@ public class CommandShopBuy extends Command
 	 * @param shop
 	 * the shop from which the item is being bought
 	 * @param item
-	 * the item requested
+	 * the item type requested
 	 * @param amount
 	 * the requested quantity of the item
 	 * @return true on success
 	 */
-	private boolean shopBuy(Shop shop, ItemInfo item, int amount)
+	private boolean shopBuy(long shop, ItemInfo item, int amount)
 	{
 		if(!(sender instanceof Player))
 		{
-			sender.sendMessage("/shop buy can only be used for players!");
+			sender.sendMessage("You can only buy things if you have an inventory to put them in.");
+			return false;
+		}
+		Player player = (Player)sender;
+		String playerName = player.getName();
+		
+		if(amount < 1)
+		{
+			player.sendMessage(ChatColor.DARK_AQUA + "Can't buy less than 1 item.");
+			return false;
+		}
+		
+		//Get info about shop and item
+		boolean shopUnlimitedStock = false, shopUnlimitedMoney = false;;
+		String shopName = "", shopOwner = "";
+		double sell = -1;
+		int stock = 0, stockId = -1;
+		try{
+			ResultSet resShop = CommandShops.db.query("SELECT name,owner,unlimitedStock,unlimitedMoney FROM shops WHERE id="+shop+" LIMIT 1");
+			resShop.next();
+			shopName = resShop.getString("name");
+			shopOwner = resShop.getString("owner");
+			shopUnlimitedStock = resShop.getInt("unlimitedStock") == 1;
+			shopUnlimitedMoney = resShop.getInt("unlimitedMoney") == 1;
+			resShop.close();
+			String itemQuery = String.format("SELECT id,stock,sell FROM shop_items WHERE"
+								+ "	shop=%d AND	itemid=%d AND	itemdamage=%d	LIMIT 1"
+								,	shop,		item.typeId,	item.subTypeId);
+			ResultSet resItem = CommandShops.db.query(itemQuery);
+			if(resItem.next())
+			{
+				stockId = resItem.getInt("id");
+				stock = (int)Math.floor(resItem.getDouble("stock"));
+				sell = resItem.getDouble("sell");
+				if(resItem.wasNull()) sell = -1;
+			}
+			resItem.close();
+		}catch(Exception e){
+			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
 			return false;
 		}
 
-		Player player = (Player)sender;
-		InventoryItem invItem = shop.getItem(item.name);
-		PlayerData pData = plugin.getPlayerData().get(player.getName());
-
 		// check if the shop is selling that item
-		if(invItem == null || invItem.getBuyPrice() == 0)
+		if(sell == -1 && !isShopController(shop))
 		{
 			player.sendMessage(ChatColor.DARK_AQUA + "Sorry, "
-					+ ChatColor.WHITE + shop.getName() + ChatColor.DARK_AQUA
+					+ ChatColor.WHITE + shopName + ChatColor.DARK_AQUA
 					+ " is not selling " + ChatColor.WHITE + item.name
 					+ ChatColor.DARK_AQUA + " right now.");
 			return false;
-		}else if(invItem.getStock() == 0 && !shop.isUnlimitedStock())
-		{
+		}else if(stock < 1 && !shopUnlimitedStock){
 			player.sendMessage(ChatColor.DARK_AQUA + "Sorry, "
-					+ ChatColor.WHITE + shop.getName() + ChatColor.DARK_AQUA
+					+ ChatColor.WHITE + shopName + ChatColor.DARK_AQUA
 					+ " is sold out of " + ChatColor.WHITE + item.name
 					+ ChatColor.DARK_AQUA + " right now.");
 			return false;
 		}
 
-		// check if the item has a price, or if this is a shop owner
-		if(invItem.getBuyPrice() == 0 && !isShopController(shop))
+		//Limit buy amount by shop's stock
+		if(amount > stock && !shopUnlimitedStock)
 		{
-			player.sendMessage(ChatColor.DARK_AQUA + "Sorry, "
-					+ ChatColor.WHITE + shop.getName() + ChatColor.DARK_AQUA
-					+ " is not selling " + ChatColor.WHITE + item.name
-					+ ChatColor.DARK_AQUA + " right now.");
-			return false;
+			amount = stock;
+				player.sendMessage(ChatColor.DARK_AQUA + "The shop only has "
+						+ ChatColor.WHITE + stock + " " + item.name);
 		}
 
-		// if amount = 0, assume single item
-		if(amount == 0)
-		{
-			amount = 1;
-		}
-
-		int totalAmount;
-		totalAmount = invItem.getStock();
-
-		if(totalAmount == 0 && !shop.isUnlimitedStock())
-		{
-			player.sendMessage(ChatColor.DARK_AQUA + "The shop has "
-					+ ChatColor.WHITE + totalAmount + " " + item.name);
-			return true;
-		}
-
-		if(amount < 0)
-		{
-			amount = 0;
-		}
-
-		if(shop.isUnlimitedStock())
-		{
-			totalAmount = amount;
-		}
-		if(amount > totalAmount)
-		{
-			amount = totalAmount;
-			if(!shop.isUnlimitedStock())
-			{
-				player.sendMessage(ChatColor.DARK_AQUA + "The shop has "
-						+ ChatColor.WHITE + totalAmount + " " + item.name);
-			}
-		}
-
-		// check how many items the user has room for
+		
+		//Limit buy amount by inventory space
 		int freeSpots = countAvailableSpaceForItemInInventory(player.getInventory(), item);
-
-		// Calculate the amount the player can store
 		if(amount > freeSpots)
 		{
 			amount = freeSpots;
 			player.sendMessage(ChatColor.DARK_AQUA + "You only have room for "
 					+ ChatColor.WHITE + amount);
 		}
+		
+		//Limit buy amount by cash on hand
+		double balance = plugin.econ.getBalance(playerName);
+		int amtCanAfford = (sell > 0) ? (int)Math.floor(balance/sell) : Integer.MAX_VALUE;
+		if(amount > amtCanAfford && !isShopController(shop))
+		{
+			amount = amtCanAfford;
+			player.sendMessage(ChatColor.DARK_AQUA + "You only have the money for "
+					+ ChatColor.WHITE + amount);
+		}
 
-		// calculate cost
-		double itemPrice = invItem.getBuyPrice();
-		// recalculate # of items since may not fit cleanly into bundles
-		double totalCost = amount * itemPrice;
+		double totalCost = amount * sell;
 
-		// try to pay the shop owner
+		// move the money
 		if(!isShopController(shop))
 		{
-			boolean couldPay;
-			if(shop.isUnlimitedMoney())
+			//first pay the shop owner. Skip this step for unlimited money shops.
+			if(!shopUnlimitedMoney)
 			{
-				couldPay = pData.chargePlayer(player.getName(), totalCost);
-			}else{
-				couldPay = pData.payPlayer(player.getName(), shop.getOwner(), totalCost);
-			}
-			if(!couldPay)
-			{
-				// player doesn't have enough money
-				// get player's balance and calculate how many it can buy
-				double playerBalance = pData.getBalance(player.getName());
-				int amtCanAfford = (int)Math
-						.floor(playerBalance / itemPrice);
-				totalCost = amtCanAfford * itemPrice;
-				amount = amtCanAfford;
-
-				if(amtCanAfford == 0)
-				{
-					player.sendMessage(ChatColor.DARK_AQUA
-							+ "You cannot afford any of " + ChatColor.WHITE
-							+ item.name);
-					return true;
-				}else{
-					player.sendMessage(ChatColor.DARK_AQUA
-							+ "You could only afford " + ChatColor.WHITE
-							+ amount + ChatColor.DARK_AQUA + " of "
-							+ ChatColor.WHITE + item.name);
-				}
-
-				if(shop.isUnlimitedMoney())
-				{
-					couldPay = pData.chargePlayer(player.getName(), totalCost);
-				}else{
-					couldPay = pData.payPlayer(player.getName(), shop.getOwner(), totalCost);
-				}
-				
-				if(!couldPay)
+				if(!plugin.econ.depositPlayer(shopOwner, totalCost).transactionSuccess())
 				{
 					player.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA
-							+ "Unexpected money problem: could not complete sale.");
-					return true;
+							+ "Vault error crediting shop owner: could not complete sale.");
+					log.warning(String.format("[%s] Couldn't pay shop owner %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopOwner));
+					return false;
 				}
 			}
+			
+			//then charge the buyer.
+			if(!plugin.econ.withdrawPlayer(playerName, totalCost).transactionSuccess())
+			{
+				player.sendMessage(CommandShops.CHAT_PREFIX
+						+ ChatColor.DARK_AQUA
+						+ "Vault error paying for items: could not complete sale.");
+				log.warning(String.format("[%s] Couldn't charge buyer %s. Attempting rollback of seller credit...", CommandShops.pdfFile.getName(), playerName));
+				// if we can't charge the buyer, try to rollback the transaction
+				if(!plugin.econ.withdrawPlayer(shopOwner, totalCost).transactionSuccess())
+				{
+					log.warning(String.format("[%s] Couldn't rollback failed transaction. %s likely has an extra %s !", CommandShops.pdfFile.getName(), shopOwner, plugin.econ.format(totalCost)));
+				}else{
+					log.warning(String.format("[%s] Rolled back failed transaction with %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopOwner));
+				}
+				return false;
+			}
 		}
+		
+		//give items to player
+		givePlayerItem(item.toStack(), amount);
 
-		if(!shop.isUnlimitedStock())
+		//remove items from shop
+		if(!shopUnlimitedStock)
 		{
-			shop.removeStock(item.name, amount);
+			try{
+				String removeQuery = String.format("UPDATE shop_items SET `stock`=(`stock`-%d) WHERE id=%d LIMIT 1",
+																						amount,		stockId);
+				CommandShops.db.query(removeQuery);
+			}catch(Exception e){
+				//worst possible time to have an error becfause now we have to roll back everything
+				log.warning(String.format("[%s] Couldn't remove items from shop: %s. Rolling back buy transaction...", CommandShops.pdfFile.getName(), e));
+				sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
+				//refund buyer
+				if(!plugin.econ.depositPlayer(playerName, totalCost).transactionSuccess())
+				{
+					log.warning(String.format("[%s] Couldn't rollback buy: Items were delivered and money transferred, but duplicate item remains in shop %s. ", CommandShops.pdfFile.getName(), shopName));
+					return false;
+				}
+				//reclaim money from shop owner
+				if(!plugin.econ.withdrawPlayer(shopOwner, totalCost).transactionSuccess())
+				{
+					log.warning(String.format("[%s] Couldn't rollback buy: Items were delivered and money recieved by shop, but duplicate item remains in shop %s and %s likely has an extra %s ", CommandShops.pdfFile.getName(), shopName, shopOwner, plugin.econ.format(totalCost)));
+					return false;
+				}
+				//take back items
+				removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+				log.warning(String.format("[%s] Rolled back failed buy from %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopName));
+				return false;
+			}
 		}
+		
 		if(isShopController(shop))
 		{
 			player.sendMessage(ChatColor.DARK_AQUA + "You removed "
@@ -523,25 +461,24 @@ public class CommandShopBuy extends Command
 			player.sendMessage(ChatColor.DARK_AQUA + "You purchased "
 					+ ChatColor.WHITE + amount + " " + item.name
 					+ ChatColor.DARK_AQUA + " for " + ChatColor.WHITE
-					+ plugin.getEconManager().format(totalCost));
+					+ plugin.econ.format(totalCost));
 		}
 
 		// log the transaction
-		int stock = invItem.getStock();
-		int startStock = stock + amount;
-		if(shop.isUnlimitedStock())
-		{
-			startStock = 0;
+		int newStock = stock - amount;
+		log.info(String.format("[%s] %s bought %d of %s from %d (%s) for %s; shop's stock is %d",
+				CommandShops.pdfFile.getName(), playerName, amount, item.name, shop, shopName, plugin.econ.format(totalCost), newStock));
+		try{
+			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+			String logQuery = String.format("INSERT INTO log" 
+				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
+				+"(	'%s',		'%s',					%d,		'buy',		%d,			%d,				%d,			%f,		%f,			%s)"
+				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount,		sell,	totalCost,	isShopController(shop)?"'Own shop; no cost.'":"NULL");
+			CommandShops.db.query(logQuery);
+		}catch(Exception e){
+			log.warning(String.format("[%s] Couldn't log transaction: %s",
+					CommandShops.pdfFile.getName(), e));
 		}
-		plugin.getShopData().logItems(player.getName(), shop.getName(),
-				"buy-item", item.name, amount, startStock, stock);
-		shop.addTransaction(new Transaction(Transaction.Type.Sell, player
-				.getName(), item.name, amount, totalCost));
-
-		//actually deliver the items
-		givePlayerItem(item.toStack(), amount);
-		plugin.getShopData().saveShop(shop);
-
 		return true;
 	}
 }

@@ -62,27 +62,27 @@ public class ShopLocation
 	 * Gets the x.
 	 * @return the x
 	 */
-	public double getX()
+	public int getX()
 	{
-		return x;
+		return (int)x;
 	}
 
 	/**
 	 * Gets the y.
 	 * @return the y
 	 */
-	public double getY()
+	public int getY()
 	{
-		return y;
+		return (int)y;
 	}
 
 	/**
 	 * Gets the z.
 	 * @return the z
 	 */
-	public double getZ()
+	public int getZ()
 	{
-		return z;
+		return (int)z;
 	}
 
 	/**
