@@ -96,7 +96,7 @@ public class NotificationThread extends Thread
 						output.append(resLog.getString("name"));
 						output.append(ChatColor.DARK_AQUA);
 						output.append(": ");
-						if(resLog.getString("action").equals("buy"))
+						if(resLog.getString("action").equals("sell"))
 						{
 							output.append(ChatColor.GREEN);
 							output.append("bought ");
@@ -115,13 +115,14 @@ public class NotificationThread extends Thread
 						output.append(ChatColor.DARK_AQUA);
 						output.append(" @");
 						output.append(ChatColor.WHITE);
-						output.append(plugin.econ.format(resLog.getInt("total")));
+						output.append(plugin.econ.format(resLog.getDouble("total")));
 						msg.add(output.toString());
 					}
 					resLog.close();
 					String[] example = new String[1];
 					example[0] = "";
-					player.sendMessage(msg.toArray(example));
+					example = msg.toArray(example);
+					player.sendMessage(example);
 				}catch(Exception e){
 					log.warning(String.format("[%s] Couldn't get transaction log: %s",
 							CommandShops.pdfFile.getName(), e));

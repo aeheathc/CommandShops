@@ -354,8 +354,13 @@ public class CommandShopSell extends Command
 				minbalance = resInf.getDouble("minbalance");
 				unlimitedMoney = resInf.getInt("unlimitedMoney") == 1;
 				unlimitedStock = resInf.getInt("unlimitedStock") == 1;
+				resInf.close();
+			}else{
+				resInf.close();
+				player.sendMessage(ChatColor.DARK_AQUA + "Sorry, this shop is not buying "
+						+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA + " right now.");
+				return false;
 			}
-			resInf.close();
 		}catch(Exception e){
 			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to DB error.");

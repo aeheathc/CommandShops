@@ -725,6 +725,7 @@ public class CommandShopSet extends Command
 						String manCheck = String.format("SELECT COUNT(*) FROM managers WHERE shop=%d AND manager='%s'"
 													, shop, manager);
 						ResultSet resCheck = CommandShops.db.query(manCheck);
+						resCheck.next();
 						int dup = resCheck.getInt(1);
 						resCheck.close();
 						if(dup > 0)
@@ -818,7 +819,7 @@ public class CommandShopSet extends Command
 	private boolean shopSetMinBalance(long shop)
 	{
 		// set minbalance amount
-		Pattern pattern = Pattern.compile("(?i)set\\s+minbalance\\s+(\\d+)");
+		Pattern pattern = Pattern.compile("(?i)set\\s+minbalance\\s+(" +  DECIMAL_REGEX + ")");
 		Matcher matcher = pattern.matcher(command);
 		if(matcher.find())
 		{

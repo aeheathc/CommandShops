@@ -99,8 +99,8 @@ public class CommandShopDestroy extends Command
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 				String logQuery = String.format("INSERT INTO log" 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
-					+"(	'%s',		'%s',					%d,		'destroy',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
-					,	now,		db.escape(playerName),	shop,																		"Shop name: "+db.escape(shopName));
+					+"(	'%s',		'%s',					NULL,	'destroy',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
+					,	now,		db.escape(playerName),																				"Shop " + shop + ": "+db.escape(shopName));
 				CommandShops.db.query(logQuery);
 			}catch(Exception e){
 				log.warning(String.format("[%s] Couldn't finish shop destruction: %s", CommandShops.pdfFile.getName(), e));

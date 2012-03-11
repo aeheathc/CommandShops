@@ -171,13 +171,7 @@ public class CommandShopCreate extends Command
 						+ "(	'%s',			'%s',				'%s',				%d, %d, %d, %d,  %d,  %d,	'%s',		0,				0,					0)"
 						,		db.escape(name),db.escape(creator),	db.escape(creator),	x,	y,	z,  x2,  y2,  z2,	createWorld);
 				CommandShops.db.query(insertQuery);
-				String idQuery;
-				if(CommandShops.db instanceof com.aehdev.lib.PatPeter.SQLibrary.SQLite)
-				{
-					idQuery = "SELECT last_insert_rowid()";
-				}else{ //mysql
-					idQuery = "SELECT LAST_INSERT_ID()";
-				}
+				String idQuery = "SELECT MAX(id) FROM shops WHERE `name`='" + db.escape(name) + "' AND `owner`='" + db.escape(creator) + "'";
 				ResultSet resId = CommandShops.db.query(idQuery);
 				resId.next();
 				insId = resId.getInt(1);

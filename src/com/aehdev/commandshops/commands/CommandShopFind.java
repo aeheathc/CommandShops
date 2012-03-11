@@ -159,15 +159,15 @@ public class CommandShopFind extends Command
 		final int limitsquared = (int)Math.pow(Config.FIND_MAX_DISTANCE, 2);
 		try{
 			//get 5 closest shops carrying that item
-			String countQuery = String.format("SELECT COUNT(*),%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND distance<=%d"
-					,distCalc, playerWorld, found.typeId,found.subTypeId, limitsquared);
+			String countQuery = String.format("SELECT COUNT(*),%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND %s<=%d"
+					,distCalc, playerWorld, found.typeId,found.subTypeId, distCalc, limitsquared);
 			ResultSet resCount = CommandShops.db.query(countQuery);
 			resCount.next();
 			int total = resCount.getInt(1);
 			resCount.close();
 			
-			String findQuery = String.format("SELECT shops.id AS shopid,shops.`name` AS shopname,shops.unlimitedStock AS unlimitedStock,stock,maxstock,buy,sell,%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND distance<=%d ORDER BY distance ASC LIMIT 5"
-					,distCalc, playerWorld, found.typeId, found.subTypeId, limitsquared);
+			String findQuery = String.format("SELECT shops.id AS shopid,shops.`name` AS shopname,shops.unlimitedStock AS unlimitedStock,stock,maxstock,buy,sell,%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND %s<=%d ORDER BY distance ASC LIMIT 5"
+					,distCalc, playerWorld, found.typeId, found.subTypeId, distCalc, limitsquared);
 			ResultSet resFind = CommandShops.db.query(findQuery);
 			int shops=0;
 			while(resFind.next())

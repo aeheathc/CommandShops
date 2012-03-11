@@ -110,7 +110,7 @@ public class ShopData
 					{
 						db.query(shopquery);
 					
-						ResultSet resIns = db.query("SELECT MAX(id) FROM shops");
+						ResultSet resIns = db.query("SELECT MAX(id) FROM shops WHERE `name`='"+db.escape(shop.getName())+"'");
 						resIns.next();
 						long insId = resIns.getLong(1);
 						resIns.close();
