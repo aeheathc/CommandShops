@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
+import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
 
 /**
@@ -88,9 +89,11 @@ public class NotificationThread extends Thread
 									+ name + "' AND (action='buy' OR action='sell') AND datetime>'"
 									+ lastUpdate + "' AND notify=1";
 					ResultSet resLog = CommandShops.db.query(logQuery);
-					Vector<String> msg = new Vector<String>(5);
+					LinkedList<String> msg = new LinkedList<String>();
+					boolean any = false;
 					while(resLog.next())
 					{
+						any = true;
 						StringBuffer output = new StringBuffer(60);
 						output.append(ChatColor.WHITE);
 						output.append(resLog.getString("name"));
@@ -107,7 +110,10 @@ public class NotificationThread extends Thread
 						output.append(ChatColor.WHITE);
 						output.append(resLog.getInt("amount"));
 						output.append(" ");
-						output.append(Search.itemById(resLog.getInt("itemid"), (short)resLog.getInt("itemdamage")).name);
+						ItemInfo item = Search.itemById(resLog.getInt("itemid"), (short)resLog.getInt("itemdamage"));
+						String itemName = "items";
+						if(item != null) itemName = item.name;
+						output.append(itemName);
 						output.append(ChatColor.DARK_AQUA);
 						output.append(" via ");
 						output.append(ChatColor.WHITE);
@@ -120,15 +126,14 @@ public class NotificationThread extends Thread
 					}
 					resLog.close();
 					String[] example = new String[1];
-					example[0] = "";
-					example = msg.toArray(example);
-					player.sendMessage(example);
+					if(any) player.sendMessage(msg.toArray(example));
 				}catch(Exception e){
 					log.warning(String.format("[%s] Couldn't get transaction log: %s",
 							CommandShops.pdfFile.getName(), e));
 					break;
 				}
 				lastUpdate = sdf.format(new Date());
+				updates.put(name, lastUpdate);
 			}
 			
 			// wait the configured amount of time before updates, but stop waiting if the thread is told to stop
