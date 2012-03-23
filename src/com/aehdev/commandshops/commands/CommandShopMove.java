@@ -256,7 +256,7 @@ public class CommandShopMove extends Command
 				, CommandShops.pdfFile.getName(), playerName, shop, shopName));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log" 
+			String logQuery = String.format("INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'move',		NULL,		NULL,			NULL,		%f,				NULL,	'%s')"
 				,	now,		db.escape(playerName),	shop,														Config.MOVE_COST,		"New Location:"+x+','+y+','+z+'x'+x2+','+y2+','+z2);
