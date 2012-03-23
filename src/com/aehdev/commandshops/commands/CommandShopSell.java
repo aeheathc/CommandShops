@@ -502,7 +502,7 @@ public class CommandShopSell extends Command
 				CommandShops.pdfFile.getName(), playerName, amount, item.name, shop, shopName, plugin.econ.format(totalCost), newStock));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log" 
+			String logQuery = String.format("INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'sell',		%d,			%d,				%d,			%f,		%f,			%s)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount,		buy,	totalCost,	isShopController(shop)?"'Own shop; no cost.'":"NULL");
