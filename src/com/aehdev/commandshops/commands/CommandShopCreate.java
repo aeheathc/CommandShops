@@ -206,7 +206,7 @@ public class CommandShopCreate extends Command
 					CommandShops.pdfFile.getName(), creator, name));
 			try{
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,				`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',				%d,		'create',	NULL,		NULL,			NULL,		%f,				NULL,	'%s')"
 					,	now,		db.escape(creator),	insId,														Config.SHOP_COST,		"Location:"+x+','+y+','+z+'x'+x2+','+y2+','+z2);
