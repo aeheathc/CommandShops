@@ -283,7 +283,7 @@ public class CommandShopSet extends Command
 				CommandShops.pdfFile.getName(), playerName, item.name, (price == null ? "NULL" : plugin.econ.format(price)), shop));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log" 
+			String logQuery = String.format("INSERT INTO log  " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'setBuy',	%d,			%d,				NULL,		%f,		NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,				price);
@@ -477,7 +477,7 @@ public class CommandShopSet extends Command
 				CommandShops.pdfFile.getName(), playerName, item.name, (price == null ? "NULL" : plugin.econ.format(price)), shop));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log" 
+			String logQuery = String.format("INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'setSell',	%d,			%d,				NULL,		%f,		NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,				price);
@@ -593,7 +593,7 @@ public class CommandShopSet extends Command
 			log.info(String.format("[%s] %s set max stock of %s in shop %d to %d",
 					CommandShops.pdfFile.getName(), playerName, item.name, shop, max));
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log" 
+			String logQuery = String.format("INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'setMax',	%d,			%d,				%d,			NULL,	NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	max);
@@ -643,7 +643,7 @@ public class CommandShopSet extends Command
 						+ "Unlimited money was set to " + ChatColor.WHITE
 						+ (unlimitedMoney ? "true" : "false"));
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,				`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setUnlimitedMoney',	NULL,		NULL,			NULL,		NULL,			NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																							unlimitedMoney?"true":"false");
@@ -677,7 +677,7 @@ public class CommandShopSet extends Command
 						+ "Unlimited stock was set to " + ChatColor.WHITE
 						+ (unlimitedStock ? "true" : "false"));
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,				`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setUnlimitedStock',	NULL,		NULL,			NULL,		NULL,			NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																							unlimitedStock?"true":"false");
@@ -733,11 +733,11 @@ public class CommandShopSet extends Command
 							sender.sendMessage(ChatColor.DARK_AQUA + "That player is already a manager here.");
 							continue;
 						}
-						CommandShops.db.query(String.format("INSERT INTO managers(shop,manager) VALUES(%d,'%s')"
+						CommandShops.db.query(String.format("INSERT INTO managers (shop,manager) VALUES(%d,'%s')"
 											, shop, manager));
 						sender.sendMessage(ChatColor.DARK_AQUA + "Added manager " + ChatColor.WHITE + manager);
 						String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-						String logQuery = String.format("INSERT INTO log" 
+						String logQuery = String.format("INSERT INTO log " 
 							+"(	`datetime`,	`user`,					`shop`,	`action`,		`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 							+"(	'%s',		'%s',					%d,		'addManager',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 							,	now,		db.escape(playerName),	shop,																			db.escape(manager));
@@ -757,7 +757,7 @@ public class CommandShopSet extends Command
 											, shop, manager));
 						sender.sendMessage(ChatColor.DARK_AQUA + "Removed manager " + ChatColor.WHITE + manager);
 						String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-						String logQuery = String.format("INSERT INTO log" 
+						String logQuery = String.format("INSERT INTO log " 
 							+"(	`datetime`,	`user`,					`shop`,	`action`,		`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 							+"(	'%s',		'%s',					%d,		'removeManager',NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 							,	now,		db.escape(playerName),	shop,																			db.escape(manager));
@@ -833,7 +833,7 @@ public class CommandShopSet extends Command
 			try{
 				CommandShops.db.query("UPDATE shops SET minbalance=" + min + " WHERE id=" + shop + " LIMIT 1");
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,		`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setMinbalance',NULL,		NULL,			NULL,		NULL,	%f,		NULL)"
 					,	now,		db.escape(playerName),	shop,																	min);
@@ -910,7 +910,7 @@ public class CommandShopSet extends Command
 			try{
 				CommandShops.db.query("UPDATE shops SET owner='" + db.escape(name) + "' WHERE id=" + shop + " LIMIT 1");
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setOwner',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																		db.escape(name));
@@ -949,7 +949,7 @@ public class CommandShopSet extends Command
 				CommandShops.db.query("UPDATE shops SET `name`='" + db.escape(name) + "' WHERE id=" + shop + " LIMIT 1");
 				sender.sendMessage(ChatColor.DARK_AQUA + "Shop " + ChatColor.WHITE + shop + ChatColor.DARK_AQUA + " name changed to " + ChatColor.WHITE + name);
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setName',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																		db.escape(name));

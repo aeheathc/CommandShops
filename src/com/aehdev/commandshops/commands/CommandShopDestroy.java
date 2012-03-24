@@ -97,7 +97,7 @@ public class CommandShopDestroy extends Command
 				log.info(String.format("[%s] Shop %d (%s) destroyed by %s",
 						CommandShops.pdfFile.getName(), shop, shopName, playerName));
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log" 
+				String logQuery = String.format("INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					NULL,	'destroy',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 					,	now,		db.escape(playerName),																				"Shop " + shop + ": "+db.escape(shopName));

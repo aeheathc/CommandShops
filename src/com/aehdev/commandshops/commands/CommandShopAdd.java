@@ -448,7 +448,7 @@ public class CommandShopAdd extends Command
 				CommandShops.pdfFile.getName(), amount, item.name, shop, playerName));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log" 
+			String logQuery = String.format("INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'add',		%d,			%d,				%d,			NULL,	NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount);
