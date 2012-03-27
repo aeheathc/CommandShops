@@ -5,6 +5,12 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**HEAD**
+
+* Fixed MySQL 5.0 compliance
+* Fixed Jungle Sapling detection
+* Fixed price setting by id:damage getting overlooked 
+
 **4.0**
 
 * Tested with CB 1.2.3-R0.2

@@ -22,7 +22,7 @@ public class Search
 		items.add(new ItemInfo("Sapling",			new String[][] {{"sapling"}},									6,	(short) 0, 64 ));
 		items.add(new ItemInfo("Redwood Sapling",	new String[][] {{"sapling","red"}},								6,	(short) 1, 64 ));
 		items.add(new ItemInfo("Birch Sapling",		new String[][] {{"sapling","birch"}},							6,	(short) 2, 64 ));
-		items.add(new ItemInfo("Jungle Sapling",	new String[][] {{"sapling","birch"}},							6,	(short) 3, 64 ));
+		items.add(new ItemInfo("Jungle Sapling",	new String[][] {{"sapling","jung"}},							6,	(short) 3, 64 ));
 		items.add(new ItemInfo("Bedrock",			new String[][] {{"rock"}},										7,	(short) 0, 64 ));
 		items.add(new ItemInfo("Water",				new String[][] {{"water"}},										9,	(short) 0, 64 ));
 		items.add(new ItemInfo("Lava",				new String[][] {{"lava"}},										11, (short) 0, 64 ));

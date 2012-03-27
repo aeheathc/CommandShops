@@ -6,16 +6,16 @@
 - sales tax. (Make shop fees go to the same collector as the sales tax?)
 - Optional Towny/WorldGuard/etc integration
 --- Only let you make shops in places you own 
---- Surveyor service (self serve land exchange via shops)
 --- Sales tax feudal management
+--- /shop select (regionName)
 --- Show region name in /shop info
+--- Auto-integration of welcome/leave messages
 - make /shop find with no item find any nearby shops
 - multi language support
 - XP market
 - Repair and disenchant
 - Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items 
-- Fix redwood/jungle leaf detection
 - Dump cuboid thing and determine shop overlap via sql
+- 2 line format for browse
 == Maybe Features ==
-- Price volatility
-- replace item matching code with 3rd party abbreviation engine
+- Use Vault's item matching system

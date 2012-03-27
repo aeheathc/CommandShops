@@ -115,7 +115,7 @@ public class CommandShopSet extends Command
 
 		//> /shop set buy int double
 		// set buy price of item with specified id
-		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(" + DECIMAL_REGEX + ")");
+		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)\\s+(" + DECIMAL_REGEX + ")$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -127,7 +127,7 @@ public class CommandShopSet extends Command
 		
 		//> /shop set buy int
 		// NULL buy price of item with specified id
-		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)");
+		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -139,7 +139,7 @@ public class CommandShopSet extends Command
 		//> /shop set buy int:int double
 		// set buy price of item with specified id and damage
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(" + DECIMAL_REGEX + ")");
+		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)\\s+(" + DECIMAL_REGEX + ")$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -153,7 +153,7 @@ public class CommandShopSet extends Command
 		//> /shop set buy int:int
 		// NULL buy price of item with specified id and damage
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)");
+		pattern = Pattern.compile("(?i)set\\s+buy\\s+(\\d+):(\\d+)$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -166,7 +166,7 @@ public class CommandShopSet extends Command
 		//> /shop set buy (chars) double
 		// set buy price of named item
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(" + DECIMAL_REGEX + ")");
+		pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)\\s+(" + DECIMAL_REGEX + ")$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -179,7 +179,7 @@ public class CommandShopSet extends Command
 		//> /shop set buy (chars)
 		// NULL buy price of named item
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)");
+		pattern = Pattern.compile("(?i)set\\s+buy\\s+(.*)$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -238,7 +238,7 @@ public class CommandShopSet extends Command
 					return true;
 				}
 				//if we want to set a buy price, make a new entry with the buy price
-				String insQuery = String.format("INSERT INTO shop_items("
+				String insQuery = String.format("INSERT INTO shop_items ("
 						+ "	shop,	itemid,			itemdamage,		stock,	sell,	buy) VALUES("
 						+ "	%d,		%d,				%d,				0,		NULL,	%f)"
 						,	shop,	item.typeId,	item.subTypeId,					price.doubleValue());
@@ -309,7 +309,7 @@ public class CommandShopSet extends Command
 
 		//> /shop set sell int double
 		// set sell price of item with specified id
-		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+(" + DECIMAL_REGEX + ")");
+		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)\\s+(" + DECIMAL_REGEX + ")$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -321,7 +321,7 @@ public class CommandShopSet extends Command
 		
 		//> /shop set sell int
 		// NULL sell price of item with specified id
-		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)");
+		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+)$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -333,7 +333,7 @@ public class CommandShopSet extends Command
 		//> /shop set sell int:int double
 		// set sell price of item with specified id and damage
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+(" + DECIMAL_REGEX + ")");
+		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)\\s+(" + DECIMAL_REGEX + ")$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -347,7 +347,7 @@ public class CommandShopSet extends Command
 		//> /shop set sell int:int
 		// NULL sell price of item with specified id and damage
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)");
+		pattern = Pattern.compile("(?i)set\\s+sell\\s+(\\d+):(\\d+)$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -360,7 +360,7 @@ public class CommandShopSet extends Command
 		//> /shop set sell (chars) double
 		// set sell price of named item
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+(" + DECIMAL_REGEX + ")");
+		pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)\\s+(" + DECIMAL_REGEX + ")$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -373,7 +373,7 @@ public class CommandShopSet extends Command
 		//> /shop set sell (chars)
 		// NULL sell price of named item
 		matcher.reset();
-		pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)");
+		pattern = Pattern.compile("(?i)set\\s+sell\\s+(.*)$");
 		matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
@@ -432,7 +432,7 @@ public class CommandShopSet extends Command
 					return true;
 				}
 				//if we want to set a sell price, make a new entry with the sell price
-				String insQuery = String.format("INSERT INTO shop_items("
+				String insQuery = String.format("INSERT INTO shop_items ("
 						+ "	shop,	itemid,			itemdamage,		stock,	sell,	buy) VALUES("
 						+ "	%d,		%d,				%d,				0,		%f,		NULL)"
 						,	shop,	item.typeId,	item.subTypeId,					price.doubleValue());
@@ -582,7 +582,7 @@ public class CommandShopSet extends Command
 												, max, stockId);
 				CommandShops.db.query(maxQuery);
 			}else{
-				String addQuery = String.format("INSERT INTO shop_items("
+				String addQuery = String.format("INSERT INTO shop_items ("
 						+ "	shop,	itemid,			itemdamage,		stock,	maxstock,	buy,	sell) VALUES("
 						+ "	%d,		%d,				%d,				0,		%d,			NULL,	NULL)"
 						,	shop,	item.typeId,	item.subTypeId,			max);
