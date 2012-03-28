@@ -11,8 +11,6 @@ log:
 size:
     max-height: 10          #Maximum custom shop height.
     max-width: 30           #Maximum custom shop width (both horizontal dimensions).
-    default-height: 3       #Default shop height.
-    default-width: 5        #Default shop width (both horizontal dimensions).
 storage:
     system: sqlite          #Can be sqlite (file) or mysql (server)
     connect:                #These params only needed if system = mysql

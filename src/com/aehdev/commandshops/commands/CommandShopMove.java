@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -88,7 +87,6 @@ public class CommandShopMove extends Command
 		
 		Player player = (Player)sender;
 		String playerName = player.getName();
-		String playerWorld = player.getWorld().getName();
 		String shopWorld = "";
 		String targetWorld = "";
 		String shopName = "";
@@ -150,26 +148,9 @@ public class CommandShopMove extends Command
 			xyzB[2] = sel.z2;
 			targetWorld = sel.world;
 		}else{
-			// get current position
-			Location loc = player.getLocation();
-			int x = loc.getBlockX();
-			int y = loc.getBlockY();
-			int z = loc.getBlockZ();
-			if(Config.DEFAULT_WIDTH % 2 == 0)
-			{
-				xyzA[0] = x - (Config.DEFAULT_WIDTH / 2);
-				xyzB[0] = x + (Config.DEFAULT_WIDTH / 2);
-				xyzA[2] = z - (Config.DEFAULT_WIDTH / 2);
-				xyzB[2] = z + (Config.DEFAULT_WIDTH / 2);
-			}else{
-				xyzA[0] = x - (Config.DEFAULT_WIDTH / 2) + 1;
-				xyzB[0] = x + (Config.DEFAULT_WIDTH / 2);
-				xyzA[2] = z - (Config.DEFAULT_WIDTH / 2) + 1;
-				xyzB[2] = z + (Config.DEFAULT_WIDTH / 2);
-			}
-			xyzA[1] = y - 1;
-			xyzB[1] = y + Config.DEFAULT_HEIGHT - 1;
-			targetWorld = playerWorld;
+			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use "
+					+ ChatColor.WHITE + "/shop select.");
+			return false;
 		}
 		
 		/* remove the old shop from the cuboid so the current position isn't
@@ -242,15 +223,8 @@ public class CommandShopMove extends Command
 		newShop.world = targetWorld;
 		CommandShops.getCuboidTree().insert(newShop);
 		
-		String moveType = "";
-		if(sel != null)
-		{
-			moveType = "selection";
-			ShopsPlayerListener.selectingPlayers.remove(playerName);
-		}else{
-			moveType = "current location";
-		}
-		sender.sendMessage("Shop moved to " + moveType); 
+		ShopsPlayerListener.selectingPlayers.remove(playerName);
+		sender.sendMessage("Shop moved to selection."); 
 		//log
 		log.info(String.format("[%s] Player %s moved shop %d (%s)"
 				, CommandShops.pdfFile.getName(), playerName, shop, shopName));

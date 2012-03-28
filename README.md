@@ -5,11 +5,15 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
-**HEAD**
+**4.0.1**
 
+* Tested with CB 1.2.4-R0.1
 * Fixed MySQL 5.0 compliance
-* Fixed Jungle Sapling detection
-* Fixed price setting by id:damage getting overlooked 
+* Fixed price setting by id:damage getting overlooked
+* Fixed detection for Jungle Sapling and Splash Potion of Fire Resistance
+* Added new items
+* Removed default shop size, all shops must be made with selections
+* Changed browse and find output to be less likely to wrap
 
 **4.0**
 

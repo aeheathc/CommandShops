@@ -10,13 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Config
 {
 	// Shop Size settings
-	/** Default width of a shop created without specifying custom boundaries
-	 * (both horizontal dimensions). */
-	public static int DEFAULT_WIDTH = 5;
-
-	/** Default height of a shop created without specifying custom boundaries*/
-	public static int DEFAULT_HEIGHT = 3;
-
 	/** Maximum width of a custom sized shop (both horiontal dimensions). */
 	public static int MAX_WIDTH = 30;
 
@@ -89,8 +82,6 @@ public class Config
 
 		SHOP_COST =				config.getDouble(	"fees.create");
 		MOVE_COST =				config.getDouble(	"fees.move");
-		DEFAULT_WIDTH =			config.getInt(		"size.default-width");
-		DEFAULT_HEIGHT =		config.getInt(		"size.default-height");
 		MAX_WIDTH =				config.getInt(		"size.max-width");
 		MAX_HEIGHT =			config.getInt(		"size.max-height");
 		MAX_SHOPS_PER_PLAYER =	config.getInt(		"limits.shops-per-player");

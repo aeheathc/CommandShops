@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -59,7 +58,6 @@ public class CommandShopCreate extends Command
 
 		Player player = (Player)sender;
 		String creator = player.getName();
-		String playerWorld = player.getWorld().getName();
 		String createWorld = "";
 		
 		// Check permissions
@@ -100,26 +98,9 @@ public class CommandShopCreate extends Command
 			xyzB[2] = sel.z2;
 			createWorld = sel.world;
 		}else{
-			// get current position
-			Location loc = player.getLocation();
-			int x = loc.getBlockX();
-			int y = loc.getBlockY();
-			int z = loc.getBlockZ();
-			if(Config.DEFAULT_WIDTH % 2 == 0)
-			{
-				xyzA[0] = x - (Config.DEFAULT_WIDTH / 2);
-				xyzB[0] = x + (Config.DEFAULT_WIDTH / 2);
-				xyzA[2] = z - (Config.DEFAULT_WIDTH / 2);
-				xyzB[2] = z + (Config.DEFAULT_WIDTH / 2);
-			}else{
-				xyzA[0] = x - (Config.DEFAULT_WIDTH / 2) + 1;
-				xyzB[0] = x + (Config.DEFAULT_WIDTH / 2);
-				xyzA[2] = z - (Config.DEFAULT_WIDTH / 2) + 1;
-				xyzB[2] = z + (Config.DEFAULT_WIDTH / 2);
-			}
-			xyzA[1] = y - 1;
-			xyzB[1] = y + Config.DEFAULT_HEIGHT - 1;
-			createWorld = playerWorld;
+			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use "
+					+ ChatColor.WHITE + "/shop select.");
+			return false;
 		}
 		if(!shopPositionOk(xyzA, xyzB, createWorld))
 		{

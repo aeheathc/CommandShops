@@ -10,12 +10,10 @@
 </li>
 </ul></li>
 <li>/shop <b>create [shop name]</b><ul>
-<li>Creates a shop of the default sized (specified in the configuration file) at your location.</li>
+<li>Creates a shop in the area specified by the player after using the <strong>select</strong> command.</li>
 
-<li>If used after the <b>select</b> command - assuming the player didn’t cancel the selection process, possess enough money to create a shop (also specified in the configuration file) and the selection is smaller than the maximum allowed area (again, specified in the configuration file) - a shop will be created that fills the specified area.</li>
+<li>This only works if the player has enough money to create a shop and the selection is smaller than the maximum allowed area -- see the config.</li>
 <li>Remember, shops are created in a 3D space - selecting two blocks on the floor will likely result in the creation of a shop that is a single block tall, which isn’t particularly useful to anyone.<br>
-                                    <br>
-                                    Any characters may be used for a shop name, including spaces and punctuation.<br>
 </li>
 </ul></li>
 <li>/shop <b>info &lt;id&gt;</b><ul>
@@ -42,7 +40,7 @@
 </ul></li>
 <li>/shop <b>move [id]</b><ul>
 
-<li>Moves the specified shop to a new location. The select command can be used prior to this command, allowing the shop to be moved to a new cuboid specified by the player.<br>
+<li>Moves the specified shop to a new location. The select command must be used prior to this command, to specify where the shop will be moved..<br>
                                     <br>
                                     Both <b>list</b> and <b>info</b> will return shop IDs, in addition to other information.<br>
 </li>

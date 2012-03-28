@@ -202,37 +202,18 @@ public class CommandShopBrowse extends Command
 							: "");
 		}
 
-		String message = ChatColor.DARK_AQUA + "The shop " + ChatColor.WHITE
-				+ shopName + ChatColor.DARK_AQUA + " has " + ChatColor.WHITE
-				+ itemn.name + ':';
-		sender.sendMessage(message);
-		message = ChatColor.DARK_AQUA
-				+ "["
-				+ ChatColor.WHITE
-				+ "Stock: "
+		String[] message = {"","","","",""};
+		message[0] = ChatColor.DARK_AQUA + "The shop " + ChatColor.WHITE + shopName;
+		message[1] = ChatColor.DARK_AQUA + "has " + ChatColor.WHITE + itemn.name + ':';
+		message[2] = ChatColor.DARK_AQUA + "[" + ChatColor.WHITE + "Stock: "
 				+ (shopUnlimitedStock ? "Inf." : stock)
-				+ ChatColor.DARK_AQUA
-				+ "]"
+				+ ChatColor.DARK_AQUA + "]"
 				+ ((!shopUnlimitedStock) ? (" [" + ChatColor.WHITE + "Max Stock: "
 						+ maxstock + ChatColor.DARK_AQUA + "]") : "");
-		sender.sendMessage(message);
-		message = ChatColor.GOLD
-				+ "Selling for: "
-				+ ChatColor.DARK_AQUA
-				+ " ["
-				+ ChatColor.WHITE
-				+ sellPrice
-				+ ChatColor.DARK_AQUA
-				+ "]";
-		sender.sendMessage(message);
-		message = ChatColor.GREEN
-				+ "Buying for: "
-				+ ChatColor.DARK_AQUA
-				+ " ["
-				+ ChatColor.WHITE
-				+ buyPrice
-				+ ChatColor.DARK_AQUA
-				+ "]";
+		message[3] = ChatColor.GOLD + "Selling for: " + ChatColor.DARK_AQUA + " ["
+				+ ChatColor.WHITE + sellPrice + ChatColor.DARK_AQUA + "]";
+		message[4] = ChatColor.GREEN + "Buying for: " + ChatColor.DARK_AQUA + " ["
+				+ ChatColor.WHITE + buyPrice + ChatColor.DARK_AQUA + "]";
 		sender.sendMessage(message);
 	}
 
@@ -264,7 +245,7 @@ public class CommandShopBrowse extends Command
 			mode = "list";
 			filter = "`sell` IS NOT NULL OR `buy` IS NOT NULL OR `stock`>=1";
 		}
-		int start = (pageNumber-1) * 9;
+		int start = (pageNumber-1) * 5;
 		int total = 0;
 		StringBuffer output = new StringBuffer(60);
 		LinkedList<String> msg = new LinkedList<String>();
@@ -290,11 +271,11 @@ public class CommandShopBrowse extends Command
 			output.append(ChatColor.WHITE);
 			output.append(shopName);
 			output.append(ChatColor.DARK_AQUA);
-			output.append(mode.equals("buy") ? " is selling" : (mode.equals("sell") ? " is buying" : " trades in"));
-			output.append(String.format(": (Page %d of %d)", pageNumber, (int)Math.ceil(((double)total) / 9.0)));
+			output.append(mode.equals("buy") ? " is selling" : (mode.equals("sell") ? " is buying" : " has"));
+			output.append(String.format(": (Page %d of %d)", pageNumber, (int)Math.ceil(((double)total) / 5.0)));
 			msg.add(output.toString());
 			String itemQuery = String.format("SELECT itemid,itemdamage,stock,maxstock,buy,sell FROM shop_items WHERE"
-								+ "	shop=%d AND	(%s) ORDER BY itemid,itemdamage LIMIT %d,9"
+								+ "	shop=%d AND	(%s) ORDER BY itemid,itemdamage LIMIT %d,5"
 								,	shop,		filter,								start);
 			ResultSet resItem = CommandShops.db.query(itemQuery);
 			while(resItem.next())
@@ -312,6 +293,12 @@ public class CommandShopBrowse extends Command
 				
 				output.append(ChatColor.WHITE);
 				output.append(ii.name);
+				output.append(ChatColor.DARK_AQUA);
+				output.append(" Stock:");
+				output.append(ChatColor.WHITE);
+				output.append(stockstr);
+				msg.add(output.toString());
+				output = new StringBuffer(60);
 				output.append(ChatColor.GOLD);
 				output.append(" selling@");
 				if(stock<1 && !shopUnlimitedStock) output.append(ChatColor.RED);
@@ -320,10 +307,6 @@ public class CommandShopBrowse extends Command
 				output.append(" buying@");
 				if(stock>=maxstock) output.append(ChatColor.RED);
 				output.append(buy);
-				output.append(ChatColor.DARK_AQUA);
-				output.append(" Stock:");
-				output.append(ChatColor.WHITE);
-				output.append(stockstr);
 				msg.add(output.toString());
 			}
 			resItem.close();
