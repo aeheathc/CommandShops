@@ -1,6 +1,7 @@
 package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,7 +72,7 @@ public class CommandShopInfo extends Command
 
 		String[] msg = new String[6];
 		try{
-			String infoQuery = String.format("SELECT `name`,`owner`,`creator`,x,y,z,x2,y2,z2,`world`,minbalance,unlimitedMoney,unlimitedStock FROM shops WHERE id=%d LIMIT 1", shop);
+			String infoQuery = String.format((Locale)null,"SELECT `name`,`owner`,`creator`,x,y,z,x2,y2,z2,`world`,minbalance,unlimitedMoney,unlimitedStock FROM shops WHERE id=%d LIMIT 1", shop);
 			ResultSet resInfo = CommandShops.db.query(infoQuery);
 			if(!resInfo.next())
 			{
@@ -199,7 +200,7 @@ public class CommandShopInfo extends Command
 			msg[5] = output.toString();
 		}catch(Exception e){
 			sender.sendMessage("Info req cancelled due to DB error.");
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			return false;
 		}
 		sender.sendMessage(msg);

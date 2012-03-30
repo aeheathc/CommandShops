@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -321,7 +322,7 @@ public class CommandShopBuy extends Command
 			shopUnlimitedStock = resShop.getInt("unlimitedStock") == 1;
 			shopUnlimitedMoney = resShop.getInt("unlimitedMoney") == 1;
 			resShop.close();
-			String itemQuery = String.format("SELECT id,stock,sell FROM shop_items WHERE"
+			String itemQuery = String.format((Locale)null,"SELECT id,stock,sell FROM shop_items WHERE"
 								+ "	shop=%d AND	itemid=%d AND	itemdamage=%d	LIMIT 1"
 								,	shop,		item.typeId,	item.subTypeId);
 			ResultSet resItem = CommandShops.db.query(itemQuery);
@@ -334,7 +335,7 @@ public class CommandShopBuy extends Command
 			}
 			resItem.close();
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
 			return false;
 		}
@@ -396,7 +397,7 @@ public class CommandShopBuy extends Command
 					player.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA
 							+ "Vault error crediting shop owner: could not complete sale.");
-					log.warning(String.format("[%s] Couldn't pay shop owner %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopOwner));
+					log.warning(String.format((Locale)null,"[%s] Couldn't pay shop owner %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopOwner));
 					return false;
 				}
 			}
@@ -407,13 +408,13 @@ public class CommandShopBuy extends Command
 				player.sendMessage(CommandShops.CHAT_PREFIX
 						+ ChatColor.DARK_AQUA
 						+ "Vault error paying for items: could not complete sale.");
-				log.warning(String.format("[%s] Couldn't charge buyer %s. Attempting rollback of seller credit...", CommandShops.pdfFile.getName(), playerName));
+				log.warning(String.format((Locale)null,"[%s] Couldn't charge buyer %s. Attempting rollback of seller credit...", CommandShops.pdfFile.getName(), playerName));
 				// if we can't charge the buyer, try to rollback the transaction
 				if(!plugin.econ.withdrawPlayer(shopOwner, totalCost).transactionSuccess())
 				{
-					log.warning(String.format("[%s] Couldn't rollback failed transaction. %s likely has an extra %s !", CommandShops.pdfFile.getName(), shopOwner, plugin.econ.format(totalCost)));
+					log.warning(String.format((Locale)null,"[%s] Couldn't rollback failed transaction. %s likely has an extra %s !", CommandShops.pdfFile.getName(), shopOwner, plugin.econ.format(totalCost)));
 				}else{
-					log.warning(String.format("[%s] Rolled back failed transaction with %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopOwner));
+					log.warning(String.format((Locale)null,"[%s] Rolled back failed transaction with %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopOwner));
 				}
 				return false;
 			}
@@ -426,28 +427,28 @@ public class CommandShopBuy extends Command
 		if(!shopUnlimitedStock)
 		{
 			try{
-				String removeQuery = String.format("UPDATE shop_items SET `stock`=(`stock`-%d) WHERE id=%d LIMIT 1",
+				String removeQuery = String.format((Locale)null,"UPDATE shop_items SET `stock`=(`stock`-%d) WHERE id=%d LIMIT 1",
 																						amount,		stockId);
 				CommandShops.db.query(removeQuery);
 			}catch(Exception e){
 				//worst possible time to have an error becfause now we have to roll back everything
-				log.warning(String.format("[%s] Couldn't remove items from shop: %s. Rolling back buy transaction...", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] Couldn't remove items from shop: %s. Rolling back buy transaction...", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
 				//refund buyer
 				if(!plugin.econ.depositPlayer(playerName, totalCost).transactionSuccess())
 				{
-					log.warning(String.format("[%s] Couldn't rollback buy: Items were delivered and money transferred, but duplicate item remains in shop %s. ", CommandShops.pdfFile.getName(), shopName));
+					log.warning(String.format((Locale)null,"[%s] Couldn't rollback buy: Items were delivered and money transferred, but duplicate item remains in shop %s. ", CommandShops.pdfFile.getName(), shopName));
 					return false;
 				}
 				//reclaim money from shop owner
 				if(!plugin.econ.withdrawPlayer(shopOwner, totalCost).transactionSuccess())
 				{
-					log.warning(String.format("[%s] Couldn't rollback buy: Items were delivered and money recieved by shop, but duplicate item remains in shop %s and %s likely has an extra %s ", CommandShops.pdfFile.getName(), shopName, shopOwner, plugin.econ.format(totalCost)));
+					log.warning(String.format((Locale)null,"[%s] Couldn't rollback buy: Items were delivered and money recieved by shop, but duplicate item remains in shop %s and %s likely has an extra %s ", CommandShops.pdfFile.getName(), shopName, shopOwner, plugin.econ.format(totalCost)));
 					return false;
 				}
 				//take back items
 				removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
-				log.warning(String.format("[%s] Rolled back failed buy from %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopName));
+				log.warning(String.format((Locale)null,"[%s] Rolled back failed buy from %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopName));
 				return false;
 			}
 		}
@@ -466,17 +467,17 @@ public class CommandShopBuy extends Command
 
 		// log the transaction
 		int newStock = stock - amount;
-		log.info(String.format("[%s] %s bought %d of %s from %d (%s) for %s; shop's stock is %d",
+		log.info(String.format((Locale)null,"[%s] %s bought %d of %s from %d (%s) for %s; shop's stock is %d",
 				CommandShops.pdfFile.getName(), playerName, amount, item.name, shop, shopName, plugin.econ.format(totalCost), newStock));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'buy',		%d,			%d,				%d,			%f,		%f,			%s)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount,		sell,	totalCost,	isShopController(shop)?"'Own shop; no cost.'":"NULL");
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log transaction: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log transaction: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		return true;

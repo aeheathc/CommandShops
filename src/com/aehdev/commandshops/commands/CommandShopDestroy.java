@@ -3,6 +3,8 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -70,7 +72,7 @@ public class CommandShopDestroy extends Command
 					player.sendMessage(ChatColor.DARK_AQUA + "You must be the shop owner to destroy it.");
 					return false;
 				}
-				String itemQuery = String.format("SELECT itemid,itemdamage,stock FROM shop_items WHERE shop=%d", shop);
+				String itemQuery = String.format((Locale)null,"SELECT itemid,itemdamage,stock FROM shop_items WHERE shop=%d", shop);
 				ResultSet resItem = CommandShops.db.query(itemQuery);
 				while(resItem.next())
 				{
@@ -80,7 +82,7 @@ public class CommandShopDestroy extends Command
 					givePlayerItem(Search.itemById(itemid, dam).toStack(),stock);
 				}
 				resItem.close();
-				CommandShops.db.query(String.format("DELETE FROM shops WHERE id=%d LIMIT 1",shop));
+				CommandShops.db.query(String.format((Locale)null,"DELETE FROM shops WHERE id=%d LIMIT 1",shop));
 				//remove cuboid
 				ShopLocation xyz = new ShopLocation(player.getLocation().getBlockX(),player.getLocation().getBlockY(),player.getLocation().getBlockZ());
 				BookmarkedResult res = new BookmarkedResult();
@@ -94,16 +96,16 @@ public class CommandShopDestroy extends Command
 				}
 				//log
 				player.sendMessage(ChatColor.DARK_AQUA + "Destroyed " + ChatColor.WHITE + shopName + ".");
-				log.info(String.format("[%s] Shop %d (%s) destroyed by %s",
+				log.info(String.format((Locale)null,"[%s] Shop %d (%s) destroyed by %s",
 						CommandShops.pdfFile.getName(), shop, shopName, playerName));
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					NULL,	'destroy',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 					,	now,		db.escape(playerName),																				"Shop " + shop + ": "+db.escape(shopName));
 				CommandShops.db.query(logQuery);
 			}catch(Exception e){
-				log.warning(String.format("[%s] Couldn't finish shop destruction: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] Couldn't finish shop destruction: %s", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Destroy canceled: DB error.");
 				return false;
 			}

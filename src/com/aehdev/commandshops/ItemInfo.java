@@ -1,6 +1,7 @@
 package com.aehdev.commandshops;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -53,7 +54,7 @@ public class ItemInfo
 	 * @see java.lang.Object#toString() */
 	public String toString()
 	{
-		return String.format("%s, %s, %d:%d", name,
+		return String.format((Locale)null,"%s, %s, %d:%d", name,
 				Arrays.deepToString(search), typeId, subTypeId);
 	}
 

@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,7 +76,7 @@ public class CommandShopSet extends Command
 		}
 
 		if(Config.DEBUG)
-			log.info(String.format("[%s] Command issued: %s", CommandShops.pdfFile.getName(), command));
+			log.info(String.format((Locale)null,"[%s] Command issued: %s", CommandShops.pdfFile.getName(), command));
 
 		// Parse Arguments
 		if(command.matches("(?i)set\\s+sell.*"))
@@ -224,7 +225,7 @@ public class CommandShopSet extends Command
 		try{
 			//check if there's any entry for this shop+item, and if so, what's the current sell price
 			Double sell = null;
-			String sellQuery = String.format("SELECT sell FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+			String sellQuery = String.format((Locale)null,"SELECT sell FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 											, shop, item.typeId, item.subTypeId);
 			ResultSet resSell = CommandShops.db.query(sellQuery);
 			if(!resSell.next())
@@ -238,7 +239,7 @@ public class CommandShopSet extends Command
 					return true;
 				}
 				//if we want to set a buy price, make a new entry with the buy price
-				String insQuery = String.format("INSERT INTO shop_items ("
+				String insQuery = String.format((Locale)null,"INSERT INTO shop_items ("
 						+ "	shop,	itemid,			itemdamage,		stock,	sell,	buy) VALUES("
 						+ "	%d,		%d,				%d,				0,		NULL,	%f)"
 						,	shop,	item.typeId,	item.subTypeId,					price.doubleValue());
@@ -251,7 +252,7 @@ public class CommandShopSet extends Command
 				if(price == null)
 				{
 					//If we're nulling the price, update the current entry with null
-					String nullQuery = String.format("UPDATE shop_items SET buy=NULL WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+					String nullQuery = String.format((Locale)null,"UPDATE shop_items SET buy=NULL WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 											, shop, item.typeId, item.subTypeId);
 					CommandShops.db.query(nullQuery);
 				}else{
@@ -262,7 +263,7 @@ public class CommandShopSet extends Command
 						return false;
 					}
 					//update the current entry with new buy price
-					String setBuyQuery = String.format("UPDATE shop_items SET buy=%f WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+					String setBuyQuery = String.format((Locale)null,"UPDATE shop_items SET buy=%f WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 							, price, shop, item.typeId, item.subTypeId);
 					CommandShops.db.query(setBuyQuery);
 				}
@@ -270,7 +271,7 @@ public class CommandShopSet extends Command
 			
 		}catch(Exception e){
 			sender.sendMessage(ChatColor.DARK_AQUA + "SetBuy cancelled due to DB error");
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			return false;
 		}
 
@@ -279,17 +280,17 @@ public class CommandShopSet extends Command
 				(price == null ? " is no longer purchased."
 							: " is now purchased for " + ChatColor.WHITE + plugin.econ.format(price)));
 		//log
-		log.info(String.format("[%s] %s set buy price of %s to %s in shop %d",
+		log.info(String.format((Locale)null,"[%s] %s set buy price of %s to %s in shop %d",
 				CommandShops.pdfFile.getName(), playerName, item.name, (price == null ? "NULL" : plugin.econ.format(price)), shop));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log  " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log  " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'setBuy',	%d,			%d,				NULL,		%f,		NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,				price);
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log transaction: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log transaction: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		return true;
@@ -418,7 +419,7 @@ public class CommandShopSet extends Command
 		try{
 			//check if there's any entry for this shop+item, and if so, what's the current buy price
 			Double buy = null;
-			String buyQuery = String.format("SELECT buy FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+			String buyQuery = String.format((Locale)null,"SELECT buy FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 											, shop, item.typeId, item.subTypeId);
 			ResultSet resBuy = CommandShops.db.query(buyQuery);
 			if(!resBuy.next())
@@ -432,7 +433,7 @@ public class CommandShopSet extends Command
 					return true;
 				}
 				//if we want to set a sell price, make a new entry with the sell price
-				String insQuery = String.format("INSERT INTO shop_items ("
+				String insQuery = String.format((Locale)null,"INSERT INTO shop_items ("
 						+ "	shop,	itemid,			itemdamage,		stock,	sell,	buy) VALUES("
 						+ "	%d,		%d,				%d,				0,		%f,		NULL)"
 						,	shop,	item.typeId,	item.subTypeId,					price.doubleValue());
@@ -445,7 +446,7 @@ public class CommandShopSet extends Command
 				if(price == null)
 				{
 					//If we're nulling the price, update the current entry with null
-					String nullQuery = String.format("UPDATE shop_items SET sell=NULL WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+					String nullQuery = String.format((Locale)null,"UPDATE shop_items SET sell=NULL WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 											, shop, item.typeId, item.subTypeId);
 					CommandShops.db.query(nullQuery);
 				}else{
@@ -456,7 +457,7 @@ public class CommandShopSet extends Command
 						return false;
 					}
 					//update the current entry with new sell price
-					String setSellQuery = String.format("UPDATE shop_items SET sell=%f WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+					String setSellQuery = String.format((Locale)null,"UPDATE shop_items SET sell=%f WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 							, price, shop, item.typeId, item.subTypeId);
 					CommandShops.db.query(setSellQuery);
 				}
@@ -464,7 +465,7 @@ public class CommandShopSet extends Command
 			
 		}catch(Exception e){
 			sender.sendMessage(ChatColor.DARK_AQUA + "SetSell cancelled due to DB error");
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			return false;
 		}
 
@@ -473,17 +474,17 @@ public class CommandShopSet extends Command
 				(price == null ? " is no longer sold."
 							: " is now sold for " + ChatColor.WHITE + plugin.econ.format(price)));
 		//log
-		log.info(String.format("[%s] %s set sell price of %s to %s in shop %d",
+		log.info(String.format((Locale)null,"[%s] %s set sell price of %s to %s in shop %d",
 				CommandShops.pdfFile.getName(), playerName, item.name, (price == null ? "NULL" : plugin.econ.format(price)), shop));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'setSell',	%d,			%d,				NULL,		%f,		NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,				price);
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log transaction: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log transaction: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		return true;
@@ -569,7 +570,7 @@ public class CommandShopSet extends Command
 		String playerName = ((Player)sender).getName();
 
 		try{
-			String checkQuery = String.format("SELECT id FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+			String checkQuery = String.format((Locale)null,"SELECT id FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 								, shop, item.typeId, item.subTypeId);
 			ResultSet resCheck = CommandShops.db.query(checkQuery);
 			boolean exists = resCheck.next();
@@ -578,11 +579,11 @@ public class CommandShopSet extends Command
 			resCheck.close();
 			if(exists)
 			{
-				String maxQuery = String.format("UPDATE shop_items SET maxstock=%d WHERE id=%d LIMIT 1"
+				String maxQuery = String.format((Locale)null,"UPDATE shop_items SET maxstock=%d WHERE id=%d LIMIT 1"
 												, max, stockId);
 				CommandShops.db.query(maxQuery);
 			}else{
-				String addQuery = String.format("INSERT INTO shop_items ("
+				String addQuery = String.format((Locale)null,"INSERT INTO shop_items ("
 						+ "	shop,	itemid,			itemdamage,		stock,	maxstock,	buy,	sell) VALUES("
 						+ "	%d,		%d,				%d,				0,		%d,			NULL,	NULL)"
 						,	shop,	item.typeId,	item.subTypeId,			max);
@@ -590,16 +591,16 @@ public class CommandShopSet extends Command
 			}
 			//log
 			sender.sendMessage(item.name + " maximum stock is now " + max);
-			log.info(String.format("[%s] %s set max stock of %s in shop %d to %d",
+			log.info(String.format((Locale)null,"[%s] %s set max stock of %s in shop %d to %d",
 					CommandShops.pdfFile.getName(), playerName, item.name, shop, max));
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'setMax',	%d,			%d,				%d,			NULL,	NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	max);
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Setmax cancelled due to DB error.");
 			return false;
 		}
@@ -636,23 +637,23 @@ public class CommandShopSet extends Command
 				resGet.next();
 				boolean unlimitedMoney = resGet.getInt("unlimitedMoney") == 0;
 				resGet.close();
-				String setQuery = String.format("UPDATE shops SET unlimitedMoney=%d WHERE id=%d LIMIT 1"
+				String setQuery = String.format((Locale)null,"UPDATE shops SET unlimitedMoney=%d WHERE id=%d LIMIT 1"
 									, unlimitedMoney ? 1 : 0, shop);
 				CommandShops.db.query(setQuery);
 				sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA
 						+ "Unlimited money was set to " + ChatColor.WHITE
 						+ (unlimitedMoney ? "true" : "false"));
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,				`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setUnlimitedMoney',	NULL,		NULL,			NULL,		NULL,			NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																							unlimitedMoney?"true":"false");
 				CommandShops.db.query(logQuery);
-				log.info(String.format("[%s] Player %s set unlimited money to %s in shop %d",
+				log.info(String.format((Locale)null,"[%s] Player %s set unlimited money to %s in shop %d",
 						CommandShops.pdfFile.getName(), playerName, (unlimitedMoney ? "true" : "false"), shop));
 			}catch(Exception e){
 				sender.sendMessage("DB error during money toggle.");
-				log.warning(String.format("[%s] DB error toggling money: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] DB error toggling money: %s", CommandShops.pdfFile.getName(), e));
 				return false;
 			}
 			return true;
@@ -670,23 +671,23 @@ public class CommandShopSet extends Command
 				resGet.next();
 				boolean unlimitedStock = resGet.getInt("unlimitedStock") == 0;
 				resGet.close();
-				String setQuery = String.format("UPDATE shops SET unlimitedStock=%d WHERE id=%d LIMIT 1"
+				String setQuery = String.format((Locale)null,"UPDATE shops SET unlimitedStock=%d WHERE id=%d LIMIT 1"
 									, unlimitedStock ? 1 : 0, shop);
 				CommandShops.db.query(setQuery);
 				sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA
 						+ "Unlimited stock was set to " + ChatColor.WHITE
 						+ (unlimitedStock ? "true" : "false"));
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,				`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setUnlimitedStock',	NULL,		NULL,			NULL,		NULL,			NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																							unlimitedStock?"true":"false");
 				CommandShops.db.query(logQuery);
-				log.info(String.format("[%s] Player %s set unlimited stock to %s in shop %d",
+				log.info(String.format((Locale)null,"[%s] Player %s set unlimited stock to %s in shop %d",
 						CommandShops.pdfFile.getName(), playerName, (unlimitedStock ? "true" : "false"), shop));
 			}catch(Exception e){
 				sender.sendMessage("DB error during stock toggle.");
-				log.warning(String.format("[%s] DB error toggling money: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] DB error toggling money: %s", CommandShops.pdfFile.getName(), e));
 				return false;
 			}			
 			return true;
@@ -722,7 +723,7 @@ public class CommandShopSet extends Command
 					String manager = arg.replaceFirst("\\+", "");
 					// add manager
 					try{
-						String manCheck = String.format("SELECT COUNT(*) FROM managers WHERE shop=%d AND manager='%s'"
+						String manCheck = String.format((Locale)null,"SELECT COUNT(*) FROM managers WHERE shop=%d AND manager='%s'"
 													, shop, manager);
 						ResultSet resCheck = CommandShops.db.query(manCheck);
 						resCheck.next();
@@ -733,19 +734,19 @@ public class CommandShopSet extends Command
 							sender.sendMessage(ChatColor.DARK_AQUA + "That player is already a manager here.");
 							continue;
 						}
-						CommandShops.db.query(String.format("INSERT INTO managers (shop,manager) VALUES(%d,'%s')"
+						CommandShops.db.query(String.format((Locale)null,"INSERT INTO managers (shop,manager) VALUES(%d,'%s')"
 											, shop, manager));
 						sender.sendMessage(ChatColor.DARK_AQUA + "Added manager " + ChatColor.WHITE + manager);
 						String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-						String logQuery = String.format("INSERT INTO log " 
+						String logQuery = String.format((Locale)null,"INSERT INTO log " 
 							+"(	`datetime`,	`user`,					`shop`,	`action`,		`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 							+"(	'%s',		'%s',					%d,		'addManager',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 							,	now,		db.escape(playerName),	shop,																			db.escape(manager));
 						CommandShops.db.query(logQuery);
-						log.info(String.format("[%s] Player %s added manager %s to shop %d",
+						log.info(String.format((Locale)null,"[%s] Player %s added manager %s to shop %d",
 								CommandShops.pdfFile.getName(), playerName, manager, shop));
 					}catch(Exception e){
-						log.warning(String.format("[%s] Couldn't add manager: %s", CommandShops.pdfFile.getName(), e));
+						log.warning(String.format((Locale)null,"[%s] Couldn't add manager: %s", CommandShops.pdfFile.getName(), e));
 						sender.sendMessage(ChatColor.DARK_AQUA + "DB error during manager add.");
 						return false;
 					}
@@ -753,19 +754,19 @@ public class CommandShopSet extends Command
 					String manager = arg.replaceFirst("\\-", "");
 					// remove manager
 					try{
-						CommandShops.db.query(String.format("DELETE FROM managers WHERE shop=%d AND manager='%s' LIMIT 1"
+						CommandShops.db.query(String.format((Locale)null,"DELETE FROM managers WHERE shop=%d AND manager='%s' LIMIT 1"
 											, shop, manager));
 						sender.sendMessage(ChatColor.DARK_AQUA + "Removed manager " + ChatColor.WHITE + manager);
 						String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-						String logQuery = String.format("INSERT INTO log " 
+						String logQuery = String.format((Locale)null,"INSERT INTO log " 
 							+"(	`datetime`,	`user`,					`shop`,	`action`,		`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 							+"(	'%s',		'%s',					%d,		'removeManager',NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 							,	now,		db.escape(playerName),	shop,																			db.escape(manager));
 						CommandShops.db.query(logQuery);
-						log.info(String.format("[%s] Player %s removed manager %s from shop %d",
+						log.info(String.format((Locale)null,"[%s] Player %s removed manager %s from shop %d",
 								CommandShops.pdfFile.getName(), playerName, manager, shop));
 					}catch(Exception e){
-						log.warning(String.format("[%s] Couldn't remove manager: %s", CommandShops.pdfFile.getName(), e));
+						log.warning(String.format((Locale)null,"[%s] Couldn't remove manager: %s", CommandShops.pdfFile.getName(), e));
 						sender.sendMessage(ChatColor.DARK_AQUA + "DB error during manager remove.");
 						return false;
 					}
@@ -796,10 +797,10 @@ public class CommandShopSet extends Command
 			shopName = resCheck.getString("name");
 			resCheck.close();
 			CommandShops.db.query("UPDATE shops SET notify=" + (notify?1:0) + " WHERE id=" + shop + " LIMIT 1");
-			log.info(String.format("[%s] Player %s changed notify status of shop %d to %s",
+			log.info(String.format((Locale)null,"[%s] Player %s changed notify status of shop %d to %s",
 					CommandShops.pdfFile.getName(), playerName, shop, (notify?"true":"false")));
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't toggle notify: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't toggle notify: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "DB error during notify toggle");
 			return false;
 		}
@@ -833,15 +834,15 @@ public class CommandShopSet extends Command
 			try{
 				CommandShops.db.query("UPDATE shops SET minbalance=" + min + " WHERE id=" + shop + " LIMIT 1");
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,		`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setMinbalance',NULL,		NULL,			NULL,		NULL,	%f,		NULL)"
 					,	now,		db.escape(playerName),	shop,																	min);
 				CommandShops.db.query(logQuery);
-				log.info(String.format("[%s] Player %s changed minbalance of shop %d to %s",
+				log.info(String.format((Locale)null,"[%s] Player %s changed minbalance of shop %d to %s",
 						CommandShops.pdfFile.getName(), playerName, shop, plugin.econ.format(min)));
 			}catch(Exception e){
-				log.warning(String.format("[%s] Couldn't set minbalance: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] Couldn't set minbalance: %s", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Set of minbalance cancelled due to DB error.");
 				return false;
 			}
@@ -881,7 +882,7 @@ public class CommandShopSet extends Command
 			try{
 				if(!canUseCommand(CommandTypes.ADMIN))
 				{
-					String ownQuery = String.format("SELECT id FROM shops WHERE id=%d AND owner='%s' LIMIT 1"
+					String ownQuery = String.format((Locale)null,"SELECT id FROM shops WHERE id=%d AND owner='%s' LIMIT 1"
 														, shop, db.escape(playerName)); 
 					ResultSet resOwn = CommandShops.db.query(ownQuery);
 					if(!resOwn.next())
@@ -894,7 +895,7 @@ public class CommandShopSet extends Command
 					resOwn.close();					
 				}
 			}catch(Exception e){
-				log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Transfer cancelled due to DB error.");
 				return false;
 			}
@@ -910,17 +911,17 @@ public class CommandShopSet extends Command
 			try{
 				CommandShops.db.query("UPDATE shops SET owner='" + db.escape(name) + "' WHERE id=" + shop + " LIMIT 1");
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setOwner',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																		db.escape(name));
 				CommandShops.db.query(logQuery);
 				sender.sendMessage(ChatColor.DARK_AQUA + "Owner of shop " + ChatColor.WHITE + shop
 									+ ChatColor.DARK_AQUA + " is now " + ChatColor.WHITE + name);
-				log.info(String.format("[%s] Player %s changed owner of shop %d to %s",
+				log.info(String.format((Locale)null,"[%s] Player %s changed owner of shop %d to %s",
 						CommandShops.pdfFile.getName(), playerName, shop, name));
 			}catch(Exception e){
-				log.warning(String.format("[%s] DB error while changing shop owner: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] DB error while changing shop owner: %s", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Transfer cancelled due to DB error.");
 				return false;
 			}
@@ -949,15 +950,15 @@ public class CommandShopSet extends Command
 				CommandShops.db.query("UPDATE shops SET `name`='" + db.escape(name) + "' WHERE id=" + shop + " LIMIT 1");
 				sender.sendMessage(ChatColor.DARK_AQUA + "Shop " + ChatColor.WHITE + shop + ChatColor.DARK_AQUA + " name changed to " + ChatColor.WHITE + name);
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',					%d,		'setName',	NULL,		NULL,			NULL,		NULL,	NULL,	'%s')"
 					,	now,		db.escape(playerName),	shop,																		db.escape(name));
 				CommandShops.db.query(logQuery);
-				log.info(String.format("[%s] Player %s changed name of shop %d to %s",
+				log.info(String.format((Locale)null,"[%s] Player %s changed name of shop %d to %s",
 						CommandShops.pdfFile.getName(), playerName, shop, name));
 			}catch(Exception e){
-				log.warning(String.format("[%s] DB error while changing shop name: %s", CommandShops.pdfFile.getName(), e));
+				log.warning(String.format((Locale)null,"[%s] DB error while changing shop name: %s", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "DB error during name change.");
 				return false;
 			}

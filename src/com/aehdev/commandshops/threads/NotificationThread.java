@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -66,7 +67,7 @@ public class NotificationThread extends Thread
 	 */
 	public void run()
 	{
-		log.info(String.format(
+		log.info(String.format((Locale)null,
 				"[%s] Starting NotificationThread with Timer of %d seconds",
 				plugin.getDescription().getName(),
 				Config.NOTIFY_INTERVAL));
@@ -128,7 +129,7 @@ public class NotificationThread extends Thread
 					String[] example = new String[1];
 					if(any) player.sendMessage(msg.toArray(example));
 				}catch(Exception e){
-					log.warning(String.format("[%s] Couldn't get transaction log: %s",
+					log.warning(String.format((Locale)null,"[%s] Couldn't get transaction log: %s",
 							CommandShops.pdfFile.getName(), e));
 					break;
 				}

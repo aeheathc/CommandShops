@@ -2,6 +2,7 @@ package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,7 +84,7 @@ public class CommandShopList extends Command
 			resList.close();
 		}catch(Exception e){
 			sender.sendMessage("List cancelled due to DB error.");
-			log.warning(String.format("[%s] Couldn't get shop list: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop list: %s", CommandShops.pdfFile.getName(), e));
 			return false;
 		}
 		String[] msgOut = new String[1];

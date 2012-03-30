@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -157,7 +158,7 @@ public class CommandShopRemove extends Command
 		int amount = 0;
 		
 		try{
-			String countQuery = String.format("SELECT id,stock FROM shop_items WHERE "
+			String countQuery = String.format((Locale)null,"SELECT id,stock FROM shop_items WHERE "
 											+ "shop=	%d AND itemid=	%d AND itemdamage=	%d"
 											, 			shop,			item.typeId,		item.subTypeId);
 			ResultSet resCount = CommandShops.db.query(countQuery);
@@ -174,7 +175,7 @@ public class CommandShopRemove extends Command
 			}
 			CommandShops.db.query("UPDATE shop_items SET stock=0 WHERE id=" + stockid + " LIMIT 1");
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't remove items from shop: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't remove items from shop: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Remove cancelled due to DB error.");
 			return false;
 		}
@@ -185,17 +186,17 @@ public class CommandShopRemove extends Command
 				+ " have been returned to your inventory");
 		
 		//log
-		log.info(String.format("[%s] Removal of all %d %s from shop %d by %s",
+		log.info(String.format((Locale)null,"[%s] Removal of all %d %s from shop %d by %s",
 				CommandShops.pdfFile.getName(), amount, item.name, shop, playerName));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'remove',	%d,			%d,				%d,			NULL,	NULL,	NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount);
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log transaction: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log transaction: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		return true;

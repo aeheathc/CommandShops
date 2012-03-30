@@ -1,6 +1,7 @@
 package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -213,7 +214,7 @@ public abstract class Command
 				owned = rsTotal.getInt(1);
 				rsTotal.close();
 			}catch(Exception e){
-				log.warning(String.format("[%s] - DB lost trying to check owned shop total.", CommandShops.pdfFile.getName()));
+				log.warning(String.format((Locale)null,"[%s] - DB lost trying to check owned shop total.", CommandShops.pdfFile.getName()));
 				return false;
 			}
 			
@@ -402,18 +403,18 @@ public abstract class Command
 		if(!(sender instanceof Player)) return false;
 		Player player = (Player)sender;
 		try{
-			String ownQuery = String.format("SELECT id FROM shops WHERE id=%d AND owner='%s' LIMIT 1",shop,db.escape(player.getName()));
+			String ownQuery = String.format((Locale)null,"SELECT id FROM shops WHERE id=%d AND owner='%s' LIMIT 1",shop,db.escape(player.getName()));
 			ResultSet resOwn = CommandShops.db.query(ownQuery);
 			boolean owner = resOwn.next();
 			resOwn.close();
 			if(owner) return true;
-			String manQuery = String.format("SELECT shop FROM managers WHERE shop=%d AND manager='%s' LIMIT 1",shop,db.escape(player.getName()));
+			String manQuery = String.format((Locale)null,"SELECT shop FROM managers WHERE shop=%d AND manager='%s' LIMIT 1",shop,db.escape(player.getName()));
 			ResultSet resMan = CommandShops.db.query(manQuery);
 			boolean manager = resMan.next();
 			resMan.close();
 			if(manager) return true;
 		}catch(Exception e){
-			log.warning(String.format("[%s] - Problem reading shop controllers: "+e, CommandShops.pdfFile.getName()));
+			log.warning(String.format((Locale)null,"[%s] - Problem reading shop controllers: "+e, CommandShops.pdfFile.getName()));
 		}
 		return false;
 	}

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -545,7 +546,7 @@ public class Shop implements Comparator<Shop>
 	 * @see java.lang.Object#toString() */
 	public String toString()
 	{
-		return String.format("Shop \"%s\" at [%s], [%s] %d items - %s",
+		return String.format((Locale)null,"Shop \"%s\" at [%s], [%s] %d items - %s",
 				this.name, locationA.toString(), locationB.toString(),
 				inventory.size(), uuid.toString());
 	}
@@ -557,34 +558,34 @@ public class Shop implements Comparator<Shop>
 	{
 		// Details
 		log.info("[CommandShops] Shop Information");
-		log.info(String.format("   %-16s %s", "UUID:", uuid.toString()));
-		log.info(String.format("   %-16s %s", "Name:", name));
-		log.info(String.format("   %-16s %s", "Creator:", creator));
-		log.info(String.format("   %-16s %s", "Owner:", owner));
-		log.info(String.format("   %-16s %s", "Managers:",
+		log.info(String.format((Locale)null,"   %-16s %s", "UUID:", uuid.toString()));
+		log.info(String.format((Locale)null,"   %-16s %s", "Name:", name));
+		log.info(String.format((Locale)null,"   %-16s %s", "Creator:", creator));
+		log.info(String.format((Locale)null,"   %-16s %s", "Owner:", owner));
+		log.info(String.format((Locale)null,"   %-16s %s", "Managers:",
 				Search.join(managers, ",")));
-		log.info(String.format("   %-16s %.2f", "Minimum Balance:", minBalance));
-		log.info(String.format("   %-16s %s", "Unlimited Money:",
+		log.info(String.format((Locale)null,"   %-16s %.2f", "Minimum Balance:", minBalance));
+		log.info(String.format((Locale)null,"   %-16s %s", "Unlimited Money:",
 				unlimitedMoney ? "Yes" : "No"));
-		log.info(String.format("   %-16s %s", "Unlimited Stock:",
+		log.info(String.format((Locale)null,"   %-16s %s", "Unlimited Stock:",
 				unlimitedStock ? "Yes" : "No"));
-		log.info(String.format("   %-16s %s", "Location A:",
+		log.info(String.format((Locale)null,"   %-16s %s", "Location A:",
 				locationA.toString()));
-		log.info(String.format("   %-16s %s", "Location B:",
+		log.info(String.format((Locale)null,"   %-16s %s", "Location B:",
 				locationB.toString()));
-		log.info(String.format("   %-16s %s", "World:", world));
+		log.info(String.format((Locale)null,"   %-16s %s", "World:", world));
 
 		// Items
 		log.info("Shop Inventory");
 		log.info("   BP=Buy Price, BS=Buy Size, SP=Sell Price, SS=Sell Size, ST=Stock, MX=Max Stock");
-		log.info(String.format("   %-9s %-6s %-3s %-6s %-3s %-3s %-3s", "Id",
+		log.info(String.format((Locale)null,"   %-9s %-6s %-3s %-6s %-3s %-3s %-3s", "Id",
 				"BP", "BS", "SP", "SS", "ST", "MX"));
 		Iterator<InventoryItem> it = inventory.values().iterator();
 		while(it.hasNext())
 		{
 			InventoryItem item = it.next();
 			ItemInfo info = item.getInfo();
-			log.info(String.format(
+			log.info(String.format((Locale)null,
 					"   %6d:%-2d %-6.2f %-6.2f %-3d %-3d",
 					info.typeId, info.subTypeId, item.getBuyPrice(),
 					item.getSellPrice(), item.getStock(), item.getMaxStock()));
@@ -621,7 +622,7 @@ public class Shop implements Comparator<Shop>
 	 */
 	public static long getCurrentShop(int x, int y, int z)
 	{
-		String locQuery = String.format("SELECT id FROM shops WHERE x<=%d AND x2>=%d AND y<=%d AND y2 >=%d AND z<=%d AND z2>=%d LIMIT 1",x,x,y,y,z,z);
+		String locQuery = String.format((Locale)null,"SELECT id FROM shops WHERE x<=%d AND x2>=%d AND y<=%d AND y2 >=%d AND z<=%d AND z2>=%d LIMIT 1",x,x,y,y,z,z);
 		long id = -1;
 		try{
 			ResultSet resId = CommandShops.db.query(locQuery);
@@ -629,7 +630,7 @@ public class Shop implements Comparator<Shop>
 			id = resId.getLong("id");
 			resId.close();
 		}catch(Exception e){
-			log.warning(String.format("[%s] - Couldn't detect shop: "+e, CommandShops.pdfFile.getName()));
+			log.warning(String.format((Locale)null,"[%s] - Couldn't detect shop: "+e, CommandShops.pdfFile.getName()));
 		}
 		return id;
 	}

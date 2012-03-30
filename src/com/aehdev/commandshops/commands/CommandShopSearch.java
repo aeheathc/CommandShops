@@ -1,5 +1,6 @@
 package com.aehdev.commandshops.commands;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,7 +84,7 @@ public class CommandShopSearch extends Command
 			ItemInfo found = Search.itemByName(name);
 			if(found == null)
 			{
-				sender.sendMessage(String.format(
+				sender.sendMessage(String.format((Locale)null,
 						"No item was found matching \"%s\"", name));
 			}else{
 				sender.sendMessage(found.toString());

@@ -2,6 +2,7 @@ package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -157,7 +158,7 @@ public class CommandShopBrowse extends Command
 			shopName = resShop.getString("name");
 			shopUnlimitedStock = resShop.getInt("unlimitedStock") == 1;
 			resShop.close();
-			String itemQuery = String.format("SELECT stock,maxstock,buy,sell FROM shop_items WHERE"
+			String itemQuery = String.format((Locale)null,"SELECT stock,maxstock,buy,sell FROM shop_items WHERE"
 								+ "	shop=%d AND	itemid=%d AND	itemdamage=%d	LIMIT 1"
 								,	shop,		itemn.typeId,	itemn.subTypeId);
 			ResultSet resItem = CommandShops.db.query(itemQuery);
@@ -172,11 +173,11 @@ public class CommandShopBrowse extends Command
 				resItem.close();
 			}else{
 				resItem.close();
-				sender.sendMessage(String.format("%s does not have %s", shopName, itemn.name));
+				sender.sendMessage(String.format((Locale)null,"%s does not have %s", shopName, itemn.name));
 				return;
 			}
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Browse cancelled due to DB error.");
 			return;
 		}
@@ -256,7 +257,7 @@ public class CommandShopBrowse extends Command
 			shopName = resShop.getString("name");
 			shopUnlimitedStock = resShop.getInt("unlimitedStock") == 1;
 			resShop.close();
-			String countQuery= String.format("SELECT COUNT(*) FROM shop_items WHERE	shop=%d AND	(%s)", shop, filter);
+			String countQuery= String.format((Locale)null,"SELECT COUNT(*) FROM shop_items WHERE	shop=%d AND	(%s)", shop, filter);
 			ResultSet resCount = CommandShops.db.query(countQuery);
 			resCount.next();
 			total = resCount.getInt(1);
@@ -272,9 +273,9 @@ public class CommandShopBrowse extends Command
 			output.append(shopName);
 			output.append(ChatColor.DARK_AQUA);
 			output.append(mode.equals("buy") ? " is selling" : (mode.equals("sell") ? " is buying" : " has"));
-			output.append(String.format(": (Page %d of %d)", pageNumber, (int)Math.ceil(((double)total) / 5.0)));
+			output.append(String.format((Locale)null,": (Page %d of %d)", pageNumber, (int)Math.ceil(((double)total) / 5.0)));
 			msg.add(output.toString());
-			String itemQuery = String.format("SELECT itemid,itemdamage,stock,maxstock,buy,sell FROM shop_items WHERE"
+			String itemQuery = String.format((Locale)null,"SELECT itemid,itemdamage,stock,maxstock,buy,sell FROM shop_items WHERE"
 								+ "	shop=%d AND	(%s) ORDER BY itemid,itemdamage LIMIT %d,5"
 								,	shop,		filter,								start);
 			ResultSet resItem = CommandShops.db.query(itemQuery);
@@ -313,7 +314,7 @@ public class CommandShopBrowse extends Command
 			String[] example = new String[1];
 			sender.sendMessage(msg.toArray(example));
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get shop info list: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info list: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Browse cancelled due to DB error.");
 			return;
 		}

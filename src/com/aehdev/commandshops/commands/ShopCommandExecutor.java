@@ -1,5 +1,6 @@
 package com.aehdev.commandshops.commands;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
@@ -114,7 +115,7 @@ public class ShopCommandExecutor implements CommandExecutor
 			}
 
 			if(Config.DEBUG)
-				log.info(String.format("[%s] %s issued: %s", plugin.getDescription().getName(), user, cmd.getCommand()));
+				log.info(String.format((Locale)null,"[%s] %s issued: %s", plugin.getDescription().getName(), user, cmd.getCommand()));
 
 			cmd.process();
 			return true;

@@ -5,6 +5,10 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**4.0.2**
+
+* Fixed locale problem inserting commas into numbers.
+
 **4.0.1**
 
 * Tested with CB 1.2.4-R0.1

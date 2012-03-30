@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -359,7 +360,7 @@ public class CommandShopAdd extends Command
 			shopUnlimitedStock = resShop.getInt("unlimitedStock") == 1;
 			shopName = resShop.getString("name");
 			resShop.close();
-			String itemQuery = String.format("SELECT id,stock,buy,sell FROM shop_items WHERE "
+			String itemQuery = String.format((Locale)null,"SELECT id,stock,buy,sell FROM shop_items WHERE "
 					+ "	shop=%d AND itemid=%d AND	itemdamage=%d",
 						shop,		item.typeId,	item.subTypeId);
 			ResultSet resItem = CommandShops.db.query(itemQuery);
@@ -371,7 +372,7 @@ public class CommandShopAdd extends Command
 				resItem.getDouble("sell");	boolean hasSell= !resItem.wasNull();
 				if(!hasBuy && !hasSell) itemNew = true;
 			}else{
-				String insertQuery = String.format("INSERT INTO shop_items"
+				String insertQuery = String.format((Locale)null,"INSERT INTO shop_items"
 						+ "(shop,	itemid,		itemdamage,		stock,	maxstock,	buy,	sell) VALUES"
 						+ "(%d,		%d,			%d,				0,		10,			NULL,	NULL)"
 						,	shop,	item.typeId,item.subTypeId);
@@ -379,7 +380,7 @@ public class CommandShopAdd extends Command
 				CommandShops.db.query(insertQuery);
 				itemStock = 0;
 				itemNew = true;
-				String stockQuery = String.format("SELECT MAX(id) FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d"
+				String stockQuery = String.format((Locale)null,"SELECT MAX(id) FROM shop_items WHERE shop=%d AND itemid=%d AND itemdamage=%d"
 												, shop, item.typeId, item.subTypeId);
 				ResultSet resStock = db.query(stockQuery);
 				resStock.next();
@@ -388,7 +389,7 @@ public class CommandShopAdd extends Command
 			}
 			resItem.close();
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Add cancelled due to DB error.");
 			return false;
 		}
@@ -408,7 +409,7 @@ public class CommandShopAdd extends Command
 
 		if(shopUnlimitedStock)
 		{
-			sender.sendMessage(String.format(
+			sender.sendMessage(String.format((Locale)null,
 					"%s has unlimited stock, no need to stock it!",
 					shopName, item.name));
 			return false;
@@ -416,10 +417,10 @@ public class CommandShopAdd extends Command
 
 		long newStock = itemStock + amount;
 		try{
-			String addQuery = String.format("UPDATE shop_items SET stock=stock+%d WHERE id=%d", amount, stockId);
+			String addQuery = String.format((Locale)null,"UPDATE shop_items SET stock=stock+%d WHERE id=%d", amount, stockId);
 			CommandShops.db.query(addQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't add item to shop: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't add item to shop: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Add cancelled due to DB error.");
 			return false;
 		}
@@ -444,17 +445,17 @@ public class CommandShopAdd extends Command
 		}
 
 		// log the transaction
-		log.info(String.format("[%s] Add %d of %s to %s by %s",
+		log.info(String.format((Locale)null,"[%s] Add %d of %s to %s by %s",
 				CommandShops.pdfFile.getName(), amount, item.name, shop, playerName));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'add',		%d,			%d,				%d,			NULL,	NULL,		NULL)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount);
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log transaction: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log transaction: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		return true;

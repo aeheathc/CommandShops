@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -36,7 +37,7 @@ public class ShopData
 	{
 		if(Config.DEBUG)
 		{
-			log.info(String.format("[%s] Adding %s", CommandShops.pdfFile.getName(),
+			log.info(String.format((Locale)null,"[%s] Adding %s", CommandShops.pdfFile.getName(),
 					shop.toString()));
 		}
 		shops.put(shop.getUuid(), shop);
@@ -51,7 +52,7 @@ public class ShopData
 	{
 		if(Config.DEBUG)
 		{
-			log.info(String.format("[%s] %s.%s", CommandShops.pdfFile.getName(),
+			log.info(String.format((Locale)null,"[%s] %s.%s", CommandShops.pdfFile.getName(),
 					"ShopData", "loadShops(File shopsDir)"));
 		}
 		DatabaseHandler db = CommandShops.db;
@@ -65,7 +66,7 @@ public class ShopData
 
 			if(Config.DEBUG)
 			{
-				log.info(String.format("[%s] Loading Shop file \"%s\".",
+				log.info(String.format((Locale)null,"[%s] Loading Shop file \"%s\".",
 						CommandShops.pdfFile.getName(), file.toString()));
 			}
 			Shop shop = null;
@@ -78,7 +79,7 @@ public class ShopData
 					shop = loadShop(file);
 				}catch(Exception e){
 					// log error
-					log.info(String.format(
+					log.info(String.format((Locale)null,
 							"[%s] Error loading Shop file \"%s\", ignored.",
 							CommandShops.pdfFile.getName(), file.toString()));
 				}
@@ -98,7 +99,7 @@ public class ShopData
 				if(sla.getY()<=slb.getY()){ y=sla.getY();y2=slb.getY(); }else{ y=slb.getY();y2=sla.getY(); }
 				if(sla.getZ()<=slb.getZ()){ z=sla.getZ();z2=slb.getZ(); }else{ z=slb.getZ();z2=sla.getZ(); }
 				
-				String shopquery = String.format("INSERT INTO `shops`"
+				String shopquery = String.format((Locale)null,"INSERT INTO `shops`"
 				+ "(`name`,						`owner`,					`creator`,						`x`,`y`,`z`,`x2`,`y2`,`z2`,`world`,						`minbalance`,			`unlimitedMoney`,				`unlimitedStock`,				`notify`,						`service_repair`,	`service_disenchant`) VALUES"
 				+ "('%s',						'%s',						'%s',							%d, %d, %d, %d,  %d,  %d,  '%s',						%f,						%d,								%d,								%d,								1,					1)"
 				, 	db.escape(shop.getName()),	db.escape(shop.getOwner()),	db.escape(shop.getCreator()),	x,  y,  z,  x2,  y2,  z2,  db.escape(shop.getWorld()),	shop.getMinBalance(),	(shop.isUnlimitedMoney()?1:0),	(shop.isUnlimitedStock()?1:0),	(shop.getNotification()?1:0));
@@ -118,7 +119,7 @@ public class ShopData
 						for(InventoryItem item : shop.getItems())
 						{
 							ItemInfo ii = item.getInfo();
-							String itemquery = String.format("INSERT INTO `shop_items`"
+							String itemquery = String.format((Locale)null,"INSERT INTO `shop_items`"
 							+ "(`shop`,	`itemid`,	`itemdamage`,	`stock`,		`maxstock`,			`buy`,				`sell`) VALUES"
 							+ "(%d,		%d,			%d,				%d,				%d,					%f,					%f)"
 							,   insId,	ii.typeId,	ii.subTypeId,	item.getStock(),item.getMaxStock(),	item.getSellPrice(),item.getBuyPrice());
@@ -131,13 +132,13 @@ public class ShopData
 						
 						if(Config.DEBUG)
 						{
-							log.info(String.format("[%s] Loaded %s",
+							log.info(String.format((Locale)null,"[%s] Loaded %s",
 									CommandShops.pdfFile.getName(), shop.toString()));
 						}
 					}else{
 						if(Config.DEBUG)
 						{
-							log.info(String.format("[%s] Not loading shop already in database: %s",
+							log.info(String.format((Locale)null,"[%s] Not loading shop already in database: %s",
 									CommandShops.pdfFile.getName(), shop.toString()));
 						}
 					}
@@ -151,7 +152,7 @@ public class ShopData
 			}
 			if(loaderror != null)
 			{
-				log.warning(String.format(
+				log.warning(String.format((Locale)null,
 						"[%s] Failed to load Shop file \"%s\": %s",
 						CommandShops.pdfFile.getName(), file.getName(), loaderror));
 			}
@@ -169,7 +170,7 @@ public class ShopData
 	{
 		if(Config.DEBUG)
 		{
-			log.info(String.format("[%s] %s.%s", CommandShops.pdfFile.getName(),
+			log.info(String.format((Locale)null,"[%s] %s.%s", CommandShops.pdfFile.getName(),
 					"ShopData", "loadShopOldFormat(File file)"));
 		}
 
@@ -188,7 +189,7 @@ public class ShopData
 			{
 				if(Config.DEBUG)
 				{
-					log.info(String.format("[%s] %s", CommandShops.pdfFile.getName(),
+					log.info(String.format((Locale)null,"[%s] %s", CommandShops.pdfFile.getName(),
 							line));
 				}
 
@@ -471,7 +472,7 @@ public class ShopData
 		{
 			props.load(new FileInputStream(file));
 		}catch(IOException e){
-			log.warning(String.format("[%s] %s", CommandShops.pdfFile.getName(),
+			log.warning(String.format((Locale)null,"[%s] %s", CommandShops.pdfFile.getName(),
 					"IOException: " + e.getMessage()));
 			return null;
 		}
@@ -541,8 +542,8 @@ public class ShopData
 		}
 
 		// Iterate through all keys, find items & parse
-		// props.setProperty(String.format("%d:%d", info.typeId,
-		// info.subTypeId), String.format("%d:%d,%d:%d,%d:%d", buyPrice,
+		// props.setProperty(String.format((Locale)null,"%d:%d", info.typeId,
+		// info.subTypeId), String.format((Locale)null,"%d:%d,%d:%d,%d:%d", buyPrice,
 		// buySize, sellPrice, sellSize, stock, maxStock));
 		Iterator<Object> it = props.keySet().iterator();
 		while(it.hasNext())
@@ -592,7 +593,7 @@ public class ShopData
 		// Sanity Checks
 		// Check that filename == UUID from file
 		if(!file.getName().equalsIgnoreCase(
-				String.format("%s.shop", shop.getUuid().toString())))
+				String.format((Locale)null,"%s.shop", shop.getUuid().toString())))
 		{
 			shop = null;
 

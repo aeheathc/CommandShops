@@ -2,6 +2,7 @@ package com.aehdev.commandshops;
 
 import java.io.File;
 import java.sql.ResultSet;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -72,7 +73,7 @@ public class CommandShops extends JavaPlugin
 		
         if(!setupEconomy())
         {
-            log.severe(String.format("[%s] - Shutting down: Vault not found!", pdfFile.getName()));
+            log.severe(String.format((Locale)null,"[%s] - Shutting down: Vault not found!", pdfFile.getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -87,7 +88,7 @@ public class CommandShops extends JavaPlugin
         			Config.DB_NAME, Config.DB_USER, Config.DB_PASS);
         	if(!setupDB()) return;
         }else{
-            log.severe(String.format("[%s] - Shutting down: Unrecognized storage system.", pdfFile.getName()));
+            log.severe(String.format((Locale)null,"[%s] - Shutting down: Unrecognized storage system.", pdfFile.getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -109,12 +110,12 @@ public class CommandShops extends JavaPlugin
 			ResultSet shoptot = db.query("SELECT COUNT(*) FROM shops"); shoptot.next();
 			long totalShops = shoptot.getLong(1);
 			shoptot.close();
-			log.info(String.format("[%s] %s", pdfFile.getName(), "Loaded with "
+			log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Loaded with "
 					+ totalShops + " shop(s)"));
-			log.info(String.format("[%s] %s", pdfFile.getName(),
+			log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(),
 					"Version " + pdfFile.getVersion() + " is enabled: "));
 		}catch(Exception e){
-            log.severe(String.format("[%s] - Shutting down: Can't select from DB.", pdfFile.getName()));
+            log.severe(String.format((Locale)null,"[%s] - Shutting down: Can't select from DB.", pdfFile.getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
 		}
@@ -144,13 +145,13 @@ public class CommandShops extends JavaPlugin
 				notificationThread.join(2000);
 			}catch(InterruptedException e){
 				// hmm, thread didn't die
-				log.warning(String.format("[%s] %s", pdfFile.getName(),
+				log.warning(String.format((Locale)null,"[%s] %s", pdfFile.getName(),
 						"NotificationThread did not exit"));
 			}
 		}
 
 		// update the console that we've stopped
-		log.info(String.format("[%s] %s", pdfFile.getName(), "Version "
+		log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Version "
 				+ pdfFile.getVersion() + " is disabled!"));
 	}
 
@@ -219,8 +220,8 @@ public class CommandShops extends JavaPlugin
     	try{
     		for(String query : tables.split(";")) db.query(query);
     	}catch(Exception e){
-    		log.severe(String.format("[%s] [SQLibrary] - %s", pdfFile.getName(),e));
-            log.severe(String.format("[%s] - Shutting down: Problem checking schema.", pdfFile.getName()));
+    		log.severe(String.format((Locale)null,"[%s] [SQLibrary] - %s", pdfFile.getName(),e));
+            log.severe(String.format((Locale)null,"[%s] - Shutting down: Problem checking schema.", pdfFile.getName()));
             getServer().getPluginManager().disablePlugin(this);
     		return false;
     	}
@@ -243,7 +244,7 @@ public class CommandShops extends JavaPlugin
     			db.query("DELETE FROM log WHERE `datetime`<'" + pivot + "'");
     		}
     	}catch(Exception e){
-    		log.warning(String.format("[%s] - Couldn't trim log. Beware of ballooning log table. %s", pdfFile.getName(), e));
+    		log.warning(String.format((Locale)null,"[%s] - Couldn't trim log. Beware of ballooning log table. %s", pdfFile.getName(), e));
     	}
     	
     	return true;

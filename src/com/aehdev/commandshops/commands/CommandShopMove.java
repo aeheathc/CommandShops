@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,7 +113,7 @@ public class CommandShopMove extends Command
 			resCheck.close();
 		}catch(Exception e){
 			sender.sendMessage("Move cancelled due to DB error.");
-			log.warning(String.format("[%s] Couldn't move shop: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't move shop: %s", CommandShops.pdfFile.getName(), e));
 			return false;
 		}
 		
@@ -188,7 +189,7 @@ public class CommandShopMove extends Command
 		if(!plugin.econ.withdrawPlayer(playerName, Config.MOVE_COST).transactionSuccess())
 		{
 			sender.sendMessage("Shop move failed due to Vault error");
-			log.warning(String.format("[%s] Failed to create shop due to Vault error", CommandShops.pdfFile.getName()));
+			log.warning(String.format((Locale)null,"[%s] Failed to create shop due to Vault error", CommandShops.pdfFile.getName()));
 			CommandShops.getCuboidTree().insert(restoreShop);
 			return false;
 		}
@@ -201,7 +202,7 @@ public class CommandShopMove extends Command
 		int z2 = Math.max((int)xyzA[2], (int)xyzB[2]);
 		
 		try{
-			String moveQuery = String.format("UPDATE shops SET x=%d,y=%d,z=%d,x2=%d,y2=%d,z2=%d,world='%s' WHERE id=%d LIMIT 1"
+			String moveQuery = String.format((Locale)null,"UPDATE shops SET x=%d,y=%d,z=%d,x2=%d,y2=%d,z2=%d,world='%s' WHERE id=%d LIMIT 1"
 																,x,   y,   z,    x2,   y2,   z2,       targetWorld, shop);
 			CommandShops.db.query(moveQuery);
 		}catch(Exception e){
@@ -209,10 +210,10 @@ public class CommandShopMove extends Command
 			CommandShops.getCuboidTree().insert(restoreShop);
 			if(plugin.econ.depositPlayer(playerName, Config.MOVE_COST).transactionSuccess())
 			{
-				log.warning(String.format("[%s]  Failed to move shop, but charge rollback succeeded (Ending state OK): %s"
+				log.warning(String.format((Locale)null,"[%s]  Failed to move shop, but charge rollback succeeded (Ending state OK): %s"
 						, CommandShops.pdfFile.getName(), e));
 			}else{
-				log.warning(String.format("[%s]  Failed to move shop and charge rollback failed. %s is likely missing %s: %s"
+				log.warning(String.format((Locale)null,"[%s]  Failed to move shop and charge rollback failed. %s is likely missing %s: %s"
 						, CommandShops.pdfFile.getName(), playerName, plugin.econ.format(Config.MOVE_COST), e));
 			}
 			return false;
@@ -226,17 +227,17 @@ public class CommandShopMove extends Command
 		ShopsPlayerListener.selectingPlayers.remove(playerName);
 		sender.sendMessage("Shop moved to selection."); 
 		//log
-		log.info(String.format("[%s] Player %s moved shop %d (%s)"
+		log.info(String.format((Locale)null,"[%s] Player %s moved shop %d (%s)"
 				, CommandShops.pdfFile.getName(), playerName, shop, shopName));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'move',		NULL,		NULL,			NULL,		%f,				NULL,	'%s')"
 				,	now,		db.escape(playerName),	shop,														Config.MOVE_COST,		"New Location:"+x+','+y+','+z+'x'+x2+','+y2+','+z2);
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log shop creation: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log shop creation: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		

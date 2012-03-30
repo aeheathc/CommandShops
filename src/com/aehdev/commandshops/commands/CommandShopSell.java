@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -340,7 +341,7 @@ public class CommandShopSell extends Command
 		String shopName = "", owner = "";
 		boolean unlimitedMoney = false, unlimitedStock = false;
 		try{
-			String infoQuery = String.format("SELECT stock,maxstock,buy,`name`,owner,minbalance,unlimitedMoney,unlimitedStock FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.id=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+			String infoQuery = String.format((Locale)null,"SELECT stock,maxstock,buy,`name`,owner,minbalance,unlimitedMoney,unlimitedStock FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.id=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 								, shop, item.typeId, item.subTypeId);
 			ResultSet resInf = CommandShops.db.query(infoQuery);
 			if(resInf.next())
@@ -362,7 +363,7 @@ public class CommandShopSell extends Command
 				return false;
 			}
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to DB error.");
 			return false;
 		}
@@ -431,7 +432,7 @@ public class CommandShopSell extends Command
 			{
 				if(!plugin.econ.withdrawPlayer(owner, totalCost).transactionSuccess())
 				{
-					log.warning(String.format("[%s] Failed sell due to Vault error (Ending state OK)", CommandShops.pdfFile.getName()));
+					log.warning(String.format((Locale)null,"[%s] Failed sell due to Vault error (Ending state OK)", CommandShops.pdfFile.getName()));
 					player.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to Vault error.");
 					return false;
 				}
@@ -442,12 +443,12 @@ public class CommandShopSell extends Command
 				{
 					if(!plugin.econ.depositPlayer(owner, totalCost).transactionSuccess())
 					{
-						log.warning(String.format("[%s] Failed sell due to Vault error, couldn't rollback payment! Owner %s is likely missing %s!", CommandShops.pdfFile.getName(), owner, plugin.econ.format(totalCost)));
+						log.warning(String.format((Locale)null,"[%s] Failed sell due to Vault error, couldn't rollback payment! Owner %s is likely missing %s!", CommandShops.pdfFile.getName(), owner, plugin.econ.format(totalCost)));
 					}else{
-						log.warning(String.format("[%s] Failed sell due to Vault error, payment rolled back (Ending state OK)", CommandShops.pdfFile.getName()));
+						log.warning(String.format((Locale)null,"[%s] Failed sell due to Vault error, payment rolled back (Ending state OK)", CommandShops.pdfFile.getName()));
 					}
 				}else{
-					log.warning(String.format("[%s] Failed sell due to Vault error (Ending state OK)", CommandShops.pdfFile.getName()));
+					log.warning(String.format((Locale)null,"[%s] Failed sell due to Vault error (Ending state OK)", CommandShops.pdfFile.getName()));
 				}
 				player.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to Vault error.");
 				return false;
@@ -458,7 +459,7 @@ public class CommandShopSell extends Command
 		if(!unlimitedStock)
 		{
 			try{
-				String addQuery = String.format("UPDATE shop_items SET stock=stock+%d WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
+				String addQuery = String.format((Locale)null,"UPDATE shop_items SET stock=stock+%d WHERE shop=%d AND itemid=%d AND itemdamage=%d LIMIT 1"
 												, amount, shop, item.typeId, item.subTypeId);
 				CommandShops.db.query(addQuery);
 			}catch(Exception e){
@@ -472,11 +473,11 @@ public class CommandShopSell extends Command
 				if(!rbPlayer || !rbOwner)
 				{
 					String failedRB = "";
-					if(!rbPlayer) failedRB += String.format(" %s has an extra %s.", playerName, plugin.econ.format(totalCost));
-					if(!rbOwner) failedRB += String.format(" %s is missing %s.", playerName, plugin.econ.format(totalCost));
-					log.warning(String.format("[%s] Failed sell due to DB error, payments couldn't be rolled back; %s: %s", CommandShops.pdfFile.getName(), failedRB, e));
+					if(!rbPlayer) failedRB += String.format((Locale)null," %s has an extra %s.", playerName, plugin.econ.format(totalCost));
+					if(!rbOwner) failedRB += String.format((Locale)null," %s is missing %s.", playerName, plugin.econ.format(totalCost));
+					log.warning(String.format((Locale)null,"[%s] Failed sell due to DB error, payments couldn't be rolled back; %s: %s", CommandShops.pdfFile.getName(), failedRB, e));
 				}else{
-					log.warning(String.format("[%s] Failed sell due to DB error, payments rolled back successfully (Ending state OK): %s", CommandShops.pdfFile.getName(), e));
+					log.warning(String.format((Locale)null,"[%s] Failed sell due to DB error, payments rolled back successfully (Ending state OK): %s", CommandShops.pdfFile.getName(), e));
 				}
 				player.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to DB error.");
 				return false;
@@ -498,17 +499,17 @@ public class CommandShopSell extends Command
 
 		// log the transaction
 		int newStock = stock + amount;
-		log.info(String.format("[%s] %s sold %d of %s to %d (%s) for %s; shop's stock is %d",
+		log.info(String.format((Locale)null,"[%s] %s sold %d of %s to %d (%s) for %s; shop's stock is %d",
 				CommandShops.pdfFile.getName(), playerName, amount, item.name, shop, shopName, plugin.econ.format(totalCost), newStock));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-			String logQuery = String.format("INSERT INTO log " 
+			String logQuery = String.format((Locale)null,"INSERT INTO log " 
 				+"(	`datetime`,	`user`,					`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,	`total`,	`comment`) VALUES"
 				+"(	'%s',		'%s',					%d,		'sell',		%d,			%d,				%d,			%f,		%f,			%s)"
 				,	now,		db.escape(playerName),	shop,				item.typeId,item.subTypeId,	amount,		buy,	totalCost,	isShopController(shop)?"'Own shop; no cost.'":"NULL");
 			CommandShops.db.query(logQuery);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't log transaction: %s",
+			log.warning(String.format((Locale)null,"[%s] Couldn't log transaction: %s",
 					CommandShops.pdfFile.getName(), e));
 		}
 		return true;

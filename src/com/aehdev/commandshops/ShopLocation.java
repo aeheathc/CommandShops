@@ -1,5 +1,7 @@
 package com.aehdev.commandshops;
 
+import java.util.Locale;
+
 import org.bukkit.Location;
 
 // TODO: Auto-generated Javadoc
@@ -98,6 +100,6 @@ public class ShopLocation
 	 * @see java.lang.Object#toString() */
 	public String toString()
 	{
-		return String.format("%.0f, %.0f, %.0f", x, y, z);
+		return String.format((Locale)null,"%.0f, %.0f, %.0f", x, y, z);
 	}
 }

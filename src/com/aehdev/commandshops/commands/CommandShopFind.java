@@ -1,6 +1,7 @@
 package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
+import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -123,7 +124,7 @@ public class CommandShopFind extends Command
 			ItemInfo found = Search.itemByName(name);
 			if(found == null)
 			{
-				sender.sendMessage(String.format(
+				sender.sendMessage(String.format((Locale)null,
 						"No item was found matching \"%s\"", name));
 				return true;
 			}else
@@ -152,21 +153,21 @@ public class CommandShopFind extends Command
 		String playerWorld = player.getWorld().getName();
 		Location loc = player.getLocation();
 		int x=loc.getBlockX(), y=loc.getBlockY(), z=loc.getBlockZ();
-		String distCalc = String.format("(abs(((x+x2)/2)- %d)*abs(((x+x2)/2)- %d)+abs(((y+y2)/2)- %d)*abs(((y+y2)/2)- %d)+abs(((z+z2)/2)- %d)*abs(((z+z2)/2)- %d))"
+		String distCalc = String.format((Locale)null,"(abs(((x+x2)/2)- %d)*abs(((x+x2)/2)- %d)+abs(((y+y2)/2)- %d)*abs(((y+y2)/2)- %d)+abs(((z+z2)/2)- %d)*abs(((z+z2)/2)- %d))"
 							,x,x,y,y,z,z);
 		Vector<String> msg = new Vector<String>(11);
 		msg.add("");
 		final int limitsquared = (int)Math.pow(Config.FIND_MAX_DISTANCE, 2);
 		try{
 			//get 5 closest shops carrying that item
-			String countQuery = String.format("SELECT COUNT(*),%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND %s<=%d"
+			String countQuery = String.format((Locale)null,"SELECT COUNT(*),%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND %s<=%d"
 					,distCalc, playerWorld, found.typeId,found.subTypeId, distCalc, limitsquared);
 			ResultSet resCount = CommandShops.db.query(countQuery);
 			resCount.next();
 			int total = resCount.getInt(1);
 			resCount.close();
 			
-			String findQuery = String.format("SELECT shops.id AS shopid,shops.`name` AS shopname,shops.unlimitedStock AS unlimitedStock,stock,maxstock,buy,sell,%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND %s<=%d ORDER BY distance ASC LIMIT 5"
+			String findQuery = String.format((Locale)null,"SELECT shops.id AS shopid,shops.`name` AS shopname,shops.unlimitedStock AS unlimitedStock,stock,maxstock,buy,sell,%s AS distance FROM shop_items LEFT JOIN shops ON shop_items.shop=shops.id WHERE shops.world='%s' AND itemid=%d AND itemdamage=%d AND (buy IS NOT NULL OR sell IS NOT NULL) AND %s<=%d ORDER BY distance ASC LIMIT 5"
 					,distCalc, playerWorld, found.typeId, found.subTypeId, distCalc, limitsquared);
 			ResultSet resFind = CommandShops.db.query(findQuery);
 			int shops=0;
@@ -224,7 +225,7 @@ public class CommandShopFind extends Command
 					+ ChatColor.WHITE + found.name;
 			player.sendMessage(outmsg);
 		}catch(Exception e){
-			log.warning(String.format("[%s] Couldn't get item info: %s", CommandShops.pdfFile.getName(), e));
+			log.warning(String.format((Locale)null,"[%s] Couldn't get item info: %s", CommandShops.pdfFile.getName(), e));
 			sender.sendMessage(ChatColor.DARK_AQUA + "Find cancelled due to DB error.");
 			return true;
 		}

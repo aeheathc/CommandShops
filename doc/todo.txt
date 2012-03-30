@@ -16,5 +16,3 @@
 - Repair and disenchant
 - Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items 
 - Dump cuboid thing and determine shop overlap via sql
-== Maybe Features ==
-- Use Vault's item matching system

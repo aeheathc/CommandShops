@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,7 +148,7 @@ public class CommandShopCreate extends Command
 			int y2 = Math.max((int)xyzA[1], (int)xyzB[1]);
 			int z2 = Math.max((int)xyzA[2], (int)xyzB[2]);
 			try{
-				String insertQuery = String.format("INSERT INTO shops"
+				String insertQuery = String.format((Locale)null,"INSERT INTO shops"
 						+ "(	`name`,			`owner`,			`creator`,			`x`,`y`,`z`,`x2`,`y2`,`z2`,	`world`,	`minbalance`,	`unlimitedMoney`,	`unlimitedStock`) VALUES"
 						+ "(	'%s',			'%s',				'%s',				%d, %d, %d, %d,  %d,  %d,	'%s',		0,				0,					0)"
 						,		db.escape(name),db.escape(creator),	db.escape(creator),	x,	y,	z,  x2,  y2,  z2,	createWorld);
@@ -162,11 +163,11 @@ public class CommandShopCreate extends Command
 				//rollback payment
 				if(!plugin.econ.depositPlayer(creator, Config.SHOP_COST).transactionSuccess())
 				{
-					log.warning(String.format(
+					log.warning(String.format((Locale)null,
 							"[%s] Failed to create shop and failed to rollback payment; %s is likely missing %s!: %s",
 							CommandShops.pdfFile.getName(), creator, plugin.econ.format(Config.SHOP_COST), e));
 				}else{
-					log.warning(String.format(
+					log.warning(String.format((Locale)null,
 							"[%s] Failed to create shop, but charge rollback succeeded (Ending state OK): %s",
 							CommandShops.pdfFile.getName(), e));
 				}
@@ -183,17 +184,17 @@ public class CommandShopCreate extends Command
 			ShopsPlayerListener.selectingPlayers.remove(creator);
 			
 			//log
-			log.info(String.format("[%s] %s Created shop: %s",
+			log.info(String.format((Locale)null,"[%s] %s Created shop: %s",
 					CommandShops.pdfFile.getName(), creator, name));
 			try{
 				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				String logQuery = String.format("INSERT INTO log " 
+				String logQuery = String.format((Locale)null,"INSERT INTO log " 
 					+"(	`datetime`,	`user`,				`shop`,	`action`,	`itemid`,	`itemdamage`,	`amount`,	`cost`,			`total`,`comment`) VALUES"
 					+"(	'%s',		'%s',				%d,		'create',	NULL,		NULL,			NULL,		%f,				NULL,	'%s')"
 					,	now,		db.escape(creator),	insId,														Config.SHOP_COST,		"Location:"+x+','+y+','+z+'x'+x2+','+y2+','+z2);
 				CommandShops.db.query(logQuery);
 			}catch(Exception e){
-				log.warning(String.format("[%s] Couldn't log shop creation: %s",
+				log.warning(String.format((Locale)null,"[%s] Couldn't log shop creation: %s",
 						CommandShops.pdfFile.getName(), e));
 			}
 			sender.sendMessage(ChatColor.DARK_AQUA + "Created shop " + ChatColor.WHITE + name);
