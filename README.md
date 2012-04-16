@@ -5,6 +5,13 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**4.0.3**
+
+* Tested with CB 1.2.5-R1.2
+* Fixed log overriding leaf detection for redwood
+* Fixed leather detection
+* Integrated SQLibrary 3.0.7 to fix "too many connections" issue
+
 **4.0.2**
 
 * Fixed locale problem inserting commas into numbers.

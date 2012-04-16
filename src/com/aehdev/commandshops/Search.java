@@ -35,9 +35,9 @@ public class Search
 		items.add(new ItemInfo("Iron Ore",			new String[][] {{"ore","iron"}},								15, (short) 0, 64 ));
 		items.add(new ItemInfo("Coal Ore",			new String[][] {{"ore","coal"}},								16, (short) 0, 64 ));
 		items.add(new ItemInfo("Log",				new String[][] {{"log"},{"log","oak"}},							17, (short) 0, 64 ));
-		items.add(new ItemInfo("Redwood Log",		new String[][] {{"log","red"},{"red","wood"}},					17, (short) 1, 64 ));
-		items.add(new ItemInfo("Birch Log",			new String[][] {{"birch"},{"log","birch"}},						17, (short) 2, 64 ));
-		items.add(new ItemInfo("Jungle Log",		new String[][] {{"jung"},{"log","jung"}},						17, (short) 3, 64 ));
+		items.add(new ItemInfo("Redwood Log",		new String[][] {{"log","red"}},									17, (short) 1, 64 ));
+		items.add(new ItemInfo("Birch Log",			new String[][] {{"log","birch"}},								17, (short) 2, 64 ));
+		items.add(new ItemInfo("Jungle Log",		new String[][] {{"log","jung"}},								17, (short) 3, 64 ));
 		items.add(new ItemInfo("Leaves Block",		new String[][] {{"blo","lea"},{"blo","leaves","oak"}},			18, (short) 0, 64 ));
 		items.add(new ItemInfo("Redwood Leaves Block",new String[][]{{"blo","lea","red"}},							18, (short) 1, 64 ));
 		items.add(new ItemInfo("Birch Leaves Block",new String[][] {{"blo","lea","birch"}},							18, (short) 2, 64 ));
@@ -246,7 +246,7 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Redstone Dust",		new String[][] {{"red","ston"}},								331, (short) 0, 64));
 		items.add(new ItemInfo("Snowball",			new String[][] {{"snow","ball"}},								332, (short) 0, 16 ));
 		items.add(new ItemInfo("Boat",				new String[][] {{"boat"}},										333, (short) 0, 1 ));
-		items.add(new ItemInfo("Leather",			new String[][] {{"lea"}},										334, (short) 0, 64 ));
+		items.add(new ItemInfo("Leather",			new String[][] {{"lea","the"}},									334, (short) 0, 64 ));
 		items.add(new ItemInfo("Milk Bucket",		new String[][] {{"milk"}},										335, (short) 0, 1 ));
 		items.add(new ItemInfo("Clay Brick",		new String[][] {{"bric","cla"}},								336, (short) 0, 64 ));
 		items.add(new ItemInfo("Clay",				new String[][] {{"cla"}},										337, (short) 0, 64 ));

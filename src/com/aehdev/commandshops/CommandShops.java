@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import cuboidLocale.QuadTree;
 import net.milkbowl.vault.economy.Economy;
-import com.aehdev.lib.PatPeter.SQLibrary.DatabaseHandler;
+import com.aehdev.lib.PatPeter.SQLibrary.Database;
 import com.aehdev.lib.PatPeter.SQLibrary.MySQL;
 import com.aehdev.lib.PatPeter.SQLibrary.SQLite;
 
@@ -42,7 +42,7 @@ public class CommandShops extends JavaPlugin
 	public Economy econ = null;
 	
 	/** Abstracts supported databases. */
-	public static DatabaseHandler db = null;
+	public static Database db = null;
 
 	/** Main logger with which we write to the server log. */
 	private final Logger log = Logger.getLogger("Minecraft");

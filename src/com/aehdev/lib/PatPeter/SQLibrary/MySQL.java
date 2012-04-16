@@ -7,15 +7,6 @@
  */
 package com.aehdev.lib.PatPeter.SQLibrary;
 
-/*
- * MySQL
- */
-//import java.net.MalformedURLException;
-
-/*
- * Both
- */
-//import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,11 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.StringCharacterIterator;
-//import java.util.logging.Logger;
 import java.util.logging.Logger;
-//import com.sun.rowset.JdbcRowSetImpl;
 
-public class MySQL extends DatabaseHandler {
+public class MySQL extends Database {
 	private String hostname = "localhost";
 	private String portnmbr = "3306";
 	private String username = "minecraft";
@@ -47,6 +36,13 @@ public class MySQL extends DatabaseHandler {
 		this.database = database;
 		this.username = username;
 		this.password = password;
+		open();
+	}
+	
+	@Override
+	protected void finalize()
+	{
+		close();
 	}
 	
 	@Override
@@ -55,7 +51,7 @@ public class MySQL extends DatabaseHandler {
 			Class.forName("com.mysql.jdbc.Driver"); // Check that server's Java has MySQL support.
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Class Not Found Exception: " + e.getMessage() + ".", true);
+	    	this.writeError("Class not found in initialize(): " + e.getMessage() + ".", true);
 	    	return false;
 	    }
 	}
@@ -66,10 +62,12 @@ public class MySQL extends DatabaseHandler {
 			String url = "";
 		    try {
 				url = "jdbc:mysql://" + this.hostname + ":" + this.portnmbr + "/" + this.database;
-				return DriverManager.getConnection(url, this.username, this.password);
+				this.connection = DriverManager.getConnection(url, this.username, this.password);
+				//return DriverManager.getConnection(url, this.username, this.password);
+				return this.connection;
 		    } catch (SQLException e) {
 		    	this.writeError(url,true);
-		    	this.writeError("Could not be resolved because of an SQL Exception: " + e.getMessage() + ".", true);
+		    	this.writeError("SQL exception in open(): " + e.getMessage() + ".", true);
 		    }
 		}
 		return null;
@@ -77,72 +75,78 @@ public class MySQL extends DatabaseHandler {
 	
 	@Override
 	public void close() {
-		Connection connection = open();
 		try {
 			if (connection != null)
 				connection.close();
 		} catch (Exception e) {
-			this.writeError("Failed to close database connection: " + e.getMessage(), true);
+			this.writeError("Exception in close(): " + e.getMessage(), true);
 		}
 	}
 	
 	@Override
 	public Connection getConnection() {
-		//if (this.connection == null)
-		return open();
-		//return this.connection;
+		return this.connection;
 	}
 	
+	// http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/page-4#post-701550
 	@Override
-	public boolean checkConnection() { // http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/page-4#post-701550
-		Connection connection = this.open();
+	public boolean checkConnection() {
 		if (connection != null)
 			return true;
 		return false;
 	}
 	
 	@Override
-	public ResultSet query(String query, boolean suppressErrors, Connection connection) throws SQLException
-	{
-		boolean oneshot = connection == null;
+	public ResultSet query(String query, boolean suppressErrors) {
 		Statement statement = null;
-		ResultSet result = null/*new JdbcRowSetImpl()*/;
+		ResultSet result = null;
+		if(connection == null) open();
 		try {
-			if(oneshot) connection = open();
-		    statement = connection.createStatement();
+		    statement = this.connection.createStatement();
 		    result = statement.executeQuery("SELECT CURTIME()");
 		    
 		    switch (this.getStatement(query)) {
 			    case SELECT:
-			    result = statement.executeQuery(query);
-			    return result;
-
+				    result = statement.executeQuery(query);
+				    break;
+				
+			    case INSERT:
+			    case UPDATE:
+			    case DELETE:	
+			    case CREATE:
+			    case ALTER:
+			    case DROP:
+			    case TRUNCATE:
+			    case RENAME:
+			    case DO:
+			    case REPLACE:
+			    case LOAD:
+			    case HANDLER:
+			    case CALL:
+			    	this.lastUpdate = statement.executeUpdate(query);
+			    	break;
+			    	
 			    default:
-		    	statement.executeUpdate(query);
-		    	return result;
+			    	result = statement.executeQuery(query);
 		    }
+	    	return result;
 		} catch (SQLException e) {
-			if(!e.getMessage().equals("query does not return ResultSet") && !suppressErrors)
-			{
-				this.writeError("Error in SQL query: " + e.getMessage() + " Query in full: " + query, false);
-				throw e;
-			}
+			if(!suppressErrors)
+				this.writeError("SQL exception in query(): " + e.getMessage() + " Query in full: " + query, false);
 		}
 		return result;
 	}
 	
 	@Override
 	public PreparedStatement prepare(String query) {
-		Connection connection = null;
 		PreparedStatement ps = null;
 		try
 		{
-			connection = open();
 			ps = connection.prepareStatement(query);
 			return ps;
 		} catch(SQLException e) {
 			if(!e.toString().contains("not return ResultSet"))
-				this.writeError("Error in SQL prepare() query: " + e.getMessage(), false);
+				this.writeError("SQL exception in prepare(): " + e.getMessage(), false);
 		}
 		return ps;
 	}
@@ -151,9 +155,8 @@ public class MySQL extends DatabaseHandler {
 	public boolean createTable(String query) {
 		Statement statement = null;
 		try {
-			this.connection = this.open();
 			if (query.equals("") || query == null) {
-				this.writeError("SQL query empty: createTable(" + query + ")", true);
+				this.writeError("Parameter 'query' empty or null in createTable(): " + query, true);
 				return false;
 			}
 		    
@@ -170,10 +173,8 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	@Override
-	public boolean checkTable(String table) throws SQLException {
+	public boolean checkTable(String table) {
 		try {
-			Connection connection = open();
-			//this.connection = this.open();
 		    Statement statement = connection.createStatement();
 		    
 		    ResultSet result = statement.executeQuery("SELECT * FROM " + table);
@@ -186,7 +187,7 @@ public class MySQL extends DatabaseHandler {
 			if (e.getMessage().contains("exist")) {
 				return false;
 			} else {
-				this.writeError("Error in SQL query: " + e.getMessage(), false);
+				this.writeError("SQL exception in checkTable(): " + e.getMessage(), false);
 			}
 		}
 		
@@ -197,16 +198,13 @@ public class MySQL extends DatabaseHandler {
 	
 	@Override
 	public boolean wipeTable(String table) {
-		//Connection connection = null;
 		Statement statement = null;
 		String query = null;
 		try {
 			if (!this.checkTable(table)) {
-				this.writeError("Error wiping table: \"" + table + "\" does not exist.", true);
+				this.writeError("Table \"" + table + "\" in wipeTable() does not exist.", true);
 				return false;
 			}
-			//connection = open();
-			this.connection = this.open();
 		    statement = this.connection.createStatement();
 		    query = "DELETE FROM " + table + ";";
 		    statement.executeUpdate(query);
@@ -220,29 +218,27 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	/**
-	 * Make string safe for SQL query similarly to PHP's addslashes()
-	 * @param text the text to escape
-	 * @return
-	 */
+	* Make string safe for SQL query similarly to PHP's addslashes()
+	* @param text the text to escape
+	* @return
+	*/
 	@Override
 	public String escape(String text)
 	{
-        final StringBuffer sb                   = new StringBuffer( text.length() * 2 );
-        final StringCharacterIterator iterator  = new StringCharacterIterator( text );
-  	  	char character = iterator.current();
-
-        while( character != StringCharacterIterator.DONE )
-        {
-            if( character == '"' ) sb.append( "\\\"" );
-            else if( character == '\'' ) sb.append( "\\\'" );
-            else if( character == '\\' ) sb.append( "\\\\" );
-            else if( character == '\n' ) sb.append( "\\n" );
-            else if( character == '{'  ) sb.append( "\\{" );
-            else if( character == '}'  ) sb.append( "\\}" );
-            else sb.append( character );
-	            
-            character = iterator.next();
-        }
-        return sb.toString();
+		final StringBuffer sb = new StringBuffer( text.length() * 2 );
+		final StringCharacterIterator iterator = new StringCharacterIterator( text );
+		char character = iterator.current();
+		while( character != StringCharacterIterator.DONE )
+		{
+			if( character == '"' ) sb.append( "\\\"" );
+			else if( character == '\'' ) sb.append( "\\\'" );
+			else if( character == '\\' ) sb.append( "\\\\" );
+			else if( character == '\n' ) sb.append( "\\n" );
+			else if( character == '{' ) sb.append( "\\{" );
+			else if( character == '}' ) sb.append( "\\}" );
+			else sb.append( character );
+			character = iterator.next();
+		}
+		return sb.toString();
 	}
 }

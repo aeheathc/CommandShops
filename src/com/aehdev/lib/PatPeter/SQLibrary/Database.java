@@ -23,29 +23,41 @@ package com.aehdev.lib.PatPeter.SQLibrary;
  */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 //import java.sql.DriverManager;
 import java.sql.ResultSet;
 //import java.sql.SQLException;
 //import java.sql.Statement;
 import java.util.logging.Logger;
 
-public abstract class DatabaseHandler {
+public abstract class Database {
 	protected Logger log;
 	protected final String PREFIX;
 	protected final String DATABASE_PREFIX;
 	protected boolean connected;
 	protected Connection connection;
+	
+	// http://dev.mysql.com/doc/refman/5.6/en/sql-syntax.html
+	// http://sqlite.org/lang.html
 	protected enum Statements {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
-		CREATE, ALTER, DROP, TRUNCATE, RENAME  // Data definition statements
+		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
+		
+		// MySQL-specific
+		START, COMMIT, ROLLBACK, SAVEPOINT, LOCK, UNLOCK, // MySQL Transactional and Locking Statements
+		PREPARE, EXECUTE, DEALLOCATE, // Prepared Statements
+		SET, SHOW, // Database Administration
+		DESCRIBE, EXPLAIN, HELP, USE, // Utility Statements
+		
+		// SQLite-specific
+		ANALYZE, ATTACH, BEGIN, DETACH, END, INDEXED, ON, PRAGMA, REINDEX, RELEASE, VACUUM
 	}
 	
-	/*
-	 *  MySQL, SQLLite
-	 */
+	public int lastUpdate;
 	
-	public DatabaseHandler(Logger log, String prefix, String dp) {
+	/*
+	 *  MySQL, SQLite
+	 */
+	public Database(Logger log, String prefix, String dp) {
 		this.log = log;
 		this.PREFIX = prefix;
 		this.DATABASE_PREFIX = dp;
@@ -114,7 +126,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * <br>
 	 */
-	abstract void close();
+	public abstract void close();
 	
 	/**
 	 * <b>getConnection</b><br>
@@ -124,7 +136,7 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
 	 */
-	abstract Connection getConnection();
+	public abstract Connection getConnection();
 	
 	/**
 	 * <b>checkConnection</b><br>
@@ -134,7 +146,18 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @return the status of the connection, true for up, false for down.
 	 */
-	abstract boolean checkConnection();
+	public abstract boolean checkConnection();
+	
+	/**
+	 * <b>query</b><br>
+	 * &nbsp;&nbsp;Sends a query to the SQL database.
+	 * <br>
+	 * <br>
+	 * @param query - the SQL query to send to the database.
+	 * @param supressErrors whether to suppress error logging
+	 * @return the table of results from the query.
+	 */
+	public abstract ResultSet query(String query, boolean supressErrors);
 	
 	/**
 	 * <b>query</b><br>
@@ -143,39 +166,11 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @param query - the SQL query to send to the database.
 	 * @return the table of results from the query.
-	 * @throws SQLException 
 	 */
-	public ResultSet query(String query) throws SQLException
+	public final ResultSet query(String query)
 	{
-		return query(query,false);
+		return this.query(query,false);
 	}
-	
-	/**
-	 * <b>query</b><br>
-	 * &nbsp;&nbsp;Sends a query to the SQL database.
-	 * <br>
-	 * <br>
-	 * @param query - the SQL query to send to the database.
-	 * @param suppressErrors - if true, hide any error messages
-	 * @return the table of results from the query.
-	 * @throws SQLException 
-	 */
-	public ResultSet query(String query, boolean suppressErrors) throws SQLException
-	{
-		return query(query, suppressErrors, null);
-	}
-	
-	/**
-	 * <b>query</b><br>
-	 * &nbsp;&nbsp;Sends a query to the SQL database.
-	 * <br>
-	 * <br>
-	 * @param query - the SQL query to send to the database.
-	 * @param suppressErrors - if true, hide any error messages
-	 * @return the table of results from the query.
-	 * @throws SQLException 
-	 */
-	public abstract ResultSet query(String query, boolean suppressErrors, Connection connection) throws SQLException;
 	
 	/**
 	 * <b>prepare</b><br>
@@ -236,7 +231,7 @@ public abstract class DatabaseHandler {
 	 * @param query - the SQL query for creating a table.
 	 * @return the success of the method.
 	 */
-	abstract boolean createTable(String query);
+	public abstract boolean createTable(String query);
 	
 	/**
 	 * <b>checkTable</b><br>
@@ -246,9 +241,8 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @param table - name of the table to check.
 	 * @return success of the method.
-	 * @throws SQLException 
 	 */
-	abstract boolean checkTable(String table) throws SQLException;
+	abstract boolean checkTable(String table);
 	
 	/**
 	 * <b>wipeTable</b><br>
@@ -262,9 +256,9 @@ public abstract class DatabaseHandler {
 	abstract boolean wipeTable(String table);
 	
 	/**
-	 * Make string safe for SQL query
-	 * @param text the text to escape
-	 * @return
-	 */
+	* Make string safe for SQL query
+	* @param text the text to escape
+	* @return
+	*/
 	public abstract String escape(String text);
 }

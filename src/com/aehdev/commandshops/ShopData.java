@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import com.aehdev.lib.PatPeter.SQLibrary.DatabaseHandler;
+import com.aehdev.lib.PatPeter.SQLibrary.Database;
 
 import cuboidLocale.QuadTree;
 
@@ -55,7 +55,7 @@ public class ShopData
 			log.info(String.format((Locale)null,"[%s] %s.%s", CommandShops.pdfFile.getName(),
 					"ShopData", "loadShops(File shopsDir)"));
 		}
-		DatabaseHandler db = CommandShops.db;
+		Database db = CommandShops.db;
 
 		CommandShops.setCuboidTree(new QuadTree());
 

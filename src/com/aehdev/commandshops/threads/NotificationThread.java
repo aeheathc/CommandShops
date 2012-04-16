@@ -99,7 +99,7 @@ public class NotificationThread extends Thread
 						output.append(ChatColor.WHITE);
 						output.append(resLog.getString("name"));
 						output.append(ChatColor.DARK_AQUA);
-						output.append(": ");
+						output.append(" ");
 						if(resLog.getString("action").equals("sell"))
 						{
 							output.append(ChatColor.GREEN);

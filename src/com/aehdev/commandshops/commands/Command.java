@@ -16,7 +16,7 @@ import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
-import com.aehdev.lib.PatPeter.SQLibrary.DatabaseHandler;
+import com.aehdev.lib.PatPeter.SQLibrary.Database;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
@@ -31,7 +31,7 @@ public abstract class Command
 	protected CommandShops plugin = null;
 	
 	/** Reference to database handler */
-	protected DatabaseHandler db = CommandShops.db;
+	protected Database db = CommandShops.db;
 
 	/** The command name that the user typed (might be an alias). */
 	protected String commandLabel = null;
