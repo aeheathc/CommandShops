@@ -5,6 +5,13 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**4.0.4**
+
+* Tested with CB 1.3.1-R2
+* Simplified DB management to improve future DB support
+* Updated items for 1.3.2
+* Added stub for WorldGuard integration but it has no functionality yet.
+
 **4.0.3**
 
 * Tested with CB 1.2.5-R1.2

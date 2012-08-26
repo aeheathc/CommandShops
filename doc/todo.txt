@@ -1,10 +1,6 @@
 == Planned Features ==
 - On-demand transaction log querying
-- Add auto-updating
-- Storage limitations (config,size,chests?)
-- stock variety limitations (upgrade web of similar items?)
-- sales tax. (Make shop fees go to the same collector as the sales tax?)
-- Optional Towny/WorldGuard/etc integration
+- Optional Region Protection Plugin integration via multi location support
 --- Only let you make shops in places you own 
 --- Sales tax feudal management
 --- /shop select (regionName)
@@ -13,5 +9,9 @@
 - make /shop find with no item find any nearby shops
 - multi language support
 - XP market and disenchanting
-- Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items 
+- Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items
+- stock variety limitations (upgrade web of similar items?) 
+- Add auto-updating
+- sales tax. (Make shop fees go to the same collector as the sales tax?)
+- Storage limitations (config,size,chests?)
 - Dump cuboid thing and determine shop overlap via sql

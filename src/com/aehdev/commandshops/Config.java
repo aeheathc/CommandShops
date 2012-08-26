@@ -69,6 +69,10 @@ public class Config
 	/** Name of the database containing CommandShops data */
 	public static String DB_NAME = "commandshops";
 	
+	//Region settings
+	/** When true, only allow shops to be created/moved to a selected region that is owned by the player */
+	public static boolean REQUIRE_OWNER = false;
+	
 	/**
 	 * Read the config file and load options when present, or write default
 	 * options when not present.
@@ -96,6 +100,7 @@ public class Config
 		DB_USER = 				config.getString(	"storage.connect.user");
 		DB_PASS = 				config.getString(	"storage.connect.pass");
 		DB_NAME = 				config.getString(	"storage.connect.db");
+		REQUIRE_OWNER =			config.getBoolean(	"regions.require-owner");
 		
 		plugin.saveConfig();
 	}

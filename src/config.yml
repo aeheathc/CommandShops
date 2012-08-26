@@ -19,4 +19,6 @@ storage:
         user: minecraft     #Username to connect to the database server
         pass: password      #Password to connect to the database server
         db: commandshops    #Name of the database containing CommandShops data
+regions:
+    require-owner: false;   #Require all created/moved shops to be tied to a region owned by the shop owner
 debug: false                #Enable verbose debug output.
