@@ -263,16 +263,16 @@ public class CommandShops extends JavaPlugin
     	
     	//trim log
     	try{
-    		ResultSet reslog = db.query("SELECT COUNT(*) FROM log");
+    		ResultSet reslog = db.query("SELECT COUNT(*) FROM `log`");
     		reslog.next();
     		long count = reslog.getLong(1);
     		reslog.close();
     		if(count>Config.LOG_LIMIT)
     		{
-    			ResultSet resPivot = db.query("SELECT `datetime` FROM log ORDER BY `datetime` DESC LIMIT " + Config.LOG_LIMIT + ",1");
+    			ResultSet resPivot = db.query("SELECT `datetime` FROM `log` ORDER BY `datetime` DESC LIMIT " + Config.LOG_LIMIT + ",1");
     			String pivot = resPivot.getString("datetime");
     			resPivot.close();
-    			db.query("DELETE FROM log WHERE `datetime`<'" + pivot + "'");
+    			db.query("DELETE FROM `log` WHERE `datetime`<='" + pivot + "'");
     		}
     	}catch(Exception e){
     		log.warning(String.format((Locale)null,"[%s] - Couldn't trim log. Beware of ballooning log table. %s", pdfFile.getName(), e));
