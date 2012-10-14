@@ -37,7 +37,6 @@ permissions:
             commandshops.manager.remove: true
             commandshops.manager.set: true
             commandshops.manager.set.owner: true
-            commandshops.user.*: true
     commandshops.manager.add:
         description: Allows adding items to shops under player's management.
     commandshops.manager.create:
