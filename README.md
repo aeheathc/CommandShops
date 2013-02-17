@@ -5,6 +5,16 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**4.1.0**
+* Tested with CB 1.4.7
+* Added custom item support -- should be able to support modded items now as well as ad hoc updates to the item list
+* Items updated for 1.4.7 and a few more snapshots. Some existing names changed to match official disambiguations.
+* Permissions fix to allow denying manager.* while allowing user.*
+* Log trim fix for MySQL mode
+
+**4.0.5**
+* Signs stack to 16
+
 **4.0.4**
 
 * Tested with CB 1.3.1-R2

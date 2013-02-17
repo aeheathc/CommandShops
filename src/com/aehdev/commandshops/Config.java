@@ -38,6 +38,9 @@ public class Config
 	// Server Settings
 	/** When true, log verbose debugging information to console. */
 	public static boolean DEBUG = false;
+	
+	/** Use custom item set from items.yml. When False, CS will make its own items.yml with the vanilla items. */
+	public static boolean CUSTOM_ITEMS = false;
 
 	// Player Settings
 	/** Maximum number of shops each player can have; unlimited is -1. */
@@ -101,6 +104,7 @@ public class Config
 		DB_PASS = 				config.getString(	"storage.connect.pass");
 		DB_NAME = 				config.getString(	"storage.connect.db");
 		REQUIRE_OWNER =			config.getBoolean(	"regions.require-owner");
+		CUSTOM_ITEMS =			config.getBoolean(	"custom-items");
 		
 		plugin.saveConfig();
 	}

@@ -1,6 +1,5 @@
 package com.aehdev.commandshops;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import org.bukkit.inventory.ItemStack;
@@ -50,12 +49,21 @@ public class ItemInfo
 		this.maxStackSize = maxStackSize;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString() */
+	/** Serialize to YAML
+	 * @return YAML fragment representing the ItemInfo
+	 * */
 	public String toString()
 	{
-		return String.format((Locale)null,"%s, %s, %d:%d", name,
-				Arrays.deepToString(search), typeId, subTypeId);
+		StringBuffer out = new StringBuffer(String.format((Locale)null,
+							"  item,%d,%d:\n    name: \"%s\"\n    maxstack: \"%d\"\n    wordforms:\n",
+							typeId, subTypeId, name, maxStackSize));
+		for(String[] form : search)
+		{
+			out.append("      - ");
+			out.append(Search.join(form, " "));
+			out.append("\n");
+		}
+		return out.toString();
 	}
 
 	/**

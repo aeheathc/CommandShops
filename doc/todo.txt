@@ -11,7 +11,6 @@
 - XP market and disenchanting
 - Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items
 - stock variety limitations (upgrade web of similar items?) 
-- Add auto-updating
 - sales tax. (Make shop fees go to the same collector as the sales tax?)
 - Storage limitations (config,size,chests?)
 - Dump cuboid thing and determine shop overlap via sql

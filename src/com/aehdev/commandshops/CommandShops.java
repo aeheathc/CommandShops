@@ -76,6 +76,7 @@ public class CommandShops extends JavaPlugin
 	{
 		pdfFile = getDescription();	//cache plugin info
 		Config.loadProperties(this);//Get the configuration via Bukkit's builtin method
+		Search.reload(this);
 		
         if(!setupEconomy())
         {
