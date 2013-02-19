@@ -76,6 +76,9 @@ public class Config
 	/** When true, only allow shops to be created/moved to a selected region that is owned by the player */
 	public static boolean REQUIRE_OWNER = false;
 	
+	//Allows moving a shop from one world to another
+	public static boolean MOVE_ACROSS_WORLDS = true;
+	
 	/**
 	 * Read the config file and load options when present, or write default
 	 * options when not present.
@@ -105,6 +108,8 @@ public class Config
 		DB_NAME = 				config.getString(	"storage.connect.db");
 		REQUIRE_OWNER =			config.getBoolean(	"regions.require-owner");
 		CUSTOM_ITEMS =			config.getBoolean(	"custom-items");
+		MOVE_ACROSS_WORLDS =	config.getBoolean(	"across-worlds");
+
 		
 		plugin.saveConfig();
 	}

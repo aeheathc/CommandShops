@@ -154,6 +154,14 @@ public class CommandShopMove extends Command
 			return false;
 		}
 		
+		//don't let them move across worlds. moving here since sel is already defined
+		if (!Config.MOVE_ACROSS_WORLDS) {
+			if (!(shopWorld.equalsIgnoreCase(sel.world))) {
+				sender.sendMessage("You cannot move across worlds.");
+				return false;
+			}
+		}
+		
 		/* remove the old shop from the cuboid so the current position isn't
 		 * found as overlapping with the target position
 		 */

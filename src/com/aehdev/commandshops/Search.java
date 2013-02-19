@@ -321,13 +321,13 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Gold Leggings",		new String[][] {{"pan","go"},{"leg","go"}},						316, (short) 0, 1 ));
 		items.add(new ItemInfo("Gold Boots",		new String[][] {{"boo","go"}},									317, (short) 0, 1 ));
 		items.add(new ItemInfo("Flint",				new String[][] {{"flin"}},										318, (short) 0, 64));
-		items.add(new ItemInfo("Raw Porkchop",		new String[][] {{"raw","pork"}},								319, (short) 0, 1 ));
-		items.add(new ItemInfo("Cooked Porkchop",	new String[][] {{"cook","pork"}},								320, (short) 0, 1 ));
+		items.add(new ItemInfo("Raw Porkchop",		new String[][] {{"raw","pork"}},								319, (short) 0, 64 ));
+		items.add(new ItemInfo("Cooked Porkchop",	new String[][] {{"cook","pork"}},								320, (short) 0, 64 ));
 		items.add(new ItemInfo("Painting",			new String[][] {{"painting"}},									321, (short) 0, 64));
 		items.add(new ItemInfo("Golden Apple",		new String[][] {{"appl","go"}},									322, (short) 0, 64));
 		items.add(new ItemInfo("Sign",				new String[][] {{"sign"}},										323, (short) 0, 16));
 		items.add(new ItemInfo("Wooden Door",		new String[][] {{"door","wood"},{"door"}},						324, (short) 0, 1 ));
-		items.add(new ItemInfo("Bucket",			new String[][] {{"buck"}},										325, (short) 0, 1 ));
+		items.add(new ItemInfo("Bucket",			new String[][] {{"buck"}},										325, (short) 0, 16 ));
 		items.add(new ItemInfo("Water Bucket",		new String[][] {{"water","buck"}},								326, (short) 0, 1 ));
 		items.add(new ItemInfo("Lava Bucket",		new String[][] {{"lava","buck"}},								327, (short) 0, 1 ));
 		items.add(new ItemInfo("Minecart",			new String[][] {{"cart"}},										328, (short) 0, 1 ));
