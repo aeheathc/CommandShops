@@ -23,3 +23,4 @@ regions:
     require-owner: false;   #Require all created/moved shops to be tied to a region owned by the shop owner
 debug: false                #Enable verbose debug output.
 custom-items: false         #Use custom item set from items.yml. When False, CS will make its own items.yml with the vanilla items.
+allow-interworld-move: true #Allow shops to be moved to another world. Set to False if you have separate inventories per world.

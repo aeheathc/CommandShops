@@ -108,7 +108,7 @@ public class Config
 		DB_NAME = 				config.getString(	"storage.connect.db");
 		REQUIRE_OWNER =			config.getBoolean(	"regions.require-owner");
 		CUSTOM_ITEMS =			config.getBoolean(	"custom-items");
-		MOVE_ACROSS_WORLDS =	config.getBoolean(	"across-worlds");
+		MOVE_ACROSS_WORLDS =	config.getBoolean(	"allow-interworld-move");
 
 		
 		plugin.saveConfig();
