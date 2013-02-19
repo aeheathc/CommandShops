@@ -117,14 +117,6 @@ public class CommandShopMove extends Command
 			return false;
 		}
 		
-		//don't let them move across worlds
-		if (!Config.MOVE_ACROSS_WORLDS) {
-			if (!(shopWorld.equalsIgnoreCase(player.getLocation().getWorld().getName()))) {
-				sender.sendMessage("You cannot move across worlds.");
-				return false;
-			}
-		}
-		
 		double[] xyzA = new double[3];
 		double[] xyzB = new double[3];
 
@@ -160,6 +152,14 @@ public class CommandShopMove extends Command
 			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use "
 					+ ChatColor.WHITE + "/shop select.");
 			return false;
+		}
+		
+		//don't let them move across worlds. moving here since sel is already defined
+		if (!Config.MOVE_ACROSS_WORLDS) {
+			if (!(shopWorld.equalsIgnoreCase(sel.world))) {
+				sender.sendMessage("You cannot move across worlds.");
+				return false;
+			}
 		}
 		
 		/* remove the old shop from the cuboid so the current position isn't
