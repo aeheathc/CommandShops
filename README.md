@@ -6,10 +6,12 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 **HEAD**
+
 * Fixed stack size for pork and bucket
 * Added config option to block moving shops to another world for servers with per-world inventory
 
 **4.1.0**
+
 * Tested with CB 1.4.7
 * Added custom item support -- should be able to support modded items now as well as ad hoc updates to the item list
 * Items updated for 1.4.7 and a few more snapshots. Some existing names changed to match official disambiguations.
@@ -17,6 +19,7 @@ Changelog
 * Log trim fix for MySQL mode
 
 **4.0.5**
+
 * Signs stack to 16
 
 **4.0.4**

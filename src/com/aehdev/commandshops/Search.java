@@ -263,7 +263,7 @@ items.add(new ItemInfo("Hidden Silverfish Stone Brick",new String[][]{{"silver",
 		items.add(new ItemInfo("Flint and Steel",	new String[][] {{"flin","ste"}},								259, (short) 0, 1 ));
 		items.add(new ItemInfo("Red Apple",			new String[][] {{"appl"},{"red","appl"}},						260, (short) 0, 1 ));
 		items.add(new ItemInfo("Bow",				new String[][] {{"bow"}},										261, (short) 0, 1 ));
-		items.add(new ItemInfo("Arrow",				new String[][] {{"arro"}},										262, (short) 0, 64 ));
+		items.add(new ItemInfo("Arrow",				new String[][] {{"arrow"}},										262, (short) 0, 64 ));
 		items.add(new ItemInfo("Coal",				new String[][] {{"coal"}},										263, (short) 0, 64 ));
 		items.add(new ItemInfo("Charcoal",			new String[][] {{"char","coal"},{"char"}},						263, (short) 1, 64 ));
 		items.add(new ItemInfo("Diamond",			new String[][] {{"diamo"}},										264, (short) 0, 64 ));
