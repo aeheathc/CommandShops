@@ -8,7 +8,9 @@ Changelog
 **HEAD**
 
 * Fixed stack size for pork and bucket
-* Added config option to block moving shops to another world for servers with per-world inventory
+* Added config option to block moving shops to another world - should be useful for servers with per-world inventory
+* Updated item list for latest snapshot with focus on Minecraft 1.5.2
+
 
 **4.1.0**
 

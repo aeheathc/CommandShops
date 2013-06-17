@@ -14,3 +14,4 @@
 - sales tax. (Make shop fees go to the same collector as the sales tax?)
 - Storage limitations (config,size,chests?)
 - Dump cuboid thing and determine shop overlap via sql
+- DB table prefix
