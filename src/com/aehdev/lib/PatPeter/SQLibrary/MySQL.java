@@ -100,6 +100,16 @@ public class MySQL extends Database {
 	public ResultSet query(String query, boolean suppressErrors) {
 		Statement statement = null;
 		ResultSet result = null;
+		try
+		{
+			if(!connection.isValid(1))
+			{
+				connection.close();
+				connection = null;
+			}
+		}catch(SQLException e1){
+			connection = null;
+		}
 		if(connection == null) open();
 		try {
 		    statement = this.connection.createStatement();

@@ -171,6 +171,21 @@ public class CommandShops extends JavaPlugin
 			}
 		}
 
+		//reset item data
+		itemList = new ItemData();
+		
+		//drop shops data
+		shopData = new ShopData();
+		
+		//drop Worldguard hook
+		CommandShops.worldguard = null;
+		
+		//drop Vault hook
+		econ = null;
+		
+		//close database connection
+		db.close(); db = null;
+		
 		// update the console that we've stopped
 		log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Version "
 				+ pdfFile.getVersion() + " is disabled!"));

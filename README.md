@@ -5,12 +5,14 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
-**HEAD**
+**4.1.1**
 
+* Tested with CB 1.5.2
 * Fixed stack size for pork and bucket
 * Added config option to block moving shops to another world - should be useful for servers with per-world inventory
 * Updated item list for latest snapshot with focus on Minecraft 1.5.2
-
+* Added "/shop reload" to reload the configuration of this plugin without restarting the server or doing a server-wide reload. (This is not a way to recover from plugin crashes however)
+* Made MySQL reconnect on timeout - should eliminate the need to restart periodically
 
 **4.1.0**
 
