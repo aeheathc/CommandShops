@@ -13,9 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import cuboidLocale.QuadTree;
 import net.milkbowl.vault.economy.Economy;
-import com.aehdev.lib.PatPeter.SQLibrary.Database;
-import com.aehdev.lib.PatPeter.SQLibrary.MySQL;
-import com.aehdev.lib.PatPeter.SQLibrary.SQLite;
+
+import com.aehdev.lib.multiDB.Database;
+import com.aehdev.lib.multiDB.MySQL;
+import com.aehdev.lib.multiDB.SQLite;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.GlobalRegionManager;
 
@@ -249,7 +250,7 @@ public class CommandShops extends JavaPlugin
 		indexes = "CREATE INDEX `IDX_LOG_DATETIME` ON `log`(`datetime`(22)  ASC);CREATE INDEX `IDX_LOG_SHOP` ON `log`(`shop`  ASC);CREATE INDEX `IDX_LOG_ACTION` ON `log`(`action`(22)  ASC);CREATE INDEX `IDX_MANAGERS_MANAGER` ON `managers`(`manager`(22)  ASC);CREATE INDEX `IDX_SHOP_ITEMS_SHOP` ON `shop_items`(`shop`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMID` ON `shop_items`(`itemid`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMDAMAGE` ON `shop_items`(`itemdamage`  ASC);CREATE INDEX `IDX_SHOPS_X` ON `shops`(`x`  ASC);CREATE INDEX `IDX_SHOPS_Y` ON `shops`(`y`  ASC);CREATE INDEX `IDX_SHOPS_Z` ON `shops`(`z`  ASC);CREATE INDEX `IDX_SHOPS_X2` ON `shops`(`x2`  ASC);CREATE INDEX `IDX_SHOPS_Y2` ON `shops`(`y2`  ASC);CREATE INDEX `IDX_SHOPS_Z2` ON `shops`(`z2`  ASC);CREATE INDEX `IDX_SHOPS_OWNER` ON `shops`(`owner`(22)  ASC);CREATE INDEX `IDX_SHOPS_WORLD` ON `shops`(`world`(22)  ASC);CREATE UNIQUE INDEX IDX_MANAGERS_ ON managers(manager,shop);CREATE UNIQUE INDEX IDX_SHOP_ITEMS_ ON shop_items(shop,itemid,itemdamage);CREATE UNIQUE INDEX `IDX_SHOPS_REGION` ON `shops`(`region` ASC);";
 		
 		
-    	if(db instanceof com.aehdev.lib.PatPeter.SQLibrary.SQLite)
+    	if(db instanceof com.aehdev.lib.multiDB.SQLite)
     	{
     		//convert to SQLite compatible.
     		tables = tables.replaceAll("AUTO_INCREMENT","AUTOINCREMENT");
@@ -261,7 +262,7 @@ public class CommandShops extends JavaPlugin
     	try{
     		for(String query : tables.split(";")) db.query(query);
     	}catch(Exception e){
-    		log.severe(String.format((Locale)null,"[%s] [SQLibrary] - %s", pdfFile.getName(),e));
+    		log.severe(String.format((Locale)null,"[%s] [MultiDB] - %s", pdfFile.getName(),e));
             log.severe(String.format((Locale)null,"[%s] - Shutting down: Problem checking schema.", pdfFile.getName()));
             getServer().getPluginManager().disablePlugin(this);
     		return false;
@@ -286,6 +287,7 @@ public class CommandShops extends JavaPlugin
     		if(count>Config.LOG_LIMIT)
     		{
     			ResultSet resPivot = db.query("SELECT `datetime` FROM `log` ORDER BY `datetime` DESC LIMIT " + Config.LOG_LIMIT + ",1");
+    			resPivot.next();
     			String pivot = resPivot.getString("datetime");
     			resPivot.close();
     			db.query("DELETE FROM `log` WHERE `datetime`<='" + pivot + "'");

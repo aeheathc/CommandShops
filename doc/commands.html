@@ -1,135 +1,112 @@
-<b>Commands:</b></span> [required] &lt;optional&gt;<br>
-<ul>
-<li><b>/shop</b><ul>
-<li>Displays a list of player commands<br>
-</li>
-</ul></li>
-<li>/shop<b> select</b><ul>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>CommandShops Command List</title>
+<style type="text/css">
+span{
+	color:blue;
+	font-style:italic;
+}
+dt{
+	margin-top:1em;
+}
+ul{
+	padding-left:1em;
+}
+tt{
+	background-color:#EEE;
+}
+</style>
+</head>
 
-<li>Select a cuboid area for a shop to occupy.  Used in conjunction with both the <b>create</b> and <b>move</b> commands.  Using the <b>select</b> command a second time will cancel the selection process.<br>
-</li>
-</ul></li>
-<li>/shop <b>create [shop name]</b><ul>
-<li>Creates a shop in the area specified by the player after using the <strong>select</strong> command.</li>
+<body>
+<b>Commands:</b> [required] &lt;optional&gt;<br/>
+<dl>
+<dt><b>/shop</b></dt>
+<dd>Displays a list of player commands</dd>
 
-<li>This only works if the player has enough money to create a shop and the selection is smaller than the maximum allowed area -- see the config.</li>
-<li>Remember, shops are created in a 3D space - selecting two blocks on the floor will likely result in the creation of a shop that is a single block tall, which isn’t particularly useful to anyone.<br>
-</li>
-</ul></li>
-<li>/shop <b>info &lt;id&gt;</b><ul>
+<dt>/shop<b> select</b></dt>
+<dd>Select a cuboid area for a shop to occupy.  Used in conjunction with both the <b>create</b> and <b>move</b> commands.  Using the <b>select</b> command a second time will cancel the selection process.</dd>
 
-<li>Used while standing in a shop, this command will return information about that specific shop. If a shop ID is added to the end, it will return information about another shop without the player needing to be physically in it.<br>
-                                    <br>
-                                    Use either this command or <b>list</b> to get shop IDs.</li>
-</ul></li>
-<li>/shop <b>browse &lt;buy|sell|itemname&gt;</b><ul>
-<li>Shows a list of items currently in the shop and if provided either buy or sell as an argument it will only show those for to buy or sell (from the players perspective). If itemname is provided as an argument, it will instead display all available pricing/stock information for that one item.</li>
+<dt>/shop <b>create [shop name]</b></dt>
+<dd>Creates a shop in the area specified by the player after using the <strong>select</strong> command.
+<ul><li>This only works if the player has enough money to create a shop and the selection is smaller than the maximum allowed area -- see the config.</li>
+<li>Remember, shops are created in a 3D space - selecting two blocks on the floor will likely result in the creation of a shop that is a single block tall, which isnâ€™t particularly useful to anyone.</li></ul></dd>
 
-</ul></li>
-<li>/shop <b>find [item name|id]</b><ul>
-<li>Finds nearby shops that either buy or sell the item sorted by distance with the cost per item and stock/max.</li>
-</ul></li>
-<li>/shop <b>search &lt;item name|id&gt;</b>
-  <ul>
-<li>Does a test-search showing the results of trying to match your input to an item</li>
-<li>Shows the text match criteria for the item selected</li>
-</ul></li>
-<li>/shop <b>list</b><ul>
-<li>Lists all shops that the player controls (owns or manages), along with their unique IDs and names.<br>
-</li>
-</ul></li>
-<li>/shop <b>move [id]</b><ul>
+<dt>/shop <b>info &lt;id&gt;</b></dt>
+<dd>Used while standing in a shop, this command will return information about that specific shop. If a shop ID is added to the end, it will return information about another shop without the player needing to be physically in it. Use either this command or <b>list</b> to get shop IDs.</dd>
 
-<li>Moves the specified shop to a new location. The select command must be used prior to this command, to specify where the shop will be moved..<br>
-                                    <br>
-                                    Both <b>list</b> and <b>info</b> will return shop IDs, in addition to other information.<br>
-</li>
-</ul></li>
-<li>/shop <b>destroy</b><ul>
+<dt>/shop <b>browse &lt;buy|sell|itemname&gt;</b></dt>
+<dd>Shows a list of items currently in the shop and if provided either buy or sell as an argument it will only show those for to buy or sell (from the players perspective). If itemname is provided as an argument, it will instead display all available pricing/stock information for that one item.</dd>
 
-<li>Destroys the shop the player is currently standing inside. The owner of the shop will receive anything that was left in stock, inventory space permitting.<br>
-</li>
-</ul></li>
-<li>/shop <b>add &lt;item name&gt; &lt;amount&gt;</b>
-  <ul>
-<li>Used without an item name, adds the stack of items that the player is currently holding.<br>
-</li>
-</ul></li>
+<dt>/shop <b>find [item name|id]</b></dt>
+<dd>Finds nearby shops that either buy or sell the item sorted by distance with the cost per item and stock/max.</dd>
 
-<li>/shop <b>remove &lt;item name&gt;</b>
-  <ul>
-<li>Used without an item name, removes all stock of the item that the player is currently holding from the shop.<br>
+<dt>/shop <b>search &lt;item name|id&gt;</b></dt>
+<dd>Does a text-search showing the results of trying to match your input to an item, and shows the text match criteria for the item selected</dd>
 
-</li>
-</ul></li>
-<li>/shop <b>buy &lt;item name&gt; &lt;amount&gt;<br>
-</b>
-<ul>
-<li>Purchases a specified item from a shop. If the player uses ‘all’ in place of an amount, the shop will attempt to fill the player’s inventory with the specified item, money (and item stock) permitting.</li>
-<li>It's free to 'buy' items from a shop you own.<br>
-</li>
-</ul>
-</li>
-<li>/shop <b>sell &lt;item name&gt; &lt;amount&gt;<br>
-</b>
-<ul>
-<li>Used without an item name and amount defined, sells the stack of items the player is currently holding.<br>
-                                    <br>
-                                    With an item name defined, a specific item (a single item) is sold to the shop. If the player uses ‘all’ in place of an amount, all instances of that item in his inventory will be sold.</li>
-<li>Selling to a shop you own doesn't move any money.<br>
-</li>
-</ul>
-</li>
-<li>/shop <b>set</b><ul>
+<dt>/shop <b>list</b></dt>
+<dd>Lists all shops that you control (own or manage), along with their unique IDs and names.</dd>
 
-<li>Help page - displays a list of <b>set</b> commands.<br>
-</li>
-</ul></li>
-<li>/shop <b>set buy [item name] &lt;price&gt;</b><ul>
-<li>Used to set the price of items that the shop will be able to <i>buy or purchased</i> from customers.<br>
-Omit the price to stop buying the item.
-                                    <br>
+<dt>/shop <b>move [id]</b></dt>
+<dd>Moves the specified shop to a new location. The select command must be used prior to this command, to specify where the shop will be moved. Both <b>list</b> and <b>info</b> will return shop IDs, in addition to other information.</dd>
 
-                                    Both this command and the <b>set sell</b> command below are set from the perspective of the shop, not the customer; in contrast the <b>buy</b> and <b>sell</b> commands are always from the perspective of the customer.<br>
-</li>
-</ul></li>
-<li>/shop <b>set sell [item name] &lt;price&gt;</b><ul>
+<dt>/shop <b>destroy</b></dt>
+<dd>Destroys the shop the player is currently standing inside. The owner of the shop will receive anything that was left in stock, inventory space permitting.</dd>
 
-<li>Sets the price of items that can be <i>sold</i> to the customer.<br>Omit the price to stop sell the item.
-</li>
-</ul></li>
-<li>/shop <b>set manager +/-[player name]<br>
-                                    </b><i>ex: /shop set manager -cerealk +Mineral</i><b><br>
-                                    </b><ul>
-<li>Adds or removes managers from the player’s shop. A manage is able to add/remove items, set prices and set maximum amounts. He cannot move the shop, destroy the shop, nor add/remove managers.<br>
+<dt>/shop <b>add &lt;item name&gt; &lt;amount&gt;</b></dt>
+<dd>Used without an item name, adds the stack of items that the player is currently holding.</dd>
 
-</li>
-</ul></li>
-<li>/shop <b>set minbalance [amount]</b><ul>
-<li>Sets a shops minimum balance that must remain in the account at all times.  Helps prevent players from selling to a shop and completely bankrupting the owner.<br>
-</li>
-</ul></li>
-<li>/shop <b>set max [item name] [max amount]</b><ul>
-<li>Used to set a maximum stock limit for a specified item. Note that  the owner of the shop will still be able to add items above the maximum  stock level, but the shop will not buy items from players if the current  stock level is higher than the maximum specified amount.</li>
-</ul></li>
-<li>/shop <b>set notification</b><ul>
+<dt>/shop <b>remove &lt;item name&gt;</b></dt>
+<dd>Used without an item name, removes all stock of the item that the player is currently holding from the shop.</dd>
 
-<li>Toggles if the shop owner is to receive periodic transaction notifications via chat.</li>
-</ul></li>
-<li>/shop <b>set name [newname]</b><ul>
-<li>Change the name of the shop.</li>
-</ul></li>
-<li>/shop <b>set owner [player name]</b><ul>
-<li>Changes the shop owner to another player.<br>
-</li>
-</ul></li>
-<li>/shop <b>set unlimited money<br>
-                                    </b><i><span style="color: rgb(0, 0, 255);">Requires a special permission node: commandshops.admin</span><br>
-        </i><ul>
+<dt>/shop <b>buy &lt;item name&gt; &lt;amount&gt;</b></dt>
+<dd>Purchases a specified item from a shop. If the player uses â€˜allâ€™ in place of an amount, the shop will attempt to fill the playerâ€™s inventory with the specified item, money (and item stock) permitting.
+<ul><li>It's free to 'buy' items from a shop you own.</li></ul></dd>
 
-<li>Sets the shop to have unlimited money - useful for a server shop buying items from players. The money from items sold to the shop while this is toggled on will go to whoever is set as the shop owner. If the owner is set to a player that doesn’t exist (ServerBank, for example) the creator of the shop won’t get the money from item sales.<br>
-</li>
-</ul></li>
-<li>/shop <b>set unlimited stock<br>
-                                    </b><span style="color: rgb(0, 0, 255);"><i>Requires a special permission node: commandshops.admin</i></span><ul>
-<li>Sets a shop to have an unlimited amount of all stocked items - keep in mind that items still need to be added to the shop for them to appear in the shop’s inventory.</li>
+<dt>/shop <b>reload</b></dt>
+<dd>Reloads the configuration as if the server was just starting. Will reset and retry connections to other plugins like Vault. Reconnects to the database with newly loaded config. However, this is all done by the same plugin object so this command will not recover the plugin from a fatal error.</dd>
+
+<dt>/shop <b>sell &lt;item name&gt; &lt;amount&gt;</b></dt>
+<dd><ul><li>Used without an item name and amount defined, sells the stack of items the player is currently holding.</li>
+        <li>With an item name defined, a specific item (a single item) is sold to the shop. If the player uses â€˜allâ€™ in place of an amount, all instances of that item in his inventory will be sold.</li>
+        <li>Selling to a shop you own doesn't move any money, you just stock your shop.</li>
+    </ul>
+</dd>
+
+<dt>/shop <b>set</b></dt>
+<dd>Help page - displays a list of <b>set</b> commands.</dd>
+
+<dt>/shop <b>set buy [item name] &lt;price&gt;</b></dt>
+<dd>Used to set the price of items that the shop will be able to <i>buy or purchased</i> from customers. Omit the price to stop buying the item. Both this command and the <b>set sell</b> command below are set from the perspective of the shop, not the customer; in contrast the <b>buy</b> and <b>sell</b> commands are always from the perspective of the customer.</dd>
+
+<dt>/shop <b>set sell [item name] &lt;price&gt;</b></dt>
+<dd>Sets the price of items that can be <i>sold</i> to the customer. Omit the price to stop selling the item.</dd>
+
+<dt>/shop <b>set manager +/-[player name]</b></dt>
+<dd>Example: <tt>/shop set manager -cerealk +Mineral</tt><br />
+Adds or removes managers from the playerâ€™s shop. A manager is able to add/remove items, set prices and set maximum amounts. He cannot move the shop, destroy the shop, nor add/remove managers.</dd>
+
+<dt>/shop <b>set minbalance [amount]</b></dt>
+<dd>Sets a minimum balance for the owner's account that the shop will not violate.  Helps prevent players from selling to a shop and completely bankrupting the owner.</dd>
+
+<dt>/shop <b>set max [item name] [max amount]</b></dt>
+<dd>Used to set a maximum stock limit for a specified item. Note that  the owner of the shop will still be able to add items above the maximum  stock level, but the shop will not buy items from players if the current  stock level is higher than the maximum specified amount.</dd>
+
+<dt>/shop <b>set notification</b></dt>
+<dd>Toggles if the shop owner is to receive periodic transaction notifications via chat.</dd>
+
+<dt>/shop <b>set name [newname]</b></dt>
+<dd>Change the name of the shop.</dd>
+
+<dt>/shop <b>set owner [player name]</b></dt>
+<dd>Changes the shop owner to another player.</dd>
+
+<dt>/shop <b>set unlimited money</b><br/><span>Requires a special permission node: commandshops.admin</span></dt>
+<dd>Sets the shop to have unlimited money - useful for a server admin shop acting as a 'mint' to create money when buying items from players. When a shop has unlimited money and a player buys an item from the shop, the money vanishes similarly -- this way, money is not infinitely created by buying and selling the same items repeatedly.</dd>
+
+<dt>/shop <b>set unlimited stock</b><br/><span>Requires a special permission node: commandshops.admin</span></dt>
+<dd>Sets a shop to have an unlimited amount of all stocked items. Follows similar rules to the infinite money feature.</dd>
+</dl>
+</body></html>

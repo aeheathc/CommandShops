@@ -5,6 +5,11 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+**4.1.2**
+
+* Removed third party code for database layer to correct licensing issue
+* Fixed "Ballooning log file" issue by correcting trim method. 
+
 **4.1.1**
 
 * Tested with CB 1.5.2

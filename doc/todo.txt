@@ -15,4 +15,3 @@
 - Storage limitations (config,size,chests?)
 - Dump cuboid thing and determine shop overlap via sql
 - DB table prefix
-- Fix "ballooning log file" issue
