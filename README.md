@@ -5,6 +5,17 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
+** 4.1.3 **
+
+* Added transaction-log querying in-game! See the commands page for "/shop log". Supports filtering parameters to find specific information.
+* Pending notifications now persist after a server reboot! Now, you are guaranteed to get notified about every transaction eventually for your shops having notifications enabled.
+* Notification system now consolidates messages having the same shop+player+item+action. No more notification spam when someone buys a ton of some item 1 at a time.
+* Fixed logging for transactions with a shop you own/manage: Total cost is now correctly recorded as zero and these actions no longer generate notifications for the player who did them.  
+* Made brick related item names more unique, distinguishing regular clay bricks from stone/nether bricks, and distinguishing individual bricks from blocks.
+* Fixed carrot being detected as Rotten Flesh
+* Fixed Poison Potato being detected as Posion Potion (base wordform for all potions changed from "pot" to "poti")
+* Removed support for old "shop file" format. It only worked for files from LS3 which is ancient now.
+
 **4.1.2**
 
 * Removed third party code for database layer to correct licensing issue
@@ -70,7 +81,7 @@ Changelog
 * Fixed many places where economy failure was interpreted as insufficient funds instead of actually checking the balance
 * Remove references to bundles in documentation and in-game help
 * Switched to SQL (both sqlite for convenience and mysql for power) using "PatPeter.SQLibrary" which may give us support for other DBs in the future.
-* Remove concept of an item being "added" to a shop. Shops now independently have or not have an amount, buy price, and sell price for any item. You can now set buy and sell prices to 0. Set prices to NULL by running the set command with no number.
+* Removed concept of an item being "added" to a shop. Shops now independently have or not have an amount, buy price, and sell price for any item. You can now set buy and sell prices to 0. Set prices to NULL by running the set command with no number.
 * Removed player data tracking system. Should improve performance. This unfortunately has removed player enter/exit messages. You can replicate this functionality with WorldGuard. Future work in this direction will likely be automatic WorldGuard integration.
 * Commands now always check what shop you're in, so no more having to move around after warping to register that you're in a shop.  
 * Fixed bad help and error messages

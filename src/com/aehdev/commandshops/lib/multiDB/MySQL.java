@@ -1,4 +1,4 @@
-package com.aehdev.lib.multiDB;
+package com.aehdev.commandshops.lib.multiDB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

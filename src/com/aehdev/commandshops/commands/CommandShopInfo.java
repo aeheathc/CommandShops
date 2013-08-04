@@ -73,7 +73,7 @@ public class CommandShopInfo extends Command
 		String[] msg = new String[6];
 		try{
 			String infoQuery = String.format((Locale)null,"SELECT `name`,`owner`,`creator`,x,y,z,x2,y2,z2,`world`,minbalance,unlimitedMoney,unlimitedStock FROM shops WHERE id=%d LIMIT 1", shop);
-			ResultSet resInfo = CommandShops.db.query(infoQuery);
+			ResultSet resInfo = db.query(infoQuery);
 			if(!resInfo.next())
 			{
 				resInfo.close();
@@ -94,7 +94,7 @@ public class CommandShopInfo extends Command
 			boolean unlimitedMoney = resInfo.getInt("unlimitedMoney") == 1;
 			boolean unlimitedStock = resInfo.getInt("unlimitedStock") == 1;
 			resInfo.close();
-			ResultSet resMan = CommandShops.db.query("SELECT manager FROM managers WHERE shop=" + shop);
+			ResultSet resMan = db.query("SELECT manager FROM managers WHERE shop=" + shop);
 			StringBuffer manstr = new StringBuffer();
 			int mantotal = 0;
 			while(resMan.next())
@@ -108,11 +108,11 @@ public class CommandShopInfo extends Command
 			String managers = manstr.toString();
 			if(managers.length() > 0) managers = managers.substring(0, managers.length()-1);
 			resMan.close();
-			ResultSet resBuy = CommandShops.db.query("SELECT COUNT(*) FROM shop_items WHERE buy IS NOT NULL AND shop="+shop);
+			ResultSet resBuy = db.query("SELECT COUNT(*) FROM shop_items WHERE buy IS NOT NULL AND shop="+shop);
 			resBuy.next();
 			int buy = resBuy.getInt(1);
 			resBuy.close();
-			ResultSet resSell = CommandShops.db.query("SELECT COUNT(*) FROM shop_items WHERE sell IS NOT NULL AND shop="+shop);
+			ResultSet resSell = db.query("SELECT COUNT(*) FROM shop_items WHERE sell IS NOT NULL AND shop="+shop);
 			resSell.next();
 			int sell = resSell.getInt(1);
 			resSell.close();

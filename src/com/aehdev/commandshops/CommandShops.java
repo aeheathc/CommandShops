@@ -1,6 +1,5 @@
 package com.aehdev.commandshops;
 
-import java.io.File;
 import java.sql.ResultSet;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -14,13 +13,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import cuboidLocale.QuadTree;
 import net.milkbowl.vault.economy.Economy;
 
-import com.aehdev.lib.multiDB.Database;
-import com.aehdev.lib.multiDB.MySQL;
-import com.aehdev.lib.multiDB.SQLite;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.GlobalRegionManager;
 
 import com.aehdev.commandshops.commands.ShopCommandExecutor;
+import com.aehdev.commandshops.lib.multiDB.Database;
+import com.aehdev.commandshops.lib.multiDB.MySQL;
+import com.aehdev.commandshops.lib.multiDB.SQLite;
 import com.aehdev.commandshops.threads.NotificationThread;
 
 /**
@@ -30,9 +29,6 @@ public class CommandShops extends JavaPlugin
 {
 	/** Our class implementing Listener that handles player interaction */
 	public ShopsPlayerListener playerListener = new ShopsPlayerListener();
-
-	/** Single object that holds all data for everyone's shops */
-	private ShopData shopData = new ShopData();
 
 	/** General plugin info that comes directly from the private
 	 * {@link JavaPlugin#description} in the parent. Effectively all we're
@@ -101,12 +97,6 @@ public class CommandShops extends JavaPlugin
             return;
         }
         
-		// read old shopfile format and dump into database
-		(new File(folderPath)).mkdir();
-		File shopsDir = new File(folderPath + shopsPath);
-		shopsDir.mkdir();
-		shopData.loadShops(shopsDir);
-		
 		//optional -- try to hook to worldguard
 		Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
         if(plugin == null || !(plugin instanceof WorldGuardPlugin))
@@ -174,9 +164,6 @@ public class CommandShops extends JavaPlugin
 
 		//reset item data
 		itemList = new ItemData();
-		
-		//drop shops data
-		shopData = new ShopData();
 		
 		//drop Worldguard hook
 		CommandShops.worldguard = null;
@@ -246,11 +233,11 @@ public class CommandShops extends JavaPlugin
     	String tables,addedcolumns,indexes;
     	//Start with MySQL version
 		tables = "CREATE TABLE IF NOT EXISTS `shops` (`id` INTEGER  PRIMARY KEY AUTO_INCREMENT NOT NULL,`name` TEXT  NOT NULL,`owner` TEXT  NOT NULL,`creator` TEXT  NOT NULL,`x` INTEGER  NOT NULL,`y` INTEGER  NOT NULL,`z` INTEGER  NOT NULL,`x2` INTEGER  NOT NULL,`y2` INTEGER  NOT NULL,`z2` INTEGER  NOT NULL,`world` TEXT  NOT NULL,`minbalance` REAL DEFAULT '0' NOT NULL,`unlimitedMoney` INTEGER DEFAULT '0' NOT NULL,`unlimitedStock` INTEGER DEFAULT '0' NOT NULL,`notify` INTEGER DEFAULT '1' NOT NULL,`service_repair` INTEGER DEFAULT '1' NOT NULL,`service_disenchant` INTEGER DEFAULT '1' NOT NULL);CREATE TABLE IF NOT EXISTS `shop_items` (`id` INTEGER  PRIMARY KEY AUTO_INCREMENT NOT NULL,`shop` INTEGER  NOT NULL,`itemid` INTEGER  NOT NULL,`itemdamage` INTEGER  NOT NULL,`stock` REAL DEFAULT '0' NOT NULL,`maxstock` INTEGER DEFAULT '10' NOT NULL,`buy` REAL  NULL,`sell` REAL  NULL,FOREIGN KEY(shop) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE);CREATE TABLE IF NOT EXISTS `managers` (`shop` INTEGER NOT NULL, `manager` VARCHAR(255) NOT NULL, FOREIGN KEY(shop) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE);CREATE TABLE IF NOT EXISTS `log` (`id` INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, `datetime` TEXT NOT NULL, `user` TEXT NOT NULL, `shop` INTEGER, `action` TEXT NOT NULL, `itemid` INTEGER, `itemdamage` INTEGER, `amount` INTEGER, `cost` REAL, `total` REAL, `comment` TEXT,FOREIGN KEY(shop) REFERENCES shops(id) ON DELETE CASCADE ON UPDATE CASCADE);";
-		addedcolumns = "ALTER TABLE `shops` ADD COLUMN `region` VARCHAR(63) DEFAULT NULL;";
+		addedcolumns = "ALTER TABLE `shops` ADD COLUMN `region` VARCHAR(63) DEFAULT NULL;ALTER TABLE `shops` ADD COLUMN `lastNotify` DATETIME NULL;";
 		indexes = "CREATE INDEX `IDX_LOG_DATETIME` ON `log`(`datetime`(22)  ASC);CREATE INDEX `IDX_LOG_SHOP` ON `log`(`shop`  ASC);CREATE INDEX `IDX_LOG_ACTION` ON `log`(`action`(22)  ASC);CREATE INDEX `IDX_MANAGERS_MANAGER` ON `managers`(`manager`(22)  ASC);CREATE INDEX `IDX_SHOP_ITEMS_SHOP` ON `shop_items`(`shop`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMID` ON `shop_items`(`itemid`  ASC);CREATE INDEX `IDX_SHOP_ITEMS_ITEMDAMAGE` ON `shop_items`(`itemdamage`  ASC);CREATE INDEX `IDX_SHOPS_X` ON `shops`(`x`  ASC);CREATE INDEX `IDX_SHOPS_Y` ON `shops`(`y`  ASC);CREATE INDEX `IDX_SHOPS_Z` ON `shops`(`z`  ASC);CREATE INDEX `IDX_SHOPS_X2` ON `shops`(`x2`  ASC);CREATE INDEX `IDX_SHOPS_Y2` ON `shops`(`y2`  ASC);CREATE INDEX `IDX_SHOPS_Z2` ON `shops`(`z2`  ASC);CREATE INDEX `IDX_SHOPS_OWNER` ON `shops`(`owner`(22)  ASC);CREATE INDEX `IDX_SHOPS_WORLD` ON `shops`(`world`(22)  ASC);CREATE UNIQUE INDEX IDX_MANAGERS_ ON managers(manager,shop);CREATE UNIQUE INDEX IDX_SHOP_ITEMS_ ON shop_items(shop,itemid,itemdamage);CREATE UNIQUE INDEX `IDX_SHOPS_REGION` ON `shops`(`region` ASC);";
 		
 		
-    	if(db instanceof com.aehdev.lib.multiDB.SQLite)
+    	if(db instanceof com.aehdev.commandshops.lib.multiDB.SQLite)
     	{
     		//convert to SQLite compatible.
     		tables = tables.replaceAll("AUTO_INCREMENT","AUTOINCREMENT");

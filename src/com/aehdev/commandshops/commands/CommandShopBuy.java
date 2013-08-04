@@ -418,6 +418,8 @@ public class CommandShopBuy extends Command
 				}
 				return false;
 			}
+		}else{
+			totalCost = 0;
 		}
 		
 		//give items to player
@@ -431,7 +433,7 @@ public class CommandShopBuy extends Command
 																						amount,		stockId);
 				CommandShops.db.query(removeQuery);
 			}catch(Exception e){
-				//worst possible time to have an error becfause now we have to roll back everything
+				//worst possible time to have an error because now we have to roll back everything
 				log.warning(String.format((Locale)null,"[%s] Couldn't remove items from shop: %s. Rolling back buy transaction...", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
 				//refund buyer

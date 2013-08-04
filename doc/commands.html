@@ -32,7 +32,7 @@ tt{
 <dt>/shop <b>create [shop name]</b></dt>
 <dd>Creates a shop in the area specified by the player after using the <strong>select</strong> command.
 <ul><li>This only works if the player has enough money to create a shop and the selection is smaller than the maximum allowed area -- see the config.</li>
-<li>Remember, shops are created in a 3D space - selecting two blocks on the floor will likely result in the creation of a shop that is a single block tall, which isn’t particularly useful to anyone.</li></ul></dd>
+<li>Remember, shops are created in a 3D space - selecting two blocks on the floor will likely result in the creation of a shop that is a single block tall, which isn't particularly useful to anyone.</li></ul></dd>
 
 <dt>/shop <b>info &lt;id&gt;</b></dt>
 <dd>Used while standing in a shop, this command will return information about that specific shop. If a shop ID is added to the end, it will return information about another shop without the player needing to be physically in it. Use either this command or <b>list</b> to get shop IDs.</dd>
@@ -62,7 +62,7 @@ tt{
 <dd>Used without an item name, removes all stock of the item that the player is currently holding from the shop.</dd>
 
 <dt>/shop <b>buy &lt;item name&gt; &lt;amount&gt;</b></dt>
-<dd>Purchases a specified item from a shop. If the player uses ‘all’ in place of an amount, the shop will attempt to fill the player’s inventory with the specified item, money (and item stock) permitting.
+<dd>Purchases a specified item from a shop. If the player uses "all" in place of an amount, the shop will attempt to fill the player's inventory with the specified item, money (and item stock) permitting.
 <ul><li>It's free to 'buy' items from a shop you own.</li></ul></dd>
 
 <dt>/shop <b>reload</b></dt>
@@ -70,7 +70,7 @@ tt{
 
 <dt>/shop <b>sell &lt;item name&gt; &lt;amount&gt;</b></dt>
 <dd><ul><li>Used without an item name and amount defined, sells the stack of items the player is currently holding.</li>
-        <li>With an item name defined, a specific item (a single item) is sold to the shop. If the player uses ‘all’ in place of an amount, all instances of that item in his inventory will be sold.</li>
+        <li>With an item name defined, a specific item (a single item) is sold to the shop. If the player uses "all" in place of an amount, all instances of that item in his inventory will be sold.</li>
         <li>Selling to a shop you own doesn't move any money, you just stock your shop.</li>
     </ul>
 </dd>
@@ -86,7 +86,7 @@ tt{
 
 <dt>/shop <b>set manager +/-[player name]</b></dt>
 <dd>Example: <tt>/shop set manager -cerealk +Mineral</tt><br />
-Adds or removes managers from the player’s shop. A manager is able to add/remove items, set prices and set maximum amounts. He cannot move the shop, destroy the shop, nor add/remove managers.</dd>
+Adds or removes managers from the player's shop. A manager is able to add/remove items, set prices and set maximum amounts. He cannot move the shop, destroy the shop, nor add/remove managers.</dd>
 
 <dt>/shop <b>set minbalance [amount]</b></dt>
 <dd>Sets a minimum balance for the owner's account that the shop will not violate.  Helps prevent players from selling to a shop and completely bankrupting the owner.</dd>
@@ -108,5 +108,11 @@ Adds or removes managers from the player’s shop. A manager is able to add/remo
 
 <dt>/shop <b>set unlimited stock</b><br/><span>Requires a special permission node: commandshops.admin</span></dt>
 <dd>Sets a shop to have an unlimited amount of all stocked items. Follows similar rules to the infinite money feature.</dd>
+
+<dt>/shop <b>log &lt;params&gt;</b></dt>
+<dd>Example: <tt>/shop log shop=48 user=zolcos action=buy itemid=17 itemdamage=2 amount&gt;60 cost&lt;10 total&gt;100 datetime&lt;2013-07-25@18:36:07 datetime&gt;2013-07-20 </tt><br />
+Query the transaction log. All parameters are optional if you are in a shop (will query for the shop you are in if a shop ID is not provided). Outside of a shop, the shop ID is mandatory.
+You must have commandshops.admin to query logs for shops you don't own or manage. You can give an argument twice if you want multiple constraints (useful for using both less-than and greater-than to get a range). The values for datetime follow the standard for MySQL datetime except you use a @ instead of a space between the date and time when you use both.</dd>
+
 </dl>
 </body></html>

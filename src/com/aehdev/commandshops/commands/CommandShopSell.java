@@ -453,6 +453,8 @@ public class CommandShopSell extends Command
 				player.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to Vault error.");
 				return false;
 			}
+		}else{
+			totalCost = 0;
 		}
 		
 		//move the items

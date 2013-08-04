@@ -1,5 +1,4 @@
 == Planned Features ==
-- On-demand transaction log querying
 - Optional Region Protection Plugin integration via multi location support
 --- Only let you make shops in places you own 
 --- Sales tax feudal management

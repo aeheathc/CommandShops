@@ -16,7 +16,7 @@ import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
-import com.aehdev.lib.multiDB.Database;
+import com.aehdev.commandshops.lib.multiDB.Database;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;

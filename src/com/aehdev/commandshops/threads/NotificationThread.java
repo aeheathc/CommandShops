@@ -3,7 +3,6 @@ package com.aehdev.commandshops.threads;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -31,15 +30,9 @@ public class NotificationThread extends Thread
 	/** Master logger. */
 	protected final Logger log = Logger.getLogger("Minecraft");
 	
-	/** Stores the last time each player was updated about shops. */
-	private HashMap<String,String> updates = new HashMap<String,String>();
-	
 	/** date formatter object this thread will use a lot */
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	/** Keep track of when the thread began so we don't show old messages */
-	private final String startDate = sdf.format(new Date());
-
 	/**
 	 * Creates the thread.
 	 * @param plugin
@@ -79,16 +72,9 @@ public class NotificationThread extends Thread
 			for(Player player : online)
 			{
 				String name = player.getName();
-				String lastUpdate = updates.get(name);
-				if(lastUpdate == null)
-				{
-					lastUpdate = new String(startDate);
-					updates.put(name, lastUpdate);
-				}
 				try{
-					String logQuery = "SELECT name,action,amount,itemid,itemdamage,user,total FROM log LEFT JOIN shops ON log.shop=shops.id WHERE owner='"
-									+ name + "' AND (action='buy' OR action='sell') AND datetime>'"
-									+ lastUpdate + "' AND notify=1";
+					String logQuery = "SELECT name,action,SUM(amount) AS 'amount',itemid,itemdamage,user,SUM(total) AS 'total' FROM log LEFT JOIN shops ON log.shop=shops.id WHERE owner='"
+									+ name + "' AND (action='buy' OR action='sell') AND (datetime>lastNotify AND lastNotify IS NOT NULL) AND notify=1 AND user!='" + name + "' GROUP BY name,action,itemid,itemdamage,user";
 					ResultSet resLog = CommandShops.db.query(logQuery);
 					LinkedList<String> msg = new LinkedList<String>();
 					boolean any = false;
@@ -133,8 +119,15 @@ public class NotificationThread extends Thread
 							CommandShops.pdfFile.getName(), e));
 					break;
 				}
-				lastUpdate = sdf.format(new Date());
-				updates.put(name, lastUpdate);
+
+				try{
+					String recordSendingQuery = "UPDATE shops SET lastNotify='" +  sdf.format(new Date()) + "' WHERE owner='" + name + "' AND notify=1";
+					CommandShops.db.query(recordSendingQuery);
+				}catch(Exception e){
+					log.warning(String.format((Locale)null,"[%s] Couldn't record time of sending notification (might want to disable notifications or reduce log retention to prevent buildup): %s",
+							CommandShops.pdfFile.getName(), e));
+					break;
+				}
 			}
 			
 			// wait the configured amount of time before updates, but stop waiting if the thread is told to stop
