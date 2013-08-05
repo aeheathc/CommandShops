@@ -1,6 +1,7 @@
 package com.aehdev.commandshops;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -96,11 +97,13 @@ public class CommandShops extends JavaPlugin
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        Shop.refreshRegionLocations();
         
 		//optional -- try to hook to worldguard
 		Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
         if(plugin == null || !(plugin instanceof WorldGuardPlugin))
         {
+        	plugin = null;
         	if(Config.REQUIRE_OWNER)
         	{
         		log.warning(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "No supported region plugin found, but config says to require owned regions! Existing shops will work but no shops can be created/moved like this."));
@@ -164,6 +167,10 @@ public class CommandShops extends JavaPlugin
 
 		//reset item data
 		itemList = new ItemData();
+		
+		//reset selections
+		ShopsPlayerListener.selectingPlayers = new HashMap<String,Selection>();
+		ShopsPlayerListener.playerRegions = new HashMap<String,RegionSelection>();	
 		
 		//drop Worldguard hook
 		CommandShops.worldguard = null;

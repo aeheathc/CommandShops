@@ -3,6 +3,7 @@ package com.aehdev.commandshops.commands;
 import java.util.Locale;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
 
@@ -34,6 +35,11 @@ public class CommandShopReload extends Command
 	 */
 	public boolean process()
 	{
+		if((sender instanceof Player) && !canUseCommand(CommandTypes.ADMIN))
+		{
+			sender.sendMessage("Only CS adminds can reload");
+			return false;
+		}
 		log.info(String.format((Locale)null,"[%s] Starting reload", plugin.getDescription().getName()));
 
 		//tell Bukkit config engine to reload from disk

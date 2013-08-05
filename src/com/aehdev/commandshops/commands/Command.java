@@ -15,7 +15,6 @@ import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
-import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.lib.multiDB.Database;
 
 import cuboidLocale.BookmarkedResult;
@@ -222,30 +221,6 @@ public abstract class Command
 				return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Check if this command's sender has access to modify a given shop.
-	 * @param shop
-	 * the shop they are attempting to modify
-	 * @return true if this command's sender has access to modify the given shop.
-	 */
-	protected boolean canModifyShop(Shop shop)
-	{
-		if(sender instanceof Player)
-		{
-			Player player = (Player)sender;
-			// If owner, true
-			if(shop.getOwner().equals(player.getName())){ return true; }
-			// If manager, true
-			if(shop.getManagers().contains(player.getName())){ return true; }
-			// If admin, true
-			if(canUseCommand(CommandTypes.ADMIN)){ return true; }
-			return false;
-		}else{
-			// Console, true
-			return true;
-		}
 	}
 
 	/**

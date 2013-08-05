@@ -5,7 +5,13 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 
 Changelog
 -------------------
-** 4.1.3 **
+
+**HEAD**
+
+* Added worldguard integration. Give a region name with the "/shop select" commadn, and instead of entering selection mode, the shop you move/create will just be attached to the named region.
+* Restricted /reload to admin
+
+**4.1.3**
 
 * Added transaction-log querying in-game! See the commands page for "/shop log". Supports filtering parameters to find specific information.
 * Pending notifications now persist after a server reboot! Now, you are guaranteed to get notified about every transaction eventually for your shops having notifications enabled.

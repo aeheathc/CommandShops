@@ -8,7 +8,7 @@ fees:
 log:
     limit: 500              #Maximum number of transactions saved in log per shop.
     notify-interval: 300    #Number of seconds between transaction notifications; 0 = Disable notifications
-size:
+size:                       #Size constraints for shops using the manual area selection. Doesn't apply to shops attached to regions in your region plugin.
     max-height: 10          #Maximum custom shop height.
     max-width: 30           #Maximum custom shop width (both horizontal dimensions).
 storage:

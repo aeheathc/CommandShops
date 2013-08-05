@@ -7,15 +7,21 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
+import com.aehdev.commandshops.RegionSelection;
 import com.aehdev.commandshops.Selection;
 import com.aehdev.commandshops.ShopLocation;
 import com.aehdev.commandshops.ShopsPlayerListener;
+import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 
@@ -49,14 +55,13 @@ public class CommandShopMove extends Command
 	{
 		if(!(sender instanceof Player))
 		{
-			sender.sendMessage("You need to have a location or a selection to move a shop.");
+			sender.sendMessage("You need to have a selection to move a shop.");
 			return false;
 		}
 		
 		if(!canUseCommand(CommandTypes.MOVE))
 		{
-			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA
-					+ "You don't have permission to use this command");
+			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "You don't have permission to use this command");
 			return false;
 		}
 
@@ -64,12 +69,8 @@ public class CommandShopMove extends Command
 		Matcher matcher = pattern.matcher(command);
 		if(!matcher.find())
 		{
-			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA
-					+ "The command format is " + ChatColor.WHITE + "/"
-					+ commandLabel + " move [id]");
-			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA
-					+ "Use " + ChatColor.WHITE + "/" + commandLabel + " info"
-					+ ChatColor.DARK_AQUA + " to obtain the id.");
+			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "The command format is " + ChatColor.WHITE + "/" + commandLabel + " move [id]");
+			sender.sendMessage(CommandShops.CHAT_PREFIX + ChatColor.DARK_AQUA + "Use " + ChatColor.WHITE + "/" + commandLabel + " info" + ChatColor.DARK_AQUA + " to obtain the id.");
 			return false;
 		}
 		long shop = -1;
@@ -92,9 +93,10 @@ public class CommandShopMove extends Command
 		String targetWorld = "";
 		String shopName = "";
 		double oldx,oldy,oldz,oldx2,oldy2,oldz2;
+		ProtectedRegion oldRegion = null;
 		
 		try{
-			String checkQuery = "SELECT x,y,z,x2,y2,z2,`world`,`name` FROM shops WHERE id=" + shop + " LIMIT 1";
+			String checkQuery = "SELECT x,y,z,x2,y2,z2,`world`,`name`,`region` FROM shops WHERE id=" + shop + " LIMIT 1";
 			ResultSet resCheck = CommandShops.db.query(checkQuery);
 			if(!resCheck.next())
 			{
@@ -110,6 +112,8 @@ public class CommandShopMove extends Command
 			oldz2 = resCheck.getInt("z2");
 			shopWorld = resCheck.getString("world");
 			shopName = resCheck.getString("name");
+			String oldRegionName = resCheck.getString("region");
+			if(oldRegionName != null && CommandShops.worldguard != null) oldRegion = CommandShops.worldguard.get(Bukkit.getWorld(shopWorld)).getRegion(oldRegionName);
 			resCheck.close();
 		}catch(Exception e){
 			sender.sendMessage("Move cancelled due to DB error.");
@@ -119,26 +123,24 @@ public class CommandShopMove extends Command
 		
 		double[] xyzA = new double[3];
 		double[] xyzB = new double[3];
+		String region = null;
+		ProtectedRegion regionobj = null;
 
 		// If player is select, use their selection
 		Selection sel = ShopsPlayerListener.selectingPlayers.get(playerName);
+		RegionSelection regsel = ShopsPlayerListener.playerRegions.get(playerName);
 
 		if(sel != null)
 		{
 			if(!sel.checkSize())
 			{
-				String size = Config.MAX_WIDTH + "x"
-						+ Config.MAX_HEIGHT + "x"
-						+ Config.MAX_WIDTH;
-				player.sendMessage(ChatColor.DARK_AQUA
-						+ "Problem with selection. Max size is "
-						+ ChatColor.WHITE + size);
+				String size = Config.MAX_WIDTH + "x" + Config.MAX_HEIGHT + "x" + Config.MAX_WIDTH;
+				player.sendMessage(ChatColor.DARK_AQUA + "Problem with selection. Max size is " + ChatColor.WHITE + size);
 				return false;
 			}
 			if(!sel.a || !sel.b)
 			{
-				player.sendMessage(ChatColor.DARK_AQUA
-						+ "Problem with selection. Only one point selected");
+				player.sendMessage(ChatColor.DARK_AQUA + "Problem with selection. Only one point selected");
 				return false;
 			}
 			xyzA[0] = sel.x;
@@ -148,15 +150,34 @@ public class CommandShopMove extends Command
 			xyzB[1] = sel.y2;
 			xyzB[2] = sel.z2;
 			targetWorld = sel.world;
+			region = null;
+		}else if(regsel != null){
+			if(!regsel.exists())
+			{
+				player.sendMessage("Region no longer exists! Try selecting a new one.");
+				return false;
+			}
+			regionobj = CommandShops.worldguard.get(regsel.world).getRegion(regsel.region);
+			BlockVector bva = regionobj.getMinimumPoint();
+			BlockVector bvb = regionobj.getMaximumPoint();
+			xyzA[0] = bva.getX();
+			xyzA[1] = bva.getY();
+			xyzA[2] = bva.getZ();
+			xyzB[0] = bvb.getX();
+			xyzB[1] = bvb.getY();
+			xyzB[2] = bvb.getZ();
+			targetWorld = regsel.world.getName();
+			region = regsel.region;
 		}else{
-			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use "
-					+ ChatColor.WHITE + "/shop select.");
+			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use " + ChatColor.WHITE + "/shop select.");
 			return false;
 		}
 		
 		//don't let them move across worlds. moving here since sel is already defined
-		if (!Config.MOVE_ACROSS_WORLDS) {
-			if (!(shopWorld.equalsIgnoreCase(sel.world))) {
+		if(!Config.ALLOW_INTERWORLD_MOVE)
+		{
+			if(!(shopWorld.equalsIgnoreCase(sel.world)))
+			{
 				sender.sendMessage("You cannot move across worlds.");
 				return false;
 			}
@@ -210,8 +231,8 @@ public class CommandShopMove extends Command
 		int z2 = Math.max((int)xyzA[2], (int)xyzB[2]);
 		
 		try{
-			String moveQuery = String.format((Locale)null,"UPDATE shops SET x=%d,y=%d,z=%d,x2=%d,y2=%d,z2=%d,world='%s' WHERE id=%d LIMIT 1"
-																,x,   y,   z,    x2,   y2,   z2,       targetWorld, shop);
+			String moveQuery = String.format((Locale)null,"UPDATE shops SET x=%d,y=%d,z=%d,x2=%d,y2=%d,z2=%d,world='%s',region=%s WHERE id=%d LIMIT 1"
+																			,x,  y,   z,   x2,   y2,   z2,targetWorld, (region==null?"NULL":("'"+db.escape(region)+"'")), shop);
 			CommandShops.db.query(moveQuery);
 		}catch(Exception e){
 			sender.sendMessage("Shop move failed due to DB error");
@@ -234,6 +255,20 @@ public class CommandShopMove extends Command
 		
 		ShopsPlayerListener.selectingPlayers.remove(playerName);
 		sender.sendMessage("Shop moved to selection."); 
+		
+		//update enter/exit messages
+		if(oldRegion != null)
+		{
+			regionobj.setFlag(DefaultFlag.GREET_MESSAGE, null);
+			regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, null);
+		}
+		if(regionobj != null)
+		{
+			regionobj.setFlag(DefaultFlag.GREET_MESSAGE, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + shopName);
+			regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + shopName);
+		}
+		
+		
 		//log
 		log.info(String.format((Locale)null,"[%s] Player %s moved shop %d (%s)"
 				, CommandShops.pdfFile.getName(), playerName, shop, shopName));

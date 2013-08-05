@@ -26,8 +26,11 @@ tt{
 <dt><b>/shop</b></dt>
 <dd>Displays a list of player commands</dd>
 
-<dt>/shop<b> select</b></dt>
-<dd>Select a cuboid area for a shop to occupy.  Used in conjunction with both the <b>create</b> and <b>move</b> commands.  Using the <b>select</b> command a second time will cancel the selection process.</dd>
+<dt>/shop<b> select &lt;region&gt;</b></dt>
+<dd>Select an area for a shop to occupy. Used before the <b>create</b> and <b>move</b> commands.
+<ul><li>When used without a region name, the player will enter 'selection mode' where they click two blocks to define a cuboid for the shop. Using the <b>select</b> command a second time will cancel the selection process.</li>
+<li>When used with a region name, no coordinate selection will be made, but instead, the shop will simply be attached to the region with the given name in the current world via the connected region plugin.</li></ul>
+</dd>
 
 <dt>/shop <b>create [shop name]</b></dt>
 <dd>Creates a shop in the area specified by the player after using the <strong>select</strong> command.
@@ -110,7 +113,7 @@ Adds or removes managers from the player's shop. A manager is able to add/remove
 <dd>Sets a shop to have an unlimited amount of all stocked items. Follows similar rules to the infinite money feature.</dd>
 
 <dt>/shop <b>log &lt;params&gt;</b></dt>
-<dd>Example: <tt>/shop log shop=48 user=zolcos action=buy itemid=17 itemdamage=2 amount&gt;60 cost&lt;10 total&gt;100 datetime&lt;2013-07-25@18:36:07 datetime&gt;2013-07-20 </tt><br />
+<dd>Example: <tt>/shop log shop=48 user=zolcos action=buy itemid=17 itemdamage=2 amount&gt;60 price&lt;10 total&gt;100 datetime&lt;2013-07-25@18:36:07 datetime&gt;2013-07-20 </tt><br />
 Query the transaction log. All parameters are optional if you are in a shop (will query for the shop you are in if a shop ID is not provided). Outside of a shop, the shop ID is mandatory.
 You must have commandshops.admin to query logs for shops you don't own or manage. You can give an argument twice if you want multiple constraints (useful for using both less-than and greater-than to get a range). The values for datetime follow the standard for MySQL datetime except you use a @ instead of a space between the date and time when you use both.</dd>
 

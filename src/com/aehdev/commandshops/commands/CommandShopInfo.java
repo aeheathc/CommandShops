@@ -70,9 +70,9 @@ public class CommandShopInfo extends Command
 			}
 		}
 
-		String[] msg = new String[6];
+		String[] msg = new String[7];
 		try{
-			String infoQuery = String.format((Locale)null,"SELECT `name`,`owner`,`creator`,x,y,z,x2,y2,z2,`world`,minbalance,unlimitedMoney,unlimitedStock FROM shops WHERE id=%d LIMIT 1", shop);
+			String infoQuery = String.format((Locale)null,"SELECT `name`,`owner`,`creator`,x,y,z,x2,y2,z2,`world`,minbalance,unlimitedMoney,unlimitedStock,region FROM shops WHERE id=%d LIMIT 1", shop);
 			ResultSet resInfo = db.query(infoQuery);
 			if(!resInfo.next())
 			{
@@ -90,6 +90,7 @@ public class CommandShopInfo extends Command
 			int y2 = resInfo.getInt("y2");
 			int z2 = resInfo.getInt("z2");
 			String world = resInfo.getString("world");
+			String region = resInfo.getString("region");
 			String minbalance = plugin.econ.format(resInfo.getDouble("minbalance"));
 			boolean unlimitedMoney = resInfo.getInt("unlimitedMoney") == 1;
 			boolean unlimitedStock = resInfo.getInt("unlimitedStock") == 1;
@@ -150,6 +151,12 @@ public class CommandShopInfo extends Command
 			output.append(ChatColor.WHITE);
 			output.append(world);
 			output.append(ChatColor.DARK_AQUA);
+			output.append(" Region: ");
+			output.append(ChatColor.WHITE);
+			output.append(region==null ? "<none>" : region);
+			msg[3] = output.toString();
+			output = new StringBuffer();
+			output.append(ChatColor.DARK_AQUA);
 			output.append(" Location:");
 			output.append(ChatColor.WHITE);
 			output.append(x);
@@ -173,7 +180,7 @@ public class CommandShopInfo extends Command
 			output.append(",");
 			output.append(ChatColor.WHITE);
 			output.append(z2);
-			msg[3] = output.toString();
+			msg[4] = output.toString();
 			output = new StringBuffer();
 			output.append(ChatColor.DARK_AQUA);
 			output.append("MinBalance:");
@@ -187,7 +194,7 @@ public class CommandShopInfo extends Command
 			output.append(" UnlimitedMoney:");
 			output.append(ChatColor.WHITE);
 			output.append(unlimitedMoney ? "yes": "no");
-			msg[4] = output.toString();
+			msg[5] = output.toString();
 			output = new StringBuffer();
 			output.append(ChatColor.DARK_AQUA);
 			output.append("ItemsBuying:");
@@ -197,7 +204,7 @@ public class CommandShopInfo extends Command
 			output.append(" ItemsSelling:");
 			output.append(ChatColor.WHITE);
 			output.append(sell);
-			msg[5] = output.toString();
+			msg[6] = output.toString();
 		}catch(Exception e){
 			sender.sendMessage("Info req cancelled due to DB error.");
 			log.warning(String.format((Locale)null,"[%s] Couldn't get shop info: %s", CommandShops.pdfFile.getName(), e));

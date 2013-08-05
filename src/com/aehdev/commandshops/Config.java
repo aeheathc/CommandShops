@@ -77,7 +77,7 @@ public class Config
 	public static boolean REQUIRE_OWNER = false;
 	
 	//Allows moving a shop from one world to another
-	public static boolean MOVE_ACROSS_WORLDS = true;
+	public static boolean ALLOW_INTERWORLD_MOVE = true;
 	
 	/**
 	 * Read the config file and load options when present, or write default
@@ -108,7 +108,7 @@ public class Config
 		DB_NAME = 				config.getString(	"storage.connect.db");
 		REQUIRE_OWNER =			config.getBoolean(	"regions.require-owner");
 		CUSTOM_ITEMS =			config.getBoolean(	"custom-items");
-		MOVE_ACROSS_WORLDS =	config.getBoolean(	"allow-interworld-move");
+		ALLOW_INTERWORLD_MOVE =	config.getBoolean(	"allow-interworld-move");
 
 		
 		plugin.saveConfig();

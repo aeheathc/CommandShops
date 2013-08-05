@@ -23,6 +23,9 @@ public class ShopsPlayerListener implements Listener
 	/** List of all players currently making a selection, and what the selection is. */
 	public static HashMap<String,Selection> selectingPlayers = new HashMap<String,Selection>();
 	
+	/** List of all players that have a currently specified region name, and what the region is. */
+	public static HashMap<String,RegionSelection> playerRegions = new HashMap<String,RegionSelection>();	
+
 	/**
 	 * Processes PlayerInteractEvent for the sole purpose of selecting cuboids.
 	 * 

@@ -114,6 +114,11 @@ public class CommandShopHelp extends Command
 			sender.sendMessage(ChatColor.WHITE + "   /shop list" + ChatColor.DARK_AQUA
 					+ " - List all shops you control (owns/manage)");
 		}
+		if(true)
+		{
+			sender.sendMessage(ChatColor.WHITE + "   /shop log <filterparams>" + ChatColor.DARK_AQUA
+					+ " - View transaction log. Must provide a shop ID (like 'shop=2') if not in a shop.");
+		}
 		return true;
 	}
 }

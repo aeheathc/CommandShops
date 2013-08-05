@@ -1,7 +1,6 @@
 package com.aehdev.commandshops;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -209,183 +207,6 @@ public class ItemData
 		{
 			this.dataValue = 0;
 		}
-	}
-
-	/**
-	 * Gets the item.
-	 * @param sender
-	 * the sender
-	 * @param arg0
-	 * the arg0
-	 * @return the item
-	 */
-	public ItemStack getItem(CommandSender sender, String arg0)
-	{
-
-		int[] info = null;
-		ItemStack item = null;
-
-		try
-		{
-			ArrayList<String> list = getItemName(Integer.parseInt(arg0));
-			if(list.size() == 1)
-			{
-				info = getItemInfo(sender, list.get(0));
-			}else{
-				if(sender != null)
-				{
-					if(list.size() > 1)
-					{
-						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
-								+ " matched multiple items:");
-						for(String foundName: list)
-						{
-							sender.sendMessage("  " + foundName);
-						}
-					}else
-					{
-						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
-								+ " did not match any items.");
-					}
-				}
-			}
-
-		}catch(NumberFormatException ex)
-		{
-			info = getItemInfo(sender, arg0);
-		}
-
-		if(info != null)
-		{
-			item = new ItemStack(info[0], 1);
-			MaterialData data = new MaterialData(info[1]);
-			item.setData(data);
-			// TODO this is a work around for bukkit glitch. Check if this still
-			// works.
-			item.setDurability((short)info[1]);
-
-			return item;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Gets the shop item.
-	 * @param sender
-	 * the sender
-	 * @param shop
-	 * the shop
-	 * @param arg0
-	 * the arg0
-	 * @return the shop item
-	 */
-	public ItemStack getShopItem(CommandSender sender, Shop shop, String arg0)
-	{
-
-		int[] info = null;
-		ItemStack item = null;
-
-		try
-		{
-			ArrayList<String> list = getItemName(Integer.parseInt(arg0));
-			if(list.size() == 1)
-			{
-				info = getItemInfo(sender, list.get(0));
-			}else{
-				if(sender != null)
-				{
-					if(list.size() > 1)
-					{
-						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
-								+ " matched multiple items:");
-						for(String foundName: list)
-						{
-							sender.sendMessage("  " + foundName);
-						}
-					}else
-					{
-						sender.sendMessage(arg0 + ChatColor.DARK_AQUA
-								+ " did not match any items.");
-					}
-				}
-			}
-
-		}catch(NumberFormatException ex)
-		{
-			info = getShopItemInfo(sender, shop, arg0);
-		}
-
-		if(info != null)
-		{
-			item = new ItemStack(info[0], 1);
-			MaterialData data = new MaterialData(info[1]);
-			item.setData(data);
-			// TODO this is a work around for bukkit glitch. Check if this still
-			// works.
-			item.setDurability((short)info[1]);
-
-			return item;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Tries to match item name passed in string based on the inventory of the
-	 * shop. If sender is passed to function, will return message to sender if
-	 * no matches are found or print list of matches if multiple are found.
-	 * @param sender
-	 * the sender
-	 * @param shop
-	 * the shop
-	 * @param name
-	 * the name
-	 * @return Will return null if no matches are found.
-	 */
-	private int[] getShopItemInfo(CommandSender sender, Shop shop, String name)
-	{
-		int index = itemName.indexOf(name);
-		if(index == -1)
-		{
-			ArrayList<String> foundMatches = new ArrayList<String>();
-			foundMatches.clear();
-
-			Collection<InventoryItem> items = shop.getItems();
-			for(InventoryItem item: items)
-			{
-				if(item.getInfo().name.matches(name))
-				{
-					foundMatches.add(item.getInfo().name);
-				}
-			}
-
-			if(foundMatches.size() == 1)
-			{
-				index = itemName.indexOf(foundMatches.get(0));
-			}else
-			{
-				if(sender != null)
-				{
-					if(foundMatches.size() > 1)
-					{
-						sender.sendMessage(name + ChatColor.DARK_AQUA
-								+ " matched multiple items:");
-						for(String foundName: foundMatches)
-						{
-							sender.sendMessage("  " + foundName);
-						}
-					}else
-					{
-						sender.sendMessage(name + ChatColor.DARK_AQUA
-								+ " did not match any items.");
-					}
-				}
-				return null;
-			}
-		}
-		int[] data = {itemNumber.get(index), itemData.get(index).dataValue};
-		return data;
 	}
 
 	/**

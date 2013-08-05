@@ -10,11 +10,14 @@ import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
+import com.aehdev.commandshops.RegionSelection;
 import com.aehdev.commandshops.Selection;
 import com.aehdev.commandshops.ShopsPlayerListener;
+import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.PrimitiveCuboid;
 
@@ -50,7 +53,7 @@ public class CommandShopCreate extends Command
 	{
 		if(!(sender instanceof Player))
 		{
-			sender.sendMessage("You need to be able to select coordinates to create a shop.");
+			sender.sendMessage("You need to be able to own a shop to create a shop.");
 			return false;
 		}
 		
@@ -60,6 +63,7 @@ public class CommandShopCreate extends Command
 		Player player = (Player)sender;
 		String creator = player.getName();
 		String createWorld = "";
+		String region = null;
 		
 		// Check permissions
 		if(!canCreateShop(creator))
@@ -72,6 +76,8 @@ public class CommandShopCreate extends Command
 		
 		// If player is select, use their selection
 		Selection sel = ShopsPlayerListener.selectingPlayers.get(creator);
+		RegionSelection regsel = ShopsPlayerListener.playerRegions.get(creator);
+		ProtectedRegion regionobj = null;
 		
 		if(sel != null)
 		{
@@ -98,9 +104,26 @@ public class CommandShopCreate extends Command
 			xyzB[1] = sel.y2;
 			xyzB[2] = sel.z2;
 			createWorld = sel.world;
+			region = null;
+		}else if(regsel != null){
+			if(!regsel.exists())
+			{
+				player.sendMessage("Region no longer exists! Try selecting a new one.");
+				return false;
+			}
+			regionobj = CommandShops.worldguard.get(regsel.world).getRegion(regsel.region);
+			BlockVector bva = regionobj.getMinimumPoint();
+			BlockVector bvb = regionobj.getMaximumPoint();
+			xyzA[0] = bva.getX();
+			xyzA[1] = bva.getY();
+			xyzA[2] = bva.getZ();
+			xyzB[0] = bvb.getX();
+			xyzB[1] = bvb.getY();
+			xyzB[2] = bvb.getZ();
+			createWorld = regsel.world.getName();
+			region = regsel.region;
 		}else{
-			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use "
-					+ ChatColor.WHITE + "/shop select.");
+			player.sendMessage(ChatColor.DARK_AQUA + "You need to select an area first. Use " + ChatColor.WHITE + "/shop select.");
 			return false;
 		}
 		if(!shopPositionOk(xyzA, xyzB, createWorld))
@@ -135,12 +158,13 @@ public class CommandShopCreate extends Command
 		}
 
 		// Command matching
+		String name = "";
 		int insId = -1;
 		Pattern pattern = Pattern.compile("(?i)create\\s+(.*)");
 		Matcher matcher = pattern.matcher(command);
 		if(matcher.find())
 		{
-			String name = matcher.group(1);
+			name = matcher.group(1);
 			int x = Math.min((int)xyzA[0], (int)xyzB[0]);
 			int y = Math.min((int)xyzA[1], (int)xyzB[1]);
 			int z = Math.min((int)xyzA[2], (int)xyzB[2]);
@@ -149,9 +173,9 @@ public class CommandShopCreate extends Command
 			int z2 = Math.max((int)xyzA[2], (int)xyzB[2]);
 			try{
 				String insertQuery = String.format((Locale)null,"INSERT INTO shops"
-						+ "(	`name`,			`owner`,			`creator`,			`x`,`y`,`z`,`x2`,`y2`,`z2`,	`world`,	`minbalance`,	`unlimitedMoney`,	`unlimitedStock`) VALUES"
-						+ "(	'%s',			'%s',				'%s',				%d, %d, %d, %d,  %d,  %d,	'%s',		0,				0,					0)"
-						,		db.escape(name),db.escape(creator),	db.escape(creator),	x,	y,	z,  x2,  y2,  z2,	createWorld);
+						+ "(	`name`,			`owner`,			`creator`,			`x`,`y`,`z`,`x2`,`y2`,`z2`,	`world`,	`region`,	`minbalance`,	`unlimitedMoney`,	`unlimitedStock`) VALUES"
+						+ "(	'%s',			'%s',				'%s',				%d, %d, %d, %d,  %d,  %d,	'%s',		%s,			0,				0,					0)"
+						,		db.escape(name),db.escape(creator),	db.escape(creator),	x,	y,	z,  x2,  y2,  z2,	createWorld, (region==null?"NULL":("'"+db.escape(region)+"'")));
 				CommandShops.db.query(insertQuery);
 				String idQuery = "SELECT MAX(id) FROM shops WHERE `name`='" + db.escape(name) + "' AND `owner`='" + db.escape(creator) + "'";
 				ResultSet resId = CommandShops.db.query(idQuery);
@@ -182,6 +206,14 @@ public class CommandShopCreate extends Command
 
 			//disable selecting
 			ShopsPlayerListener.selectingPlayers.remove(creator);
+			ShopsPlayerListener.playerRegions.remove(creator);
+			
+			//add message to region
+			if(regionobj != null)
+			{
+				regionobj.setFlag(DefaultFlag.GREET_MESSAGE, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + name);
+				regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + name);
+			}
 			
 			//log
 			log.info(String.format((Locale)null,"[%s] %s Created shop: %s",
