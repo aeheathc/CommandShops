@@ -6,9 +6,9 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
-**HEAD**
+**4.2.0**
 
-* Added worldguard integration. Give a region name with the "/shop select" commadn, and instead of entering selection mode, the shop you move/create will just be attached to the named region.
+* Added worldguard integration. Give a region name with the "/shop select" command, and instead of entering selection mode, the shop you move/create will just be attached to the named region.
 * Restricted /reload to admin
 
 **4.1.3**

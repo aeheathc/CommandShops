@@ -1,25 +1,28 @@
 package com.aehdev.commandshops;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Shop.
+ * Class providing generic static methods for dealing with shops
  */
 public class Shop
 {
-	/** The Constant log. */
+	/** Reference to main logger. */
 	private static final Logger log = Logger.getLogger("Minecraft");
 
 	/**
@@ -174,5 +177,69 @@ public class Shop
 		}catch(Exception e){
 			log.warning(String.format((Locale)null,"[%s] - Database problem finding shop with region to be refreshed: "+e, CommandShops.pdfFile.getName()));
 		}
+	}
+	
+	/**
+	 * Sets the greeting/farewell flags on the worldguard region for this shop
+	 * @param shop the id of the shop to update
+	 */
+	public static void refreshRegionMessages(long shop)
+	{
+		ArrayList<Long> shops = new ArrayList<Long>();
+		shops.add(shop);
+		refreshRegionMessages(shops);
+	}
+	
+	/**
+	 * Sets the greeting/farewell flags on the worldguard region for these shops
+	 * @param shops the ids of the shops to update. Pass null to update everything.
+	 */
+	public static void refreshRegionMessages(List<Long> shops)
+	{
+		if(CommandShops.worldguard == null) return;	//Can't do anything if worldguard is down.
+		StringBuffer query = new StringBuffer("SELECT region,world,name,id FROM shops WHERE region IS NOT NULL");
+		if(shops != null)
+		{
+			query.append(" AND id IN(0");
+			for(long shop: shops)
+			{
+				query.append(",");
+				query.append(shop);
+			}
+			query.append(")");
+		}
+		try{
+			ResultSet resRegions = CommandShops.db.query(query.toString());
+			while(resRegions.next())
+			{
+				String region = resRegions.getString("region");
+				String world = resRegions.getString("world");
+				String shopname = resRegions.getString("name");
+				long shopid = resRegions.getLong("id");
+				ProtectedRegion regionobj = CommandShops.worldguard.get(Bukkit.getWorld(world)).getRegion(region);
+				if(regionobj != null)
+				{
+					regionobj.setFlag(DefaultFlag.GREET_MESSAGE, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + shopname);
+					/*Leaving out exit message for now because worldguard is dumb.
+					  For inner regions with enter/exit messages, when going the opposite direction WG will also play the corresponding message for the OUTER region resulting in twice as many messages as there should be.
+					  Making the inner region have only an enter message means you get 1 going in and 1 going out which is what we want even if only the enter message is actually for the shop and the other one is for the town.
+					 */
+					//regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + shopname);
+				}else{
+					log.warning(String.format((Locale)null,"[%s] - Shop %d:'%s' has invalid region name %s", CommandShops.pdfFile.getName(), shopid, shopname, region));
+				}
+			}
+			resRegions.close();
+		}catch(Exception e){
+			log.warning(String.format((Locale)null,"[%s] - Database problem finding regions to update their messages: "+e, CommandShops.pdfFile.getName()));
+		}
+	}
+	
+	/**
+	 * Sets the greeting/farewell flags on the worldguard region for all shops having one
+	 */
+	public static void refreshRegionMessages()
+	{
+		refreshRegionMessages(null);
 	}
 }

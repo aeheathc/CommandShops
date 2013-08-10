@@ -16,6 +16,7 @@ import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.RegionSelection;
 import com.aehdev.commandshops.Selection;
+import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopLocation;
 import com.aehdev.commandshops.ShopsPlayerListener;
 import com.sk89q.worldedit.BlockVector;
@@ -264,8 +265,7 @@ public class CommandShopMove extends Command
 		}
 		if(regionobj != null)
 		{
-			regionobj.setFlag(DefaultFlag.GREET_MESSAGE, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + shopName);
-			regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + shopName);
+			Shop.refreshRegionMessages(shop);
 		}
 		
 		

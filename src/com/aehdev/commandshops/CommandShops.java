@@ -97,7 +97,6 @@ public class CommandShops extends JavaPlugin
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Shop.refreshRegionLocations();
         
 		//optional -- try to hook to worldguard
 		Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
@@ -112,6 +111,8 @@ public class CommandShops extends JavaPlugin
         }else{
         	worldguard = ((WorldGuardPlugin)plugin).getGlobalRegionManager();
         	log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "WorldGuard support enabled."));
+            Shop.refreshRegionLocations();
+            Shop.refreshRegionMessages();
         }		
         
 		// Register our events

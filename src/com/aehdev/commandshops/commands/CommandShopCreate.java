@@ -14,9 +14,9 @@ import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.RegionSelection;
 import com.aehdev.commandshops.Selection;
+import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopsPlayerListener;
 import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.PrimitiveCuboid;
@@ -211,8 +211,7 @@ public class CommandShopCreate extends Command
 			//add message to region
 			if(regionobj != null)
 			{
-				regionobj.setFlag(DefaultFlag.GREET_MESSAGE, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + name);
-				regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + name);
+				Shop.refreshRegionMessages(insId);
 			}
 			
 			//log
