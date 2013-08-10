@@ -82,7 +82,7 @@ public class CommandShopSelect extends Command
 				sender.sendMessage("No region by that name in this world.");
 				return false;
 			}
-			if(!region.isOwner(playerName))
+			if(!region.isOwner(playerName) && !canUseCommand(CommandTypes.ADMIN))
 			{
 				sender.sendMessage("Can't attach shops to regions you don't own.");
 				return false;

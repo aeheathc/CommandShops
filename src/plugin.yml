@@ -1,6 +1,6 @@
 name: CommandShops
 main: com.aehdev.commandshops.CommandShops
-version: 4.2.0
+version: 4.2.1
 author: Zolcos
 description: >
              A localized shop plugin for use with Bukkit economies.

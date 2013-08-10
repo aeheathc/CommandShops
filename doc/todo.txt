@@ -1,4 +1,5 @@
 == Planned Features ==
+- Restrict region selection to regions inside a 'market' region
 - multi language support
 - XP market and disenchanting
 - Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items

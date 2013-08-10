@@ -6,6 +6,10 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**4.2.1**
+
+* Allow admins to select regions they don't own
+
 **4.2.0**
 
 * Added worldguard integration. Give a region name with the "/shop select" command, and instead of entering selection mode, the shop you move/create will just be attached to the named region.
