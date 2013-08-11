@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.Locale;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,7 @@ import com.aehdev.commandshops.Config;
 import com.aehdev.commandshops.ItemInfo;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.lib.multiDB.Database;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
@@ -225,7 +227,7 @@ public abstract class Command
 
 	/**
 	 * Check if a theoretical shop position would be acceptable.
-	 * To meet this criteria, it must not overlap any existing shops.
+	 * To meet this criteria, it must not overlap any existing shops. 
 	 * @param xyzA
 	 * First of 2 points defining the cuboid
 	 * @param xyzB
@@ -249,19 +251,53 @@ public abstract class Command
 			}
 		}
 
-		// Need to test every position to account for variable shop sizes
-
+		// Test for overlap with other shops
 		for(double x = xyzA[0]; x <= xyzB[0]; x++)
 		{
 			for(double z = xyzA[2]; z <= xyzB[2]; z++)
 			{
 				for(double y = xyzA[1]; y <= xyzB[1]; y++)
 				{
-					res = CommandShops.getCuboidTree().relatedSearch(
-							res.bookmark, x, y, z);
+					res = CommandShops.getCuboidTree().relatedSearch(res.bookmark, x, y, z);
 					if(shopOverlaps(res, worldName)) return false;
 				}
 			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Check if a theoretical shop position would be acceptable.
+	 * To meet this criteria, it must be in the market if one exists. 
+	 * @param xyzA
+	 * First of 2 points defining the cuboid
+	 * @param xyzB
+	 * Second of 2 points defining the cuboid
+	 * @param worldName
+	 * The world to check in
+	 * @return true if the position is fine
+	 */
+	protected boolean shopInMarket(double[] xyzA, double[] xyzB, String worldName)
+	{
+		if(Config.MARKETS.length > 0)
+		{
+			boolean good = false;
+			for(String market : Config.MARKETS)
+			{
+				ProtectedRegion region = CommandShops.worldguard.get(Bukkit.getWorld(worldName)).getRegion(market);
+				if(region == null)
+				{
+					log.warning(String.format((Locale)null,"[%s] - Invalid region name specified for market - '%s'.", CommandShops.pdfFile.getName(), market));
+					continue;
+				}
+				if(region.contains((int)xyzA[0],(int)xyzA[1],(int)xyzA[2]) && region.contains((int)xyzB[0],(int)xyzB[1],(int)xyzB[2]))
+				{
+					good = true;
+					break;
+				}
+			}
+			if(!good) return false;
 		}
 		return true;
 	}

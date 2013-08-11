@@ -6,6 +6,10 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**4.2.2**
+
+* New config option "Markets" where you can specify a list of WG regions that act as Markets, meaning region-based shops cannot be created outside them. A market can't have a shop connected directly to it, either. The default is blank, meaning region-based shops can still be created anywhere.
+
 **4.2.1**
 
 * Allow admins to select regions they don't own

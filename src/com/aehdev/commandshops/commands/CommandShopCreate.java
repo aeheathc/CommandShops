@@ -131,6 +131,11 @@ public class CommandShopCreate extends Command
 			sender.sendMessage("A shop already exists here!");
 			return false;
 		}
+		if(!shopInMarket(xyzA, xyzB, createWorld) && !canUseCommand(CommandTypes.ADMIN))
+		{
+			sender.sendMessage("Shops can't be created outside the market!");
+			return false;
+		}
 
 		if(Config.SHOP_COST > 0)
 		{

@@ -208,6 +208,13 @@ public class CommandShopMove extends Command
 			CommandShops.getCuboidTree().insert(restoreShop);
 			return false;
 		}
+		
+		if(!shopInMarket(xyzA, xyzB, targetWorld) && !canUseCommand(CommandTypes.ADMIN))
+		{
+			sender.sendMessage("Shops can't be moved out of the market!");
+			CommandShops.getCuboidTree().insert(restoreShop);
+			return false;
+		}
 
 		if(!canUseCommand(CommandTypes.MOVE_FREE) && plugin.econ.getBalance(playerName) < Config.MOVE_COST)
 		{

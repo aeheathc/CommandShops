@@ -72,12 +72,15 @@ public class Config
 	/** Name of the database containing CommandShops data */
 	public static String DB_NAME = "commandshops";
 	
+	/** Allows moving a shop from one world to another */
+	public static boolean ALLOW_INTERWORLD_MOVE = true;
+	
 	//Region settings
 	/** When true, only allow shops to be created/moved to a selected region that is owned by the player */
 	public static boolean REQUIRE_OWNER = false;
 	
-	//Allows moving a shop from one world to another
-	public static boolean ALLOW_INTERWORLD_MOVE = true;
+	/** The set of "market" regions where shops can be made. If this is empty, shops can be made anywhere. */
+	public static String[] MARKETS = {};
 	
 	/**
 	 * Read the config file and load options when present, or write default
@@ -90,27 +93,27 @@ public class Config
 		FileConfiguration config = plugin.getConfig();
 		config.options().copyDefaults(true);
 
-		SHOP_COST =				config.getDouble(	"fees.create");
-		MOVE_COST =				config.getDouble(	"fees.move");
-		MAX_WIDTH =				config.getInt(		"size.max-width");
-		MAX_HEIGHT =			config.getInt(		"size.max-height");
-		MAX_SHOPS_PER_PLAYER =	config.getInt(		"limits.shops-per-player");
-		MAX_DAMAGE = 			config.getInt(		"limits.item-damage");
-		FIND_MAX_DISTANCE =		config.getInt(		"limits.find-distance");
-		NOTIFY_INTERVAL =		config.getInt(		"log.notify-interval");
-		LOG_LIMIT =				config.getInt(		"log.limit");
-		DEBUG =					config.getBoolean(	"debug");
-		STORAGE_SYSTEM = 		config.getString(	"storage.system");
-		DB_HOST = 				config.getString(	"storage.connect.host");
-		DB_PORT = 				config.getInt(		"storage.connect.port");
-		DB_USER = 				config.getString(	"storage.connect.user");
-		DB_PASS = 				config.getString(	"storage.connect.pass");
-		DB_NAME = 				config.getString(	"storage.connect.db");
-		REQUIRE_OWNER =			config.getBoolean(	"regions.require-owner");
-		CUSTOM_ITEMS =			config.getBoolean(	"custom-items");
-		ALLOW_INTERWORLD_MOVE =	config.getBoolean(	"allow-interworld-move");
+		SHOP_COST =				config.getDouble(		"fees.create"				);
+		MOVE_COST =				config.getDouble(		"fees.move"					);
+		MAX_WIDTH =				config.getInt(			"size.max-width"			);
+		MAX_HEIGHT =			config.getInt(			"size.max-height"			);
+		MAX_SHOPS_PER_PLAYER =	config.getInt(			"limits.shops-per-player"	);
+		MAX_DAMAGE = 			config.getInt(			"limits.item-damage"		);
+		FIND_MAX_DISTANCE =		config.getInt(			"limits.find-distance"		);
+		NOTIFY_INTERVAL =		config.getInt(			"log.notify-interval"		);
+		LOG_LIMIT =				config.getInt(			"log.limit"					);
+		DEBUG =					config.getBoolean(		"debug"						);
+		STORAGE_SYSTEM = 		config.getString(		"storage.system"			);
+		DB_HOST = 				config.getString(		"storage.connect.host"		);
+		DB_PORT = 				config.getInt(			"storage.connect.port"		);
+		DB_USER = 				config.getString(		"storage.connect.user"		);
+		DB_PASS = 				config.getString(		"storage.connect.pass"		);
+		DB_NAME = 				config.getString(		"storage.connect.db"		);
+		REQUIRE_OWNER =			config.getBoolean(		"regions.require-owner"		);
+		MARKETS =				config.getStringList(	"regions.markets"			).toArray(MARKETS);
+		CUSTOM_ITEMS =			config.getBoolean(		"custom-items"				);
+		ALLOW_INTERWORLD_MOVE =	config.getBoolean(		"allow-interworld-move"		);
 
-		
 		plugin.saveConfig();
 	}
 }
