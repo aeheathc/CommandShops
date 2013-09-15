@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopLocation;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.BookmarkedResult;
 import cuboidLocale.PrimitiveCuboid;
@@ -62,16 +65,27 @@ public class CommandShopDestroy extends Command
 			String shopName = "";
 			String owner = "";
 			try{
-				ResultSet resShop = CommandShops.db.query("SELECT name,owner FROM shops WHERE id="+shop+" LIMIT 1");
+				ResultSet resShop = CommandShops.db.query("SELECT name,owner,region,world FROM shops WHERE id="+shop+" LIMIT 1");
 				resShop.next();
 				shopName = resShop.getString("name");
 				owner = resShop.getString("owner");
+				String region = resShop.getString("region");
+				String world = resShop.getString("world");
 				resShop.close();
 				if(!owner.equals(playerName) && !canUseCommand(CommandTypes.ADMIN))
 				{
 					player.sendMessage(ChatColor.DARK_AQUA + "You must be the shop owner to destroy it.");
 					return false;
 				}
+				
+				ProtectedRegion regionObj = null;
+				if(region != null && CommandShops.worldguard != null) regionObj = CommandShops.worldguard.get(Bukkit.getWorld(world)).getRegion(region);
+				if(regionObj != null)
+				{
+					regionObj.setFlag(DefaultFlag.GREET_MESSAGE, null);
+					regionObj.setFlag(DefaultFlag.FAREWELL_MESSAGE, null);
+				}
+				
 				String itemQuery = String.format((Locale)null,"SELECT itemid,itemdamage,stock FROM shop_items WHERE shop=%d", shop);
 				ResultSet resItem = CommandShops.db.query(itemQuery);
 				while(resItem.next())

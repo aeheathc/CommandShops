@@ -267,8 +267,8 @@ public class CommandShopMove extends Command
 		//update enter/exit messages
 		if(oldRegion != null)
 		{
-			regionobj.setFlag(DefaultFlag.GREET_MESSAGE, null);
-			regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, null);
+			oldRegion.setFlag(DefaultFlag.GREET_MESSAGE, null);
+			oldRegion.setFlag(DefaultFlag.FAREWELL_MESSAGE, null);
 		}
 		if(regionobj != null)
 		{

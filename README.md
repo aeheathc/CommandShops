@@ -6,6 +6,13 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**4.2.3**
+
+* Tested with CB 1.6.2
+* Fixed confusion between discs "11" and "wait"
+* New items up to the current snapshot of MC 1.7
+* Moving or deleting a shop that had a WG region now removes enter message from the old region.
+
 **4.2.2**
 
 * New config option "Markets" where you can specify a list of WG regions that act as Markets, meaning region-based shops cannot be created outside them. A market can't have a shop connected directly to it, either. The default is blank, meaning region-based shops can still be created anywhere.
