@@ -93,7 +93,7 @@ public class CommandShopDestroy extends Command
 					int itemid = resItem.getInt("itemid");
 					short dam = resItem.getShort("itemdamage");
 					int stock = (int)Math.floor(resItem.getDouble("stock"));
-					givePlayerItem(Search.itemById(itemid, dam).toStack(),stock);
+					givePlayerItem(Search.itemById(itemid, dam), stock);
 				}
 				resItem.close();
 				CommandShops.db.query(String.format((Locale)null,"DELETE FROM shops WHERE id=%d LIMIT 1",shop));

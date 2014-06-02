@@ -58,16 +58,10 @@ public class CommandShopSearch extends Command
 			ItemStack itemStack = player.getItemInHand();
 			if(itemStack == null){ return true; }
 			ItemInfo found = null;
-			if(CommandShops.getItemList().isDurable(itemStack))
-			{
-				found = Search.itemById(itemStack.getTypeId());
-			}else{
-				found = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
-			}
+			found = Search.itemById(itemStack);
 			if(found == null)
 			{
-				sender.sendMessage("Could not find an item for "+itemStack.getTypeId()+":"+itemStack.getDurability());
+				sender.sendMessage("Could not find an item for " + Search.materials.inverse().get(itemStack.getType()) + ":" + itemStack.getDurability());
 			}else{
 				sender.sendMessage(found.toString());
 			}

@@ -58,12 +58,6 @@ public class CommandShops extends JavaPlugin
 	/** Path to all our data files. */
 	static String folderPath = "plugins/CommandShops/";
 
-	/** Folder within {@link folderPath} that contains the shop files. */
-	static String shopsPath = "shops/";
-
-	/** Database of item data. */
-	private static ItemData itemList = new ItemData();
-	
 	/** Reference to WorldGuard region manager. */
 	public static GlobalRegionManager worldguard = null;
 
@@ -72,9 +66,15 @@ public class CommandShops extends JavaPlugin
 	 */
 	public void onEnable()
 	{
+		if(Search.materials == null || Search.materials.isEmpty())
+		{
+			//if reflection failed in getting material ids, bail. It will have already been logged in the code that catches the exception.
+			getServer().getPluginManager().disablePlugin(this);
+            return;
+		}
 		pdfFile = getDescription();	//cache plugin info
 		Config.loadProperties(this);//Get the configuration via Bukkit's builtin method
-		Search.reload(this);
+		Search.reload(this);		//Compile item data
 		
         if(!setupEconomy())
         {
@@ -97,6 +97,18 @@ public class CommandShops extends JavaPlugin
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        
+        long totalShops = 0;
+		try{
+			ResultSet shoptot = db.query("SELECT COUNT(*) FROM shops"); shoptot.next();
+			totalShops = shoptot.getLong(1);
+			shoptot.close();
+		}catch(Exception e){
+            log.severe(String.format((Locale)null,"[%s] - Shutting down: Can't select from DB.", pdfFile.getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+		}
+        
         
 		//optional -- try to hook to worldguard
 		Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
@@ -122,19 +134,8 @@ public class CommandShops extends JavaPlugin
 		getCommand("shop").setExecutor(new ShopCommandExecutor(this));
 
 		// update the console that we've started
-		try{
-			ResultSet shoptot = db.query("SELECT COUNT(*) FROM shops"); shoptot.next();
-			long totalShops = shoptot.getLong(1);
-			shoptot.close();
-			log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Loaded with "
-					+ totalShops + " shop(s)"));
-			log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(),
-					"Version " + pdfFile.getVersion() + " is enabled: "));
-		}catch(Exception e){
-            log.severe(String.format((Locale)null,"[%s] - Shutting down: Can't select from DB.", pdfFile.getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-		}
+		log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Loaded with " + totalShops + " shop(s)"));
+		log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Version " + pdfFile.getVersion() + " is enabled: "));
 
 		// Start Notification thread
 		if(Config.NOTIFY_INTERVAL > 0)
@@ -166,9 +167,6 @@ public class CommandShops extends JavaPlugin
 			}
 		}
 
-		//reset item data
-		itemList = new ItemData();
-		
 		//reset selections
 		ShopsPlayerListener.selectingPlayers = new HashMap<String,Selection>();
 		ShopsPlayerListener.playerRegions = new HashMap<String,RegionSelection>();	
@@ -186,22 +184,6 @@ public class CommandShops extends JavaPlugin
 		log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "Version "
 				+ pdfFile.getVersion() + " is disabled!"));
 	}
-
-	/**
-	 * Saves the item database.
-	 * @param itemList
-	 * the new item list
-	 */
-	public static void setItemList(ItemData itemList)
-	{
-		CommandShops.itemList = itemList;
-	}
-
-	/**
-	 * Gets the item database.
-	 * @return the item list
-	 */
-	public static ItemData getItemList() {return itemList;}
 
 	/**
 	 * Sets the structure of shop coords.

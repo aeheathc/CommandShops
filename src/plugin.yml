@@ -1,6 +1,6 @@
 name: CommandShops
 main: com.aehdev.commandshops.CommandShops
-version: 4.2.3
+version: 4.2.4-dev
 author: Zolcos
 description: >
              A localized shop plugin for use with Bukkit economies.
@@ -34,7 +34,6 @@ permissions:
             commandshops.manager.create: true
             commandshops.manager.destroy: true
             commandshops.manager.move: true
-            commandshops.manager.remove: true
             commandshops.manager.set: true
             commandshops.manager.set.owner: true
     commandshops.manager.add:
@@ -45,8 +44,6 @@ permissions:
         description: Allows destruction of shops under player's management.
     commandshops.manager.move:
         description: Allows relocation of shops under player's management.
-    commandshops.manager.remove:
-        description: Allows removal of items from shops.
     commandshops.manager.set:
         description: Allows setting of shop parameters such as pricing in shops under player's management.
     commandshops.manager.set.owner:

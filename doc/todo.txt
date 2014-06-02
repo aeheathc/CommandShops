@@ -1,4 +1,5 @@
 == Planned Features ==
+- Track shop owner/manager based on UUID
 - multi language support
 - XP market and disenchanting
 - Repair service that costs materials, set by material prices in shop (with optional scaling factor?) including xp cost to repair enchanted items
@@ -7,5 +8,5 @@
 - Storage limitations (config,size,chests?)
 - Phase out cuboidlocale (it is good for providing a common comparison for WG regions vs sql coords but it can't be auto updated when regions move)
 - DB table prefix
-- multi location support
+- multi location (franchise) support
 - make /shop find with no item find any nearby shops

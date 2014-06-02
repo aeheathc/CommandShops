@@ -7,7 +7,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -81,8 +83,7 @@ public class CommandShopBuy extends Command
 		{
 			ItemStack itemStack = player.getItemInHand();
 			if(itemStack == null){ return false; }
-			ItemInfo item = Search.itemById(itemStack.getTypeId(),
-					itemStack.getDurability());
+			ItemInfo item = Search.itemById(itemStack);
 			if(item == null)
 			{
 				sender.sendMessage("Could not find an item.");
@@ -104,8 +105,7 @@ public class CommandShopBuy extends Command
 				sender.sendMessage("You must be holding an item, or specify an item.");
 				return true;
 			}
-			ItemInfo item = Search.itemById(itemStack.getTypeId(),
-					itemStack.getDurability());
+			ItemInfo item = Search.itemById(itemStack);
 			if(item == null)
 			{
 				sender.sendMessage("Could not find an item.");
@@ -339,6 +339,7 @@ public class CommandShopBuy extends Command
 			sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
 			return false;
 		}
+		OfflinePlayer shopOwnerPlayer = Bukkit.getServer().getOfflinePlayer(shopOwner);
 
 		// check if the shop is selling that item
 		if(sell == -1 && !isShopController(shop))
@@ -364,7 +365,6 @@ public class CommandShopBuy extends Command
 						+ ChatColor.WHITE + stock + " " + item.name);
 		}
 
-		
 		//Limit buy amount by inventory space
 		int freeSpots = countAvailableSpaceForItemInInventory(player.getInventory(), item);
 		if(amount > freeSpots)
@@ -375,7 +375,7 @@ public class CommandShopBuy extends Command
 		}
 		
 		//Limit buy amount by cash on hand
-		double balance = plugin.econ.getBalance(playerName);
+		double balance = plugin.econ.getBalance(player);
 		int amtCanAfford = (sell > 0) ? (int)Math.floor(balance/sell) : Integer.MAX_VALUE;
 		if(amount > amtCanAfford && !isShopController(shop))
 		{
@@ -392,7 +392,7 @@ public class CommandShopBuy extends Command
 			//first pay the shop owner. Skip this step for unlimited money shops.
 			if(!shopUnlimitedMoney)
 			{
-				if(!plugin.econ.depositPlayer(shopOwner, totalCost).transactionSuccess())
+				if(!plugin.econ.depositPlayer(shopOwnerPlayer, totalCost).transactionSuccess())
 				{
 					player.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA
@@ -403,14 +403,14 @@ public class CommandShopBuy extends Command
 			}
 			
 			//then charge the buyer.
-			if(!plugin.econ.withdrawPlayer(playerName, totalCost).transactionSuccess())
+			if(!plugin.econ.withdrawPlayer(player, totalCost).transactionSuccess())
 			{
 				player.sendMessage(CommandShops.CHAT_PREFIX
 						+ ChatColor.DARK_AQUA
 						+ "Vault error paying for items: could not complete sale.");
 				log.warning(String.format((Locale)null,"[%s] Couldn't charge buyer %s. Attempting rollback of seller credit...", CommandShops.pdfFile.getName(), playerName));
 				// if we can't charge the buyer, try to rollback the transaction
-				if(!plugin.econ.withdrawPlayer(shopOwner, totalCost).transactionSuccess())
+				if(!plugin.econ.withdrawPlayer(shopOwnerPlayer, totalCost).transactionSuccess())
 				{
 					log.warning(String.format((Locale)null,"[%s] Couldn't rollback failed transaction. %s likely has an extra %s !", CommandShops.pdfFile.getName(), shopOwner, plugin.econ.format(totalCost)));
 				}else{
@@ -423,7 +423,7 @@ public class CommandShopBuy extends Command
 		}
 		
 		//give items to player
-		givePlayerItem(item.toStack(), amount);
+		givePlayerItem(item, amount);
 
 		//remove items from shop
 		if(!shopUnlimitedStock)
@@ -437,19 +437,19 @@ public class CommandShopBuy extends Command
 				log.warning(String.format((Locale)null,"[%s] Couldn't remove items from shop: %s. Rolling back buy transaction...", CommandShops.pdfFile.getName(), e));
 				sender.sendMessage(ChatColor.DARK_AQUA + "Buy cancelled due to DB error.");
 				//refund buyer
-				if(!plugin.econ.depositPlayer(playerName, totalCost).transactionSuccess())
+				if(!plugin.econ.depositPlayer(player, totalCost).transactionSuccess())
 				{
 					log.warning(String.format((Locale)null,"[%s] Couldn't rollback buy: Items were delivered and money transferred, but duplicate item remains in shop %s. ", CommandShops.pdfFile.getName(), shopName));
 					return false;
 				}
 				//reclaim money from shop owner
-				if(!plugin.econ.withdrawPlayer(shopOwner, totalCost).transactionSuccess())
+				if(!plugin.econ.withdrawPlayer(shopOwnerPlayer, totalCost).transactionSuccess())
 				{
 					log.warning(String.format((Locale)null,"[%s] Couldn't rollback buy: Items were delivered and money recieved by shop, but duplicate item remains in shop %s and %s likely has an extra %s ", CommandShops.pdfFile.getName(), shopName, shopOwner, plugin.econ.format(totalCost)));
 					return false;
 				}
 				//take back items
-				removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+				removeItemsFromInventory(player.getInventory(), item, amount);
 				log.warning(String.format((Locale)null,"[%s] Rolled back failed buy from %s. (Ending state OK)", CommandShops.pdfFile.getName(), shopName));
 				return false;
 			}

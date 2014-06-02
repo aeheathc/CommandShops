@@ -216,14 +216,14 @@ public class CommandShopMove extends Command
 			return false;
 		}
 
-		if(!canUseCommand(CommandTypes.MOVE_FREE) && plugin.econ.getBalance(playerName) < Config.MOVE_COST)
+		if(!canUseCommand(CommandTypes.MOVE_FREE) && plugin.econ.getBalance(player) < Config.MOVE_COST)
 		{
 			sender.sendMessage("You need " + plugin.econ.format(Config.MOVE_COST) + " to move a shop!");
 			CommandShops.getCuboidTree().insert(restoreShop);
 			return false;
 		}
 		
-		if(!plugin.econ.withdrawPlayer(playerName, Config.MOVE_COST).transactionSuccess())
+		if(!plugin.econ.withdrawPlayer(player, Config.MOVE_COST).transactionSuccess())
 		{
 			sender.sendMessage("Shop move failed due to Vault error");
 			log.warning(String.format((Locale)null,"[%s] Failed to create shop due to Vault error", CommandShops.pdfFile.getName()));
@@ -245,7 +245,7 @@ public class CommandShopMove extends Command
 		}catch(Exception e){
 			sender.sendMessage("Shop move failed due to DB error");
 			CommandShops.getCuboidTree().insert(restoreShop);
-			if(plugin.econ.depositPlayer(playerName, Config.MOVE_COST).transactionSuccess())
+			if(plugin.econ.depositPlayer(player, Config.MOVE_COST).transactionSuccess())
 			{
 				log.warning(String.format((Locale)null,"[%s]  Failed to move shop, but charge rollback succeeded (Ending state OK): %s"
 						, CommandShops.pdfFile.getName(), e));

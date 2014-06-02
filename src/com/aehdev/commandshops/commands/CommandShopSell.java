@@ -7,7 +7,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -78,11 +80,9 @@ public class CommandShopSell extends Command
 				sender.sendMessage("You must be holding an item, or specify an item.");
 				return true;
 			}
-			ItemInfo item = null;
-			int amount = countItemsInInventory(player.getInventory(), itemStack);
-			if(CommandShops.getItemList().isDurable(itemStack))
+			ItemInfo item = Search.itemById(itemStack);
+			if(itemStack.getType().getMaxDurability() > 0)
 			{
-				item = Search.itemById(itemStack.getTypeId());
 				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0)
 				{
@@ -96,15 +96,13 @@ public class CommandShopSell extends Command
 							+ "%");
 					return true;
 				}
-			}else{
-				item = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
 			}
 			if(item == null)
 			{
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
+			int amount = countItemsInInventory(player.getInventory(), item);
 			return shopSell(shop, item, amount);
 		}
 
@@ -117,11 +115,10 @@ public class CommandShopSell extends Command
 		{
 			ItemStack itemStack = player.getItemInHand();
 			if(itemStack == null){ return true; }
-			ItemInfo item = null;
+			ItemInfo item = Search.itemById(itemStack);
 			int amount = itemStack.getAmount();
-			if(CommandShops.getItemList().isDurable(itemStack))
+			if(itemStack.getType().getMaxDurability() > 0)
 			{
-				item = Search.itemById(itemStack.getTypeId());
 				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0)
 				{
@@ -135,9 +132,6 @@ public class CommandShopSell extends Command
 							+ "%");
 					return true;
 				}
-			}else{
-				item = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
 			}
 			if(item == null)
 			{
@@ -287,8 +281,7 @@ public class CommandShopSell extends Command
 				sender.sendMessage("Could not find an item.");
 				return true;
 			}
-			int count = countItemsInInventory(player.getInventory(),
-					item.toStack());
+			int count = countItemsInInventory(player.getInventory(), item);
 			return shopSell(shop, item, count);
 		}
 
@@ -368,7 +361,9 @@ public class CommandShopSell extends Command
 			return false;
 		}
 		
-		double ownerbalance = plugin.econ.getBalance(owner);
+		OfflinePlayer shopOwnerPlayer = Bukkit.getServer().getOfflinePlayer(owner);
+		
+		double ownerbalance = plugin.econ.getBalance(shopOwnerPlayer);
 		
 		// Block if shop is not buying this item, is overstocked, or is broke
 		if(buy == -1)
@@ -392,7 +387,7 @@ public class CommandShopSell extends Command
 		}
 		
 		// Limit amount by inventory
-		int playerInventory = countItemsInInventory(player.getInventory(), item.toStack());
+		int playerInventory = countItemsInInventory(player.getInventory(), item);
 		if(amount > playerInventory)
 		{
 			player.sendMessage(ChatColor.DARK_AQUA + "You only have "
@@ -430,18 +425,18 @@ public class CommandShopSell extends Command
 		{
 			if(!unlimitedMoney)
 			{
-				if(!plugin.econ.withdrawPlayer(owner, totalCost).transactionSuccess())
+				if(!plugin.econ.withdrawPlayer(shopOwnerPlayer, totalCost).transactionSuccess())
 				{
 					log.warning(String.format((Locale)null,"[%s] Failed sell due to Vault error (Ending state OK)", CommandShops.pdfFile.getName()));
 					player.sendMessage(ChatColor.DARK_AQUA + "Sell cancelled due to Vault error.");
 					return false;
 				}
 			}
-			if(!plugin.econ.depositPlayer(playerName, totalCost).transactionSuccess())
+			if(!plugin.econ.depositPlayer(player, totalCost).transactionSuccess())
 			{
 				if(!unlimitedMoney)
 				{
-					if(!plugin.econ.depositPlayer(owner, totalCost).transactionSuccess())
+					if(!plugin.econ.depositPlayer(shopOwnerPlayer, totalCost).transactionSuccess())
 					{
 						log.warning(String.format((Locale)null,"[%s] Failed sell due to Vault error, couldn't rollback payment! Owner %s is likely missing %s!", CommandShops.pdfFile.getName(), owner, plugin.econ.format(totalCost)));
 					}else{
@@ -468,9 +463,9 @@ public class CommandShopSell extends Command
 				boolean rbPlayer = true, rbOwner = true;
 				if(!isShopController(shop))
 				{
-					rbPlayer = plugin.econ.withdrawPlayer(playerName, totalCost).transactionSuccess();
+					rbPlayer = plugin.econ.withdrawPlayer(player, totalCost).transactionSuccess();
 					if(!unlimitedMoney)
-						rbOwner = plugin.econ.depositPlayer(owner, totalCost).transactionSuccess();
+						rbOwner = plugin.econ.depositPlayer(shopOwnerPlayer, totalCost).transactionSuccess();
 				}
 				if(!rbPlayer || !rbOwner)
 				{
@@ -485,7 +480,7 @@ public class CommandShopSell extends Command
 				return false;
 			}
 		}
-		removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+		removeItemsFromInventory(player.getInventory(), item, amount);
 
 		if(isShopController(shop))
 		{

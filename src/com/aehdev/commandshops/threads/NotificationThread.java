@@ -45,8 +45,7 @@ public class NotificationThread extends Thread
 
 	/**
 	 * Sets the current state and forces the thread to recognize it.
-	 * @param run
-	 * whether or not the new state should be running
+	 * @param run whether or not the new state should be running
 	 */
 	public void setRun(boolean run)
 	{
@@ -71,10 +70,10 @@ public class NotificationThread extends Thread
 			Player[] online = Bukkit.getOnlinePlayers();
 			for(Player player : online)
 			{
-				String name = player.getName();
+				String name = CommandShops.db.escape(player.getName());
 				try{
 					String logQuery = "SELECT name,action,SUM(amount) AS 'amount',itemid,itemdamage,user,SUM(total) AS 'total' FROM log LEFT JOIN shops ON log.shop=shops.id WHERE owner='"
-									+ name + "' AND (action='buy' OR action='sell') AND (datetime>lastNotify AND lastNotify IS NOT NULL) AND notify=1 AND user!='" + name + "' GROUP BY name,action,itemid,itemdamage,user";
+									+ name + "' AND (action='buy' OR action='sell') AND (datetime>lastNotify OR lastNotify IS NULL) AND notify=1 AND user!='" + name + "' GROUP BY name,action,itemid,itemdamage,user";
 					ResultSet resLog = CommandShops.db.query(logQuery);
 					LinkedList<String> msg = new LinkedList<String>();
 					boolean any = false;

@@ -141,7 +141,7 @@ public class CommandShopCreate extends Command
 		{
 			if(!canUseCommand(CommandTypes.CREATE_FREE))
 			{
-				if(plugin.econ.getBalance(creator) < Config.SHOP_COST)
+				if(plugin.econ.getBalance(player) < Config.SHOP_COST)
 				{
 					sender.sendMessage(CommandShops.CHAT_PREFIX
 							+ ChatColor.DARK_AQUA
@@ -151,7 +151,7 @@ public class CommandShopCreate extends Command
 							+ " to create a shop.");
 					return false;
 				}else{
-					if(!plugin.econ.withdrawPlayer(creator, Config.SHOP_COST).transactionSuccess())
+					if(!plugin.econ.withdrawPlayer(player, Config.SHOP_COST).transactionSuccess())
 					{
 						sender.sendMessage(CommandShops.CHAT_PREFIX
 								+ ChatColor.DARK_AQUA
@@ -190,7 +190,7 @@ public class CommandShopCreate extends Command
 			}catch(Exception e){
 				player.sendMessage(ChatColor.DARK_AQUA + "Unable to create shop: DB error");
 				//rollback payment
-				if(!plugin.econ.depositPlayer(creator, Config.SHOP_COST).transactionSuccess())
+				if(!plugin.econ.depositPlayer(player, Config.SHOP_COST).transactionSuccess())
 				{
 					log.warning(String.format((Locale)null,
 							"[%s] Failed to create shop and failed to rollback payment; %s is likely missing %s!: %s",

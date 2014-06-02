@@ -6,7 +6,7 @@ fees:
     create: 100.0           #Cost of creating a shop; 0 = free
     move: 10.0              #Cost of moving a shop; 0 = free
 log:
-    limit: 500              #Maximum number of transactions saved in log per shop.
+    limit: 500              #Maximum number of transactions saved in log.
     notify-interval: 300    #Number of seconds between transaction notifications; 0 = Disable notifications
 size:                       #Size constraints for shops using the manual area selection. Doesn't apply to shops attached to regions in your region plugin.
     max-height: 10          #Maximum custom shop height.

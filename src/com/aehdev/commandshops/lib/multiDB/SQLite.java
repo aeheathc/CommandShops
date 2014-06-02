@@ -165,9 +165,9 @@ public class SQLite extends Database
 			return result;
 		}catch(SQLException ex){
 			if(ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked"))
-				this.writeError("Please close your previous ResultSet to run the query: \n\t" + query, false);
+				this.writeError("SQL exception related to locking in retry(): " + ex.getMessage() + "\n\t(Was a ResultSet left open?) Query being run: " + query, false);
 			else
-				this.writeError("SQL exception in retry(): " + ex.getMessage(), false);
+				this.writeError("SQL exception in retry(): " + ex.getMessage() + "\n\tQuery being run: " + query, false);
 		}
 		
 		return null;

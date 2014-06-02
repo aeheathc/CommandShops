@@ -2,6 +2,7 @@ package com.aehdev.commandshops;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -146,16 +147,18 @@ public class Shop
 	{
 		if(CommandShops.worldguard == null) return;	//Can't do anything if worldguard is down.
 		String regQuery = "SELECT id FROM shops WHERE region IS NOT NULL";
+		LinkedList<Integer> ids = new LinkedList<Integer>(); 
 		try{
 			ResultSet resReg = CommandShops.db.query(regQuery);
 			while(resReg.next())
 			{
-				refreshRegionLocation(resReg.getInt("id"));
+				ids.add(resReg.getInt("id"));
 			}
 			resReg.close();
 		}catch(Exception e){
 			log.warning(String.format((Locale)null,"[%s] - Database problem finding shops with regions for global refresh: "+e, CommandShops.pdfFile.getName()));
 		}
+		for(Integer id : ids) refreshRegionLocation(id);
 	}
 	
 	/**
@@ -169,11 +172,9 @@ public class Shop
 		String regQuery = "SELECT id FROM shops WHERE region='" + region + "' AND world='" + world + "' LIMIT 1";
 		try{
 			ResultSet resReg = CommandShops.db.query(regQuery);
-			while(resReg.next())
-			{
-				refreshRegionLocation(resReg.getInt("id"));
-			}
+			int id = resReg.getInt("id");
 			resReg.close();
+			refreshRegionLocation(id);
 		}catch(Exception e){
 			log.warning(String.format((Locale)null,"[%s] - Database problem finding shop with region to be refreshed: "+e, CommandShops.pdfFile.getName()));
 		}
@@ -223,6 +224,7 @@ public class Shop
 					/*Leaving out exit message for now because worldguard is dumb.
 					  For inner regions with enter/exit messages, when going the opposite direction WG will also play the corresponding message for the OUTER region resulting in twice as many messages as there should be.
 					  Making the inner region have only an enter message means you get 1 going in and 1 going out which is what we want even if only the enter message is actually for the shop and the other one is for the town.
+					  This will never be fixed, they want it that way. This reminder is here to help with integration with other region systems in the future.
 					 */
 					//regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + shopname);
 				}else{

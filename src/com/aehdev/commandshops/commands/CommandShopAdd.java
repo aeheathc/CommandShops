@@ -86,11 +86,10 @@ public class CommandShopAdd extends Command
 			if(itemStack == null){ return false; }
 			ItemInfo item = null;
 			int amount = itemStack.getAmount();
-			if(CommandShops.getItemList().isDurable(itemStack))
+			item = Search.itemById(itemStack);
+			if(itemStack.getType().getMaxDurability() > 0)
 			{
-				item = Search.itemById(itemStack.getTypeId());
-				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
-						&& Config.MAX_DAMAGE != 0)
+				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE && Config.MAX_DAMAGE != 0)
 				{
 					sender.sendMessage(ChatColor.DARK_AQUA + "Your "
 							+ ChatColor.WHITE + item.name
@@ -102,9 +101,6 @@ public class CommandShopAdd extends Command
 							+ "%");
 					return true;
 				}
-			}else{
-				item = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
 			}
 			if(item == null)
 			{
@@ -124,9 +120,9 @@ public class CommandShopAdd extends Command
 			ItemStack itemStack = player.getItemInHand();
 			if(itemStack == null){ return false; }
 			ItemInfo item = null;
-			if(CommandShops.getItemList().isDurable(itemStack))
+			if(itemStack.getType().getMaxDurability() > 0)
 			{
-				item = Search.itemById(itemStack.getTypeId());
+				item = Search.itemById(itemStack);
 				if(calcDurabilityPercentage(itemStack) > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0)
 				{
@@ -141,15 +137,14 @@ public class CommandShopAdd extends Command
 					return true;
 				}
 			}else{
-				item = Search.itemById(itemStack.getTypeId(),
-						itemStack.getDurability());
+				item = Search.itemById(itemStack);
 			}
 			if(item == null)
 			{
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			int amount = countItemsInInventory(player.getInventory(), itemStack);
+			int amount = countItemsInInventory(player.getInventory(), item);
 			return shopAdd(shop, item, amount);
 		}
 		
@@ -167,8 +162,7 @@ public class CommandShopAdd extends Command
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			int count = countItemsInInventory(player.getInventory(),
-					item.toStack());
+			int count = countItemsInInventory(player.getInventory(), item);
 			return shopAdd(shop, item, count);
 		}
 		
@@ -187,8 +181,7 @@ public class CommandShopAdd extends Command
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			int count = countItemsInInventory(player.getInventory(),
-					item.toStack());
+			int count = countItemsInInventory(player.getInventory(), item);
 			return shopAdd(shop, item, count);
 		}
 		
@@ -206,8 +199,7 @@ public class CommandShopAdd extends Command
 				sender.sendMessage("Could not find an item.");
 				return false;
 			}
-			int count = countItemsInInventory(player.getInventory(),
-					item.toStack());
+			int count = countItemsInInventory(player.getInventory(), item);
 			return shopAdd(shop, item, count);
 		}
 
@@ -395,7 +387,7 @@ public class CommandShopAdd extends Command
 		}
 		
 		// Calculate number of items player has
-		int playerItemCount = countItemsInInventory(player.getInventory(), item.toStack());
+		int playerItemCount = countItemsInInventory(player.getInventory(), item);
 		// Validate Count
 		if(playerItemCount < amount)
 		{
@@ -425,7 +417,7 @@ public class CommandShopAdd extends Command
 			return false;
 		}
 		
-		removeItemsFromInventory(player.getInventory(), item.toStack(), amount);
+		removeItemsFromInventory(player.getInventory(), item, amount);
 		
 		sender.sendMessage(ChatColor.DARK_AQUA + "Succesfully added "
 				+ ChatColor.WHITE + item.name + ChatColor.DARK_AQUA

@@ -26,8 +26,7 @@ public class Config
 	/** Number of seconds between transaction notifications. */
 	public static int NOTIFY_INTERVAL = 300;
 
-	/** Maximum number of transactions that a shop will store for notification
-	 * purposes. Limited by default to prevent infinite memory usage. */
+	/** Maximum number of transactions that our log will store for notification purposes. */
 	public static int LOG_LIMIT = 500;
 
 	// Search Settings

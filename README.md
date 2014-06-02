@@ -6,6 +6,21 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
+**HEAD**
+
+* Tested with CB beta 1.7.9-R0.2
+* Fixed SQLite getting deadlocked on startup in bukkit 1.7.x
+* Having a non-legit oversized stack of items in your inventory no longer confuses the inventory space counter.
+* Fixed format of items.yml. Previously, the maxstack numbers were written with quotes causing them all the be read as 0.
+* Max stack size of items is now checked by asking Bukkit instead of using hardcoded values. (This makes the items.yml change moot as the maxstack field is now gone entirely)
+* Checking for whether an item has "durability" is now done by asking bukkit instead of comparing against a hardcoded list.
+* Tons of changes done for eliminating use of item ID related commands provided by Bukkit as they are now deprecated.
+* Reworked Vault interaction since it now wants player objects instead of player name strings.
+* Fixed detection of various slabs
+* Removed "remove" command. It was always a weird and useless command to take ALL of an item out of your shop even if you don't have inventory space. An accident could be bad if there are too many items to get them back in before they despawn. Remember that you can just use the buy command to take items out of your shop as an owner and it doesn't cost you any money.
+* Removed much unused code
+* Documented the ItemInfo class after reclassifying it as permanent.
+
 **4.2.3**
 
 * Tested with CB 1.6.2

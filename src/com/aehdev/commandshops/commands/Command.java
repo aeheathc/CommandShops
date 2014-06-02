@@ -1,6 +1,7 @@
 package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -83,9 +84,8 @@ public abstract class Command
 		/** Bypass the fee for moving shops. */
 		MOVE_FREE(8, "commandshops.free.move"),
 
-		/** Taking items out of shops. */
-		REMOVE(9, "commandshops.manager.remove"),
-
+		//9 was "remove"
+		
 		/** Selling to shops. */
 		SELL(10, "commandshops.user.sell"),
 
@@ -337,19 +337,17 @@ public abstract class Command
 	 * @param amount
 	 * how many
 	 */
-	protected void givePlayerItem(ItemStack item, int amount)
+	protected void givePlayerItem(ItemInfo item, int amount)
 	{
 		Player player = (Player)sender;
-		ItemInfo info = Search.itemById(item.getTypeId(), item.getDurability());
-		int maxStackSize = info.maxStackSize;
+		int maxStackSize = item.getMaxStackSize();
 
-		// fill all the existing stacks first
-		for(int i: player.getInventory().all(item.getType()).keySet())
+		// fill all the existing slots first
+		for(int i: player.getInventory().all(item.material).keySet())
 		{
 			if(amount == 0) continue;
 			ItemStack thisStack = player.getInventory().getItem(i);
-			if(thisStack.getType().equals(item.getType())
-					&& thisStack.getDurability() == item.getDurability())
+			if(thisStack.getType().equals(item.material) && thisStack.getDurability() == item.subTypeId)
 			{
 				if(thisStack.getAmount() < maxStackSize)
 				{
@@ -366,7 +364,8 @@ public abstract class Command
 			}
 
 		}
-
+		
+		//add item to new slots
 		for(int i = 0; i < 36; i++)
 		{
 			ItemStack thisSlot = player.getInventory().getItem(i);
@@ -375,30 +374,30 @@ public abstract class Command
 				if(amount == 0) continue;
 				if(amount >= maxStackSize)
 				{
-					item.setAmount(maxStackSize);
-					player.getInventory().setItem(i, item);
+					player.getInventory().setItem(i, item.toStack(maxStackSize));
 					amount -= maxStackSize;
-				}else
-				{
-					item.setAmount(amount);
-					player.getInventory().setItem(i, item);
+				}else{
+					player.getInventory().setItem(i, item.toStack(amount));
 					amount = 0;
 				}
 			}
 		}
 
+		/* If any items remain, drop them on the ground.
+		 * This shouldn't normally happen because we usually limit the amount we give based on their available space.
+		 */
 		while(amount > 0)
 		{
+			ItemStack stack = null;
 			if(amount >= maxStackSize)
 			{
-				item.setAmount(maxStackSize);
+				stack = item.toStack(maxStackSize);
 				amount -= maxStackSize;
-			}else
-			{
-				item.setAmount(amount - maxStackSize);
+			}else{
+				stack = item.toStack(amount);
 				amount = 0;
 			}
-			player.getWorld().dropItemNaturally(player.getLocation(), item);
+			player.getWorld().dropItemNaturally(player.getLocation(), stack);
 		}
 
 	}
@@ -438,21 +437,19 @@ public abstract class Command
 	 * item type to count
 	 * @return the total
 	 */
-	protected int countItemsInInventory(PlayerInventory inventory, ItemStack item)
+	protected int countItemsInInventory(PlayerInventory inventory, ItemInfo item)
 	{
 		int totalAmount = 0;
-		boolean isDurable = CommandShops.getItemList().isDurable(item);
 
-		for(Integer i: inventory.all(item.getType()).keySet())
+		for(ItemStack thisStack : inventory.all(item.material).values())
 		{
-			ItemStack thisStack = inventory.getItem(i);
-			if(isDurable)
+			if(item.isDurable())
 			{
 				int damage = calcDurabilityPercentage(thisStack);
 				if(damage > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0) continue;
 			}else{
-				if(thisStack.getDurability() != item.getDurability()) continue;
+				if(thisStack.getDurability() != item.subTypeId) continue;
 			}
 			totalAmount += thisStack.getAmount();
 		}
@@ -484,23 +481,20 @@ public abstract class Command
 	 * @return remaining number of items that should have been taken but were not
 	 * because the player ran out. Will be zero on success. 
 	 */
-	protected int removeItemsFromInventory(PlayerInventory inventory, ItemStack item, int amount)
+	protected int removeItemsFromInventory(PlayerInventory inventory, ItemInfo item, int amount)
 	{
-
-		boolean isDurable = CommandShops.getItemList().isDurable(item);
-
 		// remove number of items from player adding stock
-		for(int i: inventory.all(item.getType()).keySet())
+		for(int i: inventory.all(item.material).keySet())
 		{
 			if(amount == 0) continue;
 			ItemStack thisStack = inventory.getItem(i);
-			if(isDurable)
+			if(item.isDurable())
 			{
 				int damage = calcDurabilityPercentage(thisStack);
 				if(damage > Config.MAX_DAMAGE
 						&& Config.MAX_DAMAGE != 0) continue;
 			}else{
-				if(thisStack.getDurability() != item.getDurability()) continue;
+				if(thisStack.getDurability() != item.subTypeId) continue;
 			}
 
 			int foundAmount = thisStack.getAmount();
@@ -534,13 +528,12 @@ public abstract class Command
 		{
 			if(thisSlot == null || thisSlot.getType() == Material.AIR)
 			{
-				count += item.maxStackSize;
+				count += item.getMaxStackSize();
 				continue;
 			}
-			if(thisSlot.getTypeId() == item.typeId
-					&& thisSlot.getDurability() == item.subTypeId)
+			if(Search.materials.inverse().get(thisSlot.getType()) == item.typeId && thisSlot.getDurability() == item.subTypeId)
 			{
-				count += item.maxStackSize - thisSlot.getAmount();
+				count += Math.max(item.getMaxStackSize() - thisSlot.getAmount(), 0);
 			}
 		}
 

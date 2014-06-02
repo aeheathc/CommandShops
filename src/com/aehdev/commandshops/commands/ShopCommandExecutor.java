@@ -75,7 +75,6 @@ public class ShopCommandExecutor implements CommandExecutor
 			else if(type.equalsIgnoreCase("browse") || type.equalsIgnoreCase("bro"))	cmd = new CommandShopBrowse(plugin, commandLabel, sender, cmdString);
 			else if(type.equalsIgnoreCase("sell"))										cmd = new CommandShopSell(plugin, commandLabel, sender, cmdString);
 			else if(type.equalsIgnoreCase("add"))										cmd = new CommandShopAdd(plugin, commandLabel, sender, cmdString);
-			else if(type.equalsIgnoreCase("remove"))									cmd = new CommandShopRemove(plugin, commandLabel, sender, cmdString);
 			else if(type.equalsIgnoreCase("buy"))										cmd = new CommandShopBuy(plugin, commandLabel, sender, cmdString);
 			else if(type.equalsIgnoreCase("set"))										cmd = new CommandShopSet(plugin, commandLabel, sender, cmdString);
 			else if(type.equalsIgnoreCase("select"))									cmd = new CommandShopSelect(plugin, commandLabel, sender, cmdString);

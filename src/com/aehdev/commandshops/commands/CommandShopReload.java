@@ -14,7 +14,7 @@ public class CommandShopReload extends Command
 {
 
 	/**
-	 * Create a version order.
+	 * Create a reloading order.
 	 * @param plugin
 	 * reference to the main CommandShops plugin object
 	 * @param commandLabel
@@ -37,7 +37,7 @@ public class CommandShopReload extends Command
 	{
 		if((sender instanceof Player) && !canUseCommand(CommandTypes.ADMIN))
 		{
-			sender.sendMessage("Only CS adminds can reload");
+			sender.sendMessage("Only CS admins can reload");
 			return false;
 		}
 		log.info(String.format((Locale)null,"[%s] Starting reload", plugin.getDescription().getName()));

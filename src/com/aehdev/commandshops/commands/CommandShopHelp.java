@@ -104,11 +104,6 @@ public class CommandShopHelp extends Command
 			sender.sendMessage(ChatColor.WHITE + "   /shop set"
 					+ ChatColor.DARK_AQUA + " - Display list of set commands");
 		}
-		if(canUseCommand(CommandTypes.REMOVE))
-		{
-			sender.sendMessage(ChatColor.WHITE + "   /shop remove [itemname]" + ChatColor.DARK_AQUA
-					+ " - Remove all stock of certain item from shop.");
-		}
 		if(true)
 		{
 			sender.sendMessage(ChatColor.WHITE + "   /shop list" + ChatColor.DARK_AQUA
