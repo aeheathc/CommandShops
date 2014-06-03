@@ -6,7 +6,7 @@ Player created physical shops with custom 3D boundaries, buying and selling item
 Changelog
 -------------------
 
-**HEAD**
+**4.2.4**
 
 * Tested with CB beta 1.7.9-R0.2
 * Fixed SQLite getting deadlocked on startup in bukkit 1.7.x
@@ -20,7 +20,9 @@ Changelog
 * Removed "remove" command. It was always a weird and useless command to take ALL of an item out of your shop even if you don't have inventory space. An accident could be bad if there are too many items to get them back in before they despawn. Remember that you can just use the buy command to take items out of your shop as an owner and it doesn't cost you any money.
 * Removed much unused code
 * Documented the ItemInfo class after reclassifying it as permanent.
-* Fixed softdepend on WorldGuard. CommandShops should once again be usable without WorldGuard, but having WorldGaurd will allow additional features. 
+* Fixed softdepend on WorldGuard. CommandShops should once again be usable without WorldGuard, but having WorldGaurd will allow additional features.
+* Added items up to snapshot 14w21b (which is between the current 1.7.9 and an expected 1.8.x)
+* Log now reports remaining stock for shops with unlimited stock as "Unlimited" instead of "-1" 
 
 **4.2.3**
 

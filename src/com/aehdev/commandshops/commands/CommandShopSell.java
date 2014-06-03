@@ -496,8 +496,9 @@ public class CommandShopSell extends Command
 
 		// log the transaction
 		int newStock = stock + amount;
-		log.info(String.format((Locale)null,"[%s] %s sold %d of %s to %d (%s) for %s; shop's stock is %d",
-				CommandShops.pdfFile.getName(), playerName, amount, item.name, shop, shopName, plugin.econ.format(totalCost), newStock));
+		String newstockStr = unlimitedStock ? "Unlimited" : (""+newStock);
+		log.info(String.format((Locale)null,"[%s] %s sold %d of %s to %d (%s) for %s; shop's stock is %s",
+				CommandShops.pdfFile.getName(), playerName, amount, item.name, shop, shopName, plugin.econ.format(totalCost), newstockStr));
 		try{
 			String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 			String logQuery = String.format((Locale)null,"INSERT INTO log " 
