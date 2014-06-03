@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.BookmarkedResult;
@@ -220,13 +219,14 @@ public class Shop
 				ProtectedRegion regionobj = CommandShops.worldguard.get(Bukkit.getWorld(world)).getRegion(region);
 				if(regionobj != null)
 				{
-					regionobj.setFlag(DefaultFlag.GREET_MESSAGE, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + shopname);
+					WGProxy.setGreeting(regionobj, ChatColor.DARK_AQUA + "Entering shop: " + ChatColor.WHITE + shopname);
+					
 					/*Leaving out exit message for now because worldguard is dumb.
 					  For inner regions with enter/exit messages, when going the opposite direction WG will also play the corresponding message for the OUTER region resulting in twice as many messages as there should be.
 					  Making the inner region have only an enter message means you get 1 going in and 1 going out which is what we want even if only the enter message is actually for the shop and the other one is for the town.
 					  This will never be fixed, they want it that way. This reminder is here to help with integration with other region systems in the future.
 					 */
-					//regionobj.setFlag(DefaultFlag.FAREWELL_MESSAGE, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + shopname);
+					//WGProxy.setFarewell(regionobj, ChatColor.DARK_AQUA + "Leaving shop: " + ChatColor.WHITE + shopname);
 				}else{
 					log.warning(String.format((Locale)null,"[%s] - Shop %d:'%s' has invalid region name %s", CommandShops.pdfFile.getName(), shopid, shopname, region));
 				}

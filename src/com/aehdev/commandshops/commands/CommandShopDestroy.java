@@ -14,7 +14,7 @@ import com.aehdev.commandshops.CommandShops;
 import com.aehdev.commandshops.Search;
 import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopLocation;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.aehdev.commandshops.WGProxy;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.BookmarkedResult;
@@ -78,12 +78,14 @@ public class CommandShopDestroy extends Command
 					return false;
 				}
 				
-				ProtectedRegion regionObj = null;
-				if(region != null && CommandShops.worldguard != null) regionObj = CommandShops.worldguard.get(Bukkit.getWorld(world)).getRegion(region);
-				if(regionObj != null)
+				if(region != null && CommandShops.worldguard != null)
 				{
-					regionObj.setFlag(DefaultFlag.GREET_MESSAGE, null);
-					regionObj.setFlag(DefaultFlag.FAREWELL_MESSAGE, null);
+					ProtectedRegion regionObj = CommandShops.worldguard.get(Bukkit.getWorld(world)).getRegion(region);
+					if(regionObj != null)
+					{
+						WGProxy.setGreeting(regionObj, null);
+						WGProxy.setFarewell(regionObj, null);
+					}
 				}
 				
 				String itemQuery = String.format((Locale)null,"SELECT itemid,itemdamage,stock FROM shop_items WHERE shop=%d", shop);

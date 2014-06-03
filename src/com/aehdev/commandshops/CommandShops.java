@@ -118,8 +118,9 @@ public class CommandShops extends JavaPlugin
         	if(Config.REQUIRE_OWNER)
         	{
         		log.warning(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "No supported region plugin found, but config says to require owned regions! Existing shops will work but no shops can be created/moved like this."));
+        	}else{
+        		log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "No supported region plugin found, using free selection only."));
         	}
-        	log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "No supported region plugin found, using free selection only."));
         }else{
         	worldguard = ((WorldGuardPlugin)plugin).getGlobalRegionManager();
         	log.info(String.format((Locale)null,"[%s] %s", pdfFile.getName(), "WorldGuard support enabled."));

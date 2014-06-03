@@ -1,7 +1,6 @@
 package com.aehdev.commandshops.commands;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -268,8 +267,8 @@ public abstract class Command
 	}
 	
 	/**
-	 * Check if a theoretical shop position would be acceptable.
-	 * To meet this criteria, it must be in the market if one exists. 
+	 * Check if a theoretical shop position would be in a market.
+	 * To meet this criteria, it must overlap a market if one exists. 
 	 * @param xyzA
 	 * First of 2 points defining the cuboid
 	 * @param xyzB
@@ -280,7 +279,7 @@ public abstract class Command
 	 */
 	protected boolean shopInMarket(double[] xyzA, double[] xyzB, String worldName)
 	{
-		if(Config.MARKETS.length > 0)
+		if(Config.MARKETS.length > 0 && CommandShops.worldguard != null)
 		{
 			boolean good = false;
 			for(String market : Config.MARKETS)

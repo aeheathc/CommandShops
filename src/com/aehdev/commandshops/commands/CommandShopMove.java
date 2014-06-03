@@ -19,8 +19,8 @@ import com.aehdev.commandshops.Selection;
 import com.aehdev.commandshops.Shop;
 import com.aehdev.commandshops.ShopLocation;
 import com.aehdev.commandshops.ShopsPlayerListener;
+import com.aehdev.commandshops.WGProxy;
 import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import cuboidLocale.BookmarkedResult;
@@ -267,8 +267,8 @@ public class CommandShopMove extends Command
 		//update enter/exit messages
 		if(oldRegion != null)
 		{
-			oldRegion.setFlag(DefaultFlag.GREET_MESSAGE, null);
-			oldRegion.setFlag(DefaultFlag.FAREWELL_MESSAGE, null);
+			WGProxy.setGreeting(oldRegion, null);
+			WGProxy.setFarewell(oldRegion, null);
 		}
 		if(regionobj != null)
 		{

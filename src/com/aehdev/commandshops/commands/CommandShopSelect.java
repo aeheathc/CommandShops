@@ -59,15 +59,16 @@ public class CommandShopSelect extends Command
 		String playerName = player.getName();
 		World worldobj = player.getWorld();
 		String world = worldobj.getName();
-		RegionManager wg = CommandShops.worldguard.get(worldobj);
 		
 		ShopsPlayerListener.playerRegions.remove(playerName);		//cancel region selections
 		
 		Pattern pattern = Pattern.compile("(?i)select\\s+(.*)");
 		Matcher matcher = pattern.matcher(command);
-		if(matcher.find())
+		if(matcher.find() && CommandShops.worldguard != null)
 		{
 			//In this case they used a region name
+			RegionManager wg = CommandShops.worldguard.get(worldobj);
+			
 			ShopsPlayerListener.selectingPlayers.remove(playerName);	//cancel manual selections
 			if(CommandShops.worldguard == null)
 			{
